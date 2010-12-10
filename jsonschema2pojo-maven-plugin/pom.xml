@@ -10,12 +10,12 @@
     </parent>
 
     <groupId>com.googlecode.jsonschema2pojo</groupId>
-    <artifactId>jsonschema2pojo-maven</artifactId>
+    <artifactId>jsonschema2pojo-maven-plugin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>maven-plugin</packaging>
 
-    <name>jsonschema2pojo-maven</name>
+    <name>jsonschema2pojo-maven-plugin</name>
 
     <build>
         <plugins>

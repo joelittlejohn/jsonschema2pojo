@@ -15,7 +15,7 @@
     <modules>
         <module>jsonschema2pojo-cli</module>
         <module>jsonschema2pojo-core</module>
-        <module>jsonschema2pojo-maven</module>
+        <module>jsonschema2pojo-maven-plugin</module>
     </modules>
 
     <developers>
