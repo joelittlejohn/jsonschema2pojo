@@ -26,7 +26,7 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
 /**
- * {@link http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1}
+ * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1"}
  */
 public class TypeRule implements SchemaRule<JDefinedClass, JType> {
 

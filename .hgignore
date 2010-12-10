@@ -3,3 +3,5 @@ syntax: glob
 .settings
 .project
 */target/
+target/
+*/apidocs/

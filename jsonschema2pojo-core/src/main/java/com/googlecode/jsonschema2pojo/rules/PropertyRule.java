@@ -31,7 +31,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
- * {@link http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2}
+ * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2"}
  */
 public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 

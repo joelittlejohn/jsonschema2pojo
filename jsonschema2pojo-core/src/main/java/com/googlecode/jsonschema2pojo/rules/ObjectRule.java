@@ -39,7 +39,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JVar;
 
 /**
- * {@link http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1}
+ * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1"}
  */
 public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
 

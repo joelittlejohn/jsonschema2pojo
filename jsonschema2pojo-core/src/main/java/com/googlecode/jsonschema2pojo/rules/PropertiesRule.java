@@ -24,7 +24,7 @@ import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JDefinedClass;
 
 /**
- * {@link http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2}
+ * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2"}
  */
 public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
