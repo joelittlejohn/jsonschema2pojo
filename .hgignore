@@ -4,4 +4,3 @@ syntax: glob
 .project
 */target/
 target/
-*/apidocs/
