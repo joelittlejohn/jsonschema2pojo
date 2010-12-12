@@ -48,10 +48,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     private File sourceDirectory;
 
     /**
+     * Package name used for generated Java classes.
+     * 
+     * @parameter
+     */
+    private String targetPackage = "";
+
+    /**
      * The project being built
      * 
      * @parameter expression="${project}"
-     * @required 
+     * @required
+     * @readonly 
      */
     private MavenProject project;
     
@@ -60,7 +68,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
         project.addCompileSourceRoot(outputDirectory.getPath());
         
         try {
-            Generate.generate(sourceDirectory, "", outputDirectory);
+            Generate.generate(sourceDirectory, targetPackage, outputDirectory);
         } catch (IOException e) {
             throw new MojoExecutionException("Error executing ", e);
         }
