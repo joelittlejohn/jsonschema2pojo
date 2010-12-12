@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 
 import com.googlecode.jsonschema2pojo.cli.Generate;
 
@@ -46,8 +47,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      */
     private File sourceDirectory;
 
+    /**
+     * The project being built
+     * 
+     * @parameter expression="${project}"
+     * @required 
+     */
+    private MavenProject project;
+    
     public void execute() throws MojoExecutionException {
 
+        project.addCompileSourceRoot(outputDirectory.getPath());
+        
         try {
             Generate.generate(sourceDirectory, "", outputDirectory);
         } catch (IOException e) {
