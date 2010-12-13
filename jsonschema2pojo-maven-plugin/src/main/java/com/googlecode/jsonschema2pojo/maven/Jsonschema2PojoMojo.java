@@ -59,18 +59,19 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * 
      * @parameter expression="${project}"
      * @required
-     * @readonly 
+     * @readonly
      */
     private MavenProject project;
-    
+
+    @Override
     public void execute() throws MojoExecutionException {
 
         project.addCompileSourceRoot(outputDirectory.getPath());
-        
+
         try {
             Generate.generate(sourceDirectory, targetPackage, outputDirectory);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error executing ", e);
+            throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
         }
 
     }
