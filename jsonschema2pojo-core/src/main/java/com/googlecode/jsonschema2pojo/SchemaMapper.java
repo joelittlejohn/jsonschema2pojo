@@ -19,15 +19,14 @@ package com.googlecode.jsonschema2pojo;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.googlecode.jsonschema2pojo.rules.ArrayRule;
-import com.googlecode.jsonschema2pojo.rules.DescriptionRule;
-import com.googlecode.jsonschema2pojo.rules.EnumRule;
-import com.googlecode.jsonschema2pojo.rules.ObjectRule;
-import com.googlecode.jsonschema2pojo.rules.OptionalRule;
-import com.googlecode.jsonschema2pojo.rules.PropertiesRule;
-import com.googlecode.jsonschema2pojo.rules.PropertyRule;
-import com.googlecode.jsonschema2pojo.rules.TypeRule;
+import com.googlecode.jsonschema2pojo.rules.SchemaRule;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 /**
  * Generates Java types from a JSON schema
@@ -51,20 +50,20 @@ public interface SchemaMapper {
      */
     void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException;
 
-    ArrayRule getArrayRule();
+    SchemaRule<JDefinedClass, JClass> getArrayRule();
 
-    DescriptionRule getDescriptionRule();
+    SchemaRule<JDocCommentable, JDocComment> getDescriptionRule();
 
-    EnumRule getEnumRule();
+    SchemaRule<JDefinedClass, JDefinedClass> getEnumRule();
 
-    ObjectRule getObjectRule();
+    SchemaRule<JPackage, JDefinedClass> getObjectRule();
 
-    OptionalRule getOptionalRule();
+    SchemaRule<JDocCommentable, JDocComment> getOptionalRule();
 
-    PropertiesRule getPropertiesRule();
+    SchemaRule<JDefinedClass, JDefinedClass> getPropertiesRule();
 
-    PropertyRule getPropertyRule();
+    SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule();
 
-    TypeRule getTypeRule();
+    SchemaRule<JDefinedClass, JType> getTypeRule();
 
 }

@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-java -jar target/${project.build.finalName}.jar "$@"
+java -jar ${project.build.finalName}.jar "$@"
