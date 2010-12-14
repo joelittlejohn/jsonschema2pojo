@@ -29,8 +29,10 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
 /**
- * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.3"}
- * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13"}
+ * @see <a
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.3">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.3</a>
+ * @see <a
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13</a>
  */
 public class ArrayRule implements SchemaRule<JDefinedClass, JClass> {
 

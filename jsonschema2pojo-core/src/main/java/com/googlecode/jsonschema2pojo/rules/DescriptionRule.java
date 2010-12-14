@@ -22,7 +22,8 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
 /**
- * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19"}
+ * @see <a
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19</a>
  */
 public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment> {
 
