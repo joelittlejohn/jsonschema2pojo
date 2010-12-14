@@ -35,7 +35,8 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
 
 /**
- * {@link "http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17"}
+ * @see <a
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17</a>
  */
 public class EnumRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 

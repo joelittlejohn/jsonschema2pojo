@@ -29,9 +29,15 @@ import com.googlecode.jsonschema2pojo.rules.ObjectRule;
 import com.googlecode.jsonschema2pojo.rules.OptionalRule;
 import com.googlecode.jsonschema2pojo.rules.PropertiesRule;
 import com.googlecode.jsonschema2pojo.rules.PropertyRule;
+import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.googlecode.jsonschema2pojo.rules.TypeRule;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 public class SchemaMapperImpl implements SchemaMapper {
 
@@ -55,42 +61,42 @@ public class SchemaMapperImpl implements SchemaMapper {
     }
 
     @Override
-    public ArrayRule getArrayRule() {
+    public SchemaRule<JDefinedClass, JClass> getArrayRule() {
         return new ArrayRule(this);
     }
 
     @Override
-    public DescriptionRule getDescriptionRule() {
+    public SchemaRule<JDocCommentable, JDocComment> getDescriptionRule() {
         return new DescriptionRule();
     }
 
     @Override
-    public EnumRule getEnumRule() {
+    public SchemaRule<JDefinedClass, JDefinedClass> getEnumRule() {
         return new EnumRule();
     }
 
     @Override
-    public ObjectRule getObjectRule() {
+    public SchemaRule<JPackage, JDefinedClass> getObjectRule() {
         return new ObjectRule(this);
     }
 
     @Override
-    public OptionalRule getOptionalRule() {
+    public SchemaRule<JDocCommentable, JDocComment> getOptionalRule() {
         return new OptionalRule();
     }
 
     @Override
-    public PropertiesRule getPropertiesRule() {
+    public SchemaRule<JDefinedClass, JDefinedClass> getPropertiesRule() {
         return new PropertiesRule(this);
     }
 
     @Override
-    public PropertyRule getPropertyRule() {
+    public SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule() {
         return new PropertyRule(this);
     }
 
     @Override
-    public TypeRule getTypeRule() {
+    public SchemaRule<JDefinedClass, JType> getTypeRule() {
         return new TypeRule(this);
     }
 
