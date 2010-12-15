@@ -53,7 +53,7 @@
                         <manifest>
                             <classpathPrefix>lib/</classpathPrefix>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.googlecode.jsonschema2pojo.Generate</mainClass>
+                            <mainClass>com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -87,11 +87,11 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${project.build.directory}/generate.sh</file>
+                                    <file>${project.build.directory}/jsonschema2pojo.sh</file>
                                     <type>sh</type>
                                 </artifact>
                                 <artifact>
-                                    <file>${project.build.directory}/generate.bat</file>
+                                    <file>${project.build.directory}/jsonschema2pojo.bat</file>
                                     <type>bat</type>
                                 </artifact>
                             </artifacts>

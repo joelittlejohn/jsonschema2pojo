@@ -23,7 +23,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
-import com.googlecode.jsonschema2pojo.cli.Generate;
+import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
 /**
  * @goal generate
@@ -69,7 +69,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
         project.addCompileSourceRoot(outputDirectory.getPath());
 
         try {
-            Generate.generate(sourceDirectory, targetPackage, outputDirectory);
+            Jsonschema2Pojo.generate(sourceDirectory, targetPackage, outputDirectory);
         } catch (IOException e) {
             throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
         }

@@ -27,7 +27,7 @@ import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
 import com.sun.codemodel.JCodeModel;
 
-public class Generate {
+public class Jsonschema2Pojo {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
 

@@ -83,17 +83,11 @@
 					<execution>
 						<id>attach-javadocs</id>
 						<goals>
-							<goal>jar</goal>
+							<goal>aggregate-jar</goal>
 						</goals>
-					</execution>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>aggregate</goal>
-						</goals>
-                        <configuration>
-                            <reportOutputDirectory>${project.basedir}/apidocs</reportOutputDirectory>
-                        </configuration>
+						<configuration>
+						    <outputDirectory>${project.basedir}/apidocs</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
