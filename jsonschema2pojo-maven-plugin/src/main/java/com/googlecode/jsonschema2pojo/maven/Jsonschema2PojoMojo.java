@@ -79,8 +79,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
 
         project.addCompileSourceRoot(outputDirectory.getPath());
 
-        System.out.println(">>>>>" + generateBuilders);
-
         Map<String, String> behaviourProperties = new HashMap<String, String>();
         behaviourProperties.put(SchemaMapper.GENERATE_BUILDERS_PROPERTY, generateBuilders);
 
