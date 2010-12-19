@@ -55,6 +55,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         JMethod getter = addGetter(c, field);
         addSetter(c, field);
+        addBuilder(c, field);
 
         if (node.get("description") != null) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), field);
@@ -87,12 +88,27 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         return setter;
     }
 
+    private JMethod addBuilder(JDefinedClass c, JFieldVar field) {
+        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(field.name()));
+
+        JVar param = builder.param(field.type(), field.name());
+        JBlock body = builder.body();
+        body.assign(JExpr._this().ref(field), param);
+        body._return(JExpr._this());
+
+        return builder;
+    }
+
     private String getPropertyName(String nodeName) {
         return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
     }
 
     private String getSetterName(String propertyName) {
         return "set" + capitalize(propertyName);
+    }
+
+    private String getBuilderName(String propertyName) {
+        return "with" + capitalize(propertyName);
     }
 
     private String getGetterName(String propertyName, JType type) {

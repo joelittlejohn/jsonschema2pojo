@@ -52,6 +52,10 @@ public class PropertyRuleTest {
                     "    public void setFooBar(double fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
+                    "    public " + TARGET_CLASS_NAME + " withFooBar(double fooBar) {\n" +
+                    "        this.fooBar = fooBar;\n" +
+                    "        return this;\n" +
+                    "    }\n\n" +
                     "}\n";
 
     private static final String EXPECTED_BOOLEAN_RESULT =
@@ -71,9 +75,13 @@ public class PropertyRuleTest {
                     "    public void setFooBar(boolean fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
+                    "    public " + TARGET_CLASS_NAME + " withFooBar(boolean fooBar) {\n" +
+                    "        this.fooBar = fooBar;\n" +
+                    "        return this;\n" +
+                    "    }\n\n" +
                     "}\n";
 
-    private PropertyRule rule = new PropertyRule(new SchemaMapperImpl());
+    private final PropertyRule rule = new PropertyRule(new SchemaMapperImpl());
 
     @Test
     public void applyAddsBeanProperty() throws JClassAlreadyExistsException {
