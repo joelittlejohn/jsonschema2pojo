@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
@@ -33,11 +34,14 @@ public class Jsonschema2Pojo {
 
         Arguments arguments = new Arguments().parse(args);
 
-        generate(new File(arguments.getSource()), arguments.getPackageName(), new File(arguments.getTarget()));
+        generate(new File(arguments.getSource()),
+                 arguments.getPackageName(),
+                 new File(arguments.getTarget()),
+                 arguments.getBehaviourProperties());
     }
 
-    public static void generate(File source, String packageName, File targetDir) throws IOException {
-        SchemaMapper mapper = new SchemaMapperImpl();
+    public static void generate(File source, String packageName, File targetDir, Map<String, String> behaviourProperties) throws IOException {
+        SchemaMapper mapper = new SchemaMapperImpl(behaviourProperties);
 
         JCodeModel codeModel = new JCodeModel();
 

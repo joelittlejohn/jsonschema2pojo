@@ -34,6 +34,12 @@ import com.sun.codemodel.JType;
 public interface SchemaMapper {
 
     /**
+     * Behaviour properties key determining whether or not to include the
+     * builder-style setters, ie "withFoo(foo)"
+     */
+    static final String GENERATE_BUILDERS_PROPERTY = "include-builders";
+
+    /**
      * Reads a schema and adds generated types to the given code model.
      * 
      * @param codeModel
@@ -65,5 +71,15 @@ public interface SchemaMapper {
     SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule();
 
     SchemaRule<JDefinedClass, JType> getTypeRule();
+
+    /**
+     * Gets from a key-value pair which defines some aspect of this
+     * SchemaMapper's behaviour.
+     * 
+     * @param key
+     *            The name of the property.
+     * @return The value of the property.
+     */
+    String getBehaviourProperty(String key);
 
 }

@@ -18,6 +18,8 @@ package com.googlecode.jsonschema2pojo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -40,6 +42,22 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 public class SchemaMapperImpl implements SchemaMapper {
+
+    private final Map<String, String> behaviourProperties;
+
+    /**
+     * Constructor.
+     * 
+     * @param behaviourProperties
+     *            A map defining the behavioural properties of this mapper.
+     */
+    public SchemaMapperImpl(Map<String, String> behaviourProperties) {
+        if (behaviourProperties == null) {
+            this.behaviourProperties = new HashMap<String, String>();
+        } else {
+            this.behaviourProperties = behaviourProperties;
+        }
+    }
 
     @Override
     public void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException {
@@ -98,6 +116,11 @@ public class SchemaMapperImpl implements SchemaMapper {
     @Override
     public SchemaRule<JDefinedClass, JType> getTypeRule() {
         return new TypeRule(this);
+    }
+
+    @Override
+    public String getBehaviourProperty(String key) {
+        return behaviourProperties.get(key);
     }
 
 }

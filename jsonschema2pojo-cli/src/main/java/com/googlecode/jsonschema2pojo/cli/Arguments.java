@@ -18,6 +18,9 @@ package com.googlecode.jsonschema2pojo.cli;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
@@ -36,11 +39,14 @@ public class Arguments {
         options.addOption(OptionBuilder.hasArg().isRequired(false).withDescription("A java package used for generated types").withLongOpt("package").withArgName("package name").create("p"));
         options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The target directory into which generated types will be written").withLongOpt("target").withArgName("directory").create("t"));
         options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The source file or directory from which JSON Schema will be read").withLongOpt("source").create("s"));
+
+        options.addOption(OptionBuilder.hasArg(false).isRequired(false).withDescription("Generate builder-style methods as well as setters").withLongOpt("generate-builders").create("b"));
     }
 
     private String source;
     private String target;
     private String packageName;
+    private Map<String, String> behaviourProperties;
 
     public Arguments parse(String[] args) {
 
@@ -54,6 +60,9 @@ public class Arguments {
             this.source = commandLine.getOptionValue("source");
             this.packageName = defaultString(commandLine.getOptionValue("package"));
             this.target = commandLine.getOptionValue("target");
+
+            this.behaviourProperties = new HashMap<String, String>();
+
         } catch (ParseException e) {
             printHelp(EXIT_ERROR);
         }
@@ -80,6 +89,10 @@ public class Arguments {
 
     protected void exit(int status) {
         System.exit(status);
+    }
+
+    public Map<String, String> getBehaviourProperties() {
+        return behaviourProperties;
     }
 
 }

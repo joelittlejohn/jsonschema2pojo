@@ -36,7 +36,7 @@ public class ArrayRuleTest {
 
     private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
-    private ArrayRule rule = new ArrayRule(new SchemaMapperImpl());
+    private final ArrayRule rule = new ArrayRule(new SchemaMapperImpl(null));
 
     @Test
     public void arrayWithUniqueItemsProducesSet() throws JClassAlreadyExistsException {

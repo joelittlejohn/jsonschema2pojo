@@ -18,11 +18,14 @@ package com.googlecode.jsonschema2pojo.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
 /**
@@ -63,13 +66,26 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      */
     private MavenProject project;
 
+    /**
+     * Whether or not to generate builder-style setters alongside the
+     * void-return ones. Defaults to false.
+     * 
+     * @parameter
+     */
+    private String generateBuilders = "false";
+
     @Override
     public void execute() throws MojoExecutionException {
 
         project.addCompileSourceRoot(outputDirectory.getPath());
 
+        System.out.println(">>>>>" + generateBuilders);
+
+        Map<String, String> behaviourProperties = new HashMap<String, String>();
+        behaviourProperties.put(SchemaMapper.GENERATE_BUILDERS_PROPERTY, generateBuilders);
+
         try {
-            Jsonschema2Pojo.generate(sourceDirectory, targetPackage, outputDirectory);
+            Jsonschema2Pojo.generate(sourceDirectory, targetPackage, outputDirectory, behaviourProperties);
         } catch (IOException e) {
             throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
         }

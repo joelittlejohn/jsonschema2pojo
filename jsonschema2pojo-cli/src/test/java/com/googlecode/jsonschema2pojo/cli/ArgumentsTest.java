@@ -30,7 +30,9 @@ import org.junit.Test;
 
 public class ArgumentsTest {
 
-    private static final String HELP_OUTPUT = "usage: generate [-h] [-p <package name>] -s <arg> -t <directory>\n" +
+    private static final String HELP_OUTPUT = "usage: generate [-b] [-h] [-p <package name>] -s <arg> -t <directory>\n" +
+                    " -b,--generate-builders        Generate builder-style methods as well as\n" +
+                    "                               setters\n" +
                     " -h,--help                     Print help information and exit\n" +
                     " -p,--package <package name>   A java package used for generated types\n" +
                     " -s,--source <arg>             The source file or directory from which\n" +
@@ -38,7 +40,7 @@ public class ArgumentsTest {
                     " -t,--target <directory>       The target directory into which generated\n" +
                     "                               types will be written\n";
     private static PrintStream SYSTEM_OUT = System.out;
-    private ByteArrayOutputStream systemOutCapture = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream systemOutCapture = new ByteArrayOutputStream();
 
     @Before
     public void setUp() {
@@ -52,7 +54,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesValidArguments() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--source", "mysource", "--target", "mytarget", "--package", "mypackage"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--source", "mysource", "--target", "mytarget", "--package", "mypackage" });
 
         assertThat(args.getStatus().hasCaptured(), is(false));
         assertThat(args.getSource(), is("mysource"));
@@ -62,7 +64,7 @@ public class ArgumentsTest {
 
     @Test
     public void packageIsOptional() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"-s", "mysource", "-t", "mytarget"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "mysource", "-t", "mytarget" });
 
         assertThat(args.getStatus().hasCaptured(), is(false));
         assertThat(args.getSource(), is("mysource"));
@@ -81,7 +83,7 @@ public class ArgumentsTest {
 
     @Test
     public void requestingHelpCausesHelp() throws IOException {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--help"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--help" });
 
         assertThat(args.getStatus().hasCaptured(), is(true));
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(HELP_OUTPUT));

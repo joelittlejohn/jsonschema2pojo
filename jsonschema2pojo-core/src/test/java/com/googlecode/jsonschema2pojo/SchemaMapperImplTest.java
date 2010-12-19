@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonNode;
 import org.easymock.Capture;
@@ -36,7 +38,7 @@ public class SchemaMapperImplTest {
     @Test
     public void factoryMethodsCreateRules() {
 
-        SchemaMapper schemaMapper = new SchemaMapperImpl();
+        SchemaMapper schemaMapper = new SchemaMapperImpl(null);
 
         assertThat(schemaMapper.getArrayRule(), notNullValue());
 
@@ -60,7 +62,7 @@ public class SchemaMapperImplTest {
     public void generateReadsSchemaAsObject() throws IOException {
 
         final ObjectRule mockObjectRule = createMock(ObjectRule.class);
-        SchemaMapper schemaMapper = new SchemaMapperImpl() {
+        SchemaMapper schemaMapper = new SchemaMapperImpl(null) {
             @Override
             public ObjectRule getObjectRule() {
                 return mockObjectRule;
@@ -86,6 +88,27 @@ public class SchemaMapperImplTest {
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.hasCaptured(), is(true));
         assertThat(captureNode.getValue().get("description").getTextValue(), is("An Address following the convention of http://microformats.org/wiki/hcard"));
+
+    }
+
+    @Test
+    public void nullPropertiesAvoidsNullPointer() {
+        SchemaMapper schemaMapper = new SchemaMapperImpl(null);
+        assertThat(schemaMapper.getBehaviourProperty("anything"), is(nullValue()));
+    }
+
+    @Test
+    public void putAndGetProperties() {
+
+        String key = "KEY";
+        String value = "VALUE";
+
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(key, value);
+
+        SchemaMapper schemaMapper = new SchemaMapperImpl(properties);
+
+        assertThat(schemaMapper.getBehaviourProperty(key), is(value));
 
     }
 

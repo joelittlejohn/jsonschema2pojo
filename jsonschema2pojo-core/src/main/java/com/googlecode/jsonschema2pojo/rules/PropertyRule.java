@@ -55,7 +55,13 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         JMethod getter = addGetter(c, field);
         addSetter(c, field);
-        addBuilder(c, field);
+
+        boolean shouldAddBuilders = Boolean.parseBoolean(
+                mapper.getBehaviourProperty(SchemaMapper.GENERATE_BUILDERS_PROPERTY));
+
+        if (shouldAddBuilders) {
+            addBuilder(c, field);
+        }
 
         if (node.get("description") != null) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), field);
