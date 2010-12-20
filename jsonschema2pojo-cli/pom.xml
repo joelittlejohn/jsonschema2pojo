@@ -5,12 +5,12 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>com.googlecode.jsonschema2pojo</groupId>
-        <version>0.1.2-SNAPSHOT</version>
+        <version>0.1.2</version>
     </parent>
 
     <groupId>com.googlecode.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-cli</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.2</version>
 
     <name>jsonschema2pojo-cli</name>
 
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>com.googlecode.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>0.1.2-SNAPSHOT</version>
+            <version>0.1.2</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
