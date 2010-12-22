@@ -28,6 +28,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
+@SuppressWarnings("static-access")
 public class Arguments {
 
     private static final int EXIT_OKAY = 0;
@@ -39,7 +40,6 @@ public class Arguments {
         options.addOption(OptionBuilder.hasArg().isRequired(false).withDescription("A java package used for generated types").withLongOpt("package").withArgName("package name").create("p"));
         options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The target directory into which generated types will be written").withLongOpt("target").withArgName("directory").create("t"));
         options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The source file or directory from which JSON Schema will be read").withLongOpt("source").create("s"));
-
         options.addOption(OptionBuilder.hasArg(false).isRequired(false).withDescription("Generate builder-style methods as well as setters").withLongOpt("generate-builders").create("b"));
     }
 

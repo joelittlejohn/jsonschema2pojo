@@ -18,6 +18,8 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.Serializable;
+
 import javax.annotation.Generated;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -67,6 +69,7 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
         }
 
         addGeneratedAnnotation(jclass);
+        addSerializable(jclass);
 
         if (node.get("description") != null) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), jclass);
@@ -84,8 +87,14 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
         addHashCode(jclass);
         addEquals(jclass);
 
+        mapper.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass);
+
         return jclass;
 
+    }
+
+    private void addSerializable(JDefinedClass jclass) {
+        jclass._implements(Serializable.class);
     }
 
     private void addGeneratedAnnotation(JDefinedClass jclass) {

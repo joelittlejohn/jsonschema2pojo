@@ -24,6 +24,7 @@ import java.util.Map;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRule;
 import com.googlecode.jsonschema2pojo.rules.ArrayRule;
 import com.googlecode.jsonschema2pojo.rules.DescriptionRule;
 import com.googlecode.jsonschema2pojo.rules.EnumRule;
@@ -116,6 +117,11 @@ public class SchemaMapperImpl implements SchemaMapper {
     @Override
     public SchemaRule<JDefinedClass, JType> getTypeRule() {
         return new TypeRule(this);
+    }
+
+    @Override
+    public SchemaRule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule() {
+        return new AdditionalPropertiesRule(this);
     }
 
     @Override

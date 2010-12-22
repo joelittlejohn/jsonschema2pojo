@@ -41,8 +41,10 @@ public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> 
         for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
             String property = properties.next();
 
-            if (!property.equals("$ref")) {
-                mapper.getPropertyRule().apply(property, node.get(property), generatableType);
+            if (property.equals("$ref")) {
+                // do something with the $ref properties ...
+            } else {
+                 mapper.getPropertyRule().apply(property, node.get(property), generatableType);
             }
         }
 

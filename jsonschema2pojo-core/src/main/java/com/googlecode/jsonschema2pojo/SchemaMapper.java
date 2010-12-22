@@ -72,6 +72,8 @@ public interface SchemaMapper {
 
     SchemaRule<JDefinedClass, JType> getTypeRule();
 
+    SchemaRule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule();
+
     /**
      * Gets from a key-value pair which defines some aspect of this
      * SchemaMapper's behaviour.

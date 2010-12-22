@@ -38,10 +38,11 @@ public class ObjectRuleTest {
 
     private static final String TARGET_PACKAGE_NAME = ArrayRuleTest.class.getPackage().getName() + ".test";
 
-    private static final Object EXPECTED_RESULT =
+    private static final String EXPECTED_RESULT =
             "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "public class FooBar {\n\n\n    " +
-                    "@java.lang.Override\n" +
+                    "public class FooBar\n" +
+                    "    implements java.io.Serializable\n{\n\n\n" +
+                    "    @java.lang.Override\n" +
                     "    public java.lang.String toString() {\n" +
                     "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
                     "    }\n\n" +
@@ -65,6 +66,10 @@ public class ObjectRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
 
+        AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
+        expect(mockSchemaMapper.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
+        replay(mockSchemaMapper);
+
         JDefinedClass result = rule.apply("fooBar", objectNode, jpackage);
 
         StringWriter output = new StringWriter();
@@ -82,25 +87,30 @@ public class ObjectRuleTest {
         ObjectNode descriptionNode = objectMapper.createObjectNode();
         ObjectNode optionalNode = objectMapper.createObjectNode();
         ObjectNode propertiesNode = objectMapper.createObjectNode();
+        ObjectNode additionalPropertiesNode = objectMapper.createObjectNode();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("description", descriptionNode);
         objectNode.put("optional", optionalNode);
         objectNode.put("properties", propertiesNode);
+        objectNode.put("additionalProperties", additionalPropertiesNode);
 
         DescriptionRule mockDescriptionRule = createMock(DescriptionRule.class);
         OptionalRule mockOptionalRule = createMock(OptionalRule.class);
         PropertiesRule mockPropertiesRule = createMock(PropertiesRule.class);
+        AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
 
         expect(mockDescriptionRule.apply(eq("fooBar"), eq(descriptionNode), isA(JDefinedClass.class))).andReturn(null);
         expect(mockOptionalRule.apply(eq("fooBar"), eq(optionalNode), isA(JDefinedClass.class))).andReturn(null);
         expect(mockPropertiesRule.apply(eq("fooBar"), eq(propertiesNode), isA(JDefinedClass.class))).andReturn(null);
+        expect(mockAdditionalPropertiesRule.apply(eq("fooBar"), eq(additionalPropertiesNode), isA(JDefinedClass.class))).andReturn(null);
 
         expect(mockSchemaMapper.getDescriptionRule()).andReturn(mockDescriptionRule);
         expect(mockSchemaMapper.getOptionalRule()).andReturn(mockOptionalRule);
         expect(mockSchemaMapper.getPropertiesRule()).andReturn(mockPropertiesRule);
-
-        replay(mockSchemaMapper, mockDescriptionRule, mockOptionalRule, mockPropertiesRule);
+        expect(mockSchemaMapper.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
+        
+        replay(mockSchemaMapper, mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
 
         JDefinedClass result = rule.apply("fooBar", objectNode, jpackage);
 
@@ -109,7 +119,7 @@ public class ObjectRuleTest {
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT));
 
-        verify(mockDescriptionRule, mockOptionalRule, mockPropertiesRule);
+        verify(mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
 
     }
 
