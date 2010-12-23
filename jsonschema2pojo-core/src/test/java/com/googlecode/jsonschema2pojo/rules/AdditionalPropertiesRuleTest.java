@@ -42,7 +42,7 @@ public class AdditionalPropertiesRuleTest {
     
     private static final String EXPECTED_RESULT_DEFAULT_ADDITIONAL_PROPS = 
         "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, java.lang.Object> additionalProperties;\n\n" +
+        "    private java.util.Map<java.lang.String, java.lang.Object> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.Object>();\n\n" +
         "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
         "    public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties() {\n" +
         "        return this.additionalProperties;\n" +
@@ -55,7 +55,7 @@ public class AdditionalPropertiesRuleTest {
     
     private static final String EXPECTED_ADDITIONAL_STRING_PROPS = 
         "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, java.lang.String> additionalProperties;\n\n" +
+        "    private java.util.Map<java.lang.String, java.lang.String> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.String>();\n\n" +
         "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
         "    public java.util.Map<java.lang.String, java.lang.String> getAdditionalProperties() {\n" +
         "        return this.additionalProperties;\n" +
@@ -68,7 +68,8 @@ public class AdditionalPropertiesRuleTest {
 
     private static final String EXPECTED_ADDITIONAL_OBJECT_PROPS = 
         "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> additionalProperties;\n\n" +
+        "    private java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> additionalProperties" + 
+        " = new java.util.HashMap<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty>();\n\n" +
         "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
         "    public java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> getAdditionalProperties() {\n" +
         "        return this.additionalProperties;\n" +
