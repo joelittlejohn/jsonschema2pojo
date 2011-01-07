@@ -25,7 +25,7 @@ import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 /**
@@ -34,7 +34,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13</a>
  */
-public class ArrayRule implements SchemaRule<JDefinedClass, JClass> {
+public class ArrayRule implements SchemaRule<JPackage, JClass> {
 
     private final SchemaMapper mapper;
 
@@ -43,7 +43,7 @@ public class ArrayRule implements SchemaRule<JDefinedClass, JClass> {
     }
 
     @Override
-    public JClass apply(String nodeName, JsonNode node, JDefinedClass generatableType) {
+    public JClass apply(String nodeName, JsonNode node, JPackage generatableType) {
 
         boolean uniqueItems = (node.get("uniqueItems") != null) && node.get("uniqueItems").getBooleanValue();
 

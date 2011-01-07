@@ -51,6 +51,22 @@ public class EnumRuleTest {
                     "    }\n\n" +
                     "}\n";
 
+    private static final String EXPECTED_TEXT_WITH_SPACES_RESULT =
+            "public class DummyClass {\n\n\n" +
+                    "    public enum NewEnum {\n\n" +
+                    "        VALUE_ONE(\"value one\"),\n" +
+                    "        VALUE_TWO(\"value two\"),\n" +
+                    "        VALUE_THREE(\"value three\");\n" +
+                    "        private final java.lang.String value;\n\n" +
+                    "        private NewEnum(java.lang.String value) {\n" +
+                    "            this.value = value;\n        }\n\n" +
+                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+                    "        @java.lang.Override\n" +
+                    "        public java.lang.String toString() {\n" +
+                    "            return this.value;\n        }\n\n" +
+                    "    }\n\n" +
+                    "}\n";
+
     private static final String EXPECTED_NUMBER_RESULT =
             "public class DummyClass {\n\n\n" +
                     "    public enum NewEnum {\n\n" +
@@ -95,6 +111,26 @@ public class EnumRuleTest {
         jclass.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_TEXT_RESULT));
+
+    }
+
+    @Test
+    public void applyCreatesTextEnumWithSpaces() throws JClassAlreadyExistsException {
+
+        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode enumNode = mapper.createArrayNode();
+        enumNode.add("value one");
+        enumNode.add("value two");
+        enumNode.add("value three");
+
+        rule.apply("newEnum", enumNode, jclass);
+
+        StringWriter output = new StringWriter();
+        jclass.declare(new JFormatter(output));
+
+        assertThat(output.toString(), equalTo(EXPECTED_TEXT_WITH_SPACES_RESULT));
 
     }
 

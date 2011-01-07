@@ -16,9 +16,12 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static java.util.Arrays.*;
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonCreator;
@@ -26,6 +29,7 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
@@ -38,14 +42,14 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17</a>
  */
-public class EnumRule implements SchemaRule<JDefinedClass, JDefinedClass> {
+public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
     private static final String VALUE_FIELD_NAME = "value";
 
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass generatableType) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer generatableType) {
         try {
             JDefinedClass _enum = generatableType._enum(getEnumName(nodeName));
 
@@ -93,7 +97,16 @@ public class EnumRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getConstantName(String nodeName) {
-        String enumName = upperCase(join(splitByCharacterTypeCamelCase(nodeName), "_"));
+        List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
+
+        String enumName = "";
+        for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {
+            if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
+                iter.remove();
+            }
+        }
+
+        enumName = upperCase(join(enumNameGroups, "_"));
 
         if (Character.isDigit(enumName.charAt(0))) {
             enumName = "_" + enumName;

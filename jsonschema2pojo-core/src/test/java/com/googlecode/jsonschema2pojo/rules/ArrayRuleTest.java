@@ -28,20 +28,17 @@ import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 
 public class ArrayRuleTest {
-
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
     private final ArrayRule rule = new ArrayRule(new SchemaMapperImpl(null));
 
     @Test
-    public void arrayWithUniqueItemsProducesSet() throws JClassAlreadyExistsException {
+    public void arrayWithUniqueItemsProducesSet() {
         JCodeModel codeModel = new JCodeModel();
-        JDefinedClass jclass = codeModel._class(TARGET_CLASS_NAME);
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -52,7 +49,7 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", true);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jclass);
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(Set.class)));
@@ -60,9 +57,9 @@ public class ArrayRuleTest {
     }
 
     @Test
-    public void arrayWithNonUniqueItemsProducesList() throws JClassAlreadyExistsException {
+    public void arrayWithNonUniqueItemsProducesList() {
         JCodeModel codeModel = new JCodeModel();
-        JDefinedClass jclass = codeModel._class(TARGET_CLASS_NAME);
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -73,7 +70,7 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jclass);
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
@@ -81,9 +78,9 @@ public class ArrayRuleTest {
     }
 
     @Test
-    public void arrayDefaultsToNonUnique() throws JClassAlreadyExistsException {
+    public void arrayDefaultsToNonUnique() {
         JCodeModel codeModel = new JCodeModel();
-        JDefinedClass jclass = codeModel._class(TARGET_CLASS_NAME);
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -94,7 +91,7 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jclass);
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
 
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
     }

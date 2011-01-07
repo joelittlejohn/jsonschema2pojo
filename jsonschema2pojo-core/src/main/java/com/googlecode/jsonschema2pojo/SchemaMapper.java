@@ -21,6 +21,7 @@ import java.io.InputStream;
 
 import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -56,11 +57,11 @@ public interface SchemaMapper {
      */
     void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException;
 
-    SchemaRule<JDefinedClass, JClass> getArrayRule();
+    SchemaRule<JPackage, JClass> getArrayRule();
 
     SchemaRule<JDocCommentable, JDocComment> getDescriptionRule();
 
-    SchemaRule<JDefinedClass, JDefinedClass> getEnumRule();
+    SchemaRule<JClassContainer, JDefinedClass> getEnumRule();
 
     SchemaRule<JPackage, JDefinedClass> getObjectRule();
 
@@ -70,7 +71,7 @@ public interface SchemaMapper {
 
     SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule();
 
-    SchemaRule<JDefinedClass, JType> getTypeRule();
+    SchemaRule<JPackage, JType> getTypeRule();
 
     SchemaRule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule();
 

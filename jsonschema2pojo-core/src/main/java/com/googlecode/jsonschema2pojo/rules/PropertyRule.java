@@ -49,7 +49,12 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         String propertyName = getPropertyName(nodeName);
 
-        JType propertyType = mapper.getTypeRule().apply(nodeName, node, c);
+        JType propertyType;
+        if (node.get("enum") != null) {
+            propertyType = mapper.getEnumRule().apply(nodeName, node.get("enum"), c);
+        } else {
+            propertyType = mapper.getTypeRule().apply(nodeName, node, c.getPackage());
+        }
 
         JFieldVar field = c.field(JMod.PRIVATE, propertyType, propertyName);
 

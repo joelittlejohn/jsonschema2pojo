@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ import com.sun.codemodel.JFormatter;
 
 public class PropertyRuleTest {
 
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = PropertyRuleTest.class.getName() + ".DummyClass";
 
     private static final String EXPECTED_NUMBER_RESULT_WITH_BUILDER =
             "public class DummyClass {\n\n" +
@@ -96,6 +97,38 @@ public class PropertyRuleTest {
                     "    }\n\n" +
                     "    public void setFooBar(boolean fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
+                    "    }\n\n" +
+                    "}\n";
+
+    private static final String EXPECTED_ENUM_RESULT =
+            "public class DummyClass {\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * \n" +
+                    "     */\n" +
+                    "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * (Optional)\n" +
+                    "     * \n" +
+                    "     */\n" +
+                    "    public com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar getFooBar() {\n" +
+                    "        return fooBar;\n" +
+                    "    }\n\n" +
+                    "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
+                    "        this.fooBar = fooBar;\n" +
+                    "    }\n\n" +
+                    "    public enum FooBar {\n\n" +
+                    "        AB_C(\"ab c\");\n" +
+                    "        private final java.lang.String value;\n\n" +
+                    "        private FooBar(java.lang.String value) {\n" +
+                    "            this.value = value;\n" +
+                    "        }\n\n" +
+                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+                    "        @java.lang.Override\n" +
+                    "        public java.lang.String toString() {\n" +
+                    "            return this.value;\n" +
+                    "        }\n\n" +
                     "    }\n\n" +
                     "}\n";
 
@@ -161,6 +194,30 @@ public class PropertyRuleTest {
         result.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_BOOLEAN_RESULT_WITHOUT_BUILDER));
+
+    }
+
+    @Test
+    public void applyAddsEnumProperty() throws JClassAlreadyExistsException {
+
+        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode enumNode = objectMapper.createArrayNode();
+        enumNode.add("ab c");
+
+        ObjectNode propertyNode = new ObjectMapper().createObjectNode();
+        propertyNode.put("type", "string");
+        propertyNode.put("enum", enumNode);
+        propertyNode.put("description", "some bean property");
+        propertyNode.put("optional", true);
+
+        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass);
+
+        StringWriter output = new StringWriter();
+        result.declare(new JFormatter(output));
+
+        assertThat(output.toString(), equalTo(EXPECTED_ENUM_RESULT));
 
     }
 

@@ -22,14 +22,14 @@ import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
-import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 /**
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
  */
-public class TypeRule implements SchemaRule<JDefinedClass, JType> {
+public class TypeRule implements SchemaRule<JPackage, JType> {
 
     private final SchemaMapper mapper;
 
@@ -38,12 +38,10 @@ public class TypeRule implements SchemaRule<JDefinedClass, JType> {
     }
 
     @Override
-    public JType apply(String nodeName, JsonNode node, JDefinedClass generatableType) {
+    public JType apply(String nodeName, JsonNode node, JPackage generatableType) {
         String propertyTypeName = node.get("type").getTextValue();
 
-        if (node.get("enum") != null) {
-            return mapper.getEnumRule().apply(nodeName, node.get("enum"), generatableType);
-        } else if (propertyTypeName.equals("string")) {
+        if (propertyTypeName.equals("string")) {
 
             if (node.get("format") != null && node.get("format").getTextValue().equals("date-time")) {
                 return generatableType.owner().ref(Date.class);

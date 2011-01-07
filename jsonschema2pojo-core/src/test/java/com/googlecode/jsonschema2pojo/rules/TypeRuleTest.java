@@ -23,191 +23,164 @@ import static org.hamcrest.Matchers.*;
 import java.util.Date;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
-
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
     private SchemaMapper mockSchemaMapper = createMock(SchemaMapper.class);
 
     private TypeRule rule = new TypeRule(mockSchemaMapper);
 
     @Test
-    public void applyGeneratesEnum() throws JClassAlreadyExistsException {
+    public void applyGeneratesString() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ArrayNode enumNode = objectMapper.createArrayNode();
-
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("enum", enumNode);
-        objectNode.put("type", "string");
-
-        JDefinedClass mockEnumType = createMock(JDefinedClass.class);
-        EnumRule mockEnumRule = createMock(EnumRule.class);
-        expect(mockEnumRule.apply("fooBar", enumNode, jclass)).andReturn(mockEnumType);
-        expect(mockSchemaMapper.getEnumRule()).andReturn(mockEnumRule);
-
-        replay(mockEnumRule, mockSchemaMapper);
-
-        JType result = rule.apply("fooBar", objectNode, jclass);
-
-        assertThat(result, is((JType) mockEnumType));
-    }
-
-    @Test
-    public void applyGeneratesString() throws JClassAlreadyExistsException {
-
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "string");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(String.class.getName()));
     }
 
     @Test
-    public void applyGeneratesDate() throws JClassAlreadyExistsException {
+    public void applyGeneratesDate() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "string");
         objectNode.put("format", "date-time");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(Date.class.getName()));
     }
 
     @Test
-    public void applyGeneratesInteger() throws JClassAlreadyExistsException {
+    public void applyGeneratesInteger() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(int.class.getName()));
     }
 
     @Test
-    public void applyGeneratesNumber() throws JClassAlreadyExistsException {
+    public void applyGeneratesNumber() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(double.class.getName()));
     }
 
     @Test
-    public void applyGeneratesBoolean() throws JClassAlreadyExistsException {
+    public void applyGeneratesBoolean() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "boolean");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(boolean.class.getName()));
     }
 
     @Test
-    public void applyGeneratesAnyAsObject() throws JClassAlreadyExistsException {
+    public void applyGeneratesAnyAsObject() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "any");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(Object.class.getName()));
     }
 
     @Test
-    public void applyGeneratesNullAsObject() throws JClassAlreadyExistsException {
+    public void applyGeneratesNullAsObject() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "null");
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result.fullName(), is(Object.class.getName()));
     }
 
     @Test
-    public void applyGeneratesArray() throws JClassAlreadyExistsException {
+    public void applyGeneratesArray() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "array");
 
         JClass mockArrayType = createMock(JClass.class);
         ArrayRule mockArrayRule = createMock(ArrayRule.class);
-        expect(mockArrayRule.apply("fooBar", objectNode, jclass)).andReturn(mockArrayType);
+        expect(mockArrayRule.apply("fooBar", objectNode, jpackage)).andReturn(mockArrayType);
         expect(mockSchemaMapper.getArrayRule()).andReturn(mockArrayRule);
 
         replay(mockArrayRule, mockSchemaMapper);
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result, is((JType) mockArrayType));
     }
 
     @Test
-    public void applyGeneratesCustomObject() throws JClassAlreadyExistsException {
+    public void applyGeneratesCustomObject() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "object");
 
         JDefinedClass mockObjectType = createMock(JDefinedClass.class);
         ObjectRule mockObjectRule = createMock(ObjectRule.class);
-        expect(mockObjectRule.apply("fooBar", objectNode, jclass._package())).andReturn(mockObjectType);
+        expect(mockObjectRule.apply("fooBar", objectNode, jpackage)).andReturn(mockObjectType);
         expect(mockSchemaMapper.getObjectRule()).andReturn(mockObjectRule);
 
         replay(mockObjectRule, mockSchemaMapper);
 
-        JType result = rule.apply("fooBar", objectNode, jclass);
+        JType result = rule.apply("fooBar", objectNode, jpackage);
 
         assertThat(result, is((JType) mockObjectType));
     }
 
     @Test(expected = GenerationException.class)
-    public void applyFailsOnUnrecognizedType() throws JClassAlreadyExistsException {
+    public void applyFailsOnUnrecognizedType() {
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "unknown");
 
-        rule.apply("fooBar", objectNode, jclass);
+        rule.apply("fooBar", objectNode, jpackage);
     }
 
 }

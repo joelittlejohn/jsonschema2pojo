@@ -35,6 +35,7 @@ import com.googlecode.jsonschema2pojo.rules.PropertyRule;
 import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.googlecode.jsonschema2pojo.rules.TypeRule;
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -70,7 +71,12 @@ public class SchemaMapperImpl implements SchemaMapper {
 
         JPackage jpackage = codeModel._package(packageName);
 
-        this.getObjectRule().apply(className, schemaNode, jpackage);
+        if (schemaNode.get("enum") != null) {
+            this.getEnumRule().apply(className, schemaNode.get("enum"), jpackage);
+        } else {
+            this.getTypeRule().apply(className, schemaNode, jpackage);
+        }
+
     }
 
     private JsonNode readSchema(InputStream input) throws IOException {
@@ -80,7 +86,7 @@ public class SchemaMapperImpl implements SchemaMapper {
     }
 
     @Override
-    public SchemaRule<JDefinedClass, JClass> getArrayRule() {
+    public SchemaRule<JPackage, JClass> getArrayRule() {
         return new ArrayRule(this);
     }
 
@@ -90,7 +96,7 @@ public class SchemaMapperImpl implements SchemaMapper {
     }
 
     @Override
-    public SchemaRule<JDefinedClass, JDefinedClass> getEnumRule() {
+    public SchemaRule<JClassContainer, JDefinedClass> getEnumRule() {
         return new EnumRule();
     }
 
@@ -115,7 +121,7 @@ public class SchemaMapperImpl implements SchemaMapper {
     }
 
     @Override
-    public SchemaRule<JDefinedClass, JType> getTypeRule() {
+    public SchemaRule<JPackage, JType> getTypeRule() {
         return new TypeRule(this);
     }
 

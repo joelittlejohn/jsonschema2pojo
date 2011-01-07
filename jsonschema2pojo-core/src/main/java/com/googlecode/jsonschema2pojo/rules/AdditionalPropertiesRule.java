@@ -41,14 +41,14 @@ import com.sun.codemodel.JVar;
 public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
     private final SchemaMapper mapper;
-    
+
     public AdditionalPropertiesRule(SchemaMapper mapper) {
         this.mapper = mapper;
     }
 
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass) {
-        
+
         if (node != null && node.isBoolean() && node.getBooleanValue() == false) {
             // no additional properties allowed
             return jclass;
@@ -56,40 +56,40 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
 
         JType propertyType;
         if (node != null && node.size() != 0) {
-            propertyType = mapper.getTypeRule().apply(nodeName + "Property", node, jclass);
+            propertyType = mapper.getTypeRule().apply(nodeName + "Property", node, jclass.getPackage());
         } else {
             propertyType = jclass.owner().ref(Object.class);
         }
 
         JFieldVar field = addAdditionalPropertiesField(jclass, propertyType);
-        
+
         addGetter(jclass, field);
-        
+
         addSetter(jclass, propertyType, field);
-        
+
         return jclass;
     }
 
     private JFieldVar addAdditionalPropertiesField(JDefinedClass jclass, JType propertyType) {
         JClass propertiesMapType = jclass.owner().ref(Map.class);
         propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
-        
+
         JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
         field.init(JExpr._new(propertiesMapImplType));
-        
+
         return field;
     }
 
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperties");
         setter.annotate(JsonAnySetter.class);
-        
+
         JVar nameParam = setter.param(String.class, "name");
         JVar valueParam = setter.param(propertyType, "value");
-        
+
         JInvocation mapInvocation = setter.body().invoke(JExpr._this().ref(field), "put");
         mapInvocation.arg(nameParam);
         mapInvocation.arg(valueParam);
@@ -101,5 +101,5 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
         getter.body()._return(JExpr._this().ref(field));
         return getter;
     }
-    
+
 }
