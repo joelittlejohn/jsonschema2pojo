@@ -20,10 +20,9 @@ import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import java.util.Date;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.codehaus.jackson.node.TextNode;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -60,11 +59,20 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "string");
-        objectNode.put("format", "date-time");
+
+        TextNode formatNode = TextNode.valueOf("date-time");
+        objectNode.put("format", formatNode);
+
+        JType mockDateType = createMock(JType.class);
+        FormatRule mockFormatRule = createMock(FormatRule.class);
+        expect(mockFormatRule.apply("fooBar", formatNode, jpackage)).andReturn(mockDateType);
+        expect(mockSchemaMapper.getFormatRule()).andReturn(mockFormatRule);
+
+        replay(mockFormatRule, mockSchemaMapper);
 
         JType result = rule.apply("fooBar", objectNode, jpackage);
 
-        assertThat(result.fullName(), is(Date.class.getName()));
+        assertThat(result, equalTo(mockDateType));
     }
 
     @Test

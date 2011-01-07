@@ -63,6 +63,8 @@ public interface SchemaMapper {
 
     SchemaRule<JClassContainer, JDefinedClass> getEnumRule();
 
+    SchemaRule<JPackage, JType> getFormatRule();
+
     SchemaRule<JPackage, JDefinedClass> getObjectRule();
 
     SchemaRule<JDocCommentable, JDocComment> getOptionalRule();

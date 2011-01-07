@@ -28,6 +28,7 @@ import com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRule;
 import com.googlecode.jsonschema2pojo.rules.ArrayRule;
 import com.googlecode.jsonschema2pojo.rules.DescriptionRule;
 import com.googlecode.jsonschema2pojo.rules.EnumRule;
+import com.googlecode.jsonschema2pojo.rules.FormatRule;
 import com.googlecode.jsonschema2pojo.rules.ObjectRule;
 import com.googlecode.jsonschema2pojo.rules.OptionalRule;
 import com.googlecode.jsonschema2pojo.rules.PropertiesRule;
@@ -98,6 +99,11 @@ public class SchemaMapperImpl implements SchemaMapper {
     @Override
     public SchemaRule<JClassContainer, JDefinedClass> getEnumRule() {
         return new EnumRule();
+    }
+
+    @Override
+    public SchemaRule<JPackage, JType> getFormatRule() {
+        return new FormatRule();
     }
 
     @Override

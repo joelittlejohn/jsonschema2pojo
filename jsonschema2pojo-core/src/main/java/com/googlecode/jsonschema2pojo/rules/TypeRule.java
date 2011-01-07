@@ -16,8 +16,6 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import java.util.Date;
-
 import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -43,11 +41,11 @@ public class TypeRule implements SchemaRule<JPackage, JType> {
 
         if (propertyTypeName.equals("string")) {
 
-            if (node.get("format") != null && node.get("format").getTextValue().equals("date-time")) {
-                return generatableType.owner().ref(Date.class);
+            if (node.get("format") != null) {
+                return mapper.getFormatRule().apply(nodeName, node.get("format"), generatableType);
+            } else {
+                return generatableType.owner().ref(String.class);
             }
-
-            return generatableType.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
             return generatableType.owner().DOUBLE;
