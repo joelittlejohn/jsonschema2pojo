@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonValue;
 
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JBlock;
@@ -34,6 +35,8 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForEach;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
@@ -56,11 +59,31 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
             JFieldVar valueField = addValueField(_enum);
             addToString(_enum, valueField);
             addEnumConstants(node, _enum);
+            addFactoryMethod(node, _enum);
 
             return _enum;
         } catch (JClassAlreadyExistsException e) {
             throw new GenerationException(e);
         }
+    }
+
+    private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {
+        JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
+        JVar valueParam = fromValue.param(String.class, "value");
+        JBlock body = fromValue.body();
+
+        JForEach forEach = body.forEach(_enum, "c", _enum.staticInvoke("values"));
+
+        JInvocation invokeEquals = forEach.var().ref("value").invoke("equals");
+        invokeEquals.arg(valueParam);
+
+        forEach.body()._if(invokeEquals)._then()._return(forEach.var());
+
+        JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
+        illegalArgumentException.arg(valueParam);
+        body._throw(illegalArgumentException);
+
+        fromValue.annotate(JsonCreator.class);
     }
 
     private JFieldVar addValueField(JDefinedClass _enum) {
@@ -80,7 +103,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
         body._return(JExpr._this().ref(valueField));
 
-        toString.annotate(JsonCreator.class);
+        toString.annotate(JsonValue.class);
         toString.annotate(Override.class);
     }
 

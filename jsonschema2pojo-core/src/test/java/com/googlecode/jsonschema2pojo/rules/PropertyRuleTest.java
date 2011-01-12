@@ -124,10 +124,19 @@ public class PropertyRuleTest {
                     "        private FooBar(java.lang.String value) {\n" +
                     "            this.value = value;\n" +
                     "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+                    "        @org.codehaus.jackson.annotate.JsonValue\n" +
                     "        @java.lang.Override\n" +
                     "        public java.lang.String toString() {\n" +
                     "            return this.value;\n" +
+                    "        }\n\n" +
+                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+                    "        public static com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fromValue(java.lang.String value) {\n" +
+                    "            for (com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar c: com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar.values()) {\n" +
+                    "                if (c.value.equals(value)) {\n" +
+                    "                    return c;\n" +
+                    "                }\n" +
+                    "            }\n" +
+                    "            throw new java.lang.IllegalArgumentException(value);\n" +
                     "        }\n\n" +
                     "    }\n\n" +
                     "}\n";
