@@ -59,8 +59,8 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
 
         JDefinedClass jclass;
         try {
-            if (node.get("id") != null) {
-                jclass = _package.owner()._class(node.get("id").getTextValue());
+            if (node.get("javaType") != null) {
+                jclass = _package.owner()._class(node.get("javaType").getTextValue());
             } else {
                 jclass = _package._class(getClassName(nodeName));
             }

@@ -66,8 +66,8 @@ public class SchemaMapperImpl implements SchemaMapper {
     public void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException {
         JsonNode schemaNode = readSchema(schemaContent);
 
-        if (schemaNode.get("id") != null) {
-            className = schemaNode.get("id").getTextValue();
+        if (schemaNode.get("javaType") != null) {
+            className = schemaNode.get("javaType").getTextValue();
         }
 
         JPackage jpackage = codeModel._package(packageName);

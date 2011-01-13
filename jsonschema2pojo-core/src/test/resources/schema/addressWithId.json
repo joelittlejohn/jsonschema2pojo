@@ -1,5 +1,5 @@
 {
-    "id":"com.id.Address",
+    "javaType":"com.id.Address",
     "description":"An Address following the convention of http://microformats.org/wiki/hcard",
     "type":"object",
     "properties":{
