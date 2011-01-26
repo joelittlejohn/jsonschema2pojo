@@ -59,7 +59,7 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
 
         JDefinedClass jclass;
         try {
-            if (node.get("javaType") != null) {
+            if (node.has("javaType")) {
                 jclass = _package.owner()._class(node.get("javaType").getTextValue());
             } else {
                 jclass = _package._class(getClassName(nodeName));
@@ -71,15 +71,15 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
         addGeneratedAnnotation(jclass);
         addSerializable(jclass);
 
-        if (node.get("description") != null) {
+        if (node.has("description")) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), jclass);
         }
 
-        if (node.get("properties") != null) {
+        if (node.has("properties")) {
             mapper.getPropertiesRule().apply(nodeName, node.get("properties"), jclass);
         }
 
-        if (node.get("optional") != null) {
+        if (node.has("optional")) {
             mapper.getOptionalRule().apply(nodeName, node.get("optional"), jclass);
         }
 

@@ -35,71 +35,105 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
+ * Applies the "additionalProperties" JSON schema rule.
+ * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5</a>
  */
 public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
-
+    
     private final SchemaMapper mapper;
-
+    
     public AdditionalPropertiesRule(SchemaMapper mapper) {
         this.mapper = mapper;
     }
-
+    
+    /**
+     * Applies this schema rule to take the required code generation steps.
+     * <p>
+     * If additionalProperties is specified and set to the boolean value
+     * <code>false</code>, this rule does not make any change to the generated
+     * Java type (the type does not allow additional properties).
+     * <p>
+     * If the additionalProperties node is <code>null</code> (not specified in
+     * the schema) or empty, then a new bean property named
+     * "additionalProperties", of type {@link Map<String,Object>} is added to
+     * the generated type (with appropriate accessors). The accessors are
+     * annotated to allow Jackson to marshal/unmarshal unrecognised (additional)
+     * properties found in JSON data from/to this map.
+     * <p>
+     * If the additionalProperties node is present and specifies a schema, then
+     * an "additionalProperties" map is added to the generated type. This time
+     * the map values will be restricted and must be instances of a newly
+     * generated Java type that will be created based on the
+     * additionalProperties schema provided. If the schema does not specify the
+     * javaType property, the name of the newly generated type will be derived
+     * from the nodeName and the suffix 'Property'.
+     * 
+     * @param nodeName
+     *            the name of the schema node for which the additionalProperties
+     *            node applies
+     * @param node
+     *            the additionalProperties node itself, found in the schema (may
+     *            be null if not specified in the schema)
+     * @param jclass
+     *            the Java type that is being generated to represent this schema
+     * @return the given Java type jclass
+     */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass) {
-
+        
         if (node != null && node.isBoolean() && node.getBooleanValue() == false) {
             // no additional properties allowed
             return jclass;
         }
-
+        
         JType propertyType;
         if (node != null && node.size() != 0) {
             propertyType = mapper.getTypeRule().apply(nodeName + "Property", node, jclass.getPackage());
         } else {
             propertyType = jclass.owner().ref(Object.class);
         }
-
+        
         JFieldVar field = addAdditionalPropertiesField(jclass, propertyType);
-
+        
         addGetter(jclass, field);
-
+        
         addSetter(jclass, propertyType, field);
-
+        
         return jclass;
     }
-
+    
     private JFieldVar addAdditionalPropertiesField(JDefinedClass jclass, JType propertyType) {
         JClass propertiesMapType = jclass.owner().ref(Map.class);
         propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
-
+        
         JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
-
+        
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
         field.init(JExpr._new(propertiesMapImplType));
-
+        
         return field;
     }
-
+    
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperties");
         setter.annotate(JsonAnySetter.class);
-
+        
         JVar nameParam = setter.param(String.class, "name");
         JVar valueParam = setter.param(propertyType, "value");
-
+        
         JInvocation mapInvocation = setter.body().invoke(JExpr._this().ref(field), "put");
         mapInvocation.arg(nameParam);
         mapInvocation.arg(valueParam);
     }
-
+    
     private JMethod addGetter(JDefinedClass jclass, JFieldVar field) {
         JMethod getter = jclass.method(JMod.PUBLIC, field.type(), "getAdditionalProperties");
         getter.annotate(JsonAnyGetter.class);
         getter.body()._return(JExpr._this().ref(field));
         return getter;
     }
-
+    
 }

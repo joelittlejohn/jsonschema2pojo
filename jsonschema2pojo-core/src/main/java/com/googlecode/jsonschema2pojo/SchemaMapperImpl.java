@@ -44,6 +44,10 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
+/**
+ * Default implementation of the {@link SchemaMapper} interface, accepting a map
+ * of behavioural properties that may influence code generation.
+ */
 public class SchemaMapperImpl implements SchemaMapper {
 
     private final Map<String, String> behaviourProperties;
@@ -66,13 +70,13 @@ public class SchemaMapperImpl implements SchemaMapper {
     public void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException {
         JsonNode schemaNode = readSchema(schemaContent);
 
-        if (schemaNode.get("javaType") != null) {
+        if (schemaNode.has("javaType")) {
             className = schemaNode.get("javaType").getTextValue();
         }
 
         JPackage jpackage = codeModel._package(packageName);
 
-        if (schemaNode.get("enum") != null) {
+        if (schemaNode.has("enum")) {
             this.getEnumRule().apply(className, schemaNode.get("enum"), jpackage);
         } else {
             this.getTypeRule().apply(className, schemaNode, jpackage);

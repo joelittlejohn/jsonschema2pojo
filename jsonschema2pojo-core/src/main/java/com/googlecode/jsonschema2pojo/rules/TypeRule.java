@@ -41,7 +41,7 @@ public class TypeRule implements SchemaRule<JPackage, JType> {
 
         if (propertyTypeName.equals("string")) {
 
-            if (node.get("format") != null) {
+            if (node.has("format")) {
                 return mapper.getFormatRule().apply(nodeName, node.get("format"), generatableType);
             } else {
                 return generatableType.owner().ref(String.class);

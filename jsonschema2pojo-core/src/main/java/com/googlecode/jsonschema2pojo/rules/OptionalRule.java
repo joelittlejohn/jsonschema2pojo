@@ -24,22 +24,26 @@ import com.sun.codemodel.JDocCommentable;
 /**
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.4">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.4</a>
+ * @deprecated Removed in version 03 of the draft spec. Rather than specifying
+ *             optional properties as "optional", one should now specify
+ *             required properties as "required"
  */
+@Deprecated
 public class OptionalRule implements SchemaRule<JDocCommentable, JDocComment> {
-
+    
     /**
      * Text added to Javadoc to indicate that a field is optional
      */
     public static final String OPTIONAL_COMMENT_TEXT = "\n(Optional)";
-
+    
     @Override
     public JDocComment apply(String nodeName, JsonNode node, JDocCommentable c) {
         JDocComment javadoc = c.javadoc();
-
+        
         if (node.getBooleanValue()) {
             javadoc.append(OPTIONAL_COMMENT_TEXT);
         }
-
+        
         return javadoc;
     }
 }

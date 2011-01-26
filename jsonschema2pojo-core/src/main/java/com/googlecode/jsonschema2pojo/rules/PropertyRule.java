@@ -50,7 +50,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         String propertyName = getPropertyName(nodeName);
 
         JType propertyType;
-        if (node.get("enum") != null) {
+        if (node.has("enum")) {
             propertyType = mapper.getEnumRule().apply(nodeName, node.get("enum"), c);
         } else {
             propertyType = mapper.getTypeRule().apply(nodeName, node, c.getPackage());
@@ -68,12 +68,12 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             addBuilder(c, field);
         }
 
-        if (node.get("description") != null) {
+        if (node.has("description")) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), field);
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), getter);
         }
 
-        if (node.get("optional") != null) {
+        if (node.has("optional")) {
             mapper.getOptionalRule().apply(nodeName, node.get("optional"), getter);
         }
 

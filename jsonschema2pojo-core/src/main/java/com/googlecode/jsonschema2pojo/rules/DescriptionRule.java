@@ -22,18 +22,35 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
 /**
+ * Applies the "description" schema property.
+ * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19</a>
  */
 public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment> {
-
+    
+    /**
+     * Applies this schema rule to take the required code generation steps.
+     * <p>
+     * When a description node is found and applied with this rule, the value of
+     * the description is added as a class level JavaDoc comment.
+     * 
+     * @param nodeName
+     *            the name of the object to which this description applies
+     * @param node
+     *            the "description" schema node
+     * @param generatableType
+     *            comment-able code generation construct, usually a java class,
+     *            which should have this description applied
+     * @return the JavaDoc comment created to contain the description
+     */
     @Override
     public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType) {
         JDocComment javadoc = generatableType.javadoc();
-
+        
         javadoc.append(node.getTextValue());
-
+        
         return javadoc;
     }
-
+    
 }
