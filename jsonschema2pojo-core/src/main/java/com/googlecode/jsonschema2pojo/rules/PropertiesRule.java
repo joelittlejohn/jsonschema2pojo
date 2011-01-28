@@ -24,30 +24,43 @@ import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JDefinedClass;
 
 /**
+ * Applies the "properties" schema rule.
+ * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2</a>
  */
 public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
-
+    
     private final SchemaMapper mapper;
-
+    
     public PropertiesRule(SchemaMapper mapper) {
         this.mapper = mapper;
     }
-
+    
+    /**
+     * Applies this schema rule to take the required code generation steps.
+     * <p>
+     * For each property present within the properties node, this rule will
+     * invoke the 'property' rule provided by the given schema mapper.
+     * 
+     * @param nodeName
+     *            the name of the node for which properties are being added
+     * @param node
+     *            the properties node, containing property names and their
+     *            definition
+     * @param jclass
+     *            the Java type which will have the given properties added
+     * @return the given jclass
+     */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass generatableType) {
-
+    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass) {
+        
         for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
             String property = properties.next();
-
-            if (property.equals("$ref")) {
-                // do something with the $ref properties ...
-            } else {
-                 mapper.getPropertyRule().apply(property, node.get(property), generatableType);
-            }
+            
+            mapper.getPropertyRule().apply(property, node.get(property), jclass);
         }
-
-        return generatableType;
+        
+        return jclass;
     }
 }

@@ -24,53 +24,88 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 /**
+ * Applies the schema rules that represent a property definition.
+ * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
  */
 public class TypeRule implements SchemaRule<JPackage, JType> {
-
+    
     private final SchemaMapper mapper;
-
+    
     public TypeRule(SchemaMapper mapper) {
         this.mapper = mapper;
     }
-
+    
+    /**
+     * Applies this schema rule to take the required code generation steps.
+     * <p>
+     * When applied, this rule reads the details of the given node to determine
+     * the appropriate Java type to return. This may be a newly generated type,
+     * it may be a primitive type or other type such as {@link java.lang.String}
+     * or {@link java.lang.Object}.
+     * <p>
+     * JSON schema types and their Java type equivalent:
+     * <ul>
+     * <li>"type":"any" => {@link java.lang.Object}
+     * <li>"type":"array" => Either {@link java.util.Set} or
+     * <li>"type":"boolean" => <code>boolean</code>
+     * <li>"type":"integer" => <code>int</code>
+     * <li>"type":"null" => {@link java.lang.Object}
+     * <li>"type":"number" => <code>double</code>
+     * <li>"type":"object" => Generated type (see {@link ObjectRule})
+     * {@link java.util.List}, see {@link ArrayRule}
+     * <li>"type":"string" => {@link java.lang.String} (or alternative based on presence of
+     * "format", see {@link FormatRule})
+     * </ul>
+     * 
+     * @param nodeName
+     *            the name of the node for which this "type" rule applies
+     * @param node
+     *            the node for which this "type" rule applies
+     * @param jpackage
+     *            the package into which any newly generated type may be placed
+     * @return the Java type which, after reading the details of the given
+     *         schema node, most appropriately matches the "type" specified
+     * @throws GenerationException
+     *             if the type value found is not recognised.
+     */
     @Override
-    public JType apply(String nodeName, JsonNode node, JPackage generatableType) {
+    public JType apply(String nodeName, JsonNode node, JPackage jpackage) {
         String propertyTypeName = node.get("type").getTextValue();
-
+        
         if (propertyTypeName.equals("string")) {
-
+            
             if (node.has("format")) {
-                return mapper.getFormatRule().apply(nodeName, node.get("format"), generatableType);
+                return mapper.getFormatRule().apply(nodeName, node.get("format"), jpackage);
             } else {
-                return generatableType.owner().ref(String.class);
+                return jpackage.owner().ref(String.class);
             }
         } else if (propertyTypeName.equals("number")) {
-
-            return generatableType.owner().DOUBLE;
+            
+            return jpackage.owner().DOUBLE;
         } else if (propertyTypeName.equals("integer")) {
-
-            return generatableType.owner().INT;
+            
+            return jpackage.owner().INT;
         } else if (propertyTypeName.equals("boolean")) {
-
-            return generatableType.owner().BOOLEAN;
+            
+            return jpackage.owner().BOOLEAN;
         } else if (propertyTypeName.equals("object")) {
-
-            return mapper.getObjectRule().apply(nodeName, node, generatableType.getPackage());
+            
+            return mapper.getObjectRule().apply(nodeName, node, jpackage.getPackage());
         } else if (propertyTypeName.equals("array")) {
-
-            return mapper.getArrayRule().apply(nodeName, node, generatableType);
+            
+            return mapper.getArrayRule().apply(nodeName, node, jpackage);
         } else if (propertyTypeName.equals("null")) {
-
-            return generatableType.owner().ref(Object.class);
+            
+            return jpackage.owner().ref(Object.class);
         } else if (propertyTypeName.equals("any")) {
-
-            return generatableType.owner().ref(Object.class);
+            
+            return jpackage.owner().ref(Object.class);
         } else {
-
+            
             throw new GenerationException("Unrecognised property type: " + propertyTypeName);
         }
     }
-
+    
 }
