@@ -80,7 +80,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
         
         JMethod getter = addGetter(jclass, field);
-        addSetter(jclass, field);
+        JMethod setter = addSetter(jclass, field);
         
         boolean shouldAddBuilders = Boolean.parseBoolean(mapper.getBehaviourProperty(SchemaMapper.GENERATE_BUILDERS_PROPERTY));
         
@@ -88,13 +88,22 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             addBuilder(jclass, field);
         }
         
+        if (node.has("title")) {
+            mapper.getDescriptionRule().apply(nodeName, node.get("description"), field);
+            mapper.getDescriptionRule().apply(nodeName, node.get("description"), getter);
+            mapper.getDescriptionRule().apply(nodeName, node.get("description"), setter);
+        }
+
         if (node.has("description")) {
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), field);
             mapper.getDescriptionRule().apply(nodeName, node.get("description"), getter);
+            mapper.getDescriptionRule().apply(nodeName, node.get("description"), setter);
         }
         
         if (node.has("optional")) {
+            mapper.getOptionalRule().apply(nodeName, node.get("optional"), field);
             mapper.getOptionalRule().apply(nodeName, node.get("optional"), getter);
+            mapper.getOptionalRule().apply(nodeName, node.get("optional"), setter);
         }
         
         return jclass;

@@ -30,7 +30,9 @@ import org.junit.Test;
 
 public class ArgumentsTest {
 
-    private static final String HELP_OUTPUT = "usage: generate [-b] [-h] [-p <package name>] -s <arg> -t <directory>\n" +
+    private static final String HELP_OUTPUT = 
+                    "usage: jsonschema2pojo [-b] [-h] [-p <package name>] -s <arg> -t" +
+    		        "\n       <directory>\n" +
                     " -b,--generate-builders        Generate builder-style methods as well as\n" +
                     "                               setters\n" +
                     " -h,--help                     Print help information and exit\n" +

@@ -65,20 +65,4 @@ public class PropertiesRuleTest {
         verify(mockPropertyRule);
     }
 
-    @Test
-    public void applyIgnoresRefProperties() throws JClassAlreadyExistsException {
-
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode refNode = objectMapper.createObjectNode();
-
-        ObjectNode propertiesNode = objectMapper.createObjectNode();
-        propertiesNode.put("$ref", refNode);
-
-        JDefinedClass result = rule.apply("fooBar", propertiesNode, jclass);
-
-        assertThat(result, sameInstance(jclass));
-    }
-
 }

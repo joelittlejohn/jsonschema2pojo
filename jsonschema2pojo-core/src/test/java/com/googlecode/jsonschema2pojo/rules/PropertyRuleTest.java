@@ -43,16 +43,23 @@ public class PropertyRuleTest {
             "public class DummyClass {\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
+                    "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
-                    "     * \n     */\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public double getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * (Optional)\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public void setFooBar(double fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -66,16 +73,23 @@ public class PropertyRuleTest {
             "public class DummyClass {\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
+                    "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
-                    "     * \n     */\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public double getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * (Optional)\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public void setFooBar(double fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -85,16 +99,22 @@ public class PropertyRuleTest {
             "public class DummyClass {\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
+                    "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private boolean fooBar;\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
-                    "     * \n     */\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public boolean isFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * (Optional)\n" +
+                    "     * \n     */\n" +
                     "    public void setFooBar(boolean fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -104,6 +124,7 @@ public class PropertyRuleTest {
             "public class DummyClass {\n\n" +
                     "    /**\n" +
                     "     * some bean property\n" +
+                    "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
@@ -115,6 +136,11 @@ public class PropertyRuleTest {
                     "    public com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
+                    "    /**\n" +
+                    "     * some bean property\n" +
+                    "     * (Optional)\n" +
+                    "     * \n" +
+                    "     */\n" +
                     "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
