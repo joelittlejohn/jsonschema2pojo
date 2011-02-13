@@ -1,5 +1,5 @@
 /**
- * Copyright © 2010 Nokia
+ * Copyright © 2011 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Generated;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
+import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
@@ -72,26 +77,38 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
      *            the name of the property which is an "enum"
      * @param node
      *            the enum node
-     * @param generatableType
+     * @param container
      *            the class container (class or package) to which this enum
      *            should be added
      * @return the newly generated Java type that was created to represent the
      *         given enum
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer generatableType) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer container) {
+        
+        JDefinedClass _enum = createEnum(nodeName, container);
+        addGeneratedAnnotation(_enum);
+        
+        JFieldVar valueField = addValueField(_enum);
+        addToString(_enum, valueField);
+        addEnumConstants(node, _enum);
+        addFactoryMethod(node, _enum);
+        
+        return _enum;
+    }
+
+    private JDefinedClass createEnum(String nodeName, JClassContainer container) {
+        
+        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC | JMod.STATIC;
+        
+        String name = getEnumName(nodeName);
+        
         try {
-            JDefinedClass _enum = generatableType._enum(getEnumName(nodeName));
-            
-            JFieldVar valueField = addValueField(_enum);
-            addToString(_enum, valueField);
-            addEnumConstants(node, _enum);
-            addFactoryMethod(node, _enum);
-            
-            return _enum;
+            return container._class(modifiers, name, ClassType.ENUM);
         } catch (JClassAlreadyExistsException e) {
             throw new GenerationException(e);
         }
+        
     }
     
     private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {
@@ -140,6 +157,11 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
             JEnumConstant constant = _enum.enumConstant(getConstantName(value.getValueAsText()));
             constant.arg(JExpr.lit(value.getValueAsText()));
         }
+    }
+    
+    private void addGeneratedAnnotation(JDefinedClass jclass) {
+        JAnnotationUse generated = jclass.annotate(Generated.class);
+        generated.param("value", SchemaMapper.class.getPackage().getName());
     }
     
     private String getEnumName(String nodeName) {

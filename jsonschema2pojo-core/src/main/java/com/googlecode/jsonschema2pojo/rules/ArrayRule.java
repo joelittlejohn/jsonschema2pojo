@@ -77,7 +77,12 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
         
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").getBooleanValue();
         
-        JType itemType = mapper.getTypeRule().apply(makeSingular(nodeName), node.get("items"), jpackage);
+        JType itemType;
+        if (node.has("items")) {
+            itemType = mapper.getTypeRule().apply(makeSingular(nodeName), node.get("items"), jpackage);
+        } else {
+            itemType = jpackage.owner().ref(Object.class);
+        }
         
         if (uniqueItems) {
             return jpackage.owner().ref(Set.class).narrow(itemType);

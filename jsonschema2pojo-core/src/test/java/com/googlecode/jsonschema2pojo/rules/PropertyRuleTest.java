@@ -1,5 +1,5 @@
 /**
- * Copyright © 2010 Nokia
+ * Copyright © 2011 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class PropertyRuleTest {
                     "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
-                    "    public enum FooBar {\n\n" +
+                    "    public static enum FooBar {\n\n" +
                     "        AB_C(\"ab c\");\n" +
                     "        private final java.lang.String value;\n\n" +
                     "        private FooBar(java.lang.String value) {\n" +

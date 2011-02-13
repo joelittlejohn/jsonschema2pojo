@@ -1,0 +1,40 @@
+{
+    "type" : "object",
+    "properties" : {
+        "nonUniqueArray" : {
+            "type" : "array",
+            "uniqueItems" : false,
+            "items" : {
+                "type" : "integer"
+            }
+        },
+        "uniqueArray" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "type" : "boolean"
+            }
+        },
+        "nonUniqueArrayByDefault" : {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            }
+        },
+        "complexTypesArray" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
+        },
+        "defaultTypesArray" : {
+            "type" : "array"
+        },
+        "multiDimensionalArray" : {
+            "type" : "array",
+            "items" : {
+                "type" : "array"
+            }
+        }
+    }
+}
