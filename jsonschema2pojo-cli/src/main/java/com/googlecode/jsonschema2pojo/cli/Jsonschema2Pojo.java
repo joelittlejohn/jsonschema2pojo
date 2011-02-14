@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -86,9 +87,11 @@ public class Jsonschema2Pojo {
             mapper.generate(codeModel, getNodeName(source), packageName, new FileInputStream(source));
         }
         
-        targetDir.mkdirs();
-        
-        codeModel.build(targetDir);
+        if (targetDir.exists() || targetDir.mkdirs()) {
+            codeModel.build(targetDir);
+        } else {
+            throw new GenerationException("Could not create or access target directory " + targetDir.getAbsolutePath());
+        }
     }
     
     private static String getNodeName(File file) {

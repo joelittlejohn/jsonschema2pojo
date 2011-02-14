@@ -70,7 +70,9 @@ public class Compiler {
         
         return javaSourceFileNames.toArray(new String[javaSourceFileNames.size()]);
     }
-    
+
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_ALWAYS_NULL", 
+            justification="Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
     private void debugOutput(File file) {
         if (StringUtils.equals(System.getProperty(PRINT_SOURCE_PROPERTY), "true")) {
             try {

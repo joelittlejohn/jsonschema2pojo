@@ -144,6 +144,7 @@ public class PropertyRuleTest {
                     "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
+                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
                     "    public static enum FooBar {\n\n" +
                     "        AB_C(\"ab c\");\n" +
                     "        private final java.lang.String value;\n\n" +

@@ -37,6 +37,7 @@ public class EnumRuleTest {
 
     private static final String EXPECTED_TEXT_RESULT =
             "public class DummyClass {\n\n\n" +
+                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
                     "    public static enum NewEnum {\n\n" +
                     "        VALUE_ONE(\"valueOne\"),\n" +
                     "        VALUE_TWO(\"valueTwo\"),\n" +
@@ -64,6 +65,7 @@ public class EnumRuleTest {
 
     private static final String EXPECTED_TEXT_WITH_SPACES_RESULT =
             "public class DummyClass {\n\n\n" +
+                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
                     "    public static enum NewEnum {\n\n" +
                     "        VALUE_ONE(\"value one\"),\n" +
                     "        VALUE_TWO(\"value two\"),\n" +
@@ -91,6 +93,7 @@ public class EnumRuleTest {
 
     private static final String EXPECTED_NUMBER_RESULT =
             "public class DummyClass {\n\n\n" +
+                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
                     "    public static enum NewEnum {\n\n" +
                     "        _100(\"100\"),\n" +
                     "        _200(\"200\"),\n" +
