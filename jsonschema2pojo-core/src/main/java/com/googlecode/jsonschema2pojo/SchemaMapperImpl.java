@@ -17,32 +17,14 @@
 package com.googlecode.jsonschema2pojo;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
 
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
-import com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRule;
-import com.googlecode.jsonschema2pojo.rules.ArrayRule;
-import com.googlecode.jsonschema2pojo.rules.DescriptionRule;
-import com.googlecode.jsonschema2pojo.rules.EnumRule;
-import com.googlecode.jsonschema2pojo.rules.FormatRule;
-import com.googlecode.jsonschema2pojo.rules.ObjectRule;
-import com.googlecode.jsonschema2pojo.rules.OptionalRule;
-import com.googlecode.jsonschema2pojo.rules.PropertiesRule;
-import com.googlecode.jsonschema2pojo.rules.PropertyRule;
-import com.googlecode.jsonschema2pojo.rules.SchemaRule;
-import com.googlecode.jsonschema2pojo.rules.TypeRule;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassContainer;
+import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 /**
  * Default implementation of the {@link SchemaMapper} interface, accepting a map
@@ -50,99 +32,28 @@ import com.sun.codemodel.JType;
  */
 public class SchemaMapperImpl implements SchemaMapper {
 
-    private final Map<String, String> behaviourProperties;
+    private final RuleFactory ruleFactory;
 
     /**
-     * Constructor.
+     * Create a schema mapper with the given behavioural properties.
      * 
      * @param behaviourProperties
      *            A map defining the behavioural properties of this mapper.
      */
-    public SchemaMapperImpl(Map<String, String> behaviourProperties) {
-        if (behaviourProperties == null) {
-            this.behaviourProperties = new HashMap<String, String>();
-        } else {
-            this.behaviourProperties = behaviourProperties;
-        }
+    public SchemaMapperImpl(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
 
     @Override
-    public void generate(JCodeModel codeModel, String className, String packageName, InputStream schemaContent) throws IOException {
-        JsonNode schemaNode = readSchema(schemaContent);
-
-        if (schemaNode.has("javaType")) {
-            className = schemaNode.get("javaType").getTextValue();
-        }
+    public void generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
 
         JPackage jpackage = codeModel._package(packageName);
 
-        if (schemaNode.has("enum")) {
-            this.getEnumRule().apply(className, schemaNode.get("enum"), jpackage);
-        } else {
-            this.getTypeRule().apply(className, schemaNode, jpackage);
-        }
+        ObjectNode schemaNode = new ObjectMapper().createObjectNode();
+        schemaNode.put("$ref", schemaUrl.toString());
 
-    }
+        ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, null);
 
-    private JsonNode readSchema(InputStream input) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.readTree(input);
-    }
-
-    @Override
-    public SchemaRule<JPackage, JClass> getArrayRule() {
-        return new ArrayRule(this);
-    }
-
-    @Override
-    public SchemaRule<JDocCommentable, JDocComment> getDescriptionRule() {
-        return new DescriptionRule();
-    }
-
-    @Override
-    public SchemaRule<JClassContainer, JDefinedClass> getEnumRule() {
-        return new EnumRule();
-    }
-
-    @Override
-    public SchemaRule<JPackage, JType> getFormatRule() {
-        return new FormatRule();
-    }
-
-    @Override
-    public SchemaRule<JPackage, JDefinedClass> getObjectRule() {
-        return new ObjectRule(this);
-    }
-
-    @Override
-    public SchemaRule<JDocCommentable, JDocComment> getOptionalRule() {
-        return new OptionalRule();
-    }
-
-    @Override
-    public SchemaRule<JDefinedClass, JDefinedClass> getPropertiesRule() {
-        return new PropertiesRule(this);
-    }
-
-    @Override
-    public SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule() {
-        return new PropertyRule(this);
-    }
-
-    @Override
-    public SchemaRule<JPackage, JType> getTypeRule() {
-        return new TypeRule(this);
-    }
-
-    @Override
-    public SchemaRule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule() {
-        return new AdditionalPropertiesRule(this);
-    }
-
-    @Override
-    public String getBehaviourProperty(String key) {
-        return behaviourProperties.get(key);
     }
 
 }

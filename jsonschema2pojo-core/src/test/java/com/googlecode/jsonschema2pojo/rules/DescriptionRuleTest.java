@@ -42,7 +42,7 @@ public class DescriptionRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         TextNode descriptionNode = mapper.createObjectNode().textNode("some description");
 
-        JDocComment result = rule.apply("fooBar", descriptionNode, jclass);
+        JDocComment result = rule.apply("fooBar", descriptionNode, jclass, null);
 
         assertThat(result, sameInstance(jclass.javadoc()));
         assertThat(result.size(), is(1));

@@ -27,6 +27,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -48,11 +49,14 @@ import com.sun.codemodel.JVar;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17</a>
  */
 public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
-    
+
     private static final String VALUE_FIELD_NAME = "value";
-    
+
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
-    
+
+    protected EnumRule() {
+    }
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -79,61 +83,61 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
      *         given enum
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer generatableType) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer generatableType, Schema schema) {
         try {
             JDefinedClass _enum = generatableType._enum(getEnumName(nodeName));
-            
+
             JFieldVar valueField = addValueField(_enum);
             addToString(_enum, valueField);
             addEnumConstants(node, _enum);
             addFactoryMethod(node, _enum);
-            
+
             return _enum;
         } catch (JClassAlreadyExistsException e) {
             throw new GenerationException(e);
         }
     }
-    
+
     private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
         JVar valueParam = fromValue.param(String.class, "value");
         JBlock body = fromValue.body();
-        
+
         JForEach forEach = body.forEach(_enum, "c", _enum.staticInvoke("values"));
-        
+
         JInvocation invokeEquals = forEach.var().ref("value").invoke("equals");
         invokeEquals.arg(valueParam);
-        
+
         forEach.body()._if(invokeEquals)._then()._return(forEach.var());
-        
+
         JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
         illegalArgumentException.arg(valueParam);
         body._throw(illegalArgumentException);
-        
+
         fromValue.annotate(JsonCreator.class);
     }
-    
+
     private JFieldVar addValueField(JDefinedClass _enum) {
         JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, String.class, VALUE_FIELD_NAME);
-        
+
         JMethod constructor = _enum.constructor(JMod.PRIVATE);
         JVar valueParam = constructor.param(String.class, VALUE_FIELD_NAME);
         JBlock body = constructor.body();
         body.assign(JExpr._this().ref(valueField), valueParam);
-        
+
         return valueField;
     }
-    
+
     private void addToString(JDefinedClass _enum, JFieldVar valueField) {
         JMethod toString = _enum.method(JMod.PUBLIC, String.class, "toString");
         JBlock body = toString.body();
-        
+
         body._return(JExpr._this().ref(valueField));
-        
+
         toString.annotate(JsonValue.class);
         toString.annotate(Override.class);
     }
-    
+
     private void addEnumConstants(JsonNode node, JDefinedClass _enum) {
         for (Iterator<JsonNode> values = node.getElements(); values.hasNext();) {
             JsonNode value = values.next();
@@ -141,28 +145,28 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
             constant.arg(JExpr.lit(value.getValueAsText()));
         }
     }
-    
+
     private String getEnumName(String nodeName) {
         return capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
     }
-    
+
     private String getConstantName(String nodeName) {
         List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
-        
+
         String enumName = "";
         for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {
             if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
                 iter.remove();
             }
         }
-        
+
         enumName = upperCase(join(enumNameGroups, "_"));
-        
+
         if (Character.isDigit(enumName.charAt(0))) {
             enumName = "_" + enumName;
         }
-        
+
         return enumName;
     }
-    
+
 }

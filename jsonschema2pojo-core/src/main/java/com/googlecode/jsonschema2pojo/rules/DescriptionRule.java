@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
@@ -28,7 +29,10 @@ import com.sun.codemodel.JDocCommentable;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19</a>
  */
 public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment> {
-    
+
+    protected DescriptionRule() {
+    }
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -45,12 +49,12 @@ public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment>
      * @return the JavaDoc comment created to contain the description
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType) {
+    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
-        
+
         javadoc.append(node.getTextValue());
-        
+
         return javadoc;
     }
-    
+
 }

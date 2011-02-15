@@ -124,7 +124,7 @@ public class EnumRuleTest {
 
         jclass._enum("ExistingEnum");
 
-        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass);
+        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass, null);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class EnumRuleTest {
         enumNode.add("valueTwo");
         enumNode.add("valueThree");
 
-        rule.apply("newEnum", enumNode, jclass);
+        rule.apply("newEnum", enumNode, jclass, null);
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -158,7 +158,7 @@ public class EnumRuleTest {
         enumNode.add("value two");
         enumNode.add("value three");
 
-        rule.apply("newEnum", enumNode, jclass);
+        rule.apply("newEnum", enumNode, jclass, null);
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -177,7 +177,7 @@ public class EnumRuleTest {
         enumNode.add("200");
         enumNode.add("300");
 
-        rule.apply("newEnum", enumNode, jclass);
+        rule.apply("newEnum", enumNode, jclass, null);
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));

@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -28,8 +29,7 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
-import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -42,12 +42,16 @@ public class PropertyRuleTest {
     private static final String EXPECTED_NUMBER_RESULT_WITH_BUILDER =
             "public class DummyClass {\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -56,6 +60,8 @@ public class PropertyRuleTest {
                     "        return fooBar;\n" +
                     "    }\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -72,12 +78,16 @@ public class PropertyRuleTest {
     private static final String EXPECTED_NUMBER_RESULT_WITHOUT_BUILDER =
             "public class DummyClass {\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -86,6 +96,8 @@ public class PropertyRuleTest {
                     "        return fooBar;\n" +
                     "    }\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -98,12 +110,16 @@ public class PropertyRuleTest {
     private static final String EXPECTED_BOOLEAN_RESULT_WITHOUT_BUILDER =
             "public class DummyClass {\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private boolean fooBar;\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -112,6 +128,8 @@ public class PropertyRuleTest {
                     "        return fooBar;\n" +
                     "    }\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n     */\n" +
@@ -123,12 +141,16 @@ public class PropertyRuleTest {
     private static final String EXPECTED_ENUM_RESULT =
             "public class DummyClass {\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
                     "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -137,6 +159,8 @@ public class PropertyRuleTest {
                     "        return fooBar;\n" +
                     "    }\n\n" +
                     "    /**\n" +
+                    "     * some title\n" +
+                    "     * <p>\n" +
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n" +
@@ -167,8 +191,6 @@ public class PropertyRuleTest {
                     "    }\n\n" +
                     "}\n";
 
-    private final PropertyRule rule = new PropertyRule(new SchemaMapperImpl(null));
-
     @Test
     public void applyAddsBeanProperty() throws JClassAlreadyExistsException {
 
@@ -177,9 +199,12 @@ public class PropertyRuleTest {
         ObjectNode propertyNode = new ObjectMapper().createObjectNode();
         propertyNode.put("type", "number");
         propertyNode.put("description", "some bean property");
+        propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass);
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+
+        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
@@ -194,17 +219,19 @@ public class PropertyRuleTest {
         // TODO: refactor common code between these tests
 
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put(SchemaMapper.GENERATE_BUILDERS_PROPERTY, "true");
-        PropertyRule ruleWithBuilder = new PropertyRule(new SchemaMapperImpl(properties));
+        properties.put(RuleFactory.GENERATE_BUILDERS_PROPERTY, "true");
+
+        PropertyRule ruleWithBuilder = new PropertyRule(new RuleFactoryImpl(properties));
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         ObjectNode propertyNode = new ObjectMapper().createObjectNode();
         propertyNode.put("type", "number");
         propertyNode.put("description", "some bean property");
+        propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        JDefinedClass result = ruleWithBuilder.apply("fooBar", propertyNode, jclass);
+        JDefinedClass result = ruleWithBuilder.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
@@ -221,9 +248,12 @@ public class PropertyRuleTest {
         ObjectNode propertyNode = new ObjectMapper().createObjectNode();
         propertyNode.put("type", "boolean");
         propertyNode.put("description", "some bean property");
+        propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass);
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+
+        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
@@ -245,9 +275,11 @@ public class PropertyRuleTest {
         propertyNode.put("type", "string");
         propertyNode.put("enum", enumNode);
         propertyNode.put("description", "some bean property");
+        propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass);
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+        JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));

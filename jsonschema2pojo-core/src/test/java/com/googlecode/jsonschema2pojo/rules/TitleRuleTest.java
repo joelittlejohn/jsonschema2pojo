@@ -42,7 +42,7 @@ public class TitleRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         TextNode titleNode = mapper.createObjectNode().textNode("some title");
 
-        JDocComment result = rule.apply("fooBar", titleNode, jclass);
+        JDocComment result = rule.apply("fooBar", titleNode, jclass, null);
 
         assertThat(result, sameInstance(jclass.javadoc()));
         assertThat(result.size(), is(1));

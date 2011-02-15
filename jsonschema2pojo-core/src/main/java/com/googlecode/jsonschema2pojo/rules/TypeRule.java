@@ -18,9 +18,9 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import org.codehaus.jackson.JsonNode;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
-import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
 /**
@@ -29,14 +29,14 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
  */
-public class TypeRule implements SchemaRule<JPackage, JType> {
-    
-    private final SchemaMapper mapper;
-    
-    public TypeRule(SchemaMapper mapper) {
-        this.mapper = mapper;
+public class TypeRule implements SchemaRule<JClassContainer, JType> {
+
+    private final RuleFactory ruleFactory;
+
+    protected TypeRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
-    
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -55,15 +55,15 @@ public class TypeRule implements SchemaRule<JPackage, JType> {
      * <li>"type":"number" => <code>double</code>
      * <li>"type":"object" => Generated type (see {@link ObjectRule})
      * {@link java.util.List}, see {@link ArrayRule}
-     * <li>"type":"string" => {@link java.lang.String} (or alternative based on presence of
-     * "format", see {@link FormatRule})
+     * <li>"type":"string" => {@link java.lang.String} (or alternative based on
+     * presence of "format", see {@link FormatRule})
      * </ul>
      * 
      * @param nodeName
      *            the name of the node for which this "type" rule applies
      * @param node
      *            the node for which this "type" rule applies
-     * @param jpackage
+     * @param jClassContainer
      *            the package into which any newly generated type may be placed
      * @return the Java type which, after reading the details of the given
      *         schema node, most appropriately matches the "type" specified
@@ -71,41 +71,41 @@ public class TypeRule implements SchemaRule<JPackage, JType> {
      *             if the type value found is not recognised.
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JPackage jpackage) {
+    public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
         String propertyTypeName = node.get("type").getTextValue();
-        
+
         if (propertyTypeName.equals("string")) {
-            
+
             if (node.has("format")) {
-                return mapper.getFormatRule().apply(nodeName, node.get("format"), jpackage);
+                return ruleFactory.getFormatRule().apply(nodeName, node.get("format"), jClassContainer.getPackage(), schema);
             } else {
-                return jpackage.owner().ref(String.class);
+                return jClassContainer.owner().ref(String.class);
             }
         } else if (propertyTypeName.equals("number")) {
-            
-            return jpackage.owner().DOUBLE;
+
+            return jClassContainer.owner().DOUBLE;
         } else if (propertyTypeName.equals("integer")) {
-            
-            return jpackage.owner().INT;
+
+            return jClassContainer.owner().INT;
         } else if (propertyTypeName.equals("boolean")) {
-            
-            return jpackage.owner().BOOLEAN;
+
+            return jClassContainer.owner().BOOLEAN;
         } else if (propertyTypeName.equals("object")) {
-            
-            return mapper.getObjectRule().apply(nodeName, node, jpackage.getPackage());
+
+            return ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (propertyTypeName.equals("array")) {
-            
-            return mapper.getArrayRule().apply(nodeName, node, jpackage);
+
+            return ruleFactory.getArrayRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (propertyTypeName.equals("null")) {
-            
-            return jpackage.owner().ref(Object.class);
+
+            return jClassContainer.owner().ref(Object.class);
         } else if (propertyTypeName.equals("any")) {
-            
-            return jpackage.owner().ref(Object.class);
+
+            return jClassContainer.owner().ref(Object.class);
         } else {
-            
+
             throw new GenerationException("Unrecognised property type: " + propertyTypeName);
         }
     }
-    
+
 }

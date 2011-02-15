@@ -19,20 +19,20 @@ package com.googlecode.jsonschema2pojo.cli;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
 import com.sun.codemodel.JCodeModel;
 
 /**
  * Main class, providing a command line interface for jsonschema2pojo.
  */
 public class Jsonschema2Pojo {
-    
+
     /**
      * Main method, entry point for the application when invoked via the command
      * line. Arguments are expected in POSIX format, invoke with --help for
@@ -47,12 +47,12 @@ public class Jsonschema2Pojo {
      *             specified
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        
+
         Arguments arguments = new Arguments().parse(args);
-        
+
         generate(new File(arguments.getSource()), arguments.getPackageName(), new File(arguments.getTarget()), arguments.getBehaviourProperties());
     }
-    
+
     /**
      * Reads the contents of the given source and initiates schema generation.
      * 
@@ -72,27 +72,28 @@ public class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(File source, String packageName, File targetDir, Map<String, String> behaviourProperties) throws FileNotFoundException, IOException {
-        SchemaMapper mapper = new SchemaMapperImpl(behaviourProperties);
-        
+
+        SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(behaviourProperties));
+
         JCodeModel codeModel = new JCodeModel();
-        
+
         if (source.isDirectory()) {
             for (File child : source.listFiles()) {
                 if (child.isFile()) {
-                    mapper.generate(codeModel, getNodeName(child), packageName, new FileInputStream(child));
+                    mapper.generate(codeModel, getNodeName(child), packageName, child.toURI().toURL());
                 }
             }
         } else {
-            mapper.generate(codeModel, getNodeName(source), packageName, new FileInputStream(source));
+            mapper.generate(codeModel, getNodeName(source), packageName, source.toURI().toURL());
         }
-        
+
         targetDir.mkdirs();
-        
+
         codeModel.build(targetDir);
     }
-    
+
     private static String getNodeName(File file) {
         return substringBeforeLast(file.getName(), ".");
     }
-    
+
 }
