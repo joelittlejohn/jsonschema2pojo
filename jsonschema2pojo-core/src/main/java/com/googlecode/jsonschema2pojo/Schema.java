@@ -30,11 +30,13 @@ import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JType;
 
 /**
- * A JSON Schema, either a complete document or part of a document.
+ * A JSON Schema document.
  */
 public class Schema {
 
     private static Map<URI, Schema> schemas = new HashMap<URI, Schema>();
+
+    private static FragmentResolver fragmentResolver = new FragmentResolverImpl();
 
     private URI id;
     private JsonNode content;
@@ -57,10 +59,13 @@ public class Schema {
     public static synchronized Schema create(URI id) {
 
         if (!schemas.containsKey(id)) {
-            ObjectMapper mapper = new ObjectMapper();
 
             try {
-                JsonNode content = mapper.readTree(id.toURL().openStream());
+                JsonNode content = new ObjectMapper().readTree(id.toURL().openStream());
+
+                if (id.toString().contains("#")) {
+                    content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
+                }
 
                 schemas.put(id, new Schema(id, content));
             } catch (IOException e) {

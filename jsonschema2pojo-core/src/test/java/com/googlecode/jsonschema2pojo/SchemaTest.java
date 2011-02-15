@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SchemaTest {
@@ -71,7 +70,6 @@ public class SchemaTest {
     }
 
     @Test
-    @Ignore("Not yet supported")
     public void createWithFragmentResolution() throws URISyntaxException {
 
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
