@@ -19,7 +19,6 @@ package com.googlecode.jsonschema2pojo.cli;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
@@ -27,6 +26,7 @@ import java.util.Map;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
+import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -73,18 +73,19 @@ public class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(File source, String packageName, File targetDir, Map<String, String> behaviourProperties) throws FileNotFoundException, IOException {
-        SchemaMapper mapper = new SchemaMapperImpl(behaviourProperties);
-        
+
+        SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(behaviourProperties));
+
         JCodeModel codeModel = new JCodeModel();
         
         if (source.isDirectory()) {
             for (File child : source.listFiles()) {
                 if (child.isFile()) {
-                    mapper.generate(codeModel, getNodeName(child), packageName, new FileInputStream(child));
+                    mapper.generate(codeModel, getNodeName(child), packageName, child.toURI().toURL());
                 }
             }
         } else {
-            mapper.generate(codeModel, getNodeName(source), packageName, new FileInputStream(source));
+            mapper.generate(codeModel, getNodeName(source), packageName, source.toURI().toURL());
         }
         
         if (targetDir.exists() || targetDir.mkdirs()) {

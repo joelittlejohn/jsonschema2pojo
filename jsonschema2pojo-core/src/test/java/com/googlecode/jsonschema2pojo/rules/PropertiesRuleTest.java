@@ -24,7 +24,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -33,8 +33,9 @@ public class PropertiesRuleTest {
 
     private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
-    private SchemaMapper mockSchemaMapper = createMock(SchemaMapper.class);
-    private PropertiesRule rule = new PropertiesRule(mockSchemaMapper);
+    private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
+    private Schema mockSchema = createMock(Schema.class);
+    private PropertiesRule rule = new PropertiesRule(mockRuleFactory);
 
     @Test
     public void applyIncludesMultipleProperties() throws JClassAlreadyExistsException {
@@ -52,14 +53,14 @@ public class PropertiesRuleTest {
         propertiesNode.put("property3", property3);
 
         PropertyRule mockPropertyRule = createMock(PropertyRule.class);
-        expect(mockPropertyRule.apply("property1", property1, jclass)).andReturn(jclass);
-        expect(mockPropertyRule.apply("property2", property2, jclass)).andReturn(jclass);
-        expect(mockPropertyRule.apply("property3", property3, jclass)).andReturn(jclass);
-        expect(mockSchemaMapper.getPropertyRule()).andReturn(mockPropertyRule).anyTimes();
+        expect(mockPropertyRule.apply("property1", property1, jclass, mockSchema)).andReturn(jclass);
+        expect(mockPropertyRule.apply("property2", property2, jclass, mockSchema)).andReturn(jclass);
+        expect(mockPropertyRule.apply("property3", property3, jclass, mockSchema)).andReturn(jclass);
+        expect(mockRuleFactory.getPropertyRule()).andReturn(mockPropertyRule).anyTimes();
 
-        replay(mockSchemaMapper, mockPropertyRule);
+        replay(mockRuleFactory, mockPropertyRule);
 
-        JDefinedClass result = rule.apply("fooBar", propertiesNode, jclass);
+        JDefinedClass result = rule.apply("fooBar", propertiesNode, jclass, mockSchema);
 
         assertThat(result, sameInstance(jclass));
         verify(mockPropertyRule);

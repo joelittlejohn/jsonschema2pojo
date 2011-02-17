@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.codehaus.jackson.JsonNode;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDefinedClass;
 
 /**
@@ -30,13 +30,13 @@ import com.sun.codemodel.JDefinedClass;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.2</a>
  */
 public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
-    
-    private final SchemaMapper mapper;
-    
-    public PropertiesRule(SchemaMapper mapper) {
-        this.mapper = mapper;
+
+    private final RuleFactory ruleFactory;
+
+    protected PropertiesRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
-    
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -53,14 +53,14 @@ public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> 
      * @return the given jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass) {
-        
+    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+
         for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
             String property = properties.next();
-            
-            mapper.getPropertyRule().apply(property, node.get(property), jclass);
+
+            ruleFactory.getPropertyRule().apply(property, node.get(property), jclass, schema);
         }
-        
+
         return jclass;
     }
 }

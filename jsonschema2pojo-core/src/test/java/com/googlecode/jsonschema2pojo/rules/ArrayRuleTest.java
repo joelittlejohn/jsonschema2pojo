@@ -16,9 +16,11 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -26,14 +28,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
 public class ArrayRuleTest {
 
-    private final ArrayRule rule = new ArrayRule(new SchemaMapperImpl(null));
+    private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(null));
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {
@@ -49,7 +51,7 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", true);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, createMock(Schema.class));
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(Set.class)));
@@ -70,7 +72,11 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
+        Schema schema = createMock(Schema.class);
+        expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
+        replay(schema);
+
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
@@ -91,7 +97,11 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage);
+        Schema schema = createMock(Schema.class);
+        expect(schema.getId()).andReturn(URI.create("http://example/defaultArray")).anyTimes();
+        replay(schema);
+
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
     }

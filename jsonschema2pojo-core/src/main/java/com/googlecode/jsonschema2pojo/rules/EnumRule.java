@@ -29,6 +29,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.ClassType;
@@ -57,7 +58,10 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
     private static final String VALUE_FIELD_NAME = "value";
     
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
-    
+
+    protected EnumRule() {
+    }
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -84,7 +88,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
      *         given enum
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer container) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer container, Schema schema) {
         
         JDefinedClass _enum = createEnum(nodeName, container);
         addGeneratedAnnotation(_enum);

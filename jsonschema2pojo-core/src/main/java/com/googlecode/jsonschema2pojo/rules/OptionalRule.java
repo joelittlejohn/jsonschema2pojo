@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
@@ -32,12 +33,15 @@ import com.sun.codemodel.JDocCommentable;
  */
 @Deprecated
 public class OptionalRule implements SchemaRule<JDocCommentable, JDocComment> {
-    
+
     /**
      * Text added to JavaDoc to indicate that a field is optional
      */
     public static final String OPTIONAL_COMMENT_TEXT = "\n(Optional)";
-    
+
+    protected OptionalRule() {
+    }
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -53,16 +57,17 @@ public class OptionalRule implements SchemaRule<JDocCommentable, JDocComment> {
      * @param generatableType
      *            the class or method which may be marked as "optional"
      * @return the JavaDoc comment attached to the generatableType, which
-     *         <em>may</em> have an added not to mark this construct as optional.
+     *         <em>may</em> have an added not to mark this construct as
+     *         optional.
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType) {
+    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
-        
+
         if (node.getBooleanValue()) {
             javadoc.append(OPTIONAL_COMMENT_TEXT);
         }
-        
+
         return javadoc;
     }
 }

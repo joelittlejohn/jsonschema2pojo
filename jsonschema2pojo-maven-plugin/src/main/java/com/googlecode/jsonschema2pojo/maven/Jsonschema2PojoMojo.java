@@ -25,8 +25,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
+import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Maven mojo for the generate goal of the jsonschema2pojo maven plugin.
@@ -38,7 +38,7 @@ import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
  *      API Specification</a>
  */
 public class Jsonschema2PojoMojo extends AbstractMojo {
-    
+
     /**
      * Target directory for generated Java source files.
      * 
@@ -46,7 +46,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * @required
      */
     private File outputDirectory;
-    
+
     /**
      * Location of the JSON Schema file(s).
      * 
@@ -54,14 +54,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * @required
      */
     private File sourceDirectory;
-    
+
     /**
      * Package name used for generated Java classes.
      * 
      * @parameter
      */
     private String targetPackage = "";
-    
+
     /**
      * The project being built
      * 
@@ -70,7 +70,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * @readonly
      */
     private MavenProject project;
-    
+
     /**
      * Whether or not to generate builder-style setters alongside the
      * void-return ones. Defaults to false.
@@ -78,7 +78,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * @parameter
      */
     private String generateBuilders = "false";
-    
+
     /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
@@ -90,18 +90,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
             value={"NP_UNWRITTEN_FIELD","UWF_UNWRITTEN_FIELD"}, 
             justification="Private fields set by Maven.")
     public void execute() throws MojoExecutionException {
-        
+
         project.addCompileSourceRoot(outputDirectory.getPath());
-        
+
         Map<String, String> behaviourProperties = new HashMap<String, String>();
-        behaviourProperties.put(SchemaMapper.GENERATE_BUILDERS_PROPERTY, generateBuilders);
-        
+        behaviourProperties.put(RuleFactory.GENERATE_BUILDERS_PROPERTY, generateBuilders);
+
         try {
             Jsonschema2Pojo.generate(sourceDirectory, targetPackage, outputDirectory, behaviourProperties);
         } catch (IOException e) {
             throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
         }
-        
+
     }
-    
+
 }

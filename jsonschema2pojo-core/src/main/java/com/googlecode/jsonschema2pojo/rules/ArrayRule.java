@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
@@ -37,11 +37,11 @@ import com.sun.codemodel.JType;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13</a>
  */
 public class ArrayRule implements SchemaRule<JPackage, JClass> {
-    
-    private final SchemaMapper mapper;
-    
-    public ArrayRule(SchemaMapper mapper) {
-        this.mapper = mapper;
+
+    private final RuleFactory ruleFactory;
+
+    protected ArrayRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
     
     /**
@@ -56,12 +56,13 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
      * If the "items" property requires newly generated types, then the type
      * name will be the singular version of the nodeName (unless overridden by
      * the javaType property) e.g.
-     *<p>
-     *<pre>
+     * <p>
+     * 
+     * <pre>
      *  "fooBars" : {"type":"array", "uniqueItems":"true", "items":{type:"object"}}
      *  ==>
      *  {@code Set<FooBar> getFooBars(); }
-     *</pre>
+     * </pre>
      * 
      * @param nodeName
      *            the name of the property which has type "array"
@@ -73,13 +74,13 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
      *         or {@link List}, narrowed by the "items" type
      */
     @Override
-    public JClass apply(String nodeName, JsonNode node, JPackage jpackage) {
-        
+    public JClass apply(String nodeName, JsonNode node, JPackage jpackage, Schema schema) {
+
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").getBooleanValue();
         
         JType itemType;
         if (node.has("items")) {
-            itemType = mapper.getTypeRule().apply(makeSingular(nodeName), node.get("items"), jpackage);
+            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), jpackage, schema);
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }

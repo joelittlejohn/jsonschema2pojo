@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -26,111 +27,110 @@ import org.codehaus.jackson.node.BooleanNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFormatter;
 
 public class AdditionalPropertiesRuleTest {
-    
+
     private static final String TARGET_CLASS_NAME = AdditionalPropertiesRuleTest.class.getName() + ".DummyClass";
 
-    private AdditionalPropertiesRule rule = new AdditionalPropertiesRule(new SchemaMapperImpl(null));
+    private AdditionalPropertiesRule rule = new AdditionalPropertiesRule(new RuleFactoryImpl(null));
 
     private static final String EXPECTED_RESULT_NO_ADDITIONAL_PROPS = "public class DummyClass {\n\n\n}\n";
-    
-    private static final String EXPECTED_RESULT_DEFAULT_ADDITIONAL_PROPS = 
-        "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, java.lang.Object> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.Object>();\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
-        "    public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties() {\n" +
-        "        return this.additionalProperties;\n" +
-        "    }\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
-        "    public void setAdditionalProperties(java.lang.String name, java.lang.Object value) {\n" +
-        "        this.additionalProperties.put(name, value);\n" +
-        "    }\n\n" +
-        "}\n";
-    
-    private static final String EXPECTED_ADDITIONAL_STRING_PROPS = 
-        "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, java.lang.String> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.String>();\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
-        "    public java.util.Map<java.lang.String, java.lang.String> getAdditionalProperties() {\n" +
-        "        return this.additionalProperties;\n" +
-        "    }\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
-        "    public void setAdditionalProperties(java.lang.String name, java.lang.String value) {\n" +
-        "        this.additionalProperties.put(name, value);\n" +
-        "    }\n\n" +
-        "}\n";
 
-    private static final String EXPECTED_ADDITIONAL_OBJECT_PROPS = 
-        "public class DummyClass {\n\n" +
-        "    private java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> additionalProperties" + 
-        " = new java.util.HashMap<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty>();\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
-        "    public java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> getAdditionalProperties() {\n" +
-        "        return this.additionalProperties;\n" +
-        "    }\n\n" +
-        "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
-        "    public void setAdditionalProperties(java.lang.String name, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty value) {\n" +
-        "        this.additionalProperties.put(name, value);\n" +
-        "    }\n\n" +
-        "}\n";
-        
-    
+    private static final String EXPECTED_RESULT_DEFAULT_ADDITIONAL_PROPS =
+            "public class DummyClass {\n\n" +
+                    "    private java.util.Map<java.lang.String, java.lang.Object> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.Object>();\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties() {\n" +
+                    "        return this.additionalProperties;\n" +
+                    "    }\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    public void setAdditionalProperties(java.lang.String name, java.lang.Object value) {\n" +
+                    "        this.additionalProperties.put(name, value);\n" +
+                    "    }\n\n" +
+                    "}\n";
+
+    private static final String EXPECTED_ADDITIONAL_STRING_PROPS =
+            "public class DummyClass {\n\n" +
+                    "    private java.util.Map<java.lang.String, java.lang.String> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.String>();\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    public java.util.Map<java.lang.String, java.lang.String> getAdditionalProperties() {\n" +
+                    "        return this.additionalProperties;\n" +
+                    "    }\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    public void setAdditionalProperties(java.lang.String name, java.lang.String value) {\n" +
+                    "        this.additionalProperties.put(name, value);\n" +
+                    "    }\n\n" +
+                    "}\n";
+
+    private static final String EXPECTED_ADDITIONAL_OBJECT_PROPS =
+            "public class DummyClass {\n\n" +
+                    "    private java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> additionalProperties" +
+                    " = new java.util.HashMap<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty>();\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    public java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> getAdditionalProperties() {\n" +
+                    "        return this.additionalProperties;\n" +
+                    "    }\n\n" +
+                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    public void setAdditionalProperties(java.lang.String name, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty value) {\n" +
+                    "        this.additionalProperties.put(name, value);\n" +
+                    "    }\n\n" +
+                    "}\n";
+
     @Test
     public void applyWithNoAdditionalPropertiesAllowed() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         BooleanNode node = new ObjectMapper().createObjectNode().booleanNode(false);
-        
-        JDefinedClass result = rule.apply("node", node, jclass);
-        
+
+        JDefinedClass result = rule.apply("node", node, jclass, null);
+
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT_NO_ADDITIONAL_PROPS));
     }
-    
+
     @Test
     public void applyWithDefaultAdditionalProperties() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
-        JDefinedClass result = rule.apply("node", null, jclass);
-        
+        JDefinedClass result = rule.apply("node", null, jclass, null);
+
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT_DEFAULT_ADDITIONAL_PROPS));
     }
-    
+
     @Test
     public void applyWithAdditionalPropertiesStringSchema() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("type", "string");
-        
-        JDefinedClass result = rule.apply("node", node, jclass);
-        
+
+        JDefinedClass result = rule.apply("node", node, jclass, createMock(Schema.class));
+
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_ADDITIONAL_STRING_PROPS));
     }
-    
+
     @Test
     public void applyWithAdditionalPropertiesObjectSchema() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("type", "object");
-        
-        JDefinedClass result = rule.apply("node", node, jclass);
-        
+
+        JDefinedClass result = rule.apply("node", node, jclass, createMock(Schema.class));
+
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
 

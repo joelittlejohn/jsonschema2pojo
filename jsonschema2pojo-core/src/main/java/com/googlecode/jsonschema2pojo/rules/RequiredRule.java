@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
@@ -28,12 +29,15 @@ import com.sun.codemodel.JDocCommentable;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
 public class RequiredRule implements SchemaRule<JDocCommentable, JDocComment> {
-    
+
     /**
      * Text added to JavaDoc to indicate that a field is required
      */
     public static final String REQUIRED_COMMENT_TEXT = "\n(Required)";
-    
+
+    protected RequiredRule() {
+    }
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -49,16 +53,17 @@ public class RequiredRule implements SchemaRule<JDocCommentable, JDocComment> {
      * @param generatableType
      *            the class or method which may be marked as "required"
      * @return the JavaDoc comment attached to the generatableType, which
-     *         <em>may</em> have an added not to mark this construct as required.
+     *         <em>may</em> have an added not to mark this construct as
+     *         required.
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType) {
+    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
-        
+
         if (node.getBooleanValue()) {
             javadoc.append(REQUIRED_COMMENT_TEXT);
         }
-        
+
         return javadoc;
     }
 }

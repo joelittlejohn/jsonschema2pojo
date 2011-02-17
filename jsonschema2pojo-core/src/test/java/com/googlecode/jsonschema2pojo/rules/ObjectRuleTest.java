@@ -26,7 +26,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -56,8 +56,27 @@ public class ObjectRuleTest {
                     "    }\n\n" +
                     "}\n";
 
-    private SchemaMapper mockSchemaMapper = createMock(SchemaMapper.class);
-    private ObjectRule rule = new ObjectRule(mockSchemaMapper);
+    private static final String EXPECTED_NAME_RESULT =
+            "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+                    "public class MyJavaType\n" +
+                    "    implements java.io.Serializable\n{\n\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public java.lang.String toString() {\n" +
+                    "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public int hashCode() {\n" +
+                    "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public boolean equals(java.lang.Object other) {\n" +
+                    "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" +
+                    "    }\n\n" +
+                    "}\n";
+
+    private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
+    private Schema mockSchema = createMock(Schema.class);
+    private ObjectRule rule = new ObjectRule(mockRuleFactory);
 
     @Test
     public void applyGeneratesBean() {
@@ -67,15 +86,38 @@ public class ObjectRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
 
         AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
-        expect(mockSchemaMapper.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
-        replay(mockSchemaMapper);
+        expect(mockRuleFactory.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
 
-        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage);
+        replay(mockSchema, mockRuleFactory);
+
+        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT));
+    }
+
+    @Test
+    public void applyGeneratesBeanWithExplicitTypeName() {
+
+        JPackage jpackage = new JCodeModel()._package(TARGET_PACKAGE_NAME);
+        String className = TARGET_PACKAGE_NAME + ".MyJavaType";
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("javaType", className);
+
+        AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
+        expect(mockRuleFactory.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
+
+        replay(mockSchema, mockRuleFactory);
+
+        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
+
+        StringWriter output = new StringWriter();
+        result.declare(new JFormatter(output));
+
+        assertThat(output.toString(), equalTo(EXPECTED_NAME_RESULT));
     }
 
     @Test
@@ -100,19 +142,19 @@ public class ObjectRuleTest {
         PropertiesRule mockPropertiesRule = createMock(PropertiesRule.class);
         AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
 
-        expect(mockDescriptionRule.apply(eq("fooBar"), eq(descriptionNode), isA(JDefinedClass.class))).andReturn(null);
-        expect(mockOptionalRule.apply(eq("fooBar"), eq(optionalNode), isA(JDefinedClass.class))).andReturn(null);
-        expect(mockPropertiesRule.apply(eq("fooBar"), eq(propertiesNode), isA(JDefinedClass.class))).andReturn(null);
-        expect(mockAdditionalPropertiesRule.apply(eq("fooBar"), eq(additionalPropertiesNode), isA(JDefinedClass.class))).andReturn(null);
+        expect(mockDescriptionRule.apply(eq("fooBar"), eq(descriptionNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
+        expect(mockOptionalRule.apply(eq("fooBar"), eq(optionalNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
+        expect(mockPropertiesRule.apply(eq("fooBar"), eq(propertiesNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
+        expect(mockAdditionalPropertiesRule.apply(eq("fooBar"), eq(additionalPropertiesNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
 
-        expect(mockSchemaMapper.getDescriptionRule()).andReturn(mockDescriptionRule);
-        expect(mockSchemaMapper.getOptionalRule()).andReturn(mockOptionalRule);
-        expect(mockSchemaMapper.getPropertiesRule()).andReturn(mockPropertiesRule);
-        expect(mockSchemaMapper.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
-        
-        replay(mockSchemaMapper, mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
+        expect(mockRuleFactory.getDescriptionRule()).andReturn(mockDescriptionRule);
+        expect(mockRuleFactory.getOptionalRule()).andReturn(mockOptionalRule);
+        expect(mockRuleFactory.getPropertiesRule()).andReturn(mockPropertiesRule);
+        expect(mockRuleFactory.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
 
-        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage);
+        replay(mockRuleFactory, mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
+
+        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
@@ -130,7 +172,7 @@ public class ObjectRuleTest {
 
         jpackage._class("ExistingClass");
 
-        rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage);
+        rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage, eq(mockSchema));
 
     }
 
