@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
@@ -36,6 +37,11 @@ import com.sun.codemodel.JPackage;
 public class ArrayRuleTest {
 
     private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(null));
+
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {
@@ -74,6 +80,7 @@ public class ArrayRuleTest {
 
         Schema schema = createMock(Schema.class);
         expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
+        schema.setJavaTypeIfEmpty(codeModel.DOUBLE);
         replay(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
@@ -99,6 +106,7 @@ public class ArrayRuleTest {
 
         Schema schema = createMock(Schema.class);
         expect(schema.getId()).andReturn(URI.create("http://example/defaultArray")).anyTimes();
+        schema.setJavaTypeIfEmpty(codeModel.BOOLEAN);
         replay(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);

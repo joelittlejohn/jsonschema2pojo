@@ -1,0 +1,7 @@
+{
+    "type" : "object",
+    "additionalProperties" : {
+        "javaType" : "com.example.AdditionalPropertyValue",
+        "type" : "object"
+    }
+}

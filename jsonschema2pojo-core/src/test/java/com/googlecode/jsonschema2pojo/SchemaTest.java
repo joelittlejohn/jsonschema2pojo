@@ -17,16 +17,25 @@
 package com.googlecode.jsonschema2pojo;
 
 import static org.apache.commons.lang.StringUtils.*;
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JType;
 public class SchemaTest {
 
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
+    
     @Test
     public void createWithAbsolutePath() throws URISyntaxException {
 
@@ -97,6 +106,24 @@ public class SchemaTest {
 
         assertThat(schema1, is(sameInstance(schema2)));
 
+    }
+    
+    @Test
+    public void setIfEmptyOnlySetsIfEmpty() throws URISyntaxException {
+        
+        JType firstClass = createMock(JDefinedClass.class);
+        JType secondClass = createMock(JDefinedClass.class);
+        
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+
+        Schema schema = Schema.create(schemaUri);
+        
+        schema.setJavaTypeIfEmpty(firstClass);
+        assertThat(schema.getJavaType(), is(equalTo(firstClass)));
+        
+        schema.setJavaTypeIfEmpty(secondClass);
+        assertThat(schema.getJavaType(), is(not(equalTo(secondClass))));
+        
     }
 
 }

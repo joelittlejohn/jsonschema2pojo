@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -23,8 +24,10 @@ import java.io.StringWriter;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -121,6 +124,11 @@ public class EnumRuleTest {
 
     private EnumRule rule = new EnumRule();
 
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
+    
     @Test(expected = GenerationException.class)
     public void applyFailsWhenEnumAlreadyExists() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
@@ -141,7 +149,7 @@ public class EnumRuleTest {
         enumNode.add("valueTwo");
         enumNode.add("valueThree");
 
-        rule.apply("newEnum", enumNode, jclass, null);
+        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -161,7 +169,7 @@ public class EnumRuleTest {
         enumNode.add("value two");
         enumNode.add("value three");
 
-        rule.apply("newEnum", enumNode, jclass, null);
+        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -180,7 +188,7 @@ public class EnumRuleTest {
         enumNode.add("200");
         enumNode.add("300");
 
-        rule.apply("newEnum", enumNode, jclass, null);
+        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));

@@ -1,0 +1,15 @@
+{
+    "type" : "object",
+    "properties" : {
+        "a" : {
+            "$ref" : "a.json"
+        },
+        "sameAsA" : {
+            "$ref" : "#/properties/a"
+        },
+        "fragmentOfA" : {
+            "$ref" : "a.json/#/additionalProperties"
+        }
+    },
+    "additionalProperties" : false
+}

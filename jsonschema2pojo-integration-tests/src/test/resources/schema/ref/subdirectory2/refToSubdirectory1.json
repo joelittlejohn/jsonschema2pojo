@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "refToOther" : {
+            "$ref" : "../subdirectory1/refToSubdirectory2.json"
+        } 
+    }
+}

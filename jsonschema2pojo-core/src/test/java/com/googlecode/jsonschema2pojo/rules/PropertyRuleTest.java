@@ -27,6 +27,7 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
@@ -191,6 +192,11 @@ public class PropertyRuleTest {
                     "        }\n\n" +
                     "    }\n\n" +
                     "}\n";
+
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
 
     @Test
     public void applyAddsBeanProperty() throws JClassAlreadyExistsException {

@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.BooleanNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
@@ -80,6 +81,11 @@ public class AdditionalPropertiesRuleTest {
                     "        this.additionalProperties.put(name, value);\n" +
                     "    }\n\n" +
                     "}\n";
+
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
 
     @Test
     public void applyWithNoAdditionalPropertiesAllowed() throws JClassAlreadyExistsException {

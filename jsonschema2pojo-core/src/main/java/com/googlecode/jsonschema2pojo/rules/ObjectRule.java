@@ -84,6 +84,7 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
             throw new GenerationException(e);
         }
 
+        schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
         addSerializable(jclass);
 

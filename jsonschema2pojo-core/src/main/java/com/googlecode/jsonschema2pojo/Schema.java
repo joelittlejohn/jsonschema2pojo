@@ -111,6 +111,12 @@ public class Schema {
     public void setJavaType(JType javaType) {
         this.javaType = javaType;
     }
+    
+    public void setJavaTypeIfEmpty(JType javaType) {
+        if (this.getJavaType() == null) {
+            this.setJavaType(javaType);
+        }
+    }
 
     public URI getId() {
         return id;
@@ -122,6 +128,10 @@ public class Schema {
 
     public boolean isGenerated() {
         return (javaType != null);
+    }
+    
+    public static synchronized void clearCache() {
+        schemas.clear();
     }
 
 }

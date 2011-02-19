@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "a" : {
+            "$ref" : "a.json"
+        },
+        "arrayOfA" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "a.json"
+            }
+        }
+    },
+    "additionalProperties" : {
+        "$ref" : "a.json"
+    }
+}

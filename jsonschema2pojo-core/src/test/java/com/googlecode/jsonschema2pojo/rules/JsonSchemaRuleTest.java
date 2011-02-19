@@ -81,11 +81,11 @@ public class JsonSchemaRuleTest {
         enumNode.put("type", "string");
         schemaContent.put("enum", enumNode);
 
-        Schema schema = createMock(Schema.class);
-        expect(schema.getContent()).andReturn(schemaContent);
-        expect(schema.isGenerated()).andReturn(false);
-
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+
+        Schema schema = createMock(Schema.class);
+        expect(schema.getContent()).andReturn(schemaContent).anyTimes();
+        schema.setJavaTypeIfEmpty(jclass);
 
         EnumRule enumRule = createMock(EnumRule.class);
         expect(mockRuleFactory.getEnumRule()).andReturn(enumRule);
@@ -96,7 +96,7 @@ public class JsonSchemaRuleTest {
 
         rule.apply(NODE_NAME, schemaContent, jclass, schema);
 
-        verify(enumRule);
+        verify(enumRule, schema);
 
     }
 

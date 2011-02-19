@@ -91,6 +91,8 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
     public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer container, Schema schema) {
         
         JDefinedClass _enum = createEnum(nodeName, container);
+        schema.setJavaTypeIfEmpty(_enum);
+        
         addGeneratedAnnotation(_enum);
         
         JFieldVar valueField = addValueField(_enum);

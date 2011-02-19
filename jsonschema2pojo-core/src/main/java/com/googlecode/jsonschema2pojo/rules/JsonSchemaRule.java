@@ -63,13 +63,18 @@ public class JsonSchemaRule implements SchemaRule<JClassContainer, JType> {
             if (schema.isGenerated()) {
                 return schema.getJavaType();
             }
+            
+            return apply(nodeName, schemaNode, generatableType, schema);
         }
 
+        JType javaType;
         if (schemaNode.has("enum")) {
-            return ruleFactory.getEnumRule().apply(nodeName, schemaNode.get("enum"), generatableType, schema);
+            javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode.get("enum"), generatableType, schema);
         } else {
-            return ruleFactory.getTypeRule().apply(nodeName, schemaNode, generatableType.getPackage(), schema);
+            javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, generatableType.getPackage(), schema);
         }
-
+        schema.setJavaTypeIfEmpty(javaType);
+        
+        return javaType;
     }
 }

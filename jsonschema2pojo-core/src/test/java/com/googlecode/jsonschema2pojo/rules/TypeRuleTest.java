@@ -23,8 +23,10 @@ import static org.hamcrest.Matchers.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -37,6 +39,11 @@ public class TypeRuleTest {
     private RuleFactory ruleFactory = createMock(RuleFactory.class);
 
     private TypeRule rule = new TypeRule(ruleFactory);
+
+    @Before 
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
 
     @Test
     public void applyGeneratesString() {

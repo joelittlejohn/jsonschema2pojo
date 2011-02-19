@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "childOfSelf" : {
+            "$ref" : "#"
+        },
+        "arrayOfSelf" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "#"
+            }
+        }
+    },
+    "additionalProperties" : {
+        "$ref" : "#"
+    }
+}

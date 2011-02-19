@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "address" : {
+            "$ref" : "http://json-schema.org/address"
+        }
+    }
+}
