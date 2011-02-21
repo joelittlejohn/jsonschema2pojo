@@ -4,7 +4,7 @@
         "a" : {
             "$ref" : "a.json"
         },
-        "sameAsA" : {
+        "fragmentOfSelf" : {
             "$ref" : "#/properties/a"
         },
         "fragmentOfA" : {

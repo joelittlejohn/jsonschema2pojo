@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -78,7 +77,7 @@ public class ObjectRuleTest {
     private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
     private ObjectRule rule = new ObjectRule(mockRuleFactory);
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }
@@ -95,7 +94,7 @@ public class ObjectRuleTest {
 
         Schema mockSchema = createMock(Schema.class);
         mockSchema.setJavaTypeIfEmpty(isA(JDefinedClass.class));
-        
+
         replay(mockSchema, mockRuleFactory);
 
         JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
@@ -179,15 +178,15 @@ public class ObjectRuleTest {
 
     }
 
-    @Test(expected = GenerationException.class)
-    public void applyFailsWhereClassAlreadyExists() throws JClassAlreadyExistsException {
+    @Test
+    public void applyReturnsExistingClassWhenConflictOccurs() throws JClassAlreadyExistsException {
 
         JPackage jpackage = new JCodeModel()._package(TARGET_PACKAGE_NAME);
 
-        jpackage._class("ExistingClass");
-        
-        rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage, createMock(Schema.class));
+        JDefinedClass existingClass = jpackage._class("ExistingClass");
 
+        JDefinedClass result = rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage, createMock(Schema.class));
+
+        assertThat(result, is(equalTo(existingClass)));
     }
-
 }

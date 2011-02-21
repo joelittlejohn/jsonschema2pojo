@@ -29,7 +29,6 @@ import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -81,7 +80,7 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
                 jclass = _package._class(getClassName(nodeName));
             }
         } catch (JClassAlreadyExistsException e) {
-            throw new GenerationException(e);
+            return e.getExistingClass();
         }
 
         schema.setJavaTypeIfEmpty(jclass);

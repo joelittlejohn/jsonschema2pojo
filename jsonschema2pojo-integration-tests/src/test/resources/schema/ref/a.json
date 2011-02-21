@@ -1,5 +1,10 @@
 {
     "type" : "object",
+    "properties" : {
+        "propertyOfA" : {
+            "type" : "string"
+        }
+    },
     "additionalProperties" : {
         "javaType" : "com.example.AdditionalPropertyValue",
         "type" : "object"
