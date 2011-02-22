@@ -1,0 +1,15 @@
+{
+    "title" : "A title for this type",
+    "type":"object",
+    "properties" : {
+        "title" : {
+            "type" : "string",
+            "title" : "A title for this property"
+        },
+        "titleAndDescription" : {
+            "type" : "string",
+            "description" : "A description for this property",
+            "title" : "A title for this property"
+        }
+    }
+}

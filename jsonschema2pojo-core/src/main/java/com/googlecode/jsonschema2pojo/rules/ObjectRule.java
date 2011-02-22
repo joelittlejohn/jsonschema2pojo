@@ -87,6 +87,10 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
         addGeneratedAnnotation(jclass);
         addSerializable(jclass);
 
+        if (node.has("title")) {
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
+        }
+
         if (node.has("description")) {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
         }

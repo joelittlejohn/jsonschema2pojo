@@ -1,0 +1,29 @@
+{
+    "type" : "object",
+    "properties" : {
+        "booleanProperty" : {
+            "type" : "boolean"
+        },
+        "stringProperty" : {
+            "type" : "string"
+        },
+        "integerProperty" : {
+            "type" : "integer"
+        },
+        "numberProperty" : {
+            "type" : "number"
+        },
+        "arrayProperty" : {
+            "type" : "array"
+        },
+        "nullProperty" : {
+            "type" : "null"
+        },
+        "anyProperty" : {
+            "type" : "any"
+        },
+        "objectProperty" : {
+            "type" : "object"
+        }
+    }
+}

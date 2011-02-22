@@ -30,109 +30,100 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ArrayIT {
-    
-    @SuppressWarnings("rawtypes")
-    private static Class classWithArrayProperties;
+
+    private static Class<?> classWithArrayProperties;
 
     @BeforeClass
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void generateAndCompileClass() throws ClassNotFoundException {
-        
+
         ClassLoader resultsClassLoader = generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example", true);
-        
-        classWithArrayProperties =  (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
-        
-    }
-    
-    @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void nonUniqueArraysAreLists() throws NoSuchMethodException {
-        
-        Method getterMethod = classWithArrayProperties.getMethod("getNonUniqueArray");
-        
-        assertThat(getterMethod.getReturnType().getName(), is(List.class.getName()));
-        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        
-        Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
-        assertThat(genericType, is(instanceOf(Class.class)));
-        assertThat(((Class)genericType).getName(), is(Integer.class.getName()));
-        
+
+        classWithArrayProperties = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
+
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void nonUniqueArraysAreLists() throws NoSuchMethodException {
+
+        Method getterMethod = classWithArrayProperties.getMethod("getNonUniqueArray");
+
+        assertThat(getterMethod.getReturnType().getName(), is(List.class.getName()));
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+
+        Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(genericType, is(instanceOf(Class.class)));
+        assertThat(((Class<?>) genericType).getName(), is(Integer.class.getName()));
+
+    }
+
+    @Test
     public void uniqueArraysAreSets() throws NoSuchMethodException {
-        
+
         Method getterMethod = classWithArrayProperties.getMethod("getUniqueArray");
-        
+
         assertThat(getterMethod.getReturnType().getName(), is(Set.class.getName()));
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        
+
         Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(genericType, is(instanceOf(Class.class)));
-        assertThat(((Class)genericType).getName(), is(Boolean.class.getName()));
-        
+        assertThat(((Class<?>) genericType).getName(), is(Boolean.class.getName()));
+
     }
 
     @Test
-    @SuppressWarnings({ "unchecked" })
     public void arraysAreNonUniqueByDefault() throws NoSuchMethodException {
-        
+
         Method getterMethod = classWithArrayProperties.getMethod("getNonUniqueArrayByDefault");
-        
+
         assertThat(getterMethod.getReturnType().getName(), is(List.class.getName()));
-        
+
     }
-    
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void arraysCanHaveComplexTypes() throws NoSuchMethodException {
-        
+
         Method getterMethod = classWithArrayProperties.getMethod("getComplexTypesArray");
-        
+
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        
+
         Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(genericType, is(instanceOf(Class.class)));
-        assertThat(((Class)genericType).getName(), is("com.example.ComplexTypesArray"));
-        
-    }
-    
-    @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void arrayItemTypeIsObjectByDefault() throws NoSuchMethodException {
-        
-        Method getterMethod = classWithArrayProperties.getMethod("getDefaultTypesArray");
-        
-        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        
-        Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
-        assertThat(genericType, is(instanceOf(Class.class)));
-        assertThat(((Class)genericType).getName(), is(Object.class.getName()));
-        
+        assertThat(((Class<?>) genericType).getName(), is("com.example.ComplexTypesArray"));
+
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void arrayItemTypeIsObjectByDefault() throws NoSuchMethodException {
+
+        Method getterMethod = classWithArrayProperties.getMethod("getDefaultTypesArray");
+
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+
+        Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(genericType, is(instanceOf(Class.class)));
+        assertThat(((Class<?>) genericType).getName(), is(Object.class.getName()));
+
+    }
+
+    @Test
     public void arraysCanBeMultiDimensional() throws NoSuchMethodException {
-        
+
         Method getterMethod = classWithArrayProperties.getMethod("getMultiDimensionalArray");
-        
+
         // assert List
         assertThat(getterMethod.getReturnType().getName(), is(List.class.getName()));
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        
+
         // assert List<List>
         Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(genericType, is(instanceOf(ParameterizedType.class)));
-        assertThat(((Class)((ParameterizedType) genericType).getRawType()).getName(), is(List.class.getName()));
-        
+        assertThat(((Class<?>) ((ParameterizedType) genericType).getRawType()).getName(), is(List.class.getName()));
+
         // assert List<List<Object>>
         Type itemsType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
         assertThat(itemsType, is(instanceOf(Class.class)));
-        assertThat(((Class)itemsType).getName(), is(Object.class.getName()));
-        
+        assertThat(((Class<?>) itemsType).getName(), is(Object.class.getName()));
+
     }
-    
+
 }

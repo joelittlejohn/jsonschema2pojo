@@ -81,7 +81,6 @@
         	<groupId>qdox</groupId>
         	<artifactId>qdox</artifactId>
         	<version>1.6.1</version>
-        	<type>jar</type>
         	<scope>test</scope>
         </dependency>
     </dependencies>

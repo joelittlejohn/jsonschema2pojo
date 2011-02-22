@@ -72,6 +72,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
+
         String propertyTypeName = node.get("type").getTextValue();
 
         if (propertyTypeName.equals("string")) {
