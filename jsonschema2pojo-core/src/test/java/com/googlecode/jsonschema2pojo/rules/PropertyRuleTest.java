@@ -49,6 +49,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
                     "     * some title\n" +
@@ -57,6 +58,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public double getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
@@ -67,6 +69,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public void setFooBar(double fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -85,6 +88,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    private double fooBar;\n\n" +
                     "    /**\n" +
                     "     * some title\n" +
@@ -93,6 +97,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public double getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
@@ -103,6 +108,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public void setFooBar(double fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -117,6 +123,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    private boolean fooBar;\n\n" +
                     "    /**\n" +
                     "     * some title\n" +
@@ -125,6 +132,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public boolean isFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
@@ -134,6 +142,7 @@ public class PropertyRuleTest {
                     "     * some bean property\n" +
                     "     * (Optional)\n" +
                     "     * \n     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public void setFooBar(boolean fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -148,6 +157,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
                     "    /**\n" +
                     "     * some title\n" +
@@ -156,6 +166,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar getFooBar() {\n" +
                     "        return fooBar;\n" +
                     "    }\n\n" +
@@ -166,6 +177,7 @@ public class PropertyRuleTest {
                     "     * (Optional)\n" +
                     "     * \n" +
                     "     */\n" +
+                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
                     "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
                     "        this.fooBar = fooBar;\n" +
                     "    }\n\n" +
@@ -193,7 +205,7 @@ public class PropertyRuleTest {
                     "    }\n\n" +
                     "}\n";
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }

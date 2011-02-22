@@ -19,9 +19,12 @@ package com.googlecode.jsonschema2pojo.rules;
 import static org.apache.commons.lang.StringUtils.*;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.sun.codemodel.JAnnotatable;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -74,9 +77,10 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
+        addPropertyAnnotation(field, nodeName);
 
-        JMethod getter = addGetter(jclass, field);
-        JMethod setter = addSetter(jclass, field);
+        JMethod getter = addGetter(jclass, field, nodeName);
+        JMethod setter = addSetter(jclass, field, nodeName);
 
         boolean shouldAddBuilders = Boolean.parseBoolean(ruleFactory.getBehaviourProperty(RuleFactory.GENERATE_BUILDERS_PROPERTY));
 
@@ -105,21 +109,25 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field) {
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(field.name(), field.type()));
 
         JBlock body = getter.body();
         body._return(field);
 
+        addPropertyAnnotation(getter, jsonPropertyName);
+
         return getter;
     }
 
-    private JMethod addSetter(JDefinedClass c, JFieldVar field) {
+    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(field.name()));
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
         body.assign(JExpr._this().ref(field), param);
+
+        addPropertyAnnotation(setter, jsonPropertyName);
 
         return setter;
     }
@@ -133,6 +141,11 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         body._return(JExpr._this());
 
         return builder;
+    }
+
+    private void addPropertyAnnotation(JAnnotatable annotatable, String jsonPropertyName) {
+        JAnnotationUse jsonPropertyAnnotation = annotatable.annotate(JsonProperty.class);
+        jsonPropertyAnnotation.param("value", jsonPropertyName);
     }
 
     private String getPropertyName(String nodeName) {
