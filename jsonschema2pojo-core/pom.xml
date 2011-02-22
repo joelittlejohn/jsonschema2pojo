@@ -5,12 +5,12 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>com.googlecode.jsonschema2pojo</groupId>
-        <version>0.1.6</version>
+        <version>0.1.7-SNAPSHOT</version>
     </parent>
 
     <groupId>com.googlecode.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-core</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7-SNAPSHOT</version>
 
     <name>jsonschema2pojo-core</name>
 
