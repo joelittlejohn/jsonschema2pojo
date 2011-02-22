@@ -102,4 +102,13 @@ public class TypeIT {
 
     }
 
+    @Test
+    public void defaultTypeProducesObject() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getDefaultProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Object"));
+
+    }
+
 }

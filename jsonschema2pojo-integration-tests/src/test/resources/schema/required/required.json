@@ -1,0 +1,13 @@
+{
+    "type" : "object",
+    "properties" : {
+        "requiredProperty" : {
+            "required" : true
+        },
+        "nonRequiredProperty" : {
+            "required" : false
+        },
+        "defaultNotRequiredProperty" : {
+        }
+    }
+}

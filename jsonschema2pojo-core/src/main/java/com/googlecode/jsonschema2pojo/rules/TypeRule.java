@@ -31,6 +31,8 @@ import com.sun.codemodel.JType;
  */
 public class TypeRule implements SchemaRule<JClassContainer, JType> {
 
+    private static final String DEFAULT_TYPE_NAME = "any";
+
     private final RuleFactory ruleFactory;
 
     protected TypeRule(RuleFactory ruleFactory) {
@@ -73,7 +75,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
 
-        String propertyTypeName = node.get("type").getTextValue();
+        String propertyTypeName = node.has("type") ? node.get("type").getTextValue() : DEFAULT_TYPE_NAME;
 
         if (propertyTypeName.equals("string")) {
 
@@ -105,7 +107,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
             return jClassContainer.owner().ref(Object.class);
         } else {
 
-            throw new GenerationException("Unrecognised property type: " + propertyTypeName);
+            return jClassContainer.owner().ref(Object.class);
         }
     }
 

@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -40,7 +39,7 @@ public class TypeRuleTest {
 
     private TypeRule rule = new TypeRule(ruleFactory);
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }
@@ -186,15 +185,30 @@ public class TypeRuleTest {
         assertThat(result, is((JType) mockObjectType));
     }
 
-    @Test(expected = GenerationException.class)
-    public void applyFailsOnUnrecognizedType() {
+    @Test
+    public void applyChoosesObjectOnUnrecognizedType() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "unknown");
 
-        rule.apply("fooBar", objectNode, jpackage, null);
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Object.class.getName()));
+
+    }
+
+    @Test
+    public void applyDefaultsToTypeAnyObject() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Object.class.getName()));
     }
 
 }

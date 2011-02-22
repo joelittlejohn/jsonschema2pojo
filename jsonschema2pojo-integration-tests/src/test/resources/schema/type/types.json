@@ -24,6 +24,11 @@
         },
         "objectProperty" : {
             "type" : "object"
+        },
+        "defaultProperty" : {
+        },
+        "unknownProperty" : {
+            "type" : "some-unknown-type"
         }
     }
 }
