@@ -50,7 +50,12 @@ public class FormatRuleTest {
                 {"color", "java.lang.String"},
                 {"style", "java.lang.String"},
                 {"phone", "java.lang.String"},
-                {"uri", "java.lang.String"}});
+                {"phone", "java.lang.String"},
+                {"uri", "java.lang.String"},
+                {"email", "java.lang.String"},
+                {"ip-address", "java.lang.String"},
+                {"ipv6", "java.lang.String"},
+                {"host-name", "java.lang.String"}});
     }
 
     public FormatRuleTest(String formatValue, String expectedTypeName) {
@@ -62,9 +67,20 @@ public class FormatRuleTest {
     public void applyGeneratesTypeFromFormatValue() {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
-        JType result = rule.apply("fooBar", formatNode, new JCodeModel()._package("com.example"), null);
+        JType result = rule.apply("fooBar", formatNode, new JCodeModel().ref(String.class), null);
 
         assertThat(result.fullName(), equalTo(expectedTypeName));
+    }
+
+    @Test
+    public void applyDefaultsToBaseType() {
+        TextNode formatNode = TextNode.valueOf("unknown-format");
+
+        JType baseType = new JCodeModel().ref(Long.class);
+
+        JType result = rule.apply("fooBar", formatNode, baseType, null);
+
+        assertThat(result, equalTo(baseType));
     }
 
 }

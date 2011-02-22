@@ -77,38 +77,42 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
 
         String propertyTypeName = node.has("type") ? node.get("type").getTextValue() : DEFAULT_TYPE_NAME;
 
+        JType type;
+
         if (propertyTypeName.equals("string")) {
 
-            if (node.has("format")) {
-                return ruleFactory.getFormatRule().apply(nodeName, node.get("format"), jClassContainer.getPackage(), schema);
-            } else {
-                return jClassContainer.owner().ref(String.class);
-            }
+            type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            return jClassContainer.owner().DOUBLE;
+            type = jClassContainer.owner().DOUBLE;
         } else if (propertyTypeName.equals("integer")) {
 
-            return jClassContainer.owner().INT;
+            type = jClassContainer.owner().INT;
         } else if (propertyTypeName.equals("boolean")) {
 
-            return jClassContainer.owner().BOOLEAN;
+            type = jClassContainer.owner().BOOLEAN;
         } else if (propertyTypeName.equals("object")) {
 
-            return ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
+            type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (propertyTypeName.equals("array")) {
 
-            return ruleFactory.getArrayRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
+            type = ruleFactory.getArrayRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (propertyTypeName.equals("null")) {
 
-            return jClassContainer.owner().ref(Object.class);
+            type = jClassContainer.owner().ref(Object.class);
         } else if (propertyTypeName.equals("any")) {
 
-            return jClassContainer.owner().ref(Object.class);
+            type = jClassContainer.owner().ref(Object.class);
         } else {
 
-            return jClassContainer.owner().ref(Object.class);
+            type = jClassContainer.owner().ref(Object.class);
         }
+
+        if (node.has("format")) {
+            type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), type, schema);
+        }
+
+        return type;
     }
 
 }

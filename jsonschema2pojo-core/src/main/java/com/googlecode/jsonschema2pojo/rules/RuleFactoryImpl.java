@@ -61,7 +61,7 @@ public class RuleFactoryImpl implements RuleFactory {
     }
 
     @Override
-    public SchemaRule<JPackage, JType> getFormatRule() {
+    public SchemaRule<JType, JType> getFormatRule() {
         return new FormatRule();
     }
 

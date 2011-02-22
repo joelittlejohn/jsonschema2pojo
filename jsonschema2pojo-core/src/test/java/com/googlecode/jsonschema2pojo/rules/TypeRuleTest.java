@@ -70,7 +70,7 @@ public class TypeRuleTest {
 
         JType mockDateType = createMock(JType.class);
         FormatRule mockFormatRule = createMock(FormatRule.class);
-        expect(mockFormatRule.apply("fooBar", formatNode, jpackage, null)).andReturn(mockDateType);
+        expect(mockFormatRule.apply(eq("fooBar"), eq(formatNode), isA(JType.class), isNull(Schema.class))).andReturn(mockDateType);
         expect(ruleFactory.getFormatRule()).andReturn(mockFormatRule);
 
         replay(mockFormatRule, ruleFactory);

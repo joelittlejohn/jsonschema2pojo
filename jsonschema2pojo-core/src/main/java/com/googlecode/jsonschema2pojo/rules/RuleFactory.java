@@ -83,7 +83,7 @@ public interface RuleFactory {
      * 
      * @return a schema rule that can handle the "format" declaration.
      */
-    SchemaRule<JPackage, JType> getFormatRule();
+    SchemaRule<JType, JType> getFormatRule();
 
     /**
      * Provides a rule instance that should be applied when an "object"
