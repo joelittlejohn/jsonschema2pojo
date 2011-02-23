@@ -106,6 +106,8 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             ruleFactory.getOptionalRule().apply(nodeName, node.get("optional"), setter, schema);
         }
 
+        ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
+
         return jclass;
     }
 

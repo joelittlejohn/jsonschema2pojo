@@ -1,0 +1,64 @@
+{
+    "type" : "object",
+    "properties" : {
+        "stringWithDefault" : {
+            "type" : "string",
+            "default" : "abc"
+        },
+        "integerWithDefault" : {
+            "type" : "integer",
+            "default" : 1337
+        },
+        "numberWithDefault" : {
+            "type" : "number",
+            "default" : 1.337
+        },
+        "booleanWithDefault" : {
+            "type" : "boolean",
+            "default" : true
+        },
+        "dateWithDefault" : {
+            "type" : "string",
+            "format" : "date-time",
+            "default" : 123456789
+        },
+        "utcmillisecWithDefault" : {
+            "type" : "integer",
+            "format" : "utc-millisec",
+            "default" : 123456789
+        },
+        "enumWithDefault" : {
+            "type" : "string",
+            "enum" : ["one", "two", "three"],
+            "default" : "two"
+        },
+        "arrayWithDefault" : {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            },
+            "default" : ["one", "two", "three"]
+        },
+        "uniqueArrayWithDefault" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "type" : "integer"
+            },
+            "default" : [100, 200, 300]
+        },
+        "arrayWithoutDefault" : {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            }
+        },
+        "uniqueArrayWithoutDefault" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "type" : "boolean"
+            }
+        }
+    }
+}

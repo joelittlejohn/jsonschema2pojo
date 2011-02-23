@@ -21,6 +21,7 @@ import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
@@ -148,5 +149,14 @@ public interface RuleFactory {
      * @return a schema rule that can handle a schema declaration.
      */
     SchemaRule<JClassContainer, JType> getSchemaRule();
+
+    /**
+     * Provides a rule instance that should be applied when an property
+     * declaration is found in the schema to assign any appropriate default
+     * value to that property.
+     * 
+     * @return a schema rule that can handle the "default" declaration.
+     */
+    SchemaRule<JFieldVar, JFieldVar> getDefaultRule();
 
 }

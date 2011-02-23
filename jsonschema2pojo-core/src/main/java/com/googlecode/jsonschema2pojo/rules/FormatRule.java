@@ -63,8 +63,6 @@ public class FormatRule implements SchemaRule<JType, JType> {
      *            the type which which is being formatted e.g. for
      *            <code>{ "type" : "string", "format" : "uri" }</code> the
      *            baseType would be java.lang.String
-     * @throws IllegalArgumentException
-     *             when the format value is not recognised
      * @return the Java type that is appropriate for the format value
      */
     @Override

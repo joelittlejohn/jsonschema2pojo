@@ -31,7 +31,11 @@ public class RuleFactoryImplTest {
 
         RuleFactory ruleFactory = new RuleFactoryImpl(null);
 
+        assertThat(ruleFactory.getAdditionalPropertiesRule(), notNullValue());
+
         assertThat(ruleFactory.getArrayRule(), notNullValue());
+
+        assertThat(ruleFactory.getDefaultRule(), notNullValue());
 
         assertThat(ruleFactory.getDescriptionRule(), notNullValue());
 
@@ -46,6 +50,8 @@ public class RuleFactoryImplTest {
         assertThat(ruleFactory.getPropertiesRule(), notNullValue());
 
         assertThat(ruleFactory.getPropertyRule(), notNullValue());
+
+        assertThat(ruleFactory.getSchemaRule(), notNullValue());
 
         assertThat(ruleFactory.getTitleRule(), notNullValue());
 

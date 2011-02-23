@@ -24,6 +24,7 @@ import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
@@ -103,6 +104,11 @@ public class RuleFactoryImpl implements RuleFactory {
     @Override
     public SchemaRule<JClassContainer, JType> getSchemaRule() {
         return new JsonSchemaRule(this);
+    }
+
+    @Override
+    public SchemaRule<JFieldVar, JFieldVar> getDefaultRule() {
+        return new DefaultRule();
     }
 
     @Override
