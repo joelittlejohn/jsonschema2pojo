@@ -137,18 +137,15 @@ public class ObjectRuleTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode descriptionNode = objectMapper.createObjectNode();
-        ObjectNode optionalNode = objectMapper.createObjectNode();
         ObjectNode propertiesNode = objectMapper.createObjectNode();
         ObjectNode additionalPropertiesNode = objectMapper.createObjectNode();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.put("description", descriptionNode);
-        objectNode.put("optional", optionalNode);
         objectNode.put("properties", propertiesNode);
         objectNode.put("additionalProperties", additionalPropertiesNode);
 
         DescriptionRule mockDescriptionRule = createMock(DescriptionRule.class);
-        OptionalRule mockOptionalRule = createMock(OptionalRule.class);
         PropertiesRule mockPropertiesRule = createMock(PropertiesRule.class);
         AdditionalPropertiesRule mockAdditionalPropertiesRule = createMock(AdditionalPropertiesRule.class);
 
@@ -156,16 +153,14 @@ public class ObjectRuleTest {
         mockSchema.setJavaTypeIfEmpty(isA(JDefinedClass.class));
 
         expect(mockDescriptionRule.apply(eq("fooBar"), eq(descriptionNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
-        expect(mockOptionalRule.apply(eq("fooBar"), eq(optionalNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
         expect(mockPropertiesRule.apply(eq("fooBar"), eq(propertiesNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
         expect(mockAdditionalPropertiesRule.apply(eq("fooBar"), eq(additionalPropertiesNode), isA(JDefinedClass.class), eq(mockSchema))).andReturn(null);
 
         expect(mockRuleFactory.getDescriptionRule()).andReturn(mockDescriptionRule);
-        expect(mockRuleFactory.getOptionalRule()).andReturn(mockOptionalRule);
         expect(mockRuleFactory.getPropertiesRule()).andReturn(mockPropertiesRule);
         expect(mockRuleFactory.getAdditionalPropertiesRule()).andReturn(mockAdditionalPropertiesRule);
 
-        replay(mockRuleFactory, mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
+        replay(mockRuleFactory, mockDescriptionRule, mockPropertiesRule, mockAdditionalPropertiesRule);
 
         JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
@@ -174,7 +169,7 @@ public class ObjectRuleTest {
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT));
 
-        verify(mockDescriptionRule, mockOptionalRule, mockPropertiesRule, mockAdditionalPropertiesRule);
+        verify(mockDescriptionRule, mockPropertiesRule, mockAdditionalPropertiesRule);
 
     }
 

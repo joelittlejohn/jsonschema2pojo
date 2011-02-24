@@ -87,6 +87,11 @@ public class RuleFactoryImpl implements RuleFactory {
     }
 
     @Override
+    public SchemaRule<JDocCommentable, JDocComment> getRequiredRule() {
+        return new RequiredRule();
+    }
+
+    @Override
     public SchemaRule<JClassContainer, JType> getTypeRule() {
         return new TypeRule(this);
     }

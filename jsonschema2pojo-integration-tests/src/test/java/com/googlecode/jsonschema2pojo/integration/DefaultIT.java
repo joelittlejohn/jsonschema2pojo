@@ -135,6 +135,17 @@ public class DefaultIT {
     }
 
     @Test
+    public void complexPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getComplexPropertyWithDefault");
+
+        assertThat(getter.invoke(instance), is(nullValue()));
+
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void arrayPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 

@@ -99,10 +99,6 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
             ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
         }
 
-        if (node.has("optional")) {
-            ruleFactory.getOptionalRule().apply(nodeName, node.get("optional"), jclass, schema);
-        }
-
         addToString(jclass);
         addHashCode(jclass);
         addEquals(jclass);

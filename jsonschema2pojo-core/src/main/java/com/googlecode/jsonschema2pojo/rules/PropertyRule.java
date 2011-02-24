@@ -22,7 +22,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.googlecode.jsonschema2pojo.Schema;
-import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -58,7 +57,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
      * accessor methods.
      * <p>
      * If this rule's schema mapper is configured to include builder methods
-     * (see {@link SchemaMapper#GENERATE_BUILDERS_PROPERTY}), then a builder
+     * (see {@link RuleFactory#GENERATE_BUILDERS_PROPERTY}), then a builder
      * method of the form <code>withFoo(Foo foo);</code> is also added.
      * 
      * @param nodeName
@@ -104,6 +103,12 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             ruleFactory.getOptionalRule().apply(nodeName, node.get("optional"), field, schema);
             ruleFactory.getOptionalRule().apply(nodeName, node.get("optional"), getter, schema);
             ruleFactory.getOptionalRule().apply(nodeName, node.get("optional"), setter, schema);
+        }
+
+        if (node.has("required")) {
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), field, schema);
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), getter, schema);
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), setter, schema);
         }
 
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);

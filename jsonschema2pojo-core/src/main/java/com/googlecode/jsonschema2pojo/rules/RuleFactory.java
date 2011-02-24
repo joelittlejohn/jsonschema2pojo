@@ -38,7 +38,7 @@ public interface RuleFactory {
 
     /**
      * Gets from a key-value pair which defines some aspect of the behaviour of
-     * the rules this factory creats.
+     * the rules this factory creates.
      * 
      * @param key
      *            The name of the property.
@@ -105,6 +105,14 @@ public interface RuleFactory {
      */
     @Deprecated
     SchemaRule<JDocCommentable, JDocComment> getOptionalRule();
+
+    /**
+     * Provides a rule instance that should be applied when a "required"
+     * declaration is found in the schema.
+     * 
+     * @return a schema rule that can handle the "required" declaration.
+     */
+    SchemaRule<JDocCommentable, JDocComment> getRequiredRule();
 
     /**
      * Provides a rule instance that should be applied when a "properties"

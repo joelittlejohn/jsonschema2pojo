@@ -44,6 +44,15 @@
             },
             "default" : ["one", "two", "three"]
         },
+        "complexPropertyWithDefault" : {
+            "type" : "object",
+            "properties" : {
+                "abc" : {
+                    "type" : "string"
+                }
+            },
+            "default" : {"abc" : "xyz"}
+        },
         "uniqueArrayWithDefault" : {
             "type" : "array",
             "uniqueItems" : true,
