@@ -1,5 +1,5 @@
 @REM
-@REM Copyright © 2010 Nokia
+@REM Copyright © 2010-2011 Nokia
 @REM
 @REM Licensed under the Apache License, Version 2.0 (the "License");
 @REM you may not use this file except in compliance with the License.
