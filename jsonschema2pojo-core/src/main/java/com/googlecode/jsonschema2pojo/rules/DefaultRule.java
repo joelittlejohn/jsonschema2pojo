@@ -2,15 +2,16 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang.StringUtils.*;
 
-import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.deser.StdDeserializationContext;
+import org.codehaus.jackson.map.util.StdDateFormat;
 import org.codehaus.jackson.node.ArrayNode;
 
 import com.googlecode.jsonschema2pojo.Schema;
@@ -197,8 +198,12 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
 
         try {
             return Long.parseLong(valueAsText);
-        } catch (NumberFormatException e) {
-            return new StdDeserializationContext(null, null, null).parseDate(valueAsText).getTime();
+        } catch (NumberFormatException nfe) {
+            try {
+                return new StdDateFormat().parse(valueAsText).getTime();
+            } catch (ParseException pe) {
+                throw new IllegalArgumentException("Unable to parse this string as a date: " + valueAsText);
+            }
         }
 
     }

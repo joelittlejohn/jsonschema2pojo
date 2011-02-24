@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -83,6 +84,28 @@ public class DefaultIT {
         Method getter = classWithDefaults.getMethod("isBooleanWithDefault");
 
         assertThat((Boolean) getter.invoke(instance), is(equalTo(true)));
+
+    }
+
+    @Test
+    public void dateAsMillisecPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getDateWithDefault");
+
+        assertThat((Date) getter.invoke(instance), is(equalTo(new Date(123456789))));
+
+    }
+
+    @Test
+    public void dateAsStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getDateAsStringWithDefault");
+
+        assertThat((Date) getter.invoke(instance), is(equalTo(new Date(1298539523112L))));
 
     }
 

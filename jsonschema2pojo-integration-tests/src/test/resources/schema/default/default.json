@@ -22,6 +22,11 @@
             "format" : "date-time",
             "default" : 123456789
         },
+        "dateAsStringWithDefault" : {
+            "type" : "string",
+            "format" : "date-time",
+            "default" : "2011-02-24T09:25:23.112+0000"
+        },
         "utcmillisecWithDefault" : {
             "type" : "integer",
             "format" : "utc-millisec",
