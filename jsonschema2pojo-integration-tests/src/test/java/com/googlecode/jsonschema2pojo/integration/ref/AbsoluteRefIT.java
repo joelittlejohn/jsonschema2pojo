@@ -20,21 +20,52 @@ import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelp
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Ignore;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 public class AbsoluteRefIT {
 
     @Test
-    @Ignore
-    public void absoluteRefIsReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException {
+    public void absoluteRefIsReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException, IOException {
 
-        Class<?> absoluteRefClass = generateAndCompile("/schema/ref/absoluteRef.json", "com.example", false).loadClass("com.example.AbsoluteRef");
+        File schemaWithAbsoluteRef = createSchemaWithAbsoluteRef();
+
+        File generatedOutputDirectory = generate(schemaWithAbsoluteRef.toURI().toURL(), "com.example", false);
+        Class<?> absoluteRefClass = compile(generatedOutputDirectory).loadClass("com.example.AbsoluteRef");
 
         Class<?> addressClass = absoluteRefClass.getMethod("getAddress").getReturnType();
 
         assertThat(addressClass.getName(), is("com.example.Address"));
         assertThat(addressClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPostal_code"))));
+
+    }
+
+    private File createSchemaWithAbsoluteRef() throws IOException {
+
+        URL absoluteUrlForAddressSchema = this.getClass().getResource("/schema/ref/address.json");
+
+        String absoluteRefSchemaTemplate = IOUtils.toString(this.getClass().getResourceAsStream("/schema/ref/absoluteRef.json.template"));
+        String absoluteRefSchema = absoluteRefSchemaTemplate.replace("$ABSOLUTE_REF", absoluteUrlForAddressSchema.toString());
+
+        File absoluteRefSchemaFile = File.createTempFile("absoluteRef", ".json");
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(absoluteRefSchemaFile);
+            try {
+                IOUtils.write(absoluteRefSchema, outputStream);
+            } finally {
+                IOUtils.closeQuietly(outputStream);
+            }
+        } finally {
+            absoluteRefSchemaFile.deleteOnExit();
+        }
+
+        return absoluteRefSchemaFile;
 
     }
 

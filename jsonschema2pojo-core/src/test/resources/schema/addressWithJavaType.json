@@ -1,14 +1,21 @@
 {
     "javaType":"com.id.Address",
-    "description":"An Address following the convention of http://microformats.org/wiki/hcard",
-    "type":"object",
-    "properties":{
-        "post-office-box":{"type":"string","specifity":5,"optional":true},
-        "extended-address":{"type":"string","specifity":5,"optional":true},
-        "street-address":{"type":"string","specifity":4,"optional":true},
-        "locality":{"type":"string","specifity":3},
-        "region":{"type":"string","specifity":2},
-        "postal-code":{"type":"string","optional":true},
-        "country-name":{"type":"string","specifity":1}
+    "description" : "An Address following the convention of http://microformats.org/wiki/hcard",
+    "type" : "object",
+    "properties" : {
+        "post-office-box" : { "type" : "string" },
+        "extended-address" : { "type" : "string" },
+        "street-address" : { "type":"string" },
+        "locality" : { "type" : "string", "required" : true },
+        "region" : { "type" : "string", "required" : true },
+        "postal-code" : { "type" : "string" },
+        "country-name" : { "type" : "string", "required" : true }
+    },
+    "dependencies" : {
+        "post-office-box" : "street-address",
+        "extended-address" : "street-address",
+        "street-address" : "region",
+        "locality" : "region",
+        "region" : "country-name"
     }
 }

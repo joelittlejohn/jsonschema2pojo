@@ -1,8 +1,9 @@
 {
+    "javaType" : "com.example.AbsoluteRef",
     "type" : "object",
     "properties" : {
         "address" : {
-            "$ref" : "http://json-schema.org/address"
+            "$ref" : "$ABSOLUTE_REF"
         }
     }
 }

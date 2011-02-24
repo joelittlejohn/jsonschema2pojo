@@ -50,13 +50,30 @@ public class CodeGenerationHelper {
      */
     public static File generate(String schema, String targetPackage, boolean generateBuilders) {
 
+        URL schemaResource = CodeGenerationHelper.class.getResource(schema);
+        assertThat("Unable to read schema resource from the classpath", schemaResource, is(notNullValue()));
+
+        return generate(schemaResource, targetPackage, generateBuilders);
+    }
+
+    /**
+     * Invokes the jsonschema2pojo plugin to generate Java types from a given
+     * schema.
+     * 
+     * @param schema
+     *            a URL to be used as the input JSON Schema
+     * @param targetPackage
+     *            the default target package for generated classes
+     * @param generateBuilders
+     *            should builder methods be generated?
+     * @return the directory containing the generated source code
+     */
+    public static File generate(URL schema, String targetPackage, boolean generateBuilders) {
+
         File outputDirectory = createTemporaryOutputFolder();
 
         try {
-            URL schemaResource = CodeGenerationHelper.class.getResource(schema);
-            assertThat("Unable to read schema resource from the classpath", schemaResource, is(notNullValue()));
-
-            File sourceDirectory = new File(schemaResource.toURI());
+            File sourceDirectory = new File(schema.toURI());
 
             Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(sourceDirectory, outputDirectory, targetPackage, generateBuilders, createNiceMock(MavenProject.class));
             pluginMojo.execute();
