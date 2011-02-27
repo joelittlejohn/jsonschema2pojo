@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<repository-metadata>
-    <version>1.0.0</version>
-    <url>https://wiki.jsonschema2pojo.googlecode.com/hg/repository</url>
-    <id>jsonschema2pojo.snapshots</id>
-    <name>Snapshots</name>
-    <layout>maven2</layout>
-    <policy>snapshot</policy>
-</repository-metadata>

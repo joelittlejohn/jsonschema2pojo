@@ -68,7 +68,7 @@
             </snapshots>
             <id>jsonschema2pojo.snapshots</id>
             <name>jsonschema2pojo snapshots</name>
-            <url>https://wiki.jsonschema2pojo.googlecode.com/hg/repository</url>
+            <url>http://wiki.jsonschema2pojo.googlecode.com/hg/repository</url>
         </repository>
     </repositories>
     
