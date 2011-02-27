@@ -53,7 +53,7 @@
 
     <repositories>
         <repository>
-            <!-- adding a temporary snapshots repository until commons-jci is released -->
+            <!-- adding a temporary snapshots repository that can be used until commons-jci is released -->
             <!-- see http://code.google.com/p/jsonschema2pojo/issues/detail?id=10 -->
             <!-- and http://www.mail-archive.com/user@commons.apache.org/msg06021.html -->
             <releases>
