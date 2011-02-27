@@ -50,6 +50,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>       
     </properties>
+
+    <repositories>
+        <repository>
+            <!-- adding a temporary snapshots repository until commons-jci is released -->
+            <!-- see http://code.google.com/p/jsonschema2pojo/issues/detail?id=10 -->
+            <!-- and http://www.mail-archive.com/user@commons.apache.org/msg06021.html -->
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>jsonschema2pojo.snapshots</id>
+            <name>jsonschema2pojo snapshots</name>
+            <url>https://wiki.jsonschema2pojo.googlecode.com/hg/repository</url>
+        </repository>
+    </repositories>
     
     <build>
         <plugins>
