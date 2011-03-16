@@ -8,9 +8,7 @@
         <version>0.1.8-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.googlecode.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-cli</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
 
     <name>jsonschema2pojo-cli</name>
 
@@ -29,6 +27,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <!-- 
                         Fixes filtering in files that contain single '@' characters (e.g. .bat files 
@@ -47,6 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
                 <configuration>
                     <archive>
                         <manifest>
