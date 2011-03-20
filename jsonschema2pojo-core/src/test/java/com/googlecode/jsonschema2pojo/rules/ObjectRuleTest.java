@@ -33,46 +33,15 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 public class ObjectRuleTest {
 
     private static final String TARGET_PACKAGE_NAME = ArrayRuleTest.class.getPackage().getName() + ".test";
 
-    private static final String EXPECTED_RESULT =
-            "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "public class FooBar\n" +
-                    "    implements java.io.Serializable\n{\n\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public java.lang.String toString() {\n" +
-                    "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
-                    "    }\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public int hashCode() {\n" +
-                    "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" +
-                    "    }\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public boolean equals(java.lang.Object other) {\n" +
-                    "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" +
-                    "    }\n\n" +
-                    "}\n";
+    private static final String EXPECTED_RESULT = "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" + "public class FooBar\n" + "    implements java.io.Serializable\n{\n\n\n" + "    @java.lang.Override\n" + "    public java.lang.String toString() {\n" + "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public int hashCode() {\n" + "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public boolean equals(java.lang.Object other) {\n" + "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" + "    }\n\n" + "}\n";
 
-    private static final String EXPECTED_NAME_RESULT =
-            "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "public class MyJavaType\n" +
-                    "    implements java.io.Serializable\n{\n\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public java.lang.String toString() {\n" +
-                    "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
-                    "    }\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public int hashCode() {\n" +
-                    "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" +
-                    "    }\n\n" +
-                    "    @java.lang.Override\n" +
-                    "    public boolean equals(java.lang.Object other) {\n" +
-                    "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" +
-                    "    }\n\n" +
-                    "}\n";
+    private static final String EXPECTED_NAME_RESULT = "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" + "public class MyJavaType\n" + "    implements java.io.Serializable\n{\n\n\n" + "    @java.lang.Override\n" + "    public java.lang.String toString() {\n" + "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public int hashCode() {\n" + "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public boolean equals(java.lang.Object other) {\n" + "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" + "    }\n\n" + "}\n";
 
     private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
     private ObjectRule rule = new ObjectRule(mockRuleFactory);
@@ -97,10 +66,10 @@ public class ObjectRuleTest {
 
         replay(mockSchema, mockRuleFactory);
 
-        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
+        JType result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
         StringWriter output = new StringWriter();
-        result.declare(new JFormatter(output));
+        ((JDefinedClass) result).declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT));
     }
@@ -122,10 +91,10 @@ public class ObjectRuleTest {
 
         replay(mockSchema, mockRuleFactory);
 
-        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
+        JType result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
         StringWriter output = new StringWriter();
-        result.declare(new JFormatter(output));
+        ((JDefinedClass) result).declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_NAME_RESULT));
     }
@@ -162,10 +131,10 @@ public class ObjectRuleTest {
 
         replay(mockRuleFactory, mockDescriptionRule, mockPropertiesRule, mockAdditionalPropertiesRule);
 
-        JDefinedClass result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
+        JType result = rule.apply("fooBar", objectNode, jpackage, mockSchema);
 
         StringWriter output = new StringWriter();
-        result.declare(new JFormatter(output));
+        ((JDefinedClass) result).declare(new JFormatter(output));
 
         assertThat(output.toString(), equalTo(EXPECTED_RESULT));
 
@@ -178,9 +147,9 @@ public class ObjectRuleTest {
 
         JPackage jpackage = new JCodeModel()._package(TARGET_PACKAGE_NAME);
 
-        JDefinedClass existingClass = jpackage._class("ExistingClass");
+        JType existingClass = jpackage._class("ExistingClass");
 
-        JDefinedClass result = rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage, createMock(Schema.class));
+        JType result = rule.apply("existingClass", new ObjectMapper().createObjectNode(), jpackage, createMock(Schema.class));
 
         assertThat(result, is(equalTo(existingClass)));
     }

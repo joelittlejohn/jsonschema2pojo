@@ -19,6 +19,7 @@ package com.googlecode.jsonschema2pojo.rules;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 
 import javax.annotation.Generated;
 
@@ -31,13 +32,16 @@ import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -46,7 +50,7 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
  */
-public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
+public class ObjectRule implements SchemaRule<JPackage, JType> {
 
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
@@ -70,7 +74,13 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
      * {@link Serializable}.
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
+
+        JType superType = getSuperType(nodeName, node, _package, schema);
+
+        if (superType.isPrimitive() || isFinal(superType)) {
+            return superType;
+        }
 
         JDefinedClass jclass;
         try {
@@ -82,6 +92,8 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
         } catch (JClassAlreadyExistsException e) {
             return e.getExistingClass();
         }
+
+        jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
@@ -107,6 +119,23 @@ public class ObjectRule implements SchemaRule<JPackage, JDefinedClass> {
 
         return jclass;
 
+    }
+
+    private boolean isFinal(JType superType) {
+        try {
+            Class<?> javaClass = Class.forName(superType.fullName());
+            return Modifier.isFinal(javaClass.getModifiers());
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    private JType getSuperType(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
+        JType superType = jClassContainer.owner().ref(Object.class);
+        if (node.has("extends")) {
+            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jClassContainer, schema);
+        }
+        return superType;
     }
 
     private void addSerializable(JDefinedClass jclass) {

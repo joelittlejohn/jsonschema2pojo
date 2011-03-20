@@ -24,10 +24,10 @@ import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
 /**
- * Applies the schema rules that represent a property definition.
+ * Applies the "type" schema rule.
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class TypeRule implements SchemaRule<JClassContainer, JType> {
 
@@ -70,7 +70,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
      * @return the Java type which, after reading the details of the given
      *         schema node, most appropriately matches the "type" specified
      * @throws GenerationException
-     *             if the type value found is not recognised.
+     *             if the type valuegeneratableType found is not recognised.
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {

@@ -67,7 +67,7 @@ public class RuleFactoryImpl implements RuleFactory {
     }
 
     @Override
-    public SchemaRule<JPackage, JDefinedClass> getObjectRule() {
+    public SchemaRule<JPackage, JType> getObjectRule() {
         return new ObjectRule(this);
     }
 

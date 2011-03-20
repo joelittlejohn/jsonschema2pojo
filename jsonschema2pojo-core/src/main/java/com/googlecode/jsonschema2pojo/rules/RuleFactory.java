@@ -92,7 +92,7 @@ public interface RuleFactory {
      * 
      * @return a schema rule that can handle the "object" declaration.
      */
-    SchemaRule<JPackage, JDefinedClass> getObjectRule();
+    SchemaRule<JPackage, JType> getObjectRule();
 
     /**
      * Provides a rule instance that should be applied when an "optional"
