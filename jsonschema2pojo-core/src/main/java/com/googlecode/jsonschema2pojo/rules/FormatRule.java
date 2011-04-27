@@ -16,7 +16,9 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import java.net.URI;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -81,7 +83,7 @@ public class FormatRule implements SchemaRule<JType, JType> {
             return baseType.owner().LONG;
 
         } else if (node.getTextValue().equals("regex")) {
-            return baseType.owner().ref(String.class);
+            return baseType.owner().ref(Pattern.class);
 
         } else if (node.getTextValue().equals("color")) {
             return baseType.owner().ref(String.class);
@@ -93,7 +95,7 @@ public class FormatRule implements SchemaRule<JType, JType> {
             return baseType.owner().ref(String.class);
 
         } else if (node.getTextValue().equals("uri")) {
-            return baseType.owner().ref(String.class);
+            return baseType.owner().ref(URI.class);
 
         } else if (node.getTextValue().equals("email")) {
             return baseType.owner().ref(String.class);

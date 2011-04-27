@@ -20,7 +20,10 @@ import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.node.TextNode;
 import org.junit.Test;
@@ -37,30 +40,29 @@ public class FormatRuleTest {
     private FormatRule rule = new FormatRule();
 
     private final String formatValue;
-    private final String expectedTypeName;
+    private final Class<?> expectedType;
 
     @Parameters
-    public static Collection<String[]> data() {
-        return asList(new String[][] {
-                {"date-time", "java.util.Date"},
-                {"date", "java.lang.String"},
-                {"time", "java.lang.String"},
-                {"utc-millisec", "long"},
-                {"regex", "java.lang.String"},
-                {"color", "java.lang.String"},
-                {"style", "java.lang.String"},
-                {"phone", "java.lang.String"},
-                {"phone", "java.lang.String"},
-                {"uri", "java.lang.String"},
-                {"email", "java.lang.String"},
-                {"ip-address", "java.lang.String"},
-                {"ipv6", "java.lang.String"},
-                {"host-name", "java.lang.String"}});
+    public static Collection<Object[]> data() {
+        return asList(new Object[][] {
+                {"date-time", Date.class},
+                {"date", String.class},
+                {"time", String.class},
+                {"utc-millisec", long.class},
+                {"regex", Pattern.class},
+                {"color", String.class},
+                {"style", String.class},
+                {"phone", String.class},
+                {"uri", URI.class},
+                {"email", String.class},
+                {"ip-address", String.class},
+                {"ipv6", String.class},
+                {"host-name", String.class}});
     }
 
-    public FormatRuleTest(String formatValue, String expectedTypeName) {
+    public FormatRuleTest(String formatValue, Class<?> expectedType) {
         this.formatValue = formatValue;
-        this.expectedTypeName = expectedTypeName;
+        this.expectedType = expectedType;
     }
 
     @Test
@@ -69,7 +71,7 @@ public class FormatRuleTest {
 
         JType result = rule.apply("fooBar", formatNode, new JCodeModel().ref(String.class), null);
 
-        assertThat(result.fullName(), equalTo(expectedTypeName));
+        assertThat(result.fullName(), equalTo(expectedType.getName()));
     }
 
     @Test

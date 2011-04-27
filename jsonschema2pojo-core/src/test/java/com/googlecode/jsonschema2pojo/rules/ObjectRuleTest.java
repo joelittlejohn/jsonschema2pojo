@@ -39,9 +39,39 @@ public class ObjectRuleTest {
 
     private static final String TARGET_PACKAGE_NAME = ArrayRuleTest.class.getPackage().getName() + ".test";
 
-    private static final String EXPECTED_RESULT = "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" + "public class FooBar\n" + "    implements java.io.Serializable\n{\n\n\n" + "    @java.lang.Override\n" + "    public java.lang.String toString() {\n" + "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public int hashCode() {\n" + "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public boolean equals(java.lang.Object other) {\n" + "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" + "    }\n\n" + "}\n";
+    private static final String EXPECTED_RESULT =
+            "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+                    "public class FooBar implements java.io.Serializable\n{\n\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public java.lang.String toString() {\n" +
+                    "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public int hashCode() {\n" +
+                    "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public boolean equals(java.lang.Object other) {\n" +
+                    "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" +
+                    "    }\n\n" +
+                    "}\n";
 
-    private static final String EXPECTED_NAME_RESULT = "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" + "public class MyJavaType\n" + "    implements java.io.Serializable\n{\n\n\n" + "    @java.lang.Override\n" + "    public java.lang.String toString() {\n" + "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public int hashCode() {\n" + "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" + "    }\n\n" + "    @java.lang.Override\n" + "    public boolean equals(java.lang.Object other) {\n" + "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" + "    }\n\n" + "}\n";
+    private static final String EXPECTED_NAME_RESULT =
+            "@javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+                    "public class MyJavaType implements java.io.Serializable\n{\n\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public java.lang.String toString() {\n" +
+                    "        return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public int hashCode() {\n" +
+                    "        return org.apache.commons.lang.builder.HashCodeBuilder.reflectionHashCode(this);\n" +
+                    "    }\n\n" +
+                    "    @java.lang.Override\n" +
+                    "    public boolean equals(java.lang.Object other) {\n" +
+                    "        return org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals(this, other);\n" +
+                    "    }\n\n" +
+                    "}\n";
 
     private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
     private ObjectRule rule = new ObjectRule(mockRuleFactory);
