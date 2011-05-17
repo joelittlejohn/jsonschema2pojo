@@ -5,3 +5,5 @@ syntax: glob
 */target/
 target/
 apidocs
+.idea
+*.iml
