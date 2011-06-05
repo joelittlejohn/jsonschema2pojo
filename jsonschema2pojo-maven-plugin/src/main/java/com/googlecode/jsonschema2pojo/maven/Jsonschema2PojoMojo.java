@@ -102,6 +102,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     private boolean includeProjectDependencies = false;
 
     /**
+     * Add the output directory to the project as a source root, so that the
+     * generated java types are compiled and included in the project artifact.
+     * 
+     * @parameter expression="${jsonschema2pojo.addCompileSourceRoot}"
+     *            default-value="true"
+     * @since 0.1.9
+     */
+    private boolean addCompileSourceRoot = true;
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -156,7 +166,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
     public void execute() throws MojoExecutionException {
 
-        project.addCompileSourceRoot(outputDirectory.getPath());
+        if (addCompileSourceRoot) {
+            project.addCompileSourceRoot(outputDirectory.getPath());
+        }
 
         if (includeProjectDependencies) {
             addProjectDependenciesToClasspath();
