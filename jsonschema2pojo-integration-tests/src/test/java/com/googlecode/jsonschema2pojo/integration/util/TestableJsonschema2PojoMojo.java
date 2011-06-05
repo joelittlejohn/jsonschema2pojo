@@ -25,7 +25,7 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 
 /**
  * A plugin mojo that allows the private property values usually only set by
- * maven to be set programatically.
+ * Maven to be set programatically.
  */
 public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
     
@@ -35,7 +35,7 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         setPrivateField("outputDirectory", outputDirectory);
         setPrivateField("project", project);
         setPrivateField("targetPackage", targetPackage);
-        setPrivateField("generateBuilders", String.valueOf(generateBuilders));
+        setPrivateField("generateBuilders", generateBuilders);
         
         return this;
     }

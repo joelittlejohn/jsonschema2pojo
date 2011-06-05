@@ -30,6 +30,7 @@ import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -84,12 +85,8 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
 
         JDefinedClass jclass;
         try {
-            if (node.has("javaType")) {
-                jclass = _package.owner()._class(node.get("javaType").getTextValue());
-            } else {
-                jclass = _package._class(getClassName(nodeName));
-            }
-        } catch (JClassAlreadyExistsException e) {
+            jclass = createClass(nodeName, node, _package);
+        } catch (ClassAlreadyExistsException e) {
             return e.getExistingClass();
         }
 
@@ -118,6 +115,48 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
 
         return jclass;
+
+    }
+
+    /**
+     * Creates a new Java class that will be generated.
+     * 
+     * @param nodeName
+     *            the node name which may be used to dictate the new class name
+     * @param node
+     *            the node representing the schema that caused the need for a
+     *            new class. This node may include a 'javaType' property which
+     *            if present will override the fully qualified name of the newly
+     *            generated class.
+     * @param _package
+     *            the package which may contain a new class after this method
+     *            call
+     * @return a reference to a newly created class
+     * @throws ClassAlreadyExistsException
+     *             if the given arguments cause an attempt to create a class
+     *             that already exists, either on the classpath or in the
+     *             current map of classes to be generated.
+     */
+    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package)
+            throws ClassAlreadyExistsException {
+
+        try {
+            if (node.has("javaType")) {
+                String fqn = node.get("javaType").getTextValue();
+
+                try {
+                    Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
+                    throw new ClassAlreadyExistsException(_package.owner().ref(existingClass));
+                } catch (ClassNotFoundException e) {
+                    return _package.owner()._class(fqn);
+                }
+
+            } else {
+                return _package._class(getClassName(nodeName));
+            }
+        } catch (JClassAlreadyExistsException e) {
+            throw new ClassAlreadyExistsException(e.getExistingClass());
+        }
 
     }
 
