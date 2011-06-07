@@ -16,50 +16,21 @@
 
 package com.googlecode.jsonschema2pojo.maven;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Represents the classpath built from a maven project's dependencies.
  */
 public class ProjectClasspath {
-
-    private final Set<Artifact> artifacts;
-    private final ArtifactResolver artifactResolver;
-    private final List<ArtifactRepository> remoteRepositories;
-    private final ArtifactRepository localRepository;
-
-    /**
-     * Create a new project classpath with the given artifacts and helpers.
-     * 
-     * @param artifacts
-     *            a list of artifacts gathered from a maven project's
-     *            dependencies
-     * @param artifactResolver
-     *            an artifact resolver that can be used to resolve artifact
-     *            references to file handles
-     * @param remoteRepositories
-     *            the remote repositories in scope for gathering artifacts
-     * @param localRepository
-     *            the local repository that can be used to gather artifacts
-     */
-    public ProjectClasspath(Set<Artifact> artifacts, ArtifactResolver artifactResolver, List<ArtifactRepository> remoteRepositories, ArtifactRepository localRepository) {
-        this.artifacts = artifacts;
-        this.artifactResolver = artifactResolver;
-        this.remoteRepositories = remoteRepositories;
-        this.localRepository = localRepository;
-    }
 
     /**
      * Provides a class loader that can be used to load classes from this
@@ -75,28 +46,23 @@ public class ProjectClasspath {
      * @return a classloader that can be used to load any class that is
      *         contained in the set of artifacts that this project classpath is
      *         based on.
-     * 
-     * @throws ArtifactResolutionException
-     *             if one of the artifacts in this classpath cannot be resolved
-     *             due to a unexpected problem in the resolution process, e.g.
-     *             error attempting to download from a remote repository
-     * @throws ArtifactNotFoundException
-     *             if an artifact in this classpath resolves to a file path that
-     *             cannot be found
+     * @throws DependencyResolutionRequiredException
+     *             if maven encounters a problem resolving project dependencies
      */
-    public ClassLoader getClassLoader(ClassLoader parent, Log log) throws ArtifactResolutionException, ArtifactNotFoundException {
+    public ClassLoader getClassLoader(MavenProject project, ClassLoader parent, Log log) throws DependencyResolutionRequiredException {
 
-        List<URL> classpathUrls = new ArrayList<URL>(artifacts.size());
+        @SuppressWarnings("unchecked")
+        List<String> classpathElements = project.getCompileClasspathElements();
 
-        for (Artifact artifact : artifacts) {
+        List<URL> classpathUrls = new ArrayList<URL>(classpathElements.size());
 
-            artifactResolver.resolve(artifact, remoteRepositories, localRepository);
+        for (String classpathElement : classpathElements) {
 
             try {
-                log.debug("Adding project dependency: " + artifact.getGroupId() + ":" + artifact.getArtifactId());
-                classpathUrls.add(artifact.getFile().toURI().toURL());
+                log.debug("Adding project artifact to classpath: " + classpathElement);
+                classpathUrls.add(new File(classpathElement).toURI().toURL());
             } catch (MalformedURLException e) {
-                log.debug("Unable to use classpath entry as it could not be understood as a valid URL: " + artifact.getFile().getAbsolutePath(), e);
+                log.debug("Unable to use classpath entry as it could not be understood as a valid URL: " + classpathElement, e);
             }
 
         }

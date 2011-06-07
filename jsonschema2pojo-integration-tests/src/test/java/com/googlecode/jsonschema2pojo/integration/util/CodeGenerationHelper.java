@@ -27,8 +27,10 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
@@ -75,16 +77,26 @@ public class CodeGenerationHelper {
         try {
             File sourceDirectory = new File(schema.toURI());
 
-            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(sourceDirectory,
-                    outputDirectory, targetPackage, generateBuilders, createNiceMock(MavenProject.class));
+            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(sourceDirectory, outputDirectory, targetPackage, generateBuilders, getMockProject());
             pluginMojo.execute();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (MojoExecutionException e) {
             throw new RuntimeException(e);
+        } catch (DependencyResolutionRequiredException e) {
+            throw new RuntimeException(e);
         }
 
         return outputDirectory;
+    }
+
+    private static MavenProject getMockProject() throws DependencyResolutionRequiredException {
+
+        MavenProject project = createNiceMock(MavenProject.class);
+        expect(project.getCompileClasspathElements()).andStubReturn(new ArrayList<String>());
+        replay(project);
+
+        return project;
     }
 
     /**
@@ -100,8 +112,7 @@ public class CodeGenerationHelper {
         new Compiler().compile(sourceDirectory);
 
         try {
-            return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread()
-                    .getContextClassLoader());
+            return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
