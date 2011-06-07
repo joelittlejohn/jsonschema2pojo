@@ -33,6 +33,9 @@ import com.googlecode.jsonschema2pojo.rules.RuleFactory;
  * When invoked, this goal reads one or more <a
  * href="http://json-schema.org/">JSON Schema</a> documents and generates DTO
  * style Java classes for data binding.
+ * <p>
+ * See <a href=
+ * 'http://jsonschema2pojo.googlecode.com'>jsonschema2pojo.googlecode.com</a>.
  * 
  * @goal generate
  * @phase generate-sources
@@ -64,10 +67,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     private File sourceDirectory;
 
     /**
-     * Package name used for generated Java classes.
+     * Package name used for generated Java classes (for types where a fully
+     * qualified name has not been supplied in the schema using the 'javaType'
+     * property).
      * 
      * @parameter expression="${jsonschema2pojo.targetPackage}"
-     * @required
      * @since 0.1.0
      */
     private String targetPackage;
