@@ -56,9 +56,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
-     * Location of the JSON Schema file(s). Despite the fact that this is
-     * parameter uses 'directory' in its name, it may refer to a single file or
-     * a directory of files.
+     * Location of the JSON Schema file(s). Note: this may refer to a single
+     * file or a directory of files.
      * 
      * @parameter expression="${jsonschema2pojo.sourceDirectory}"
      * @required
@@ -77,8 +76,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
     private String targetPackage;
 
     /**
-     * Whether or not to generate builder-style setters alongside the
-     * void-return ones.
+     * Whether to generate builder-style methods of the form
+     * <code>withXxx(value)</code> (that return <code>this</code>), alongside
+     * the standard, void-return setters.
      * 
      * @parameter expression="${jsonschema2pojo.generateBuilders}"
      *            default-value="false"
