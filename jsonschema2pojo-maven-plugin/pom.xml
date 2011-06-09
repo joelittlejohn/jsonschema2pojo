@@ -30,6 +30,7 @@
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>site</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
