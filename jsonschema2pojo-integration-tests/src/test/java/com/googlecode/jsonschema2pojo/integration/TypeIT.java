@@ -20,6 +20,7 @@ import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelp
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -28,14 +29,14 @@ import org.junit.Test;
 
 public class TypeIT {
 
+    private static File generatedTypesDirectory;
     private static Class<?> classWithManyTypes;
 
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/type/types.json", "com.example", true);
-
-        classWithManyTypes = resultsClassLoader.loadClass("com.example.Types");
+        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true);
+        classWithManyTypes = compile(generatedTypesDirectory).loadClass("com.example.Types");
 
     }
 
@@ -103,11 +104,41 @@ public class TypeIT {
     }
 
     @Test
+    public void objectTypeProducesNewType() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getObjectProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.ObjectProperty"));
+        assertThat(getterMethod.getReturnType().getMethod("getProperty"), is(notNullValue()));
+
+    }
+
+    @Test
     public void defaultTypeProducesObject() throws NoSuchMethodException {
 
         Method getterMethod = classWithManyTypes.getMethod("getDefaultProperty");
 
         assertThat(getterMethod.getReturnType().getName(), is("java.lang.Object"));
+
+    }
+
+    @Test
+    public void reusingTypeFromClasspathProducesNoNewType() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getReusedClasspathType");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.util.Locale"));
+        assertThat(new File(generatedTypesDirectory, "java/util/Locale.java").exists(), is(false));
+
+    }
+
+    @Test
+    public void reusingTypeFromGeneratedTypesProducesNoNewType() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getReusedGeneratedType");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.ObjectProperty"));
+        assertThat(getterMethod.getReturnType().getMethod("getProperty"), is(notNullValue()));
 
     }
 

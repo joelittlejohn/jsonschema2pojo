@@ -23,12 +23,25 @@
             "type" : "any"
         },
         "objectProperty" : {
-            "type" : "object"
+            "type" : "object",
+            "properties" : {
+            	"property" : {
+            		"type" : "string"
+            	}
+            }
         },
         "defaultProperty" : {
         },
         "unknownProperty" : {
             "type" : "some-unknown-type"
+        },
+        "reusedClasspathType" : {
+            "type" : "object",
+            "javaType" : "java.util.Locale"
+        },
+        "reusedGeneratedType" : {
+            "type" : "object",
+            "javaType" : "com.example.ObjectProperty"
         }
     }
 }

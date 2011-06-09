@@ -27,6 +27,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -137,8 +138,9 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
      *             that already exists, either on the classpath or in the
      *             current map of classes to be generated.
      */
-    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package)
-            throws ClassAlreadyExistsException {
+    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
+
+        JDefinedClass newType;
 
         try {
             if (node.has("javaType")) {
@@ -148,16 +150,29 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(_package.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
-                    return _package.owner()._class(fqn);
+                    newType = _package.owner()._class(fqn);
                 }
-
             } else {
-                return _package._class(getClassName(nodeName));
+                newType = _package._class(getClassName(nodeName));
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
+        return addAnnotations(newType);
+
+    }
+
+    /**
+     * Add any class-level annotations required for a newly generated class.
+     * 
+     * @param _class
+     *            the newly generated class
+     * @return
+     */
+    private JDefinedClass addAnnotations(JDefinedClass _class) {
+        _class.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
+        return _class;
     }
 
     private boolean isFinal(JType superType) {
