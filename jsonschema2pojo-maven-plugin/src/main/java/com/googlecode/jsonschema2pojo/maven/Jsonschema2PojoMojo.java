@@ -73,7 +73,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * @parameter expression="${jsonschema2pojo.targetPackage}"
      * @since 0.1.0
      */
-    private String targetPackage;
+    private String targetPackage = "";
 
     /**
      * Whether to generate builder-style methods of the form
@@ -111,7 +111,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo {
      * the command line interface.
      */
     @Override
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = {"NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"}, justification = "Private fields set by Maven.")
     public void execute() throws MojoExecutionException {
 
         if (addCompileSourceRoot) {

@@ -33,7 +33,7 @@ import com.sun.codemodel.JCodeModel;
  * Main class, providing a command line interface for jsonschema2pojo.
  */
 public class Jsonschema2Pojo {
-    
+
     /**
      * Main method, entry point for the application when invoked via the command
      * line. Arguments are expected in POSIX format, invoke with --help for
@@ -48,12 +48,12 @@ public class Jsonschema2Pojo {
      *             specified
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        
+
         Arguments arguments = new Arguments().parse(args);
-        
+
         generate(new File(arguments.getSource()), arguments.getPackageName(), new File(arguments.getTarget()), arguments.getBehaviourProperties());
     }
-    
+
     /**
      * Reads the contents of the given source and initiates schema generation.
      * 
@@ -77,26 +77,26 @@ public class Jsonschema2Pojo {
         SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(behaviourProperties));
 
         JCodeModel codeModel = new JCodeModel();
-        
+
         if (source.isDirectory()) {
             for (File child : source.listFiles()) {
                 if (child.isFile()) {
-                    mapper.generate(codeModel, getNodeName(child), packageName, child.toURI().toURL());
+                    mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
                 }
             }
         } else {
-            mapper.generate(codeModel, getNodeName(source), packageName, source.toURI().toURL());
+            mapper.generate(codeModel, getNodeName(source), defaultString(packageName), source.toURI().toURL());
         }
-        
+
         if (targetDir.exists() || targetDir.mkdirs()) {
             codeModel.build(targetDir);
         } else {
             throw new GenerationException("Could not create or access target directory " + targetDir.getAbsolutePath());
         }
     }
-    
+
     private static String getNodeName(File file) {
         return substringBeforeLast(file.getName(), ".");
     }
-    
+
 }
