@@ -19,8 +19,10 @@ package com.googlecode.jsonschema2pojo.rules;
 import java.util.Iterator;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import com.googlecode.jsonschema2pojo.Schema;
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JDefinedClass;
 
 /**
@@ -61,6 +63,18 @@ public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> 
             ruleFactory.getPropertyRule().apply(property, node.get(property), jclass, schema);
         }
 
+        addOrderingAnnotation(node, jclass);
+
         return jclass;
+    }
+
+    private void addOrderingAnnotation(JsonNode node, JDefinedClass jclass) {
+
+        JAnnotationArrayMember annotationValue = jclass.annotate(JsonPropertyOrder.class).paramArray("value");
+
+        for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
+            annotationValue.param(properties.next());
+        }
+
     }
 }

@@ -60,4 +60,28 @@ public class PropertiesIT {
 
     }
 
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void propertiesAreSerializedInCorrectOrder() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example", false);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
+        Object instance = generatedType.newInstance();
+
+        new PropertyDescriptor("type", generatedType).getWriteMethod().invoke(instance, "1");
+        new PropertyDescriptor("id", generatedType).getWriteMethod().invoke(instance, "2");
+        new PropertyDescriptor("name", generatedType).getWriteMethod().invoke(instance, "3");
+        new PropertyDescriptor("hastickets", generatedType).getWriteMethod().invoke(instance, true);
+        new PropertyDescriptor("starttime", generatedType).getWriteMethod().invoke(instance, "4");
+
+        String serialized = new ObjectMapper().valueToTree(instance).toString();
+
+        assertThat("Properties are not in expected order", serialized.indexOf("type"), is(lessThan(serialized.indexOf("id"))));
+        assertThat("Properties are not in expected order", serialized.indexOf("id"), is(lessThan(serialized.indexOf("name"))));
+        assertThat("Properties are not in expected order", serialized.indexOf("name"), is(lessThan(serialized.indexOf("hastickets"))));
+        assertThat("Properties are not in expected order", serialized.indexOf("hastickets"), is(lessThan(serialized.indexOf("starttime"))));
+
+    }
+
 }
