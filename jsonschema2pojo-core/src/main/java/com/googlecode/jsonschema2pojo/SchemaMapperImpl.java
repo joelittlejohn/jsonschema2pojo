@@ -35,10 +35,11 @@ public class SchemaMapperImpl implements SchemaMapper {
     private final RuleFactory ruleFactory;
 
     /**
-     * Create a schema mapper with the given behavioural properties.
+     * Create a schema mapper with the given {@link RuleFactory}.
      * 
-     * @param behaviourProperties
-     *            A map defining the behavioural properties of this mapper.
+     * @param ruleFactory
+     *            A factory used by this mapper to create Java type generation
+     *            rules.
      */
     public SchemaMapperImpl(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
