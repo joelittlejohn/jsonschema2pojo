@@ -48,7 +48,7 @@ public class FormatRuleTest {
                 {"date-time", Date.class},
                 {"date", String.class},
                 {"time", String.class},
-                {"utc-millisec", long.class},
+                {"utc-millisec", Long.class},
                 {"regex", Pattern.class},
                 {"color", String.class},
                 {"style", String.class},

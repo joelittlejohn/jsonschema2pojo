@@ -49,7 +49,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    private double fooBar;\n\n" +
+        "    private java.lang.Double fooBar;\n\n" +
         "    /**\n" +
         "     * some title\n" +
         "     * <p>\n" +
@@ -58,7 +58,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public double getFooBar() {\n" +
+        "    public java.lang.Double getFooBar() {\n" +
         "        return fooBar;\n" +
         "    }\n\n" +
         "    /**\n" +
@@ -69,10 +69,10 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public void setFooBar(double fooBar) {\n" +
+        "    public void setFooBar(java.lang.Double fooBar) {\n" +
         "        this.fooBar = fooBar;\n" +
         "    }\n\n" +
-        "    public " + TARGET_CLASS_NAME + " withFooBar(double fooBar) {\n" +
+        "    public " + TARGET_CLASS_NAME + " withFooBar(java.lang.Double fooBar) {\n" +
         "        this.fooBar = fooBar;\n" +
         "        return this;\n" +
         "    }\n\n" +
@@ -88,7 +88,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    private double fooBar;\n\n" +
+        "    private java.lang.Double fooBar;\n\n" +
         "    /**\n" +
         "     * some title\n" +
         "     * <p>\n" +
@@ -97,7 +97,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public double getFooBar() {\n" +
+        "    public java.lang.Double getFooBar() {\n" +
         "        return fooBar;\n" +
         "    }\n\n" +
         "    /**\n" +
@@ -108,7 +108,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public void setFooBar(double fooBar) {\n" +
+        "    public void setFooBar(java.lang.Double fooBar) {\n" +
         "        this.fooBar = fooBar;\n" +
         "    }\n\n" +
         "}\n";
@@ -123,7 +123,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    private boolean fooBar;\n\n" +
+        "    private java.lang.Boolean fooBar;\n\n" +
         "    /**\n" +
         "     * some title\n" +
         "     * <p>\n" +
@@ -132,7 +132,7 @@ public class PropertyRuleTest {
         "     * \n" +
         "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public boolean isFooBar() {\n" +
+        "    public java.lang.Boolean getFooBar() {\n" +
         "        return fooBar;\n" +
         "    }\n\n" +
         "    /**\n" +
@@ -140,9 +140,10 @@ public class PropertyRuleTest {
         "     * <p>\n" +
         "     * some bean property\n" +
         "     * (Optional)\n" +
-        "     * \n     */\n" +
+        "     * \n" +
+        "     */\n" +
         "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-        "    public void setFooBar(boolean fooBar) {\n" +
+        "    public void setFooBar(java.lang.Boolean fooBar) {\n" +
         "        this.fooBar = fooBar;\n" +
         "    }\n\n" +
         "}\n";

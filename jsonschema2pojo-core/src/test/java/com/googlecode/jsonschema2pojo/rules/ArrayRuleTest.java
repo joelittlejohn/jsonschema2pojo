@@ -78,9 +78,8 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        Schema schema = createMock(Schema.class);
+        Schema schema = createNiceMock(Schema.class);
         expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
-        schema.setJavaTypeIfEmpty(codeModel.DOUBLE);
         replay(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
@@ -104,9 +103,8 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        Schema schema = createMock(Schema.class);
+        Schema schema = createNiceMock(Schema.class);
         expect(schema.getId()).andReturn(URI.create("http://example/defaultArray")).anyTimes();
-        schema.setJavaTypeIfEmpty(codeModel.BOOLEAN);
         replay(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);

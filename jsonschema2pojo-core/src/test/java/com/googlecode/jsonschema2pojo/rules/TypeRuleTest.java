@@ -90,7 +90,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
-        assertThat(result.fullName(), is(int.class.getName()));
+        assertThat(result.fullName(), is(Integer.class.getName()));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
-        assertThat(result.fullName(), is(double.class.getName()));
+        assertThat(result.fullName(), is(Double.class.getName()));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
-        assertThat(result.fullName(), is(boolean.class.getName()));
+        assertThat(result.fullName(), is(Boolean.class.getName()));
     }
 
     @Test

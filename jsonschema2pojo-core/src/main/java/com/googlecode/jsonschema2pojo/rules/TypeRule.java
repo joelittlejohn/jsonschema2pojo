@@ -19,6 +19,7 @@ package com.googlecode.jsonschema2pojo.rules;
 import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
@@ -83,13 +84,13 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            type = jClassContainer.owner().DOUBLE;
+            type = jClassContainer.owner().ref(Double.class);
         } else if (propertyTypeName.equals("integer")) {
 
-            type = jClassContainer.owner().INT;
+            type = jClassContainer.owner().ref(Integer.class);
         } else if (propertyTypeName.equals("boolean")) {
 
-            type = jClassContainer.owner().BOOLEAN;
+            type = jClassContainer.owner().ref(Boolean.class);
         } else if (propertyTypeName.equals("object")) {
 
             type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);

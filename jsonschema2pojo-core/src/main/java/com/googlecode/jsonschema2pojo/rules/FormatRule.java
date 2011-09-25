@@ -80,7 +80,7 @@ public class FormatRule implements SchemaRule<JType, JType> {
             return baseType.owner().ref(String.class);
 
         } else if (node.getTextValue().equals("utc-millisec")) {
-            return baseType.owner().LONG;
+            return baseType.owner().ref(Long.class);
 
         } else if (node.getTextValue().equals("regex")) {
             return baseType.owner().ref(Pattern.class);

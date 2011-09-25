@@ -81,7 +81,7 @@ public class DefaultIT {
 
         Object instance = classWithDefaults.newInstance();
 
-        Method getter = classWithDefaults.getMethod("isBooleanWithDefault");
+        Method getter = classWithDefaults.getMethod("getBooleanWithDefault");
 
         assertThat((Boolean) getter.invoke(instance), is(equalTo(true)));
 

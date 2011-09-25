@@ -43,9 +43,9 @@ public class TypeIT {
     @Test
     public void booleanTypeProducesBooleans() throws NoSuchMethodException {
 
-        Method getterMethod = classWithManyTypes.getMethod("isBooleanProperty");
+        Method getterMethod = classWithManyTypes.getMethod("getBooleanProperty");
 
-        assertThat(getterMethod.getReturnType().getName(), is("boolean"));
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Boolean"));
 
     }
 
@@ -63,7 +63,7 @@ public class TypeIT {
 
         Method getterMethod = classWithManyTypes.getMethod("getIntegerProperty");
 
-        assertThat(getterMethod.getReturnType().getName(), is("int"));
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Integer"));
 
     }
 
@@ -72,7 +72,7 @@ public class TypeIT {
 
         Method getterMethod = classWithManyTypes.getMethod("getNumberProperty");
 
-        assertThat(getterMethod.getReturnType().getName(), is("double"));
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Double"));
 
     }
 
