@@ -124,7 +124,7 @@ public class EnumRuleTest {
 
     private EnumRule rule = new EnumRule();
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }

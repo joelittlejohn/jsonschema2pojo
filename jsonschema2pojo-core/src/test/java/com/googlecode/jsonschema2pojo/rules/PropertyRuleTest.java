@@ -21,8 +21,6 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -30,6 +28,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -41,169 +40,169 @@ public class PropertyRuleTest {
     private static final String TARGET_CLASS_NAME = PropertyRuleTest.class.getName() + ".DummyClass";
 
     private static final String EXPECTED_NUMBER_RESULT_WITH_BUILDER =
-            "public class DummyClass {\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    private double fooBar;\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public double getFooBar() {\n" +
-                    "        return fooBar;\n" +
-                    "    }\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public void setFooBar(double fooBar) {\n" +
-                    "        this.fooBar = fooBar;\n" +
-                    "    }\n\n" +
-                    "    public " + TARGET_CLASS_NAME + " withFooBar(double fooBar) {\n" +
-                    "        this.fooBar = fooBar;\n" +
-                    "        return this;\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    private double fooBar;\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public double getFooBar() {\n" +
+        "        return fooBar;\n" +
+        "    }\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public void setFooBar(double fooBar) {\n" +
+        "        this.fooBar = fooBar;\n" +
+        "    }\n\n" +
+        "    public " + TARGET_CLASS_NAME + " withFooBar(double fooBar) {\n" +
+        "        this.fooBar = fooBar;\n" +
+        "        return this;\n" +
+        "    }\n\n" +
+        "}\n";
 
     private static final String EXPECTED_NUMBER_RESULT_WITHOUT_BUILDER =
-            "public class DummyClass {\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    private double fooBar;\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public double getFooBar() {\n" +
-                    "        return fooBar;\n" +
-                    "    }\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public void setFooBar(double fooBar) {\n" +
-                    "        this.fooBar = fooBar;\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    private double fooBar;\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public double getFooBar() {\n" +
+        "        return fooBar;\n" +
+        "    }\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public void setFooBar(double fooBar) {\n" +
+        "        this.fooBar = fooBar;\n" +
+        "    }\n\n" +
+        "}\n";
 
     private static final String EXPECTED_BOOLEAN_RESULT_WITHOUT_BUILDER =
-            "public class DummyClass {\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    private boolean fooBar;\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public boolean isFooBar() {\n" +
-                    "        return fooBar;\n" +
-                    "    }\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public void setFooBar(boolean fooBar) {\n" +
-                    "        this.fooBar = fooBar;\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    private boolean fooBar;\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public boolean isFooBar() {\n" +
+        "        return fooBar;\n" +
+        "    }\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public void setFooBar(boolean fooBar) {\n" +
+        "        this.fooBar = fooBar;\n" +
+        "    }\n\n" +
+        "}\n";
 
     private static final String EXPECTED_ENUM_RESULT =
-            "public class DummyClass {\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar getFooBar() {\n" +
-                    "        return fooBar;\n" +
-                    "    }\n\n" +
-                    "    /**\n" +
-                    "     * some title\n" +
-                    "     * <p>\n" +
-                    "     * some bean property\n" +
-                    "     * (Optional)\n" +
-                    "     * \n" +
-                    "     */\n" +
-                    "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
-                    "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
-                    "        this.fooBar = fooBar;\n" +
-                    "    }\n\n" +
-                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "    public static enum FooBar {\n\n" +
-                    "        AB_C(\"ab c\");\n" +
-                    "        private final java.lang.String value;\n\n" +
-                    "        private FooBar(java.lang.String value) {\n" +
-                    "            this.value = value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonValue\n" +
-                    "        @java.lang.Override\n" +
-                    "        public java.lang.String toString() {\n" +
-                    "            return this.value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
-                    "        public static com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fromValue(java.lang.String value) {\n" +
-                    "            for (com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar c: com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar.values()) {\n" +
-                    "                if (c.value.equals(value)) {\n" +
-                    "                    return c;\n" +
-                    "                }\n" +
-                    "            }\n" +
-                    "            throw new java.lang.IllegalArgumentException(value);\n" +
-                    "        }\n\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    private com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar;\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar getFooBar() {\n" +
+        "        return fooBar;\n" +
+        "    }\n\n" +
+        "    /**\n" +
+        "     * some title\n" +
+        "     * <p>\n" +
+        "     * some bean property\n" +
+        "     * (Optional)\n" +
+        "     * \n" +
+        "     */\n" +
+        "    @org.codehaus.jackson.annotate.JsonProperty(\"fooBar\")\n" +
+        "    public void setFooBar(com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fooBar) {\n" +
+        "        this.fooBar = fooBar;\n" +
+        "    }\n\n" +
+        "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+        "    public static enum FooBar {\n\n" +
+        "        AB_C(\"ab c\");\n" +
+        "        private final java.lang.String value;\n\n" +
+        "        private FooBar(java.lang.String value) {\n" +
+        "            this.value = value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @java.lang.Override\n" +
+        "        public java.lang.String toString() {\n" +
+        "            return this.value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        public static com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar fromValue(java.lang.String value) {\n" +
+        "            for (com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar c: com.googlecode.jsonschema2pojo.rules.PropertyRuleTest.DummyClass.FooBar.values()) {\n" +
+        "                if (c.value.equals(value)) {\n" +
+        "                    return c;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            throw new java.lang.IllegalArgumentException(value);\n" +
+        "        }\n\n" +
+        "    }\n\n" +
+        "}\n";
 
     @Before
     public void clearSchemaCache() {
@@ -221,7 +220,7 @@ public class PropertyRuleTest {
         propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(createNiceMock(GenerationConfig.class)));
 
         JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
@@ -235,12 +234,11 @@ public class PropertyRuleTest {
     @Test
     public void applyAddsBeanPropertyIncludingBuilder() throws JClassAlreadyExistsException {
 
-        // TODO: refactor common code between these tests
+        GenerationConfig generationConfig = createMock(GenerationConfig.class);
+        expect(generationConfig.isGenerateBuilders()).andStubReturn(true);
+        replay(generationConfig);
 
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put(RuleFactory.GENERATE_BUILDERS_PROPERTY, "true");
-
-        PropertyRule ruleWithBuilder = new PropertyRule(new RuleFactoryImpl(properties));
+        PropertyRule ruleWithBuilder = new PropertyRule(new RuleFactoryImpl(generationConfig));
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
@@ -270,7 +268,7 @@ public class PropertyRuleTest {
         propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(createNiceMock(GenerationConfig.class)));
 
         JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
@@ -297,7 +295,7 @@ public class PropertyRuleTest {
         propertyNode.put("title", "some title");
         propertyNode.put("optional", true);
 
-        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(null));
+        PropertyRule rule = new PropertyRule(new RuleFactoryImpl(createNiceMock(GenerationConfig.class)));
         JDefinedClass result = rule.apply("fooBar", propertyNode, jclass, createMock(Schema.class));
 
         StringWriter output = new StringWriter();

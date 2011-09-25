@@ -82,7 +82,7 @@ public class AdditionalPropertiesRuleTest {
                     "    }\n\n" +
                     "}\n";
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }

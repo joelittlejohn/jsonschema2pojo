@@ -36,7 +36,7 @@ import com.sun.codemodel.JVar;
 
 /**
  * Applies the "additionalProperties" JSON schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5</a>
  */

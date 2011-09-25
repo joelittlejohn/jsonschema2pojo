@@ -51,7 +51,7 @@ public class Schema {
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.
-     * 
+     *
      * @param id
      *            the id of the schema being created
      * @return a schema object containing the contents of the given path
@@ -111,7 +111,7 @@ public class Schema {
     public void setJavaType(JType javaType) {
         this.javaType = javaType;
     }
-    
+
     public void setJavaTypeIfEmpty(JType javaType) {
         if (this.getJavaType() == null) {
             this.setJavaType(javaType);
@@ -129,7 +129,7 @@ public class Schema {
     public boolean isGenerated() {
         return (javaType != null);
     }
-    
+
     public static synchronized void clearCache() {
         schemas.clear();
     }

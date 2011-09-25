@@ -28,7 +28,7 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
  * Maven to be set programatically.
  */
 public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
-    
+
     public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, MavenProject project) {
 
         setPrivateField("sourceDirectory", sourceDirectory);
@@ -36,18 +36,18 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         setPrivateField("project", project);
         setPrivateField("targetPackage", targetPackage);
         setPrivateField("generateBuilders", generateBuilders);
-        
+
         return this;
     }
-    
+
     private void setPrivateField(String name, Object value) {
-        
+
         try {
+
             Field field = Jsonschema2PojoMojo.class.getDeclaredField(name);
             field.setAccessible(true);
-            
             field.set(this, value);
-            
+
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
@@ -55,7 +55,7 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        
+
     }
-    
+
 }

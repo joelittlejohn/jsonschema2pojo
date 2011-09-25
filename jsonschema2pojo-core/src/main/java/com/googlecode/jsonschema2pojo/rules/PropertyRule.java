@@ -81,8 +81,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JMethod getter = addGetter(jclass, field, nodeName);
         JMethod setter = addSetter(jclass, field, nodeName);
 
-        boolean shouldAddBuilders = Boolean.parseBoolean(ruleFactory.getBehaviourProperty(RuleFactory.GENERATE_BUILDERS_PROPERTY));
-
+        boolean shouldAddBuilders = ruleFactory.getGenerationConfig().isGenerateBuilders();
         if (shouldAddBuilders) {
             addBuilder(jclass, field);
         }

@@ -38,7 +38,7 @@ public class ArrayRuleTest {
 
     private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(null));
 
-    @Before 
+    @Before
     public void clearSchemaCache() {
         Schema.clearCache();
     }

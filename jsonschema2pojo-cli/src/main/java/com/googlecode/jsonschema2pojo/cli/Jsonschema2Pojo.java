@@ -21,8 +21,8 @@ import static org.apache.commons.lang.StringUtils.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
@@ -32,7 +32,10 @@ import com.sun.codemodel.JCodeModel;
 /**
  * Main class, providing a command line interface for jsonschema2pojo.
  */
-public class Jsonschema2Pojo {
+public final class Jsonschema2Pojo {
+
+    private Jsonschema2Pojo() {
+    }
 
     /**
      * Main method, entry point for the application when invoked via the command
@@ -51,47 +54,41 @@ public class Jsonschema2Pojo {
 
         Arguments arguments = new Arguments().parse(args);
 
-        generate(new File(arguments.getSource()), arguments.getPackageName(), new File(arguments.getTarget()), arguments.getBehaviourProperties());
+        generate(arguments);
     }
 
     /**
      * Reads the contents of the given source and initiates schema generation.
      * 
-     * @param source
-     *            the source file or directory from which to read JSON schema
-     *            content
-     * @param packageName
-     *            the target package into which generated types will be placed
-     *            (unless overridden by javaType property in the schema)
-     * @param targetDir
-     *            the output directory into which generated types will be placed
-     * @param behaviourProperties
-     *            additional properties which will influence code generation
+     * @param config
+     *            the configuration options (including source and target paths,
+     *            and other behavioural options) that will control code
+     *            generation
      * @throws FileNotFoundException
      *             if the source path is not found
      * @throws IOException
      *             if the application is unable to read data from the source
      */
-    public static void generate(File source, String packageName, File targetDir, Map<String, String> behaviourProperties) throws FileNotFoundException, IOException {
+    public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
 
-        SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(behaviourProperties));
+        SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(config));
 
         JCodeModel codeModel = new JCodeModel();
 
-        if (source.isDirectory()) {
-            for (File child : source.listFiles()) {
+        if (config.getSource().isDirectory()) {
+            for (File child : config.getSource().listFiles()) {
                 if (child.isFile()) {
-                    mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
+                    mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI().toURL());
                 }
             }
         } else {
-            mapper.generate(codeModel, getNodeName(source), defaultString(packageName), source.toURI().toURL());
+            mapper.generate(codeModel, getNodeName(config.getSource()), defaultString(config.getTargetPackage()), config.getSource().toURI().toURL());
         }
 
-        if (targetDir.exists() || targetDir.mkdirs()) {
-            codeModel.build(targetDir);
+        if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
+            codeModel.build(config.getTargetDirectory());
         } else {
-            throw new GenerationException("Could not create or access target directory " + targetDir.getAbsolutePath());
+            throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
     }
 

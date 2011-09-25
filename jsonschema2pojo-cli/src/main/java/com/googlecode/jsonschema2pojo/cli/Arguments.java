@@ -16,42 +16,37 @@
 
 package com.googlecode.jsonschema2pojo.cli;
 
-import static org.apache.commons.lang.StringUtils.*;
+import java.io.File;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 
 /**
  * Describes and parses the command line arguments supported by the
  * jsonschema2pojo CLI.
  */
-@SuppressWarnings("static-access")
-public class Arguments {
-    
+public class Arguments implements GenerationConfig {
+
+    @Parameter(names = { "-h", "--help" }, description = "Print help information and exit")
+    private boolean showHelp = false;
+
+    @Parameter(names = { "-p", "--package" }, description = "A java package used for generated types")
+    private String targetPackage;
+
+    @Parameter(names = { "-t", "--target" }, description = "The target directory into which generated types will be written", required = true)
+    private File targetDirectory;
+
+    @Parameter(names = { "-s", "--source" }, description = "The source file or directory from which JSON Schema will be read", required = true)
+    private File source;
+
+    @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
+    private boolean generateBuilderMethods = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
-    
-    private static Options options = new Options();
-    static {
-        options.addOption("h", "help", false, "Print help information and exit");
-        options.addOption(OptionBuilder.hasArg().isRequired(false).withDescription("A java package used for generated types").withLongOpt("package").withArgName("package name").create("p"));
-        options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The target directory into which generated types will be written").withLongOpt("target").withArgName("directory").create("t"));
-        options.addOption(OptionBuilder.hasArg().isRequired().withDescription("The source file or directory from which JSON Schema will be read").withLongOpt("source").create("s"));
-        options.addOption(OptionBuilder.hasArg(false).isRequired(false).withDescription("Generate builder-style methods as well as setters").withLongOpt("generate-builders").create("b"));
-    }
-    
-    private String source;
-    private String target;
-    private String packageName;
-    private Map<String, String> behaviourProperties;
-    
+
     /**
      * Parses command line arguments and populates this command line instance.
      * <p>
@@ -64,50 +59,48 @@ public class Arguments {
      * @return an instance of the parsed arguments object
      */
     public Arguments parse(String[] args) {
-        
+
+        JCommander jCommander = new JCommander(this);
+        jCommander.setProgramName("jsonschema2pojo");
+
         try {
-            CommandLine commandLine = new PosixParser().parse(options, args);
-            
-            if (commandLine.hasOption("help")) {
-                printHelp(EXIT_OKAY);
+            jCommander.parse(args);
+
+            if (this.showHelp) {
+                jCommander.usage();
+                exit(EXIT_OKAY);
             }
-            
-            this.source = commandLine.getOptionValue("source");
-            this.packageName = defaultString(commandLine.getOptionValue("package"));
-            this.target = commandLine.getOptionValue("target");
-            
-            this.behaviourProperties = new HashMap<String, String>();
-            
-        } catch (ParseException e) {
-            printHelp(EXIT_ERROR);
+        } catch (ParameterException e) {
+            System.err.println(e.getMessage());
+            jCommander.usage();
+            exit(EXIT_ERROR);
         }
-        
+
         return this;
     }
-    
-    public String getPackageName() {
-        return packageName;
-    }
-    
-    public String getSource() {
+
+    @Override
+    public File getSource() {
         return source;
     }
-    
-    public String getTarget() {
-        return target;
+
+    @Override
+    public File getTargetDirectory() {
+        return targetDirectory;
     }
-    
-    private void printHelp(int status) {
-        new HelpFormatter().printHelp("jsonschema2pojo", options, true);
-        exit(status);
+
+    @Override
+    public String getTargetPackage() {
+        return targetPackage;
     }
-    
+
+    @Override
+    public boolean isGenerateBuilders() {
+        return generateBuilderMethods;
+    }
+
     protected void exit(int status) {
         System.exit(status);
     }
-    
-    public Map<String, String> getBehaviourProperties() {
-        return behaviourProperties;
-    }
-    
+
 }

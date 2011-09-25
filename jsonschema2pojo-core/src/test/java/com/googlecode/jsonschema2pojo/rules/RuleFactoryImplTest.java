@@ -16,13 +16,13 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
+
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 
 public class RuleFactoryImplTest {
 
@@ -62,24 +62,13 @@ public class RuleFactoryImplTest {
     }
 
     @Test
-    public void nullPropertiesAvoidsNullPointer() {
-        RuleFactory ruleFactory = new RuleFactoryImpl(null);
-        assertThat(ruleFactory.getBehaviourProperty("anything"), is(nullValue()));
-    }
+    public void generationConfigIsReturned() {
 
-    @Test
-    public void putAndGetProperties() {
+        GenerationConfig mockGenerationConfig = createMock(GenerationConfig.class);
 
-        String key = "KEY";
-        String value = "VALUE";
+        RuleFactoryImpl ruleFactory = new RuleFactoryImpl(mockGenerationConfig);
 
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put(key, value);
-
-        RuleFactory ruleFactory = new RuleFactoryImpl(properties);
-
-        assertThat(ruleFactory.getBehaviourProperty(key), is(value));
+        assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
 
     }
-
 }

@@ -18,16 +18,14 @@ package com.googlecode.jsonschema2pojo.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
-import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -44,105 +42,129 @@ import com.googlecode.jsonschema2pojo.rules.RuleFactory;
  *      href="http://maven.apache.org/developers/mojo-api-specification.html">Mojo
  *      API Specification</a>
  */
-public class Jsonschema2PojoMojo extends AbstractMojo {
+public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfig {
 
-    /**
-     * Target directory for generated Java source files.
-     * 
-     * @parameter expression="${jsonschema2pojo.outputDirectory}"
-     *            default-value="${project.build.directory}/java-gen"
-     * @since 0.1.0
-     */
-    private File outputDirectory;
+	/**
+	 * Target directory for generated Java source files.
+	 * 
+	 * @parameter expression="${jsonschema2pojo.outputDirectory}"
+	 *            default-value="${project.build.directory}/java-gen"
+	 * @since 0.1.0
+	 */
+	private File outputDirectory;
 
-    /**
-     * Location of the JSON Schema file(s). Note: this may refer to a single
-     * file or a directory of files.
-     * 
-     * @parameter expression="${jsonschema2pojo.sourceDirectory}"
-     * @required
-     * @since 0.1.0
-     */
-    private File sourceDirectory;
+	/**
+	 * Location of the JSON Schema file(s). Note: this may refer to a single
+	 * file or a directory of files.
+	 * 
+	 * @parameter expression="${jsonschema2pojo.sourceDirectory}"
+	 * @required
+	 * @since 0.1.0
+	 */
+	private File sourceDirectory;
 
-    /**
-     * Package name used for generated Java classes (for types where a fully
-     * qualified name has not been supplied in the schema using the 'javaType'
-     * property).
-     * 
-     * @parameter expression="${jsonschema2pojo.targetPackage}"
-     * @since 0.1.0
-     */
-    private String targetPackage = "";
+	/**
+	 * Package name used for generated Java classes (for types where a fully
+	 * qualified name has not been supplied in the schema using the 'javaType'
+	 * property).
+	 * 
+	 * @parameter expression="${jsonschema2pojo.targetPackage}"
+	 * @since 0.1.0
+	 */
+	private String targetPackage = "";
 
-    /**
-     * Whether to generate builder-style methods of the form
-     * <code>withXxx(value)</code> (that return <code>this</code>), alongside
-     * the standard, void-return setters.
-     * 
-     * @parameter expression="${jsonschema2pojo.generateBuilders}"
-     *            default-value="false"
-     * @since 0.1.2
-     */
-    private boolean generateBuilders;
+	/**
+	 * Whether to generate builder-style methods of the form
+	 * <code>withXxx(value)</code> (that return <code>this</code>), alongside
+	 * the standard, void-return setters.
+	 * 
+	 * @parameter expression="${jsonschema2pojo.generateBuilders}"
+	 *            default-value="false"
+	 * @since 0.1.2
+	 */
+	private boolean generateBuilders;
 
-    /**
-     * Add the output directory to the project as a source root, so that the
-     * generated java types are compiled and included in the project artifact.
-     * 
-     * @parameter expression="${jsonschema2pojo.addCompileSourceRoot}"
-     *            default-value="true"
-     * @since 0.1.9
-     */
-    private boolean addCompileSourceRoot = true;
+	/**
+	 * Add the output directory to the project as a source root, so that the
+	 * generated java types are compiled and included in the project artifact.
+	 * 
+	 * @parameter expression="${jsonschema2pojo.addCompileSourceRoot}"
+	 *            default-value="true"
+	 * @since 0.1.9
+	 */
+	private boolean addCompileSourceRoot = true;
 
-    /**
-     * The project being built.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * The project being built.
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * Executes the plugin, to read the given source and behavioural properties
-     * and generate POJOs. The current implementation acts as a wrapper around
-     * the command line interface.
-     */
-    @Override
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = {"NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"}, justification = "Private fields set by Maven.")
-    public void execute() throws MojoExecutionException {
+	/**
+	 * Executes the plugin, to read the given source and behavioural properties
+	 * and generate POJOs. The current implementation acts as a wrapper around
+	 * the command line interface.
+	 */
+	@Override
+	@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = {
+			"NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
+			public void execute() throws MojoExecutionException {
 
-        if (addCompileSourceRoot) {
-            project.addCompileSourceRoot(outputDirectory.getPath());
-        }
+		if (addCompileSourceRoot) {
+			project.addCompileSourceRoot(outputDirectory.getPath());
+		}
 
-        addProjectDependenciesToClasspath();
+		addProjectDependenciesToClasspath();
 
-        Map<String, String> behaviourProperties = new HashMap<String, String>();
-        behaviourProperties.put(RuleFactory.GENERATE_BUILDERS_PROPERTY, "" + generateBuilders);
+		try {
+			Jsonschema2Pojo.generate(this);
+		} catch (IOException e) {
+			throw new MojoExecutionException(
+					"Error generating classes from JSON Schema file(s) "
+					+ sourceDirectory.getPath(), e);
+		}
 
-        try {
-            Jsonschema2Pojo.generate(sourceDirectory, targetPackage, outputDirectory, behaviourProperties);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
-        }
+	}
 
-    }
+	private void addProjectDependenciesToClasspath() {
 
-    private void addProjectDependenciesToClasspath() {
+		try {
 
-        try {
+			ClassLoader oldClassLoader = Thread.currentThread()
+			.getContextClassLoader();
+			ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(
+					project, oldClassLoader, getLog());
+			Thread.currentThread().setContextClassLoader(newClassLoader);
 
-            ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(project, oldClassLoader, getLog());
-            Thread.currentThread().setContextClassLoader(newClassLoader);
+		} catch (DependencyResolutionRequiredException e) {
+			getLog().info(
+					"Skipping addition of project artifacts, there appears to be a dependecy resolution problem",
+					e);
+		}
 
-        } catch (DependencyResolutionRequiredException e) {
-            getLog().info("Skipping addition of project artifacts, there appears to be a dependecy resolution problem", e);
-        }
+	}
 
-    }
+	@Override
+	public boolean isGenerateBuilders() {
+		return generateBuilders;
+	}
+
+	@Override
+	public File getTargetDirectory() {
+		return outputDirectory;
+	}
+
+	@Override
+	public File getSource() {
+		return sourceDirectory;
+	}
+	
+	@Override
+	public String getTargetPackage() {
+		return targetPackage;
+	}
 
 }

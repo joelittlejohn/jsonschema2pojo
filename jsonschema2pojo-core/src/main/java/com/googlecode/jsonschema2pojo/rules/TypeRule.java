@@ -19,7 +19,6 @@ package com.googlecode.jsonschema2pojo.rules;
 import org.codehaus.jackson.JsonNode;
 
 import com.googlecode.jsonschema2pojo.Schema;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
