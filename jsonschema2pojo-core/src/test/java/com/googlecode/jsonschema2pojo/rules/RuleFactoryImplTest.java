@@ -45,8 +45,6 @@ public class RuleFactoryImplTest {
 
         assertThat(ruleFactory.getObjectRule(), notNullValue());
 
-        assertThat(ruleFactory.getOptionalRule(), notNullValue());
-
         assertThat(ruleFactory.getPropertiesRule(), notNullValue());
 
         assertThat(ruleFactory.getPropertyRule(), notNullValue());

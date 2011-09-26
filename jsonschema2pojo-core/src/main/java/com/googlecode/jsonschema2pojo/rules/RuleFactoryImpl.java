@@ -68,11 +68,6 @@ public class RuleFactoryImpl implements RuleFactory {
     }
 
     @Override
-    public SchemaRule<JDocCommentable, JDocComment> getOptionalRule() {
-        return new OptionalRule();
-    }
-
-    @Override
     public SchemaRule<JDefinedClass, JDefinedClass> getPropertiesRule() {
         return new PropertiesRule(this);
     }

@@ -89,18 +89,6 @@ public interface RuleFactory {
     SchemaRule<JPackage, JType> getObjectRule();
 
     /**
-     * Provides a rule instance that should be applied when an "optional"
-     * declaration is found in the schema.
-     * 
-     * @return a schema rule that can handle the "optional" declaration.
-     * @deprecated This rule is deprecated since version 03 of the draft spec.
-     *             Schemas should declare required fields as "required" rather
-     *             than optional fields as "optional"
-     */
-    @Deprecated
-    SchemaRule<JDocCommentable, JDocComment> getOptionalRule();
-
-    /**
      * Provides a rule instance that should be applied when a "required"
      * declaration is found in the schema.
      * 
