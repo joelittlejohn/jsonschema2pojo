@@ -39,7 +39,7 @@ public class RequiredIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        File outputDirectory = generate("/schema/required/required.json", "com.example", true);
+        File outputDirectory = generate("/schema/required/required.json", "com.example", true, false);
         File generatedJavaFile = new File(outputDirectory, "com/example/Required.java");
 
         compile(outputDirectory);

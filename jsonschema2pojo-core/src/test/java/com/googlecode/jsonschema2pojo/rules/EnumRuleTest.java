@@ -39,88 +39,88 @@ public class EnumRuleTest {
     private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
     private static final String EXPECTED_TEXT_RESULT =
-            "public class DummyClass {\n\n\n" +
-                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "    public static enum NewEnum {\n\n" +
-                    "        VALUE_ONE(\"valueOne\"),\n" +
-                    "        VALUE_TWO(\"valueTwo\"),\n" +
-                    "        VALUE_THREE(\"valueThree\");\n" +
-                    "        private final java.lang.String value;\n\n" +
-                    "        private NewEnum(java.lang.String value) {\n" +
-                    "            this.value = value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonValue\n" +
-                    "        @java.lang.Override\n" +
-                    "        public java.lang.String toString() {\n" +
-                    "            return this.value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
-                    "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
-                    "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
-                    "                if (c.value.equals(value)) {\n" +
-                    "                    return c;\n" +
-                    "                }\n" +
-                    "            }\n" +
-                    "            throw new java.lang.IllegalArgumentException(value);\n" +
-                    "        }\n\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n\n" +
+        "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+        "    public static enum NewEnum {\n\n" +
+        "        VALUE_ONE(\"valueOne\"),\n" +
+        "        VALUE_TWO(\"valueTwo\"),\n" +
+        "        VALUE_THREE(\"valueThree\");\n" +
+        "        private final java.lang.String value;\n\n" +
+        "        private NewEnum(java.lang.String value) {\n" +
+        "            this.value = value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @java.lang.Override\n" +
+        "        public java.lang.String toString() {\n" +
+        "            return this.value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
+        "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
+        "                if (c.value.equals(value)) {\n" +
+        "                    return c;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            throw new java.lang.IllegalArgumentException(value);\n" +
+        "        }\n\n" +
+        "    }\n\n" +
+        "}\n";
 
     private static final String EXPECTED_TEXT_WITH_SPACES_RESULT =
-            "public class DummyClass {\n\n\n" +
-                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "    public static enum NewEnum {\n\n" +
-                    "        VALUE_ONE(\"value one\"),\n" +
-                    "        VALUE_TWO(\"value two\"),\n" +
-                    "        VALUE_THREE(\"value three\");\n" +
-                    "        private final java.lang.String value;\n\n" +
-                    "        private NewEnum(java.lang.String value) {\n" +
-                    "            this.value = value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonValue\n" +
-                    "        @java.lang.Override\n" +
-                    "        public java.lang.String toString() {\n" +
-                    "            return this.value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
-                    "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
-                    "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
-                    "                if (c.value.equals(value)) {\n" +
-                    "                    return c;\n" +
-                    "                }\n" +
-                    "            }\n" +
-                    "            throw new java.lang.IllegalArgumentException(value);\n" +
-                    "        }\n\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n\n" +
+        "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+        "    public static enum NewEnum {\n\n" +
+        "        VALUE_ONE(\"value one\"),\n" +
+        "        VALUE_TWO(\"value two\"),\n" +
+        "        VALUE_THREE(\"value three\");\n" +
+        "        private final java.lang.String value;\n\n" +
+        "        private NewEnum(java.lang.String value) {\n" +
+        "            this.value = value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @java.lang.Override\n" +
+        "        public java.lang.String toString() {\n" +
+        "            return this.value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
+        "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
+        "                if (c.value.equals(value)) {\n" +
+        "                    return c;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            throw new java.lang.IllegalArgumentException(value);\n" +
+        "        }\n\n" +
+        "    }\n\n" +
+        "}\n";
 
     private static final String EXPECTED_NUMBER_RESULT =
-            "public class DummyClass {\n\n\n" +
-                    "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
-                    "    public static enum NewEnum {\n\n" +
-                    "        _100(\"100\"),\n" +
-                    "        _200(\"200\"),\n" +
-                    "        _300(\"300\");\n" +
-                    "        private final java.lang.String value;\n\n" +
-                    "        private NewEnum(java.lang.String value) {\n" +
-                    "            this.value = value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonValue\n" +
-                    "        @java.lang.Override\n" +
-                    "        public java.lang.String toString() {\n" +
-                    "            return this.value;\n" +
-                    "        }\n\n" +
-                    "        @org.codehaus.jackson.annotate.JsonCreator\n" +
-                    "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
-                    "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
-                    "                if (c.value.equals(value)) {\n" +
-                    "                    return c;\n" +
-                    "                }\n" +
-                    "            }\n" +
-                    "            throw new java.lang.IllegalArgumentException(value);\n" +
-                    "        }\n\n" +
-                    "    }\n\n" +
-                    "}\n";
+        "public class DummyClass {\n\n\n" +
+        "    @javax.annotation.Generated(\"com.googlecode.jsonschema2pojo\")\n" +
+        "    public static enum NewEnum {\n\n" +
+        "        _100(\"100\"),\n" +
+        "        _200(\"200\"),\n" +
+        "        _300(\"300\");\n" +
+        "        private final java.lang.String value;\n\n" +
+        "        private NewEnum(java.lang.String value) {\n" +
+        "            this.value = value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @java.lang.Override\n" +
+        "        public java.lang.String toString() {\n" +
+        "            return this.value;\n" +
+        "        }\n\n" +
+        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
+        "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
+        "                if (c.value.equals(value)) {\n" +
+        "                    return c;\n" +
+        "                }\n" +
+        "            }\n" +
+        "            throw new java.lang.IllegalArgumentException(value);\n" +
+        "        }\n\n" +
+        "    }\n\n" +
+        "}\n";
 
     private EnumRule rule = new EnumRule();
 
@@ -128,14 +128,14 @@ public class EnumRuleTest {
     public void clearSchemaCache() {
         Schema.clearCache();
     }
-    
+
     @Test(expected = GenerationException.class)
     public void applyFailsWhenEnumAlreadyExists() throws JClassAlreadyExistsException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         jclass._enum("ExistingEnum");
 
-        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass, null);
+        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass, createNiceMock(Schema.class));
     }
 
     @Test

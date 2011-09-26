@@ -30,37 +30,63 @@ import org.junit.Test;
 
 public class ArgumentsTest {
 
-    private final static PrintStream SYSTEM_OUT = System.out;
+    private static final PrintStream SYSTEM_OUT = System.out;
+    private static final PrintStream SYSTEM_ERR = System.err;
     private final ByteArrayOutputStream systemOutCapture = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream systemErrCapture = new ByteArrayOutputStream();
 
     @Before
     public void setUp() {
         System.setOut(new PrintStream(systemOutCapture));
+        System.setErr(new PrintStream(systemErrCapture));
     }
 
     @After
     public void tearDown() {
         System.setOut(SYSTEM_OUT);
+        System.setErr(SYSTEM_ERR);
     }
 
     @Test
     public void parseRecognisesValidArguments() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--source", "/home/source", "--target", "/home/target", "--package", "mypackage"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "--source", "/home/source", "--target", "/home/target", "--package", "mypackage", "--generate-builders", "--use-primitives"
+        });
 
         assertThat(args.getStatus().hasCaptured(), is(false));
         assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is("mypackage"));
+        assertThat(args.isGenerateBuilders(), is(true));
+        assertThat(args.isUsePrimitives(), is(true));
+    }
+
+    @Test
+    public void parseRecognisesShorthandArguments() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P"
+        });
+
+        assertThat(args.getStatus().hasCaptured(), is(false));
+        assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
+        assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
+        assertThat(args.getTargetPackage(), is("mypackage"));
+        assertThat(args.isGenerateBuilders(), is(true));
+        assertThat(args.isUsePrimitives(), is(true));
     }
 
     @Test
     public void packageIsOptional() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"-s", "/home/source", "-t", "/home/target"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "--source", "/home/source", "--target", "/home/target"
+        });
 
         assertThat(args.getStatus().hasCaptured(), is(false));
         assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is(nullValue()));
+        assertThat(args.isGenerateBuilders(), is(false));
+        assertThat(args.isUsePrimitives(), is(false));
     }
 
     @Test
@@ -69,6 +95,8 @@ public class ArgumentsTest {
 
         assertThat(args.getStatus().hasCaptured(), is(true));
         assertThat(args.getStatus().getValue(), is(1));
+        assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--target")));
+        assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--source")));
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
     }
 
@@ -81,7 +109,7 @@ public class ArgumentsTest {
     }
 
     private static class ArgsForTest extends Arguments {
-        protected Capture<Integer> status = new Capture<Integer>();
+        private Capture<Integer> status = new Capture<Integer>();
 
         @Override
         protected void exit(int status) {

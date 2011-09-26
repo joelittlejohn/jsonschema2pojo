@@ -29,13 +29,14 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
  */
 public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
 
-    public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, MavenProject project) {
+    public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, boolean usePrimitives, MavenProject project) {
 
         setPrivateField("sourceDirectory", sourceDirectory);
         setPrivateField("outputDirectory", outputDirectory);
         setPrivateField("project", project);
         setPrivateField("targetPackage", targetPackage);
         setPrivateField("generateBuilders", generateBuilders);
+        setPrivateField("usePrimitives", usePrimitives);
 
         return this;
     }

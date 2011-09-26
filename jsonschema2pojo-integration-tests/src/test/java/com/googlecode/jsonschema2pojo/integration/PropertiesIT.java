@@ -42,7 +42,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nullProperties.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nullProperties.json", "com.example", false, false);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
         Object instance = generatedType.newInstance();
@@ -64,7 +64,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesAreSerializedInCorrectOrder() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example", false, false);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
         Object instance = generatedType.newInstance();
@@ -81,6 +81,20 @@ public class PropertiesIT {
         assertThat("Properties are not in expected order", serialized.indexOf("id"), is(lessThan(serialized.indexOf("name"))));
         assertThat("Properties are not in expected order", serialized.indexOf("name"), is(lessThan(serialized.indexOf("hastickets"))));
         assertThat("Properties are not in expected order", serialized.indexOf("hastickets"), is(lessThan(serialized.indexOf("starttime"))));
+
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", false, true);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+
+        assertThat(new PropertyDescriptor("a", generatedType).getReadMethod().getReturnType().getName(), is("int"));
+        assertThat(new PropertyDescriptor("b", generatedType).getReadMethod().getReturnType().getName(), is("double"));
+        assertThat(new PropertyDescriptor("c", generatedType).getReadMethod().getReturnType().getName(), is("boolean"));
 
     }
 

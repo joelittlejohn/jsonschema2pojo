@@ -26,6 +26,7 @@ import org.codehaus.jackson.node.TextNode;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -35,6 +36,7 @@ import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
 
+    private GenerationConfig config = createNiceMock(GenerationConfig.class);
     private RuleFactory ruleFactory = createMock(RuleFactory.class);
 
     private TypeRule rule = new TypeRule(ruleFactory);
@@ -42,6 +44,11 @@ public class TypeRuleTest {
     @Before
     public void clearSchemaCache() {
         Schema.clearCache();
+    }
+
+    @Before
+    public void wireUpConfig() {
+        expect(ruleFactory.getGenerationConfig()).andReturn(config).anyTimes();
     }
 
     @Test
@@ -88,9 +95,27 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
 
+        replay(ruleFactory, config);
+
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Integer.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesIntegerPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+
+        expect(config.isUsePrimitives()).andReturn(true);
+        replay(ruleFactory, config);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("int"));
     }
 
     @Test
@@ -101,9 +126,27 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
 
+        replay(ruleFactory, config);
+
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Double.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesNumberPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+
+        expect(config.isUsePrimitives()).andReturn(true);
+        replay(ruleFactory, config);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("double"));
     }
 
     @Test
@@ -114,9 +157,27 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "boolean");
 
+        replay(ruleFactory, config);
+
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Boolean.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesBooleanPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "boolean");
+
+        expect(config.isUsePrimitives()).andReturn(true);
+        replay(ruleFactory, config);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("boolean"));
     }
 
     @Test

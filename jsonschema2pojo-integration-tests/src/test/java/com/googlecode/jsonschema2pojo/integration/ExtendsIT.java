@@ -36,7 +36,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithEmbeddedSchemaGeneratesParentType() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/extendsEmbeddedSchema.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/extendsEmbeddedSchema.json", "com.example", false, false);
 
         Class subtype = resultsClassLoader.loadClass("com.example.ExtendsEmbeddedSchema");
         Class supertype = resultsClassLoader.loadClass("com.example.ExtendsEmbeddedSchemaParent");
@@ -49,7 +49,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithRefToAnotherSchema() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/subtypeOfA.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/subtypeOfA.json", "com.example", false, false);
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfAParent");
@@ -62,7 +62,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithRefToAnotherSchemaThatIsAlreadyASubtype() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", false, false);
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfAParent");
@@ -74,7 +74,7 @@ public class ExtendsIT {
     @Test(expected = ClassNotFoundException.class)
     public void extendsStringCausesNoNewTypeToBeGenerated() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/extendsString.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/extendsString.json", "com.example", false, false);
         resultsClassLoader.loadClass("com.example.ExtendsString");
 
     }

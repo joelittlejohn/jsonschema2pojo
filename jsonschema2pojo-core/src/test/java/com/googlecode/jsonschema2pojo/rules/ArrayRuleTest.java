@@ -29,6 +29,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -36,7 +37,8 @@ import com.sun.codemodel.JPackage;
 
 public class ArrayRuleTest {
 
-    private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(null));
+    private final GenerationConfig config = createNiceMock(GenerationConfig.class);
+    private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(config));
 
     @Before
     public void clearSchemaCache() {
@@ -81,6 +83,32 @@ public class ArrayRuleTest {
         Schema schema = createNiceMock(Schema.class);
         expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
         replay(schema);
+
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
+
+        assertThat(propertyType, notNullValue());
+        assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
+        assertThat(propertyType.getTypeParameters().get(0).fullName(), is(Double.class.getName()));
+    }
+
+    @Test
+    public void arrayOfPrimitivesProducesCollectionOfWrapperTypes() {
+        JCodeModel codeModel = new JCodeModel();
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode itemsNode = mapper.createObjectNode();
+        itemsNode.put("type", "number");
+
+        ObjectNode propertyNode = mapper.createObjectNode();
+        propertyNode.put("uniqueItems", false);
+        propertyNode.put("items", itemsNode);
+
+        Schema schema = createNiceMock(Schema.class);
+        expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
+        expect(config.isUsePrimitives()).andReturn(true).anyTimes();
+        replay(schema, config);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 

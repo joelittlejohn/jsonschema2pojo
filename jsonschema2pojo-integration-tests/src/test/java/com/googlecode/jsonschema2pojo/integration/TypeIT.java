@@ -35,7 +35,7 @@ public class TypeIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true);
+        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true, false);
         classWithManyTypes = compile(generatedTypesDirectory).loadClass("com.example.Types");
 
     }

@@ -28,7 +28,7 @@ public class CyclicalRefIT {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void cyclicalRefsAreReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example", false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example", false, false);
 
         Class class1 = resultsClassLoader.loadClass("com.example.RefToSubdirectory2");
         Class class2 = resultsClassLoader.loadClass("com.example.RefToSubdirectory1");

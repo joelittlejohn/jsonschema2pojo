@@ -18,8 +18,8 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
@@ -69,8 +69,6 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
      *            the package into which any newly generated type may be placed
      * @return the Java type which, after reading the details of the given
      *         schema node, most appropriately matches the "type" specified
-     * @throws GenerationException
-     *             if the type valuegeneratableType found is not recognised.
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
@@ -84,25 +82,19 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            type = jClassContainer.owner().ref(Double.class);
+            type = unboxIfNecessary(jClassContainer.owner().ref(Double.class), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
-            type = jClassContainer.owner().ref(Integer.class);
+            type = unboxIfNecessary(jClassContainer.owner().ref(Integer.class), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("boolean")) {
 
-            type = jClassContainer.owner().ref(Boolean.class);
+            type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("object")) {
 
             type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (propertyTypeName.equals("array")) {
 
             type = ruleFactory.getArrayRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
-        } else if (propertyTypeName.equals("null")) {
-
-            type = jClassContainer.owner().ref(Object.class);
-        } else if (propertyTypeName.equals("any")) {
-
-            type = jClassContainer.owner().ref(Object.class);
         } else {
 
             type = jClassContainer.owner().ref(Object.class);
@@ -113,6 +105,14 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
         }
 
         return type;
+    }
+
+    private JType unboxIfNecessary(JType type, GenerationConfig config) {
+        if (config.isUsePrimitives()) {
+            return type.unboxify();
+        } else {
+            return type;
+        }
     }
 
 }

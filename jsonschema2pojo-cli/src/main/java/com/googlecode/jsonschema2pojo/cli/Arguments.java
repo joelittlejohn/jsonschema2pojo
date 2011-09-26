@@ -44,6 +44,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
 
+    @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
+    private boolean usePrimitives = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -97,6 +100,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilderMethods;
+    }
+
+    @Override
+    public boolean isUsePrimitives() {
+        return usePrimitives;
     }
 
     protected void exit(int status) {

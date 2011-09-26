@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.codehaus.jackson.JsonNode;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JType;
 
@@ -33,7 +34,10 @@ import com.sun.codemodel.JType;
  */
 public class FormatRule implements SchemaRule<JType, JType> {
 
-    protected FormatRule() {
+    private final RuleFactory ruleFactory;
+
+    protected FormatRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
 
     /**
@@ -80,7 +84,7 @@ public class FormatRule implements SchemaRule<JType, JType> {
             return baseType.owner().ref(String.class);
 
         } else if (node.getTextValue().equals("utc-millisec")) {
-            return baseType.owner().ref(Long.class);
+            return unboxIfNecessary(baseType.owner().ref(Long.class), ruleFactory.getGenerationConfig());
 
         } else if (node.getTextValue().equals("regex")) {
             return baseType.owner().ref(Pattern.class);
@@ -113,6 +117,14 @@ public class FormatRule implements SchemaRule<JType, JType> {
             return baseType;
         }
 
+    }
+
+    private JType unboxIfNecessary(JType type, GenerationConfig config) {
+        if (config.isUsePrimitives()) {
+            return type.unboxify();
+        } else {
+            return type;
+        }
     }
 
 }

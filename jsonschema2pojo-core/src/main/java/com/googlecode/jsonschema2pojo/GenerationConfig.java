@@ -28,10 +28,19 @@ import java.io.File;
 public interface GenerationConfig {
 
     /**
-     * @return Location of the JSON Schema file(s). Note: this may refer to a
-     *         single file or a directory of files.
+     * @return Whether to generate builder-style methods of the form
+     *         <code>withXxx(value)</code> (that return <code>this</code>),
+     *         alongside the standard, void-return setters.
      */
     boolean isGenerateBuilders();
+
+    /**
+     * @return whether to use primitives (<code>long</code>, <code>double</code>
+     *         , <code>boolean</code>) instead of wrapper types where possible
+     *         when generating bean properties (has the side-effect of making
+     *         those properties non-null).
+     */
+    boolean isUsePrimitives();
 
     /**
      * @return The source file or directory from which JSON Schema will be read
