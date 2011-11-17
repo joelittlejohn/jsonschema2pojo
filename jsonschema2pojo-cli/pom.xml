@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>com.googlecode.jsonschema2pojo</groupId>
-        <version>0.1.11-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
 
     <artifactId>jsonschema2pojo-cli</artifactId>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>com.googlecode.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>0.1.11-SNAPSHOT</version>
+            <version>0.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
