@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# Maven release command:
+#     mvn clean release:clean release:prepare release:perform -DignoreSnapshots -DautoVersionSubmodules
+#
+# Prepares and uploads files for the project downloads area and pushes new docs into the wiki repo
+#
+if [[ ! ("$#" == 3 ) ]]; then 
+    echo 'Usage: upload-release <old version> <new version> <googlecode password>'
+    exit 1
+fi
+
+OLD_VERSION=$1
+VERSION=$2
+WORKING_DIR=/tmp/jsonschema2pojo
+
+# recreate release dir
+rm -rf $WORKING_DIR/$VERSION
+mkdir -p $WORKING_DIR/$VERSION
+pushd $WORKING_DIR
+    pushd $VERSION
+
+        # download artifacts
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION-sources.jar
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.jar
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.bat
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION-sources.jar
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION.jar
+
+        mkdir lib
+        mv jsonschema2pojo-core-$VERSION.jar lib
+
+        # do some shuffling for cleaner script names
+        mv jsonschema2pojo-cli-$VERSION.bat jsonschema2pojo.bat
+        mv jsonschema2pojo-cli-$VERSION.sh jsonschema2pojo
+        chmod +x jsonschema2pojo
+
+        # create the release archives
+        rm -rf ../jsonschema2pojo-$VERSION.tar.gz ../jsonschema2pojo-$VERSION.zip
+        tar czf ../jsonschema2pojo-$VERSION.tar.gz *
+        zip --recurse-paths ../jsonschema2pojo-$VERSION.zip *
+
+        # checkout wiki to update & add docs
+        git clone https://code.google.com/p/jsonschema2pojo.wiki/ wiki
+
+        pushd wiki
+
+            # extract javadocs to wiki
+            mkdir -p javadocs/$VERSION
+            unzip $WORKING_DIR/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar -d javadocs/$VERSION/
+
+            # commit javadocs and push to main repo
+            git add .
+            git commit -m "[release] adding $VERSION javadocs"
+            git push
+
+        popd
+        
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
+        pushd wiki
+        
+            # extract plugin docs
+            mkdir -p site/$VERSION
+            unzip $WORKING_DIR/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
+
+            # commit plugin docs and push to main repo
+            git add .
+            git commit -m "[release] adding $VERSION plugin docs"
+            git push  
+        popd
+
+        pushd wiki
+            
+            # replace any references to old version with new version
+            sed -i 's/$OLD_VERSION/$VERSION/g' *.wiki
+            
+            # commit wiki updates and push to main repo
+            git add .
+            git commit -m "[release] updating wiki links and examples to $VERSION"
+            git push
+
+            # update example 
+            wget http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/com/googlecode/jsonschema2pojo/example/Example.java
+            sed '/BEGIN EXAMPLE/q' GettingStarted.wiki > GettingStarted.wiki.new
+            echo '{{{' >> GettingStarted.wiki.new
+            sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> GettingStarted.wiki.new
+            echo '}}}' >> GettingStarted.wiki.new
+            sed -n '/END EXAMPLE/,$p' GettingStarted.wiki >> GettingStarted.wiki.new
+            mv GettingStarted.wiki.new GettingStarted.wiki
+            rm Example.java
+
+            # commit wiki updates and push to main repo
+            git add .
+            git commit -m "[release] updating example code to $VERSION"
+            git push
+
+        popd
+
+    popd
+
+    # upload to google code
+    googlecode_upload -s "$VERSION binaries, sources, javadocs" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $3 -l Featured jsonschema2pojo-$VERSION.tar.gz 
+    googlecode_upload -s "$VERSION binaries, sources, javadocs" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $3 -l Featured jsonschema2pojo-$VERSION.zip
+
+popd
+
+rm -rf $WORKING_DIR
