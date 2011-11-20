@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import com.googlecode.jsonschema2pojo.DefaultGenerationConfig;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
@@ -42,6 +43,15 @@ public class RuleFactoryImpl implements RuleFactory {
         this.generationConfig = generationConfig;
     }
 
+    /**
+     * Create a rule factory with the default generation config options.
+     * 
+     * @see DefaultGenerationConfig
+     */
+    public RuleFactoryImpl() {
+        this(new DefaultGenerationConfig());
+    }
+    
     @Override
     public SchemaRule<JPackage, JClass> getArrayRule() {
         return new ArrayRule(this);

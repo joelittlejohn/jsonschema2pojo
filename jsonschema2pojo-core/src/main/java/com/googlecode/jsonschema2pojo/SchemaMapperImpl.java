@@ -23,6 +23,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
+import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
@@ -43,6 +44,15 @@ public class SchemaMapperImpl implements SchemaMapper {
      */
     public SchemaMapperImpl(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
+    }
+    
+    /**
+     * Create a schema mapper with the default {@link RuleFactory} implementation.
+     * 
+     * @see RuleFactoryImpl
+     */
+    public SchemaMapperImpl() {
+        this(new RuleFactoryImpl());
     }
 
     @Override
