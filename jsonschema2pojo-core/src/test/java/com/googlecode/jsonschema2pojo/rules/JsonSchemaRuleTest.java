@@ -27,6 +27,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.easymock.Capture;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
@@ -42,6 +43,11 @@ public class JsonSchemaRuleTest {
 
     private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
     private JsonSchemaRule rule = new JsonSchemaRule(mockRuleFactory);
+
+    @Before
+    public void clearSchemaCache() {
+        Schema.clearCache();
+    }
 
     @Test
     public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {

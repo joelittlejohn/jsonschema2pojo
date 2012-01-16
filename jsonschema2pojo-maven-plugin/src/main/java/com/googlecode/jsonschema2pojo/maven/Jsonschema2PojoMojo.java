@@ -107,6 +107,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean addCompileSourceRoot = true;
 
     /**
+     * Skip plugin execution (don't read/validate any schema files, don't
+     * generate any java types).
+     * 
+     * @parameter expression="${jsonschema2pojo.skip}" default-value="false"
+     * @since 0.2.1
+     */
+    private boolean skip = false;
+    
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -123,8 +132,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = {
             "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
-            public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {
 
+        if (skip) {
+            return;
+        }
+        
         if (addCompileSourceRoot) {
             project.addCompileSourceRoot(outputDirectory.getPath());
         }
