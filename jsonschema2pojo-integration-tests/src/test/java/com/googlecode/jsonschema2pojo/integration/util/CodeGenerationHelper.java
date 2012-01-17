@@ -144,7 +144,7 @@ public class CodeGenerationHelper {
 
     }
 
-    private static File createTemporaryOutputFolder() {
+    public static File createTemporaryOutputFolder() {
 
         String tempDirectoryName = System.getProperty("java.io.tmpdir");
         String outputDirectoryName = tempDirectoryName + File.separator + UUID.randomUUID().toString();

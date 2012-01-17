@@ -13,6 +13,12 @@
     <name>jsonschema2pojo-integration-tests</name>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -54,6 +60,22 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- copy dependencies so that tests for Ant task can build a classpath -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/ant-libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -63,6 +85,11 @@
             <artifactId>jsonschema2pojo-maven-plugin</artifactId>
             <version>${project.version}</version>
             <type>maven-plugin</type>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.jsonschema2pojo</groupId>
+            <artifactId>jsonschema2pojo-ant</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
