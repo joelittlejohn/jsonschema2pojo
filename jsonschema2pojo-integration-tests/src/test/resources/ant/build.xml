@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jsonschema2pojo-test" default="generate">
+	<description>Integration test build file that invokes the jsonschema2pojo ant task</description>
+
+	<taskdef name="jsonschema2pojo" classname="com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask">
+		<classpath>
+			<fileset dir="${project.build.directory}/ant-libs">
+				<include name="**/*.jar" />
+			</fileset>
+		</classpath>
+	</taskdef>
+
+	<target name="generate">
+		<jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/primitiveProperties.json" 
+			             targetDirectory="${targetDirectory}" 
+			             targetPackage="com.example"/>
+	</target>
+
+</project>

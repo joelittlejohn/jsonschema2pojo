@@ -16,6 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.ant;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -57,6 +59,26 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void execute() throws BuildException {
 
         if (skip) {
+            return;
+        }
+
+        if (source == null) {
+            log("source attribute is required but was not set");
+            return;
+        }
+
+        if (!source.exists()) {
+            log(source.getAbsolutePath() + " cannot be found");
+            return;
+        }
+        
+        if (targetDirectory == null) {
+            log("targetDirectory attribute is required but was not set");
+            return;
+        }
+        
+        if (isBlank(targetPackage)) {
+            log("targetPackage attribute is required but was not set (default package is not supported)");
             return;
         }
 
