@@ -85,7 +85,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean generateBuilders;
 
     /**
-     * Whether to use primitives (<code>long</code>, <code>double</code> ,
+     * Whether to use primitives (<code>long</code>, <code>double</code>,
      * <code>boolean</code>) instead of wrapper types where possible when
      * generating bean properties (has the side-effect of making those
      * properties non-null).

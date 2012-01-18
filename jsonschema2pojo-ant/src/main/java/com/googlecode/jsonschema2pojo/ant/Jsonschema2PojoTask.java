@@ -16,8 +16,6 @@
 
 package com.googlecode.jsonschema2pojo.ant;
 
-import static org.apache.commons.lang.StringUtils.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -77,11 +75,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
             return;
         }
         
-        if (isBlank(targetPackage)) {
-            log("targetPackage attribute is required but was not set (default package is not supported)");
-            return;
-        }
-
         try {
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {
