@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+	<meta http-equiv="Content-Language" content="en-gb">
+	<title>Jsonschema2Pojo Task</title>
+</head>
+
+<body>
+
+	<h2><a name="taskname">Jsonschema2Pojo</a></h2>
+	<h3>Description</h3>
+	<p>jsonschema2pojo uses the structural rules present in a JSON Schema document to generate DTO style Java classes.</p>
+	
+	<h3>Parameters</h3>
+	<table border="1" cellpadding="2" cellspacing="0">
+	  <tr>
+	    <td valign="top"><b>Attribute</b></td>
+	    <td valign="top"><b>Description</b></td>
+	    <td align="center" valign="top"><b>Required</b></td>
+	  </tr>
+	  <tr>
+	    <td valign="top">source</td>
+	    <td valign="top">The input json schema.</td>
+	    <td align="center" valign="top">Yes</td>
+	  </tr>
+      <tr>
+        <td valign="top">targetDirectory</td>
+        <td valign="top">The directory that generated .java source files will be saved to.</td>
+        <td align="center" valign="top">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">targetPackage</td>
+        <td valign="top">Package name used for generated Java classes (for types where a fully qualified name has not been supplied in the schema using the 'javaType' property).</td>
+        <td align="center" valign="top">No</td>
+      </tr>
+      <tr>
+        <td valign="top">generateBuilders</td>
+        <td valign="top">Whether to generate builder-style methods of the form <code>withXxx(value)</code> (that return <code>this</code>), alongside the standard, void-return setters.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">usePrimitives</td>
+        <td valign="top">Whether to use primitives (<code>long</code>, <code>double</code>, <code>boolean</code>) instead of wrapper types where possible when generating bean properties (has the side-effect of making those.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">skip</td>
+        <td valign="top">Whether to skip type generation entirely (useful when set via a build property to allow quick disabling of this task using a command line property).</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+	</table>
+		
+	<h3>Examples</h3>
+	<pre>
+&lt;taskdef name="jsonschema2pojo" classname="com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask">
+    &lt;classpath> &lt;!-- classpath only required if jars have *NOT* been added to $ANT_HOME/lib -->
+        &lt;fileset dir="my-downloaded-libs">
+            &lt;include name="**/*.jar" />
+        &lt;/fileset>
+    &lt;/classpath>
+&lt;/taskdef>
+
+&lt;target name="generate">
+    &lt;jsonschema2pojo source="address.json" 
+                     targetDirectory="build/generated-types" 
+                     targetPackage="com.example"/>
+&lt;/target>
+	</pre>
+	The above uses the taskdef task to make the jsonschema2pojo task available. The generate target invokes the jsonschema2pojo task to generate java classes based on an input schema called <a href="http://json-schema.org/address">address.json</a>. 
+
+</body>
+</html>
