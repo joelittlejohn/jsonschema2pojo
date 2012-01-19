@@ -74,7 +74,7 @@ pushd $WORKING_DIR
         pushd wiki
             
             # replace any references to old version with new version
-            sed -i 's/$OLD_VERSION/$VERSION/g' *.wiki
+            sed -i "s/$OLD_VERSION/$VERSION/g" *.wiki
             
             # commit wiki updates and push to main repo
             git add .
