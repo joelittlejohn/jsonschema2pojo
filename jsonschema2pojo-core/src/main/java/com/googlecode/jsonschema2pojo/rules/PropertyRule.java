@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import org.apache.commons.lang.WordUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -149,7 +150,24 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getPropertyName(String nodeName) {
+        char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
+        
+        if (containsAny(nodeName, wordDelimiters)) {
+            nodeName = capitalizeTrailingWords(nodeName, wordDelimiters);
+        }
+        
         return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+    }
+
+    private String capitalizeTrailingWords(String nodeName, char[] wordDelimiters) {
+        String capitalizedNodeName = WordUtils.capitalize(nodeName, wordDelimiters);
+        capitalizedNodeName = nodeName.charAt(0) + capitalizedNodeName.substring(1);
+        
+        for (char c : wordDelimiters) {
+            capitalizedNodeName = remove(capitalizedNodeName, c);
+        }
+        
+        return capitalizedNodeName;
     }
 
     private String getSetterName(String propertyName) {
