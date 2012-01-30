@@ -62,5 +62,13 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getTargetPackage() {
         return "";
     }
+    
+    /**
+     * @return an empty array (i.e. no word delimiters)
+     */
+    @Override
+    public char[] getPropertyWordDelimiters() {
+        return new char[] {};
+    }
 
 }

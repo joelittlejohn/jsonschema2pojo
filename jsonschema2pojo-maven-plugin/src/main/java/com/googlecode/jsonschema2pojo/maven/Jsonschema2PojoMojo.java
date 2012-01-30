@@ -116,6 +116,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean skip = false;
     
     /**
+     * The characters that should be considered as word delimiters when creating
+     * Java Bean property names from JSON property names. If blank or not set,
+     * JSON properties will be considered to contain a single word when creating
+     * Java Bean property names.
+     * 
+     * @param expression=${jsonschema2pojo.propertyWordDelimiters} default-value=""
+     * @since 0.2.2
+     */
+    private char[] propertyWordDelimiters;
+    
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -195,6 +206,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getTargetPackage() {
         return targetPackage;
+    }
+    
+    @Override
+    public char[] getPropertyWordDelimiters() {
+        return propertyWordDelimiters;
     }
 
 }

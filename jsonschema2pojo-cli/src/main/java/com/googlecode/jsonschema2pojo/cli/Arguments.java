@@ -47,6 +47,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
+    @Parameter(names = {"-d", "--word-delimiters"}, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
+    private char[] propertyWordDelimiters;
+    
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -107,6 +110,11 @@ public class Arguments implements GenerationConfig {
         return usePrimitives;
     }
 
+    @Override
+    public char[] getPropertyWordDelimiters() {
+        return propertyWordDelimiters;
+    }
+    
     protected void exit(int status) {
         System.exit(status);
     }

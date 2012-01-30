@@ -25,6 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +97,28 @@ public class PropertiesIT {
         assertThat(new PropertyDescriptor("b", generatedType).getReadMethod().getReturnType().getName(), is("double"));
         assertThat(new PropertyDescriptor("c", generatedType).getReadMethod().getReturnType().getName(), is("boolean"));
 
+    }
+    
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        char[] wordDelimiters = new char[] {'_', ' ', '-'}; 
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example", false, true, wordDelimiters);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
+        
+        Object instance = generatedType.newInstance();
+
+        new PropertyDescriptor("propertyWithUnderscores", generatedType).getWriteMethod().invoke(instance, "a_b_c");
+        new PropertyDescriptor("propertyWithHyphens", generatedType).getWriteMethod().invoke(instance, "a-b-c");
+        new PropertyDescriptor("propertyWithMixedDelimiters", generatedType).getWriteMethod().invoke(instance, "a b_c-d");
+        
+        JsonNode jsonified = new ObjectMapper().valueToTree(instance);
+
+        assertThat(jsonified.has("property_with_underscores"), is(true));
+        assertThat(jsonified.has("property-with-hyphens"), is(true));
+        assertThat(jsonified.has("property_with mixed-delimiters"), is(true));
     }
 
 }

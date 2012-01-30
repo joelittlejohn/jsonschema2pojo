@@ -58,4 +58,10 @@ public interface GenerationConfig {
      */
     String getTargetPackage();
 
+    /**
+     * @return an array of characters that should act as word delimiters when
+     *         choosing java bean property names.
+     */
+    char[] getPropertyWordDelimiters();
+
 }
