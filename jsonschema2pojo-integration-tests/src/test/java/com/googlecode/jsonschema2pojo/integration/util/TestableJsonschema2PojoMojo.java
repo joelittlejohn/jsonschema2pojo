@@ -37,7 +37,7 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         setPrivateField("targetPackage", targetPackage);
         setPrivateField("generateBuilders", generateBuilders);
         setPrivateField("usePrimitives", usePrimitives);
-        setPrivateField("propertyWordDelimiters", wordDelimiters);
+        setPrivateField("propertyWordDelimiters", new String(wordDelimiters));
         
         return this;
     }
