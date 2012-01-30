@@ -36,7 +36,7 @@ public class Jsonschema2PojoTaskIT {
         
         ClassLoader resultsClassLoader = compile(outputDirectory);
         
-        Class<?> generatedClass = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
         
         assertThat(generatedClass, is(notNullValue()));
     }

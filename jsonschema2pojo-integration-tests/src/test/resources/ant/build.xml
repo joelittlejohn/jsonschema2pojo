@@ -11,9 +11,10 @@
     </taskdef>
 
     <target name="generate">
-        <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/primitiveProperties.json" 
+        <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/propertiesWithWordDelimiters.json" 
                          targetDirectory="${targetDirectory}" 
-                         targetPackage="com.example"/>
+                         targetPackage="com.example"
+                         propertyWordDelimiters="_- "/>
     </target>
 
 </project>
