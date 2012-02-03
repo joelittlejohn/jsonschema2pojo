@@ -28,6 +28,8 @@ import java.io.File;
 public interface GenerationConfig {
 
     /**
+     * Gets the 'generateBuilders' configuration option.
+     * 
      * @return Whether to generate builder-style methods of the form
      *         <code>withXxx(value)</code> (that return <code>this</code>),
      *         alongside the standard, void-return setters.
@@ -35,6 +37,8 @@ public interface GenerationConfig {
     boolean isGenerateBuilders();
 
     /**
+     * Gets the 'usePrimitives' configuration option.
+     * 
      * @return whether to use primitives (<code>long</code>, <code>double</code>
      *         , <code>boolean</code>) instead of wrapper types where possible
      *         when generating bean properties (has the side-effect of making
@@ -43,22 +47,30 @@ public interface GenerationConfig {
     boolean isUsePrimitives();
 
     /**
+     * Gets the 'source' configuration option.
+     * 
      * @return The source file or directory from which JSON Schema will be read
      */
     File getSource();
 
     /**
+     * Gets the 'targetDirectory' configuration option.
+     * 
      * @return The target directory into which generated types will be written
      *         (may or may not exist before types are written)
      */
     File getTargetDirectory();
 
     /**
+     * Gets the 'targetPackage' configuration option.
+     * 
      * @return The java package used for generated types.
      */
     String getTargetPackage();
 
     /**
+     * Gets the 'propertyWordDelimiters' configuration option.
+     * 
      * @return an array of characters that should act as word delimiters when
      *         choosing java bean property names.
      */

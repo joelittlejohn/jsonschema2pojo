@@ -58,6 +58,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
      * is called).
+     * 
+     * @throws BuildException
+     *             if this task cannot be completed due to some error reading
+     *             schemas, generating types or writing output .java files.
      */
     public void execute() throws BuildException {
 
@@ -88,6 +92,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'generateBuilders' property of this class.
+     * 
      * @param generateBuilders
      *            Whether to generate builder-style methods of the form
      *            <code>withXxx(value)</code> (that return <code>this</code>),
@@ -100,6 +106,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'usePrimitives' property of this class.
+     * 
      * @param usePrimitives
      *            Whether to use primitives (<code>long</code>,
      *            <code>double</code> , <code>boolean</code>) instead of wrapper
@@ -113,6 +121,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets schema file (or directory containing schema files) that should be
+     * used for input.
+     * 
      * @param source
      *            Location of the JSON Schema file(s). Note: this may refer to a
      *            single file or a directory of files.
@@ -122,6 +133,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the target (output) directory for generated source files.
+     * 
      * @param targetDirectory
      *            Target directory for generated Java source files.
      */
@@ -130,6 +143,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the target package for generated types.
+     * 
      * @param targetPackage
      *            Package name used for generated Java classes (for types where
      *            a fully qualified name has not been supplied in the schema
@@ -140,6 +155,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'skip' property of this task.
+     * 
      * @param skip
      *            whether to skip execution of this task
      */
@@ -189,6 +206,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return propertyWordDelimiters;
     }
 
+    /**
+     * Should this task be skipped? (don't read schemas, don't generate types)
+     * 
+     * @return <code>true</code> if this task is disabled
+     */
     public boolean isSkip() {
         return skip;
     }

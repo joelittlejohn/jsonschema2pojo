@@ -171,8 +171,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
             ClassLoader oldClassLoader = Thread.currentThread()
             .getContextClassLoader();
-            ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(
-                    project, oldClassLoader, getLog());
+            ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(project, oldClassLoader, getLog());
             Thread.currentThread().setContextClassLoader(newClassLoader);
 
         } catch (DependencyResolutionRequiredException e) {

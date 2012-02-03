@@ -28,8 +28,8 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
 /**
- * Default implementation of the {@link SchemaMapper} interface, accepting a map
- * of behavioural properties that may influence code generation.
+ * Default implementation of the {@link SchemaMapper} interface, accepting a
+ * factory which will be used to create type generation rules for this mapper.
  */
 public class SchemaMapperImpl implements SchemaMapper {
 

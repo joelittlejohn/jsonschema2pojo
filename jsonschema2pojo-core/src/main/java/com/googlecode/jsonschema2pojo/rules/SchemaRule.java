@@ -21,8 +21,9 @@ import org.codehaus.jackson.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 
 /**
- * Type used to represent a JSON schema rule and can be executed or 'applied' to
- * perform the code generation steps associated with that schema rule.
+ * Represents a JSON Schema rule (production from JSON Schema). Can be executed
+ * or 'applied' to perform the code generation steps associated with that schema
+ * rule.
  * 
  * @param <T>
  *            The type of source code item on which this rule can operate

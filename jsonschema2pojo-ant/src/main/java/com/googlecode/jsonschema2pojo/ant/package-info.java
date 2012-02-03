@@ -15,7 +15,7 @@
  */
 
 /**
- * Provides the classes specifically associated with the Maven plugin for 
+ * Provides the classes specifically associated with the Ant task for 
  * jsonschema2pojo 
  */
-package com.googlecode.jsonschema2pojo.maven;
+package com.googlecode.jsonschema2pojo.ant;
