@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
 import com.sun.codemodel.JCodeModel;
 
@@ -32,10 +31,9 @@ public class Example {
         
         JCodeModel codeModel = new JCodeModel();
         
-        URL source = new File("schema.json").toURI().toURL();
+        URL source = new URL("file:///path/to/my/schema.json");
         
-        SchemaMapper schemaMapper = new SchemaMapperImpl();
-        schemaMapper.generate(codeModel, "ClassName", "com.example", source);
+        new SchemaMapperImpl().generate(codeModel, "ClassName", "com.example", source);
         
         codeModel.build(new File("output"));
         
