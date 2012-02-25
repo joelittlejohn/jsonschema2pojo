@@ -17,10 +17,13 @@
 package com.googlecode.jsonschema2pojo.cli;
 
 import static org.apache.commons.lang.StringUtils.*;
+import static java.util.Arrays.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -76,7 +79,11 @@ public final class Jsonschema2Pojo {
         JCodeModel codeModel = new JCodeModel();
 
         if (config.getSource().isDirectory()) {
-            for (File child : config.getSource().listFiles()) {
+            
+        	List<File> schemaFiles = asList(config.getSource().listFiles());
+        	Collections.sort(schemaFiles);
+            
+			for (File child : schemaFiles) {
                 if (child.isFile()) {
                     mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI().toURL());
                 }
