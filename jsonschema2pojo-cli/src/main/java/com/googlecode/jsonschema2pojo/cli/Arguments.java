@@ -50,6 +50,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-d", "--word-delimiters"}, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
     private char[] propertyWordDelimiters;
     
+    @Parameter(names = {"-l", "--long-integers"}, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
+    private boolean useLongIntegers = false;
+    
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -113,6 +116,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters;
+    }
+    
+    @Override
+    public boolean isUseLongIntegers() {
+    	return useLongIntegers;
     }
     
     protected void exit(int status) {

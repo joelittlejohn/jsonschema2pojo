@@ -35,7 +35,7 @@ public class AbsoluteRefIT {
 
         File schemaWithAbsoluteRef = createSchemaWithAbsoluteRef();
 
-        File generatedOutputDirectory = generate(schemaWithAbsoluteRef.toURI().toURL(), "com.example", false, false);
+        File generatedOutputDirectory = generate(schemaWithAbsoluteRef.toURI().toURL(), "com.example", false, false, false);
         Class<?> absoluteRefClass = compile(generatedOutputDirectory).loadClass("com.example.AbsoluteRef");
 
         Class<?> addressClass = absoluteRefClass.getMethod("getAddress").getReturnType();

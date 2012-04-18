@@ -29,7 +29,7 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
  */
 public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
 
-    public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, boolean usePrimitives, char[] wordDelimiters, MavenProject project) {
+    public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char[] wordDelimiters, MavenProject project) {
 
         setPrivateField("sourceDirectory", sourceDirectory);
         setPrivateField("outputDirectory", outputDirectory);
@@ -37,6 +37,7 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         setPrivateField("targetPackage", targetPackage);
         setPrivateField("generateBuilders", generateBuilders);
         setPrivateField("usePrimitives", usePrimitives);
+        setPrivateField("useLongIntegers", useLongIntegers);
         setPrivateField("propertyWordDelimiters", new String(wordDelimiters));
         
         return this;

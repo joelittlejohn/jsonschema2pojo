@@ -21,6 +21,7 @@ import org.codehaus.jackson.JsonNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
 /**
@@ -85,7 +86,8 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
             type = unboxIfNecessary(jClassContainer.owner().ref(Double.class), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
-            type = unboxIfNecessary(jClassContainer.owner().ref(Integer.class), ruleFactory.getGenerationConfig());
+            JType typeToUseForIntegers = getIntegerType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
+			type = unboxIfNecessary(typeToUseForIntegers, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("boolean")) {
 
             type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
@@ -113,6 +115,14 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
         } else {
             return type;
         }
+    }
+    
+    private JType getIntegerType(JCodeModel owner, GenerationConfig config) {
+    	if (config.isUseLongIntegers()) {
+    		return owner.ref(Long.class);
+    	} else {
+    		return owner.ref(Integer.class);
+    	}
     }
 
 }

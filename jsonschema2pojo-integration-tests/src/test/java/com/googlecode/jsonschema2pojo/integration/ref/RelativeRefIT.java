@@ -37,7 +37,7 @@ public class RelativeRefIT {
 
         Schema.clearCache();
 
-        ClassLoader relativeRefsClassLoader = generateAndCompile("/schema/ref/refsToA.json", "com.example", true, false);
+        ClassLoader relativeRefsClassLoader = generateAndCompile("/schema/ref/refsToA.json", "com.example", true, false, false);
 
         relativeRefsClass = relativeRefsClassLoader.loadClass("com.example.RefsToA");
 

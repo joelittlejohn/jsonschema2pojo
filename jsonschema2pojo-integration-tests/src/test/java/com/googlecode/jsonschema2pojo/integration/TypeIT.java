@@ -24,8 +24,11 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.googlecode.jsonschema2pojo.Schema;
 
 public class TypeIT {
 
@@ -35,9 +38,14 @@ public class TypeIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true, false);
+        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true, false, false);
         classWithManyTypes = compile(generatedTypesDirectory).loadClass("com.example.Types");
 
+    }
+    
+    @Before
+    public void clearSchemaCache() {
+        Schema.clearCache();
     }
 
     @Test
@@ -149,6 +157,27 @@ public class TypeIT {
 
         assertThat(getterMethod.getReturnType().getName(), is("long"));
 
+    }
+    
+    @Test
+    public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, false, true);
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
+        
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+        
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
+
+    }
+
+    @Test
+    public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, true, true);
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
+        
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+        
+        assertThat(getterMethod.getReturnType().getName(), is("long"));   
     }
 
 }

@@ -71,4 +71,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return new char[] {};
     }
 
+    /**
+     * @return <code>false</code> 
+     */
+    @Override
+    public boolean isUseLongIntegers() {
+    	return false;
+    }
+
 }

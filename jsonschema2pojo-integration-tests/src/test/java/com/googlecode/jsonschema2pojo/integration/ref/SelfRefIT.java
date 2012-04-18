@@ -33,7 +33,7 @@ public class SelfRefIT {
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader selfRefsClassLoader = generateAndCompile("/schema/ref/selfRefs.json", "com.example", true, false);
+        ClassLoader selfRefsClassLoader = generateAndCompile("/schema/ref/selfRefs.json", "com.example", true, false, false);
 
         selfRefsClass = selfRefsClassLoader.loadClass("com.example.SelfRefs");
 

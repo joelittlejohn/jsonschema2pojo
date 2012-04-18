@@ -39,7 +39,7 @@ public class TitleIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        File outputDirectory = generate("/schema/title/title.json", "com.example", true, false);
+        File outputDirectory = generate("/schema/title/title.json", "com.example", true, false, false);
         File generatedJavaFile = new File(outputDirectory, "com/example/Title.java");
 
         compile(outputDirectory);

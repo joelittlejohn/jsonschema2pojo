@@ -40,179 +40,202 @@ import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
  */
 public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
-    private boolean generateBuilders;
+	private boolean generateBuilders;
 
-    private boolean usePrimitives;
+	private boolean usePrimitives;
 
-    private File source;
+	private File source;
 
-    private File targetDirectory;
+	private File targetDirectory;
 
-    private String targetPackage;
+	private String targetPackage;
 
-    private boolean skip;
+	private boolean skip;
 
-    private char[] propertyWordDelimiters = new char[] {};
+	private char[] propertyWordDelimiters = new char[] {};
 
-    /**
-     * Execute this task (it's expected that all relevant setters will have been
-     * called by Ant to provide task configuration <em>before</em> this method
-     * is called).
-     * 
-     * @throws BuildException
-     *             if this task cannot be completed due to some error reading
-     *             schemas, generating types or writing output .java files.
-     */
-    public void execute() throws BuildException {
+	private boolean useLongIntegers;
 
-        if (skip) {
-            return;
-        }
+	/**
+	 * Execute this task (it's expected that all relevant setters will have been
+	 * called by Ant to provide task configuration <em>before</em> this method
+	 * is called).
+	 * 
+	 * @throws BuildException
+	 *             if this task cannot be completed due to some error reading
+	 *             schemas, generating types or writing output .java files.
+	 */
+	public void execute() throws BuildException {
 
-        if (source == null) {
-            log("source attribute is required but was not set");
-            return;
-        }
+		if (skip) {
+			return;
+		}
 
-        if (!source.exists()) {
-            log(source.getAbsolutePath() + " cannot be found");
-            return;
-        }
+		if (source == null) {
+			log("source attribute is required but was not set");
+			return;
+		}
 
-        if (targetDirectory == null) {
-            log("targetDirectory attribute is required but was not set");
-            return;
-        }
+		if (!source.exists()) {
+			log(source.getAbsolutePath() + " cannot be found");
+			return;
+		}
 
-        try {
-            Jsonschema2Pojo.generate(this);
-        } catch (IOException e) {
-            throw new BuildException("Error generating classes from JSON Schema file(s) " + source.getPath(), e);
-        }
-    }
+		if (targetDirectory == null) {
+			log("targetDirectory attribute is required but was not set");
+			return;
+		}
 
-    /**
-     * Sets the 'generateBuilders' property of this class.
-     * 
-     * @param generateBuilders
-     *            Whether to generate builder-style methods of the form
-     *            <code>withXxx(value)</code> (that return <code>this</code>),
-     *            alongside the standard, void-return setters.
-     *            <p>
-     *            Default: <code>false</code>.
-     */
-    public void setGenerateBuilders(boolean generateBuilders) {
-        this.generateBuilders = generateBuilders;
-    }
+		try {
+			Jsonschema2Pojo.generate(this);
+		} catch (IOException e) {
+			throw new BuildException(
+					"Error generating classes from JSON Schema file(s) "
+							+ source.getPath(), e);
+		}
+	}
 
-    /**
-     * Sets the 'usePrimitives' property of this class.
-     * 
-     * @param usePrimitives
-     *            Whether to use primitives (<code>long</code>,
-     *            <code>double</code> , <code>boolean</code>) instead of wrapper
-     *            types where possible when generating bean properties (has the
-     *            side-effect of making those properties non-null).
-     *            <p>
-     *            Default: <code>false</code>.
-     */
-    public void setUsePrimitives(boolean usePrimitives) {
-        this.usePrimitives = usePrimitives;
-    }
+	/**
+	 * Sets the 'generateBuilders' property of this class.
+	 * 
+	 * @param generateBuilders
+	 *            Whether to generate builder-style methods of the form
+	 *            <code>withXxx(value)</code> (that return <code>this</code>),
+	 *            alongside the standard, void-return setters.
+	 *            <p>
+	 *            Default: <code>false</code>.
+	 */
+	public void setGenerateBuilders(boolean generateBuilders) {
+		this.generateBuilders = generateBuilders;
+	}
 
-    /**
-     * Sets schema file (or directory containing schema files) that should be
-     * used for input.
-     * 
-     * @param source
-     *            Location of the JSON Schema file(s). Note: this may refer to a
-     *            single file or a directory of files.
-     */
-    public void setSource(File source) {
-        this.source = source;
-    }
+	/**
+	 * Sets the 'usePrimitives' property of this class.
+	 * 
+	 * @param usePrimitives
+	 *            Whether to use primitives (<code>long</code>,
+	 *            <code>double</code> , <code>boolean</code>) instead of wrapper
+	 *            types where possible when generating bean properties (has the
+	 *            side-effect of making those properties non-null).
+	 *            <p>
+	 *            Default: <code>false</code>.
+	 */
+	public void setUsePrimitives(boolean usePrimitives) {
+		this.usePrimitives = usePrimitives;
+	}
 
-    /**
-     * Sets the target (output) directory for generated source files.
-     * 
-     * @param targetDirectory
-     *            Target directory for generated Java source files.
-     */
-    public void setTargetDirectory(File targetDirectory) {
-        this.targetDirectory = targetDirectory;
-    }
+	/**
+	 * Sets the 'useLongIntegers' property of this class
+	 * 
+	 * @param useLongIntegers
+	 *            Whether to use the java type {@link long} (or
+	 *            {@link java.lang.Long}) instead of {@link int} (or
+	 *            {@link java.lang.Integer}) when representing the JSON Schema
+	 *            type 'integer'.
+	 */
+	public void setUseLongIntegers(boolean useLongIntegers) {
+		this.useLongIntegers = useLongIntegers;
+	}
 
-    /**
-     * Sets the target package for generated types.
-     * 
-     * @param targetPackage
-     *            Package name used for generated Java classes (for types where
-     *            a fully qualified name has not been supplied in the schema
-     *            using the 'javaType' property).
-     */
-    public void setTargetPackage(String targetPackage) {
-        this.targetPackage = targetPackage;
-    }
+	/**
+	 * Sets schema file (or directory containing schema files) that should be
+	 * used for input.
+	 * 
+	 * @param source
+	 *            Location of the JSON Schema file(s). Note: this may refer to a
+	 *            single file or a directory of files.
+	 */
+	public void setSource(File source) {
+		this.source = source;
+	}
 
-    /**
-     * Sets the 'skip' property of this task.
-     * 
-     * @param skip
-     *            whether to skip execution of this task
-     */
-    public void setSkip(boolean skip) {
-        this.skip = skip;
-    }
+	/**
+	 * Sets the target (output) directory for generated source files.
+	 * 
+	 * @param targetDirectory
+	 *            Target directory for generated Java source files.
+	 */
+	public void setTargetDirectory(File targetDirectory) {
+		this.targetDirectory = targetDirectory;
+	}
 
-    /**
-     * @param propertyWordDelimiters
-     *            a string containing all of the characters that should be
-     *            considered as word delimiters when creating Java Bean property
-     *            names from JSON property names. If blank or not set, JSON
-     *            properties will be considered to contain a single word when
-     *            creating Java Bean property names.
-     */
-    public void setPropertyWordDelimiters(String propertyWordDelimiters) {
-        this.propertyWordDelimiters = defaultString(propertyWordDelimiters).toCharArray();
-    }
+	/**
+	 * Sets the target package for generated types.
+	 * 
+	 * @param targetPackage
+	 *            Package name used for generated Java classes (for types where
+	 *            a fully qualified name has not been supplied in the schema
+	 *            using the 'javaType' property).
+	 */
+	public void setTargetPackage(String targetPackage) {
+		this.targetPackage = targetPackage;
+	}
 
-    @Override
-    public boolean isGenerateBuilders() {
-        return generateBuilders;
-    }
+	/**
+	 * Sets the 'skip' property of this task.
+	 * 
+	 * @param skip
+	 *            whether to skip execution of this task
+	 */
+	public void setSkip(boolean skip) {
+		this.skip = skip;
+	}
 
-    @Override
-    public boolean isUsePrimitives() {
-        return usePrimitives;
-    }
+	/**
+	 * @param propertyWordDelimiters
+	 *            a string containing all of the characters that should be
+	 *            considered as word delimiters when creating Java Bean property
+	 *            names from JSON property names. If blank or not set, JSON
+	 *            properties will be considered to contain a single word when
+	 *            creating Java Bean property names.
+	 */
+	public void setPropertyWordDelimiters(String propertyWordDelimiters) {
+		this.propertyWordDelimiters = defaultString(propertyWordDelimiters)
+				.toCharArray();
+	}
 
-    @Override
-    public File getSource() {
-        return source;
-    }
+	@Override
+	public boolean isGenerateBuilders() {
+		return generateBuilders;
+	}
 
-    @Override
-    public File getTargetDirectory() {
-        return targetDirectory;
-    }
+	@Override
+	public boolean isUsePrimitives() {
+		return usePrimitives;
+	}
 
-    @Override
-    public String getTargetPackage() {
-        return targetPackage;
-    }
+	@Override
+	public File getSource() {
+		return source;
+	}
 
-    @Override
-    public char[] getPropertyWordDelimiters() {
-        return propertyWordDelimiters;
-    }
+	@Override
+	public File getTargetDirectory() {
+		return targetDirectory;
+	}
 
-    /**
-     * Should this task be skipped? (don't read schemas, don't generate types)
-     * 
-     * @return <code>true</code> if this task is disabled
-     */
-    public boolean isSkip() {
-        return skip;
-    }
+	@Override
+	public String getTargetPackage() {
+		return targetPackage;
+	}
 
+	@Override
+	public char[] getPropertyWordDelimiters() {
+		return propertyWordDelimiters;
+	}
+
+	/**
+	 * Should this task be skipped? (don't read schemas, don't generate types)
+	 * 
+	 * @return <code>true</code> if this task is disabled
+	 */
+	public boolean isSkip() {
+		return skip;
+	}
+
+	@Override
+	public boolean isUseLongIntegers() {
+		return useLongIntegers;
+	}
+	
 }

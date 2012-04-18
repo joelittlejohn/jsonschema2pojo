@@ -37,7 +37,7 @@ public class DefaultIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", true, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", true, false, false);
 
         classWithDefaults = resultsClassLoader.loadClass("com.example.Default");
 

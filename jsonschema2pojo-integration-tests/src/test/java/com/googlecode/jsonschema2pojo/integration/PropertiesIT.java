@@ -43,7 +43,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nullProperties.json", "com.example", false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nullProperties.json", "com.example", false, false, false);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
         Object instance = generatedType.newInstance();
@@ -65,7 +65,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesAreSerializedInCorrectOrder() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example", false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example", false, false, false);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
         Object instance = generatedType.newInstance();
@@ -89,7 +89,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", false, true);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", false, true, false);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -104,7 +104,7 @@ public class PropertiesIT {
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         char[] wordDelimiters = new char[] {'_', ' ', '-'}; 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example", false, true, wordDelimiters);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example", false, true, false, wordDelimiters);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
         

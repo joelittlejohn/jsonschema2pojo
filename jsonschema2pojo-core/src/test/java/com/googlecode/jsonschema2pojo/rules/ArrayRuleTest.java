@@ -59,6 +59,8 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", true);
         propertyNode.put("items", itemsNode);
 
+        replay(config);
+
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, createMock(Schema.class));
 
         assertThat(propertyType, notNullValue());
