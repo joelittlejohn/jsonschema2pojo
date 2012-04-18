@@ -22,7 +22,7 @@ import static org.apache.commons.lang.StringUtils.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class FragmentResolverImpl implements FragmentResolver {
 

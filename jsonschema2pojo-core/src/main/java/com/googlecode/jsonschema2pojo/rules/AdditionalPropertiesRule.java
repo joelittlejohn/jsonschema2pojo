@@ -19,10 +19,9 @@ package com.googlecode.jsonschema2pojo.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonAnyGetter;
-import org.codehaus.jackson.annotate.JsonAnySetter;
-
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -83,7 +82,7 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
-        if (node != null && node.isBoolean() && node.getBooleanValue() == false) {
+        if (node != null && node.isBoolean() && node.asBoolean() == false) {
             // no additional properties allowed
             return jclass;
         }

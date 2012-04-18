@@ -23,10 +23,10 @@ import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 import java.net.URL;
 
-import org.codehaus.jackson.JsonNode;
 import org.easymock.Capture;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.rules.JsonSchemaRule;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;

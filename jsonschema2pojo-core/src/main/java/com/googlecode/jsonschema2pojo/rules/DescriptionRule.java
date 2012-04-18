@@ -16,8 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
@@ -52,7 +51,7 @@ public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment>
     public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
-        javadoc.append(node.getTextValue());
+        javadoc.append(node.asText());
 
         return javadoc;
     }

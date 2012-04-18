@@ -16,8 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
@@ -57,7 +56,7 @@ public class JsonSchemaRule implements SchemaRule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
-            schema = Schema.create(schema, schemaNode.get("$ref").getTextValue());
+            schema = Schema.create(schema, schemaNode.get("$ref").asText());
             schemaNode = schema.getContent();
 
             if (schema.isGenerated()) {

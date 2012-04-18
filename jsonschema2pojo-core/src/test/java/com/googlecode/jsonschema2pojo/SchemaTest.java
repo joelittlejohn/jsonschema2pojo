@@ -46,7 +46,7 @@ public class SchemaTest {
         assertThat(schema, is(notNullValue()));
         assertThat(schema.getId(), is(equalTo(schemaUri)));
         assertThat(schema.getContent().has("description"), is(true));
-        assertThat(schema.getContent().get("description").getTextValue(), is(equalTo("An Address following the convention of http://microformats.org/wiki/hcard")));
+        assertThat(schema.getContent().get("description").asText(), is(equalTo("An Address following the convention of http://microformats.org/wiki/hcard")));
 
     }
 
@@ -91,7 +91,7 @@ public class SchemaTest {
         assertThat(innerSchema, is(notNullValue()));
         assertThat(innerSchema.getId(), is(equalTo(URI.create(expectedUri))));
         assertThat(innerSchema.getContent().has("type"), is(true));
-        assertThat(innerSchema.getContent().get("type").getTextValue(), is("string"));
+        assertThat(innerSchema.getContent().get("type").asText(), is("string"));
 
     }
 
