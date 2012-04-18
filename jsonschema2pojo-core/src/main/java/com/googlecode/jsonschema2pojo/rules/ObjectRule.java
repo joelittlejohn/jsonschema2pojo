@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.Serializable;
@@ -57,7 +58,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
     private final RuleFactory ruleFactory;
-
+    
     protected ObjectRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
@@ -146,6 +147,10 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
             if (node.has("javaType")) {
                 String fqn = node.get("javaType").getTextValue();
 
+                if (isPrimitive(fqn, _package.owner())) {
+                    throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
+                }
+                
                 try {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(_package.owner().ref(existingClass));

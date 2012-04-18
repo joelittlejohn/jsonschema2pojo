@@ -42,6 +42,10 @@
         "reusedGeneratedType" : {
             "type" : "object",
             "javaType" : "com.example.ObjectProperty"
+        },
+        "primitiveJavaType" : {
+        	"type" : "object",
+                "javaType" : "long"
         }
     }
 }

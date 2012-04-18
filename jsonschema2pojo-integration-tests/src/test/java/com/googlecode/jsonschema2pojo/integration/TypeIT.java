@@ -141,5 +141,14 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getMethod("getProperty"), is(notNullValue()));
 
     }
+    
+    @Test
+    public void javaTypeSupportsPrimitiveTypes() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getPrimitiveJavaType");
+
+        assertThat(getterMethod.getReturnType().getName(), is("long"));
+
+    }
 
 }

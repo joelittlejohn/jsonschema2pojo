@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.exception;
 
-import com.sun.codemodel.JClass;
+import com.sun.codemodel.JType;
 
 /**
  * Thrown to indicate that an attempt to create a new class failed, because a
@@ -25,7 +25,7 @@ import com.sun.codemodel.JClass;
  */
 public class ClassAlreadyExistsException extends Exception {
 
-    private final JClass existingClass;
+    private final JType existingClass;
 
     /**
      * Creates a new exception where the given existing class was found to
@@ -36,7 +36,7 @@ public class ClassAlreadyExistsException extends Exception {
      *            classes to be generated) when attempt to create a new class
      *            was made.
      */
-    public ClassAlreadyExistsException(JClass existingClass) {
+    public ClassAlreadyExistsException(JType existingClass) {
         this.existingClass = existingClass;
     }
 
@@ -47,7 +47,7 @@ public class ClassAlreadyExistsException extends Exception {
      *         classes to be generated) when attempt to create a new class was
      *         made.
      */
-    public JClass getExistingClass() {
+    public JType getExistingClass() {
         return existingClass;
     }
 
