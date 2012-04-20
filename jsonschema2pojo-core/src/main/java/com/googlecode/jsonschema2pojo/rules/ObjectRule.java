@@ -19,7 +19,6 @@ package com.googlecode.jsonschema2pojo.rules;
 import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.apache.commons.lang.StringUtils.*;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 
 import javax.annotation.Generated;
@@ -96,7 +95,6 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
 
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
-        addSerializable(jclass);
 
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
@@ -197,9 +195,6 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
         return superType;
     }
 
-    private void addSerializable(JDefinedClass jclass) {
-        jclass._implements(Serializable.class);
-    }
 
     private void addGeneratedAnnotation(JDefinedClass jclass) {
         JAnnotationUse generated = jclass.annotate(Generated.class);
