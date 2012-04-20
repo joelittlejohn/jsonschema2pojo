@@ -19,9 +19,8 @@ package com.googlecode.jsonschema2pojo;
 import java.io.IOException;
 import java.net.URL;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
 import com.sun.codemodel.JCodeModel;

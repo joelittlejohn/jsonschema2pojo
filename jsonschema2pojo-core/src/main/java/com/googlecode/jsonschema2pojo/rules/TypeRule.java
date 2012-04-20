@@ -16,8 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassContainer;
@@ -74,7 +73,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
 
-        String propertyTypeName = node.has("type") ? node.get("type").getTextValue() : DEFAULT_TYPE_NAME;
+        String propertyTypeName = node.has("type") ? node.get("type").asText() : DEFAULT_TYPE_NAME;
 
         JType type;
 

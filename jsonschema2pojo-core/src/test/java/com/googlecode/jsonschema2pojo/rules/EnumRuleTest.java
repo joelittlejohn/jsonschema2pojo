@@ -22,11 +22,11 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.StringWriter;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -49,12 +49,12 @@ public class EnumRuleTest {
         "        private NewEnum(java.lang.String value) {\n" +
         "            this.value = value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @com.fasterxml.jackson.annotation.JsonValue\n" +
         "        @java.lang.Override\n" +
         "        public java.lang.String toString() {\n" +
         "            return this.value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        @com.fasterxml.jackson.annotation.JsonCreator\n" +
         "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
         "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
         "                if (c.value.equals(value)) {\n" +
@@ -77,12 +77,12 @@ public class EnumRuleTest {
         "        private NewEnum(java.lang.String value) {\n" +
         "            this.value = value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @com.fasterxml.jackson.annotation.JsonValue\n" +
         "        @java.lang.Override\n" +
         "        public java.lang.String toString() {\n" +
         "            return this.value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        @com.fasterxml.jackson.annotation.JsonCreator\n" +
         "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
         "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
         "                if (c.value.equals(value)) {\n" +
@@ -105,12 +105,12 @@ public class EnumRuleTest {
         "        private NewEnum(java.lang.String value) {\n" +
         "            this.value = value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonValue\n" +
+        "        @com.fasterxml.jackson.annotation.JsonValue\n" +
         "        @java.lang.Override\n" +
         "        public java.lang.String toString() {\n" +
         "            return this.value;\n" +
         "        }\n\n" +
-        "        @org.codehaus.jackson.annotate.JsonCreator\n" +
+        "        @com.fasterxml.jackson.annotation.JsonCreator\n" +
         "        public static com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum fromValue(java.lang.String value) {\n" +
         "            for (com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum c: com.googlecode.jsonschema2pojo.rules.ArrayRuleTest.DummyClass.NewEnum.values()) {\n" +
         "                if (c.value.equals(value)) {\n" +

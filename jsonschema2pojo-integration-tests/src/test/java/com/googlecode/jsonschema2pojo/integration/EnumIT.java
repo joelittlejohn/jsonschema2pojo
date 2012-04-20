@@ -25,12 +25,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EnumIT {
 
@@ -140,7 +141,7 @@ public class EnumIT {
         assertThat(jsonTree.size(), is(1));
         assertThat(jsonTree.has("enumProperty"), is(true));
         assertThat(jsonTree.get("enumProperty").isTextual(), is(true));
-        assertThat(jsonTree.get("enumProperty").getTextValue(), is("3rd one"));
+        assertThat(jsonTree.get("enumProperty").asText(), is("3rd one"));
     }
 
     @Test

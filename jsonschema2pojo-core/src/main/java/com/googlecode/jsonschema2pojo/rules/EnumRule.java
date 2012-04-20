@@ -25,10 +25,9 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonValue;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
@@ -158,10 +157,10 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
     }
     
     private void addEnumConstants(JsonNode node, JDefinedClass _enum) {
-        for (Iterator<JsonNode> values = node.getElements(); values.hasNext();) {
+        for (Iterator<JsonNode> values = node.elements(); values.hasNext();) {
             JsonNode value = values.next();
-            JEnumConstant constant = _enum.enumConstant(getConstantName(value.getValueAsText()));
-            constant.arg(JExpr.lit(value.getValueAsText()));
+            JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText()));
+            constant.arg(JExpr.lit(value.asText()));
         }
     }
     

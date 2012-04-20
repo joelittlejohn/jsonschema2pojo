@@ -21,8 +21,7 @@ import static org.apache.commons.lang.StringUtils.*;
 import java.util.List;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
@@ -76,7 +75,7 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
     @Override
     public JClass apply(String nodeName, JsonNode node, JPackage jpackage, Schema schema) {
 
-        boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").getBooleanValue();
+        boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
         
         JType itemType;
         if (node.has("items")) {

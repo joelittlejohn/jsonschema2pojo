@@ -26,10 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.util.StdDateFormat;
-import org.codehaus.jackson.node.ArrayNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClass;
@@ -71,7 +70,7 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
 
-        boolean defaultPresent = node != null && isNotEmpty(node.getValueAsText());
+        boolean defaultPresent = node != null && isNotEmpty(node.asText());
 
         String fieldType = field.type().fullName();
 
@@ -94,19 +93,19 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
         fieldType = fieldType.unboxify();
 
         if (fieldType.fullName().equals(String.class.getName())) {
-            return JExpr.lit(node.getValueAsText());
+            return JExpr.lit(node.asText());
 
         } else if (fieldType.fullName().equals(int.class.getName())) {
-            return JExpr.lit(Integer.parseInt(node.getValueAsText()));
+            return JExpr.lit(Integer.parseInt(node.asText()));
 
         } else if (fieldType.fullName().equals(double.class.getName())) {
-            return JExpr.lit(Double.parseDouble(node.getValueAsText()));
+            return JExpr.lit(Double.parseDouble(node.asText()));
 
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
-            return JExpr.lit(Boolean.parseBoolean(node.getValueAsText()));
+            return JExpr.lit(Boolean.parseBoolean(node.asText()));
 
         } else if (fieldType.fullName().equals(Date.class.getName())) {
-            long millisecs = parseDateToMillisecs(node.getValueAsText());
+            long millisecs = parseDateToMillisecs(node.asText());
 
             JInvocation newDate = JExpr._new(fieldType.owner().ref(Date.class));
             newDate.arg(JExpr.lit(millisecs));
@@ -114,7 +113,7 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
             return newDate;
 
         } else if (fieldType.fullName().equals(long.class.getName())) {
-            return JExpr.lit(Long.parseLong(node.getValueAsText()));
+            return JExpr.lit(Long.parseLong(node.asText()));
 
         } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
 
@@ -204,7 +203,7 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
     private JExpression getDefaultEnum(JType fieldType, JsonNode node) {
 
         JInvocation invokeFromValue = ((JClass) fieldType).staticInvoke("fromValue");
-        invokeFromValue.arg(node.getValueAsText());
+        invokeFromValue.arg(node.asText());
 
         return invokeFromValue;
 

@@ -19,9 +19,9 @@ package com.googlecode.jsonschema2pojo.rules;
 import static org.apache.commons.lang.StringUtils.*;
 
 import org.apache.commons.lang.WordUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JAnnotationUse;

@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Resolves fragments of a schema.
