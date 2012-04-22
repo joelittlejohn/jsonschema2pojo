@@ -32,10 +32,12 @@ pushd $WORKING_DIR
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.bat
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION-sources.jar
-        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION.jar
 
-        mkdir lib
-        mv jsonschema2pojo-core-$VERSION.jar lib
+	# download dependencies for cli
+        wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
+	mvn dependency:copy-dependencies -DincludeScope=runtime
+	mv target/lib .
+	rm -r target pom.xml
 
         # do some shuffling for cleaner script names
         mv jsonschema2pojo-cli-$VERSION.bat jsonschema2pojo.bat
@@ -112,3 +114,7 @@ pushd $WORKING_DIR
 popd
 
 rm -rf $WORKING_DIR
+
+echo Release complete. Next steps:
+echo    - Remove \'Featured\' label from older downloads
+echo    - Replace $OLD_VERSION with $VERSION in all text and links on project homepage
