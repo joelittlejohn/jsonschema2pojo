@@ -126,7 +126,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 	 *            default-value=""
 	 * @since 0.2.2
 	 */
-	private String propertyWordDelimiters;
+	private String propertyWordDelimiters = "";
 
 	/**
 	 * Whether to use the java type <code>long</code> (or
