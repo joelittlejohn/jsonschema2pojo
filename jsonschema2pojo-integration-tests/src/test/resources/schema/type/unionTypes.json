@@ -1,0 +1,14 @@
+{
+    "type" : "object",
+    "properties" : {
+        "booleanProperty" : {
+            "type" : ["boolean", "string"]
+        },
+        "stringProperty" : {
+            "type" : ["string"]
+        },
+        "integerProperty" : {
+            "type" : ["integer", "null"]
+        }
+    }
+}

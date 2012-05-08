@@ -180,4 +180,22 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getName(), is("long"));   
     }
 
+    @Test
+    public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+        File generatedTypesDirectory = generate("/schema/type/unionTypes.json", "com.example", true, false, false);
+        Class<?> classWithUnionProperties = compile(generatedTypesDirectory).loadClass("com.example.UnionTypes");
+
+        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        
+        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));   
+
+        Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
+        
+        assertThat(stringGetter.getReturnType().getName(), is("java.lang.String"));   
+
+        Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
+        
+        assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));   
+}
+    
 }

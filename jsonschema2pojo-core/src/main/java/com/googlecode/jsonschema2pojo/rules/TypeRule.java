@@ -73,7 +73,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
 
-        String propertyTypeName = node.has("type") ? node.get("type").asText() : DEFAULT_TYPE_NAME;
+        String propertyTypeName = getTypeName(node);
 
         JType type;
 
@@ -107,6 +107,18 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
 
         return type;
     }
+
+	private String getTypeName(JsonNode node) {
+		if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0 ) {
+			return node.get("type").get(0).asText();
+		}
+		
+		if (node.has("type")) {
+			return node.get("type").asText();
+		}
+		
+		return DEFAULT_TYPE_NAME;
+	}
 
     private JType unboxIfNecessary(JType type, GenerationConfig config) {
         if (config.isUsePrimitives()) {
