@@ -48,7 +48,7 @@ public class Arguments implements GenerationConfig {
     private boolean usePrimitives = false;
 
     @Parameter(names = {"-d", "--word-delimiters"}, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
-    private char[] propertyWordDelimiters;
+    private String propertyWordDelimiters;
     
     @Parameter(names = {"-l", "--long-integers"}, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
@@ -115,7 +115,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public char[] getPropertyWordDelimiters() {
-        return propertyWordDelimiters;
+        return propertyWordDelimiters.toCharArray();
     }
     
     @Override
