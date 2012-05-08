@@ -19,7 +19,6 @@ package com.googlecode.jsonschema2pojo.rules;
 import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.apache.commons.lang.StringUtils.*;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 
 import javax.annotation.Generated;
@@ -27,9 +26,9 @@ import javax.annotation.Generated;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -96,7 +95,6 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
 
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
-        addSerializable(jclass);
 
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
@@ -145,7 +143,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
 
         try {
             if (node.has("javaType")) {
-                String fqn = node.get("javaType").getTextValue();
+                String fqn = node.get("javaType").asText();
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
@@ -197,9 +195,6 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
         return superType;
     }
 
-    private void addSerializable(JDefinedClass jclass) {
-        jclass._implements(Serializable.class);
-    }
 
     private void addGeneratedAnnotation(JDefinedClass jclass) {
         JAnnotationUse generated = jclass.annotate(Generated.class);

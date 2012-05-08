@@ -26,12 +26,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.node.TextNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;

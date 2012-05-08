@@ -20,8 +20,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JType;
@@ -74,43 +73,43 @@ public class FormatRule implements SchemaRule<JType, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JType baseType, Schema schema) {
 
-        if (node.getTextValue().equals("date-time")) {
+        if (node.asText().equals("date-time")) {
             return baseType.owner().ref(Date.class);
 
-        } else if (node.getTextValue().equals("date")) {
+        } else if (node.asText().equals("date")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("time")) {
+        } else if (node.asText().equals("time")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("utc-millisec")) {
+        } else if (node.asText().equals("utc-millisec")) {
             return unboxIfNecessary(baseType.owner().ref(Long.class), ruleFactory.getGenerationConfig());
 
-        } else if (node.getTextValue().equals("regex")) {
+        } else if (node.asText().equals("regex")) {
             return baseType.owner().ref(Pattern.class);
 
-        } else if (node.getTextValue().equals("color")) {
+        } else if (node.asText().equals("color")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("style")) {
+        } else if (node.asText().equals("style")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("phone")) {
+        } else if (node.asText().equals("phone")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("uri")) {
+        } else if (node.asText().equals("uri")) {
             return baseType.owner().ref(URI.class);
 
-        } else if (node.getTextValue().equals("email")) {
+        } else if (node.asText().equals("email")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("ip-address")) {
+        } else if (node.asText().equals("ip-address")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("ipv6")) {
+        } else if (node.asText().equals("ipv6")) {
             return baseType.owner().ref(String.class);
 
-        } else if (node.getTextValue().equals("host-name")) {
+        } else if (node.asText().equals("host-name")) {
             return baseType.owner().ref(String.class);
 
         } else {

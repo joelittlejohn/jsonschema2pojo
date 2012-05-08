@@ -16,8 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import org.codehaus.jackson.JsonNode;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 
 /**

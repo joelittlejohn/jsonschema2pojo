@@ -76,6 +76,16 @@ public class ArgumentsTest {
     }
 
     @Test
+    public void parserAcceptsHyphenWordDelimiter() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "-s", "/home/source", "-t", "/home/target", "--word-delimiters", "-"
+        });
+
+        assertThat(args.getPropertyWordDelimiters(), is(new char[]{'-'}));
+    }
+
+
+    @Test
     public void packageIsOptional() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target"

@@ -22,12 +22,12 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.StringWriter;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.BooleanNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -45,11 +45,11 @@ public class AdditionalPropertiesRuleTest {
     private static final String EXPECTED_RESULT_DEFAULT_ADDITIONAL_PROPS =
             "public class DummyClass {\n\n" +
                     "    private java.util.Map<java.lang.String, java.lang.Object> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.Object>();\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnyGetter\n" +
                     "    public java.util.Map<java.lang.String, java.lang.Object> getAdditionalProperties() {\n" +
                     "        return this.additionalProperties;\n" +
                     "    }\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnySetter\n" +
                     "    public void setAdditionalProperties(java.lang.String name, java.lang.Object value) {\n" +
                     "        this.additionalProperties.put(name, value);\n" +
                     "    }\n\n" +
@@ -58,11 +58,11 @@ public class AdditionalPropertiesRuleTest {
     private static final String EXPECTED_ADDITIONAL_STRING_PROPS =
             "public class DummyClass {\n\n" +
                     "    private java.util.Map<java.lang.String, java.lang.String> additionalProperties = new java.util.HashMap<java.lang.String, java.lang.String>();\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnyGetter\n" +
                     "    public java.util.Map<java.lang.String, java.lang.String> getAdditionalProperties() {\n" +
                     "        return this.additionalProperties;\n" +
                     "    }\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnySetter\n" +
                     "    public void setAdditionalProperties(java.lang.String name, java.lang.String value) {\n" +
                     "        this.additionalProperties.put(name, value);\n" +
                     "    }\n\n" +
@@ -72,11 +72,11 @@ public class AdditionalPropertiesRuleTest {
             "public class DummyClass {\n\n" +
                     "    private java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> additionalProperties" +
                     " = new java.util.HashMap<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty>();\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnyGetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnyGetter\n" +
                     "    public java.util.Map<java.lang.String, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty> getAdditionalProperties() {\n" +
                     "        return this.additionalProperties;\n" +
                     "    }\n\n" +
-                    "    @org.codehaus.jackson.annotate.JsonAnySetter\n" +
+                    "    @com.fasterxml.jackson.annotation.JsonAnySetter\n" +
                     "    public void setAdditionalProperties(java.lang.String name, com.googlecode.jsonschema2pojo.rules.AdditionalPropertiesRuleTest.NodeProperty value) {\n" +
                     "        this.additionalProperties.put(name, value);\n" +
                     "    }\n\n" +

@@ -18,9 +18,8 @@ package com.googlecode.jsonschema2pojo.rules;
 
 import java.util.Iterator;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JDefinedClass;
@@ -57,7 +56,7 @@ public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> 
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
-        for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
+        for (Iterator<String> properties = node.fieldNames(); properties.hasNext();) {
             String property = properties.next();
 
             ruleFactory.getPropertyRule().apply(property, node.get(property), jclass, schema);
@@ -72,7 +71,7 @@ public class PropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> 
 
         JAnnotationArrayMember annotationValue = jclass.annotate(JsonPropertyOrder.class).paramArray("value");
 
-        for (Iterator<String> properties = node.getFieldNames(); properties.hasNext();) {
+        for (Iterator<String> properties = node.fieldNames(); properties.hasNext();) {
             annotationValue.param(properties.next());
         }
 

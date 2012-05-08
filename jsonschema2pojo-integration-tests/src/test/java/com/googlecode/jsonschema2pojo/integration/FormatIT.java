@@ -31,14 +31,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RunWith(Parameterized.class)
 public class FormatIT {
@@ -113,7 +114,7 @@ public class FormatIT {
 
         JsonNode jsonVersion = objectMapper.valueToTree(pojo);
 
-        assertThat(jsonVersion.get(propertyName).getValueAsText(), is(equalTo(jsonValue.toString())));
+        assertThat(jsonVersion.get(propertyName).asText(), is(equalTo(jsonValue.toString())));
 
     }
 
