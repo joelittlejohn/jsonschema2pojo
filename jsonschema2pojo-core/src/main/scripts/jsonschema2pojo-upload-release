@@ -5,6 +5,8 @@
 #
 # Prepares and uploads files for the project downloads area and pushes new docs into the wiki repo
 #
+set -e
+
 if [[ ! ("$#" == 3 ) ]]; then 
     echo 'Usage: upload-release <old version> <new version> <googlecode password>'
     exit 1
@@ -17,13 +19,13 @@ fi
 
 OLD_VERSION=$1
 VERSION=$2
-WORKING_DIR=/tmp/jsonschema2pojo
+PASSWORD=$3
+WORKING_DIR=/tmp/jsonschema2pojo-$VERSION
 
 # recreate release dir
-rm -rf $WORKING_DIR/$VERSION
-mkdir -p $WORKING_DIR/$VERSION
+rm -rf $WORKING_DIR
+mkdir -p $WORKING_DIR
 pushd $WORKING_DIR
-    pushd $VERSION
 
         # download artifacts
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar
@@ -45,9 +47,10 @@ pushd $WORKING_DIR
         chmod +x jsonschema2pojo
 
         # create the release archives
-        rm -rf ../jsonschema2pojo-$VERSION.tar.gz ../jsonschema2pojo-$VERSION.zip
-        tar czf ../jsonschema2pojo-$VERSION.tar.gz *
-        zip --recurse-paths ../jsonschema2pojo-$VERSION.zip *
+	pushd ..
+            tar czf jsonschema2pojo-$VERSION.tar.gz jsonschema2pojo-$VERSION
+            zip --recurse-paths jsonschema2pojo-$VERSION.zip jsonschema2pojo-$VERSION
+	popd
 
         # checkout wiki to update & add docs
         git clone https://code.google.com/p/jsonschema2pojo.wiki/ wiki
@@ -56,7 +59,7 @@ pushd $WORKING_DIR
 
             # extract javadocs to wiki
             mkdir -p javadocs/$VERSION
-            unzip $WORKING_DIR/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar -d javadocs/$VERSION/
+            unzip $WORKING_DIR/jsonschema2pojo-$VERSION-javadoc.jar -d javadocs/$VERSION/
 
             # commit javadocs and push to main repo
             git add .
@@ -70,7 +73,7 @@ pushd $WORKING_DIR
         
             # extract plugin docs
             mkdir -p site/$VERSION
-            unzip $WORKING_DIR/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
+            unzip $WORKING_DIR/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
 
             # commit plugin docs and push to main repo
             git add .
@@ -105,11 +108,10 @@ pushd $WORKING_DIR
 
         popd
 
-    popd
 
     # upload to google code
-    googlecode_upload -s "$VERSION binaries, sources, javadocs" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $3 -l Featured jsonschema2pojo-$VERSION.tar.gz 
-    googlecode_upload -s "$VERSION binaries, sources, javadocs" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $3 -l Featured jsonschema2pojo-$VERSION.zip
+    googlecode_upload -s "$VERSION binaries, sources, javadocs, dependencies" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $PASSWORD -l Featured ../jsonschema2pojo-$VERSION.tar.gz 
+    googlecode_upload -s "$VERSION binaries, sources, javadocs, dependencies" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $PASSWORD -l Featured ../jsonschema2pojo-$VERSION.zip
 
 popd
 
