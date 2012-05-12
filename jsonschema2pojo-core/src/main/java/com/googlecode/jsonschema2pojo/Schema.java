@@ -33,6 +33,8 @@ import com.sun.codemodel.JType;
  */
 public class Schema {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private static Map<URI, Schema> schemas = new HashMap<URI, Schema>();
 
     private static FragmentResolver fragmentResolver = new FragmentResolverImpl();
@@ -60,7 +62,7 @@ public class Schema {
         if (!schemas.containsKey(id)) {
 
             try {
-                JsonNode content = new ObjectMapper().readTree(id.toURL().openStream());
+                JsonNode content = OBJECT_MAPPER.readTree(id.toURL().openStream());
 
                 if (id.toString().contains("#")) {
                     content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
