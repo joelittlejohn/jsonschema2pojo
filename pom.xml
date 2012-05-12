@@ -256,6 +256,12 @@
                 <artifactId>ant</artifactId>
                 <version>1.8.2</version>
             </dependency>
+            <dependency>
+                <groupId>qdox</groupId>
+                <artifactId>qdox</artifactId>
+                <version>1.6.1</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
