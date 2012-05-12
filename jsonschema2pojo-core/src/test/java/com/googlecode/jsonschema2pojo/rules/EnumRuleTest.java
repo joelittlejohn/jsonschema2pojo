@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -135,7 +135,7 @@ public class EnumRuleTest {
 
         jclass._enum("ExistingEnum");
 
-        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass, createNiceMock(Schema.class));
+        rule.apply("existingEnum", new ObjectMapper().createObjectNode(), jclass, mock(Schema.class));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class EnumRuleTest {
         enumNode.add("valueTwo");
         enumNode.add("valueThree");
 
-        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
+        rule.apply("newEnum", enumNode, jclass, mock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -169,7 +169,7 @@ public class EnumRuleTest {
         enumNode.add("value two");
         enumNode.add("value three");
 
-        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
+        rule.apply("newEnum", enumNode, jclass, mock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));
@@ -188,7 +188,7 @@ public class EnumRuleTest {
         enumNode.add("200");
         enumNode.add("300");
 
-        rule.apply("newEnum", enumNode, jclass, createNiceMock(Schema.class));
+        rule.apply("newEnum", enumNode, jclass, mock(Schema.class));
 
         StringWriter output = new StringWriter();
         jclass.declare(new JFormatter(output));

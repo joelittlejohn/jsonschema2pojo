@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -62,7 +62,7 @@ public class RuleFactoryImplTest {
     @Test
     public void generationConfigIsReturned() {
 
-        GenerationConfig mockGenerationConfig = createMock(GenerationConfig.class);
+        GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
 
         RuleFactoryImpl ruleFactory = new RuleFactoryImpl(mockGenerationConfig);
 

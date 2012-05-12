@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -33,8 +33,8 @@ public class PropertiesRuleTest {
 
     private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
-    private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
-    private Schema mockSchema = createMock(Schema.class);
+    private RuleFactory mockRuleFactory = mock(RuleFactory.class);
+    private Schema mockSchema = mock(Schema.class);
     private PropertiesRule rule = new PropertiesRule(mockRuleFactory);
 
     @Test
@@ -52,18 +52,16 @@ public class PropertiesRuleTest {
         propertiesNode.put("property2", property2);
         propertiesNode.put("property3", property3);
 
-        PropertyRule mockPropertyRule = createMock(PropertyRule.class);
-        expect(mockPropertyRule.apply("property1", property1, jclass, mockSchema)).andReturn(jclass);
-        expect(mockPropertyRule.apply("property2", property2, jclass, mockSchema)).andReturn(jclass);
-        expect(mockPropertyRule.apply("property3", property3, jclass, mockSchema)).andReturn(jclass);
-        expect(mockRuleFactory.getPropertyRule()).andReturn(mockPropertyRule).anyTimes();
-
-        replay(mockRuleFactory, mockPropertyRule);
+        PropertyRule mockPropertyRule = mock(PropertyRule.class);
+        when(mockRuleFactory.getPropertyRule()).thenReturn(mockPropertyRule);
 
         JDefinedClass result = rule.apply("fooBar", propertiesNode, jclass, mockSchema);
 
         assertThat(result, sameInstance(jclass));
-        verify(mockPropertyRule);
+
+        verify(mockPropertyRule).apply("property1", property1, jclass, mockSchema);
+        verify(mockPropertyRule).apply("property2", property2, jclass, mockSchema);
+        verify(mockPropertyRule).apply("property3", property3, jclass, mockSchema);
     }
 
 }

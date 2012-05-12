@@ -17,7 +17,7 @@
 package com.googlecode.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -106,9 +106,8 @@ public class CodeGenerationHelper {
 
     private static MavenProject getMockProject() throws DependencyResolutionRequiredException {
 
-        MavenProject project = createNiceMock(MavenProject.class);
-        expect(project.getCompileClasspathElements()).andStubReturn(new ArrayList<String>());
-        replay(project);
+        MavenProject project = mock(MavenProject.class);
+        when(project.getCompileClasspathElements()).thenReturn(new ArrayList<String>());
 
         return project;
     }

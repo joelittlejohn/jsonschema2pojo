@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -37,7 +37,7 @@ import com.sun.codemodel.JPackage;
 
 public class ArrayRuleTest {
 
-    private final GenerationConfig config = createNiceMock(GenerationConfig.class);
+    private final GenerationConfig config = mock(GenerationConfig.class);
     private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(config));
 
     @Before
@@ -59,9 +59,7 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", true);
         propertyNode.put("items", itemsNode);
 
-        replay(config);
-
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, createMock(Schema.class));
+        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, mock(Schema.class));
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(Set.class)));
@@ -82,9 +80,8 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        Schema schema = createNiceMock(Schema.class);
-        expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
-        replay(schema);
+        Schema schema = mock(Schema.class);
+        when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 
@@ -107,10 +104,9 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        Schema schema = createNiceMock(Schema.class);
-        expect(schema.getId()).andReturn(URI.create("http://example/nonUniqueArray")).anyTimes();
-        expect(config.isUsePrimitives()).andReturn(true).anyTimes();
-        replay(schema, config);
+        Schema schema = mock(Schema.class);
+        when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
+        when(config.isUsePrimitives()).thenReturn(true);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 
@@ -133,9 +129,8 @@ public class ArrayRuleTest {
         propertyNode.put("uniqueItems", false);
         propertyNode.put("items", itemsNode);
 
-        Schema schema = createNiceMock(Schema.class);
-        expect(schema.getId()).andReturn(URI.create("http://example/defaultArray")).anyTimes();
-        replay(schema);
+        Schema schema = mock(Schema.class);
+        when(schema.getId()).thenReturn(URI.create("http://example/defaultArray"));
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 

@@ -16,14 +16,16 @@
 
 package com.googlecode.jsonschema2pojo.cli;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +55,7 @@ public class ArgumentsTest {
                 "--source", "/home/source", "--target", "/home/target", "--package", "mypackage", "--generate-builders", "--use-primitives"
         });
 
-        assertThat(args.getStatus().hasCaptured(), is(false));
+        assertThat(args.didExit(), is(false));
         assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is("mypackage"));
@@ -67,7 +69,7 @@ public class ArgumentsTest {
                 "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P"
         });
 
-        assertThat(args.getStatus().hasCaptured(), is(false));
+        assertThat(args.didExit(), is(false));
         assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is("mypackage"));
@@ -91,7 +93,7 @@ public class ArgumentsTest {
                 "--source", "/home/source", "--target", "/home/target"
         });
 
-        assertThat(args.getStatus().hasCaptured(), is(false));
+        assertThat(args.didExit(), is(false));
         assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is(nullValue()));
@@ -103,8 +105,7 @@ public class ArgumentsTest {
     public void missingArgsCausesHelp() throws IOException {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {});
 
-        assertThat(args.getStatus().hasCaptured(), is(true));
-        assertThat(args.getStatus().getValue(), is(1));
+        assertThat(args.status, is(1));
         assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--target")));
         assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--source")));
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
@@ -114,22 +115,21 @@ public class ArgumentsTest {
     public void requestingHelpCausesHelp() throws IOException {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--help"});
 
-        assertThat(args.getStatus().hasCaptured(), is(true));
+        assertThat(args.status, is(notNullValue()));
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
     }
 
     private static class ArgsForTest extends Arguments {
-        private Capture<Integer> status = new Capture<Integer>();
+        protected Integer status;
 
         @Override
         protected void exit(int status) {
-            this.status.setValue(status);
+            this.status = status;
         }
-
-        public Capture<Integer> getStatus() {
-            return status;
+        
+        protected boolean didExit() {
+        	return (status != null);
         }
-
     }
 
 }

@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -120,7 +120,7 @@ public class AdditionalPropertiesRuleTest {
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("type", "string");
 
-        JDefinedClass result = rule.apply("node", node, jclass, createMock(Schema.class));
+        JDefinedClass result = rule.apply("node", node, jclass, mock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));
@@ -135,7 +135,7 @@ public class AdditionalPropertiesRuleTest {
         ObjectNode node = new ObjectMapper().createObjectNode();
         node.put("type", "object");
 
-        JDefinedClass result = rule.apply("node", node, jclass, createMock(Schema.class));
+        JDefinedClass result = rule.apply("node", node, jclass, mock(Schema.class));
 
         StringWriter output = new StringWriter();
         result.declare(new JFormatter(output));

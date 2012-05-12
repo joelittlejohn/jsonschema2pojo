@@ -17,7 +17,7 @@
 package com.googlecode.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -39,7 +39,7 @@ import com.sun.codemodel.JType;
 @RunWith(Parameterized.class)
 public class FormatRuleTest {
 
-    private GenerationConfig config = createMock(GenerationConfig.class);
+    private GenerationConfig config = mock(GenerationConfig.class);
     private FormatRule rule = new FormatRule(new RuleFactoryImpl(config));
 
     private final String formatValue;

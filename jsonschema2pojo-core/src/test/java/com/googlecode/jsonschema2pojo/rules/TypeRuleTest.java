@@ -16,7 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -36,8 +36,8 @@ import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
 
-    private GenerationConfig config = createNiceMock(GenerationConfig.class);
-    private RuleFactory ruleFactory = createMock(RuleFactory.class);
+    private GenerationConfig config = mock(GenerationConfig.class);
+    private RuleFactory ruleFactory = mock(RuleFactory.class);
 
     private TypeRule rule = new TypeRule(ruleFactory);
 
@@ -48,7 +48,7 @@ public class TypeRuleTest {
 
     @Before
     public void wireUpConfig() {
-        expect(ruleFactory.getGenerationConfig()).andReturn(config).anyTimes();
+        when(ruleFactory.getGenerationConfig()).thenReturn(config);
     }
 
     @Test
@@ -75,12 +75,10 @@ public class TypeRuleTest {
         TextNode formatNode = TextNode.valueOf("date-time");
         objectNode.put("format", formatNode);
 
-        JType mockDateType = createMock(JType.class);
-        FormatRule mockFormatRule = createMock(FormatRule.class);
-        expect(mockFormatRule.apply(eq("fooBar"), eq(formatNode), isA(JType.class), isNull(Schema.class))).andReturn(mockDateType);
-        expect(ruleFactory.getFormatRule()).andReturn(mockFormatRule);
-
-        replay(mockFormatRule, ruleFactory);
+        JType mockDateType = mock(JType.class);
+        FormatRule mockFormatRule = mock(FormatRule.class);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
+        when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -95,8 +93,6 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
 
-        replay(ruleFactory, config);
-
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Integer.class.getName()));
@@ -110,8 +106,7 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
 
-        expect(config.isUsePrimitives()).andReturn(true);
-        replay(ruleFactory, config);
+        when(config.isUsePrimitives()).thenReturn(true);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -126,8 +121,6 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
 
-        replay(ruleFactory, config);
-
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Double.class.getName()));
@@ -141,8 +134,7 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
 
-        expect(config.isUsePrimitives()).andReturn(true);
-        replay(ruleFactory, config);
+        when(config.isUsePrimitives()).thenReturn(true);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -157,8 +149,6 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "boolean");
 
-        replay(ruleFactory, config);
-
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Boolean.class.getName()));
@@ -172,8 +162,7 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "boolean");
 
-        expect(config.isUsePrimitives()).andReturn(true);
-        replay(ruleFactory, config);
+        when(config.isUsePrimitives()).thenReturn(true);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -214,12 +203,10 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "array");
 
-        JClass mockArrayType = createMock(JClass.class);
-        ArrayRule mockArrayRule = createMock(ArrayRule.class);
-        expect(mockArrayRule.apply("fooBar", objectNode, jpackage, null)).andReturn(mockArrayType);
-        expect(ruleFactory.getArrayRule()).andReturn(mockArrayRule);
-
-        replay(mockArrayRule, ruleFactory);
+        JClass mockArrayType = mock(JClass.class);
+        ArrayRule mockArrayRule = mock(ArrayRule.class);
+        when(mockArrayRule.apply("fooBar", objectNode, jpackage, null)).thenReturn(mockArrayType);
+        when(ruleFactory.getArrayRule()).thenReturn(mockArrayRule);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -234,12 +221,10 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "object");
 
-        JDefinedClass mockObjectType = createMock(JDefinedClass.class);
-        ObjectRule mockObjectRule = createMock(ObjectRule.class);
-        expect(mockObjectRule.apply("fooBar", objectNode, jpackage, null)).andReturn(mockObjectType);
-        expect(ruleFactory.getObjectRule()).andReturn(mockObjectRule);
-
-        replay(mockObjectRule, ruleFactory);
+        JDefinedClass mockObjectType = mock(JDefinedClass.class);
+        ObjectRule mockObjectRule = mock(ObjectRule.class);
+        when(mockObjectRule.apply("fooBar", objectNode, jpackage, null)).thenReturn(mockObjectType);
+        when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 

@@ -16,10 +16,14 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.easymock.EasyMock.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.apache.commons.lang.StringUtils.removeEnd;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,6 +33,7 @@ import org.junit.Test;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+
 public class SchemaTest {
 
     @Before 
@@ -111,8 +116,8 @@ public class SchemaTest {
     @Test
     public void setIfEmptyOnlySetsIfEmpty() throws URISyntaxException {
         
-        JType firstClass = createMock(JDefinedClass.class);
-        JType secondClass = createMock(JDefinedClass.class);
+        JType firstClass = mock(JDefinedClass.class);
+        JType secondClass = mock(JDefinedClass.class);
         
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 

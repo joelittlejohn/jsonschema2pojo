@@ -16,15 +16,15 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.easymock.Capture;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.rules.JsonSchemaRule;
@@ -41,7 +41,7 @@ public class SchemaMapperImplTest {
     @Test
     public void generateReadsSchemaAsObject() throws IOException {
 
-        final JsonSchemaRule mockSchemaRule = createMock(JsonSchemaRule.class);
+        final JsonSchemaRule mockSchemaRule = mock(JsonSchemaRule.class);
 
         final RuleFactory ruleFactory = new RuleFactoryImpl(null) {
             @Override
@@ -50,22 +50,18 @@ public class SchemaMapperImplTest {
             }
         };
 
-        Capture<JPackage> capturePackage = new Capture<JPackage>();
-        Capture<JsonNode> captureNode = new Capture<JsonNode>();
-
-        expect(mockSchemaRule.apply(eq("Address"), capture(captureNode), capture(capturePackage), isNull(Schema.class))).andReturn(null);
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
 
-        replay(mockSchemaRule);
-
         new SchemaMapperImpl(ruleFactory).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
 
-        verify(mockSchemaRule);
+        ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
+        ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
 
-        assertThat(capturePackage.hasCaptured(), is(true));
+        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), capturePackage.capture(), isNull(Schema.class));
+        
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
-        assertThat(captureNode.hasCaptured(), is(true));
+        assertThat(captureNode.getValue(), is(notNullValue()));
 
     }
 

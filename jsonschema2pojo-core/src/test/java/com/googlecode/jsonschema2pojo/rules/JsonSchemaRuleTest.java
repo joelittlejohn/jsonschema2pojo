@@ -16,16 +16,16 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.easymock.EasyMock.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.easymock.Capture;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +41,7 @@ public class JsonSchemaRuleTest {
     private static final String NODE_NAME = "nodeName";
     private static final String TARGET_CLASS_NAME = JsonSchemaRuleTest.class.getName() + ".DummyClass";
 
-    private RuleFactory mockRuleFactory = createMock(RuleFactory.class);
+    private RuleFactory mockRuleFactory = mock(RuleFactory.class);
     private JsonSchemaRule rule = new JsonSchemaRule(mockRuleFactory);
 
     @Before
@@ -59,19 +59,15 @@ public class JsonSchemaRuleTest {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
-        TypeRule mockTypeRule = createMock(TypeRule.class);
-        expect(mockRuleFactory.getTypeRule()).andReturn(mockTypeRule);
+        TypeRule mockTypeRule = mock(TypeRule.class);
+        when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
 
-        Capture<JsonNode> captureJsonNode = new Capture<JsonNode>();
-        Capture<Schema> captureSchema = new Capture<Schema>();
-
-        expect(mockTypeRule.apply(eq(NODE_NAME), capture(captureJsonNode), eq(jclass.getPackage()), capture(captureSchema))).andReturn(jclass);
-
-        replay(mockTypeRule, mockRuleFactory);
+        ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
+        ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
 
         rule.apply(NODE_NAME, schemaWithRef, jclass, null);
 
-        verify(mockTypeRule);
+        verify(mockTypeRule).apply(eq(NODE_NAME), captureJsonNode.capture(), eq(jclass.getPackage()), captureSchema.capture());
 
         assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
         assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));
@@ -89,27 +85,26 @@ public class JsonSchemaRuleTest {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
-        Schema schema = createMock(Schema.class);
-        expect(schema.getContent()).andReturn(schemaContent).anyTimes();
+        Schema schema = mock(Schema.class);
+        when(schema.getContent()).thenReturn(schemaContent);
         schema.setJavaTypeIfEmpty(jclass);
 
-        EnumRule enumRule = createMock(EnumRule.class);
-        expect(mockRuleFactory.getEnumRule()).andReturn(enumRule);
+        EnumRule enumRule = mock(EnumRule.class);
+        when(mockRuleFactory.getEnumRule()).thenReturn(enumRule);
 
-        expect(enumRule.apply(NODE_NAME, enumNode, jclass, schema)).andReturn(jclass);
-
-        replay(schema, mockRuleFactory, enumRule);
+        when(enumRule.apply(NODE_NAME, enumNode, jclass, schema)).thenReturn(jclass);
 
         rule.apply(NODE_NAME, schemaContent, jclass, schema);
 
-        verify(enumRule, schema);
+        verify(enumRule).apply(NODE_NAME, enumNode, jclass, schema);
+        verify(schema, atLeastOnce()).setJavaTypeIfEmpty(jclass);
 
     }
 
     @Test
     public void existingTypeIsUsedWhenTypeIsAlreadyGenerated() throws URISyntaxException {
 
-        JType previouslyGeneratedType = createMock(JType.class);
+        JType previouslyGeneratedType = mock(JType.class);
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
