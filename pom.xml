@@ -80,7 +80,7 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.8.0</version>
                 <configuration>
-                    <header>LICENSE</header>
+                    <header>NOTICE</header>
                     <strictCheck>true</strictCheck>
                     <aggregate>true</aggregate>
                     <encoding>UTF-8</encoding>
