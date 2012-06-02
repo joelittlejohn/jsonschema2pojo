@@ -1,8 +1,12 @@
+# Eclipse files #
 .classpath
 .settings
 .project
-*/target/
+
+# Maven derived files #
 target/
 apidocs
+
+# IntelliJ files #
 .idea
 *.iml
