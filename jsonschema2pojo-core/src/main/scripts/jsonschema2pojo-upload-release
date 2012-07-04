@@ -111,8 +111,8 @@ pushd $WORKING_DIR
 
             # commit wiki updates and push to main repo
             git add .
-            git commit -m "[release] updating example code to $VERSION"
-            git push
+            git commit -m "[release] updating example code to $VERSION" || true
+            git push || true
 
         popd
 
