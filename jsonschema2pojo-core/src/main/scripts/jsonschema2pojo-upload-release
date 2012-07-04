@@ -1,9 +1,17 @@
 #!/bin/bash
 #
-# Maven release command:
+# Prepares and uploads files for the project downloads area and pushes new docs into the wiki repo.
+#
+# To create a new release:
+#
+# 1. Maven release command:
 #     mvn clean release:clean release:prepare release:perform -DignoreSnapshots -DautoVersionSubmodules
 #
-# Prepares and uploads files for the project downloads area and pushes new docs into the wiki repo
+# 2. Close and Release snapshots repo at oss.sonatype.org
+#
+# 3. Wait at least 2hrs for synchronization to central
+#
+# 4. Run this script to publish new release to googlecode
 #
 set -e
 
