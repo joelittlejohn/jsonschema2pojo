@@ -83,7 +83,7 @@ public class FormatIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example", false, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example");
 
         classWithFormattedProperties = resultsClassLoader.loadClass("com.example.FormattedProperties");
 

@@ -17,9 +17,9 @@
 package com.googlecode.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -48,49 +51,58 @@ public class CodeGenerationHelper {
      *            the default target package for generated classes
      * @param generateBuilders
      *            should builder methods be generated?
-     * @param usePrimitives 
-     *            should property types be primitive where possible?
-     * @param useLongIntegers TODO
-     * @param wordDelimiters
-     *            any characters that should be considered as word delimiters
-     *            when property names are created
-     * @return the directory containing the generated source code
-     */
-    public static File generate(String schema, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char... wordDelimiters) {
-
-        URL schemaResource = CodeGenerationHelper.class.getResource(schema);
-        assertThat("Unable to read schema resource from the classpath", schemaResource, is(notNullValue()));
-
-        return generate(schemaResource, targetPackage, generateBuilders, usePrimitives, useLongIntegers, wordDelimiters);
-    }
-
-    /**
-     * Invokes the jsonschema2pojo plugin to generate Java types from a given
-     * schema.
-     * 
-     * @param schema
-     *            a URL to be used as the input JSON Schema
-     * @param targetPackage
-     *            the default target package for generated classes
-     * @param generateBuilders
-     *            should builder methods be generated?
      * @param usePrimitives
      *            should property types be primitive where possible?
-     * @param useLongIntegers TODO
+     * @param useLongIntegers
+     *            should integer schema properties use long java types?
      * @param wordDelimiters
      *            any characters that should be considered as word delimiters
      *            when property names are created
      * @return the directory containing the generated source code
      */
-    public static File generate(URL schema, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char... wordDelimiters) {
+    public static File generate(String schema, String targetPackage, final boolean generateBuilders,
+            final boolean usePrimitives, final boolean useLongIntegers, final char... wordDelimiters) {
 
-        File outputDirectory = createTemporaryOutputFolder();
+        URL schemaUrl = CodeGenerationHelper.class.getResource(schema);
+        assertThat("Unable to read schema resource from the classpath", schemaUrl, is(notNullValue()));
+
+        return generate(schemaUrl, targetPackage, new HashMap<String, Object>() {
+            {
+                put("generateBuilders", generateBuilders);
+                put("usePrimitives", usePrimitives);
+                put("useLongIntegers", useLongIntegers);
+                put("propertyWordDelimiters", new String(wordDelimiters));
+            }
+        });
+
+    }
+
+    public static File generate(String schema, String targetPackage) {
+        URL schemaUrl = CodeGenerationHelper.class.getResource(schema);
+        assertThat("Unable to read schema resource from the classpath", schemaUrl, is(notNullValue()));
+
+        Map<String, Object> configValues = Collections.emptyMap();
+        return generate(schemaUrl, targetPackage, configValues);
+    }
+
+    public static File generate(URL schema, String targetPackage) {
+        Map<String, Object> configValues = Collections.emptyMap();
+        return generate(schema, targetPackage, configValues);
+    }
+
+    private static File generate(final URL schema, final String targetPackage, final Map<String, Object> configValues) {
+        final File outputDirectory = createTemporaryOutputFolder();
 
         try {
-            File sourceDirectory = new File(schema.toURI());
-
-            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(
-                    sourceDirectory, outputDirectory, targetPackage, generateBuilders, usePrimitives, useLongIntegers, wordDelimiters, getMockProject());
+            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
+                {
+                    put("sourceDirectory", new File(schema.toURI()));
+                    put("outputDirectory", outputDirectory);
+                    put("project", getMockProject());
+                    put("targetPackage", targetPackage);
+                    putAll(configValues);
+                }
+            });
 
             pluginMojo.execute();
         } catch (URISyntaxException e) {
@@ -143,16 +155,25 @@ public class CodeGenerationHelper {
      *            should builder methods be generated?
      * @param usePrimitives
      *            should property types be primitive where possible?
-     * @param useLongIntegers TODO
+     * @param useLongIntegers
+     *            should integer schema properties use long java types?
      * @param wordDelimiters
      *            any characters that should be considered as word delimiters
      *            when property names are created
      * @return a classloader which will provide access to any classes that were
      *         generated by the plugin.
      */
-    public static ClassLoader generateAndCompile(String schema, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char...wordDelimiters) {
+    public static ClassLoader generateAndCompile(String schema, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char... wordDelimiters) {
 
         File outputDirectory = generate(schema, targetPackage, generateBuilders, usePrimitives, useLongIntegers, wordDelimiters);
+
+        return compile(outputDirectory);
+
+    }
+
+    public static ClassLoader generateAndCompile(String schema, String targetPackage) {
+
+        File outputDirectory = generate(schema, targetPackage);
 
         return compile(outputDirectory);
 

@@ -16,10 +16,9 @@
 
 package com.googlecode.jsonschema2pojo.integration.util;
 
-import java.io.File;
 import java.lang.reflect.Field;
-
-import org.apache.maven.project.MavenProject;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 
@@ -29,17 +28,12 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
  */
 public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
 
-    public TestableJsonschema2PojoMojo configure(File sourceDirectory, File outputDirectory, String targetPackage, boolean generateBuilders, boolean usePrimitives, boolean useLongIntegers, char[] wordDelimiters, MavenProject project) {
+    public TestableJsonschema2PojoMojo configure(Map<String, Object> configValues) {
 
-        setPrivateField("sourceDirectory", sourceDirectory);
-        setPrivateField("outputDirectory", outputDirectory);
-        setPrivateField("project", project);
-        setPrivateField("targetPackage", targetPackage);
-        setPrivateField("generateBuilders", generateBuilders);
-        setPrivateField("usePrimitives", usePrimitives);
-        setPrivateField("useLongIntegers", useLongIntegers);
-        setPrivateField("propertyWordDelimiters", new String(wordDelimiters));
-        
+        for (Entry<String, Object> value : configValues.entrySet()) {
+            setPrivateField(value.getKey(), value.getValue());
+        }
+
         return this;
     }
 

@@ -39,7 +39,7 @@ public class DescriptionIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        File outputDirectory = generate("/schema/description/description.json", "com.example", true, false, false);
+        File outputDirectory = generate("/schema/description/description.json", "com.example");
         File generatedJavaFile = new File(outputDirectory, "com/example/Description.java");
 
         compile(outputDirectory);
@@ -82,7 +82,7 @@ public class DescriptionIT {
     @Test
     public void descriptionAppearsInSetterJavadoc() throws IOException {
 
-        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setDescription", new Type[] {new Type("java.lang.String")});
+        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setDescription", new Type[] { new Type("java.lang.String") });
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A description for this property"));

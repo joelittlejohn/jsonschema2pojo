@@ -39,7 +39,7 @@ public class RequiredIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        File outputDirectory = generate("/schema/required/required.json", "com.example", true, false, false);
+        File outputDirectory = generate("/schema/required/required.json", "com.example");
         File generatedJavaFile = new File(outputDirectory, "com/example/Required.java");
 
         compile(outputDirectory);
@@ -73,7 +73,7 @@ public class RequiredIT {
     @Test
     public void requiredAppearsInSetterJavadoc() throws IOException {
 
-        JavaMethod javaMethod = classWithRequired.getMethodBySignature("setRequiredProperty", new Type[] {new Type("java.lang.String")});
+        JavaMethod javaMethod = classWithRequired.getMethodBySignature("setRequiredProperty", new Type[] { new Type("java.lang.String") });
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("(Required)"));

@@ -42,10 +42,10 @@ public class EnumIT {
     private static Class<Enum> enumClass;
 
     @BeforeClass
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", true, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example");
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
@@ -113,10 +113,10 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void enumAtRootCreatesATopLevelType() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumAsRoot.json", "com.example", true, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumAsRoot");
 
@@ -145,7 +145,7 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void jacksonCanUnmarshalEnums() throws IOException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
 
         String jsonString = "{\"enumProperty\" : \"3rd one\"}";

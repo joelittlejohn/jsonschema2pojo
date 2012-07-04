@@ -38,11 +38,11 @@ public class TypeIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        generatedTypesDirectory = generate("/schema/type/types.json", "com.example", true, false, false);
+        generatedTypesDirectory = generate("/schema/type/types.json", "com.example");
         classWithManyTypes = compile(generatedTypesDirectory).loadClass("com.example.Types");
 
     }
-    
+
     @Before
     public void clearSchemaCache() {
         Schema.clearCache();
@@ -149,7 +149,7 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getMethod("getProperty"), is(notNullValue()));
 
     }
-    
+
     @Test
     public void javaTypeSupportsPrimitiveTypes() throws NoSuchMethodException {
 
@@ -158,14 +158,14 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getName(), is("long"));
 
     }
-    
+
     @Test
     public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
         File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, false, true);
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
-        
+
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-        
+
         assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
 
     }
@@ -174,10 +174,10 @@ public class TypeIT {
     public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
         File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, true, true);
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
-        
+
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-        
-        assertThat(getterMethod.getReturnType().getName(), is("long"));   
+
+        assertThat(getterMethod.getReturnType().getName(), is("long"));
     }
 
     @Test
@@ -186,16 +186,16 @@ public class TypeIT {
         Class<?> classWithUnionProperties = compile(generatedTypesDirectory).loadClass("com.example.UnionTypes");
 
         Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
-        
-        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));   
+
+        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
 
         Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
-        
-        assertThat(stringGetter.getReturnType().getName(), is("java.lang.String"));   
+
+        assertThat(stringGetter.getReturnType().getName(), is("java.lang.String"));
 
         Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
-        
-        assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));   
-}
-    
+
+        assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
+    }
+
 }

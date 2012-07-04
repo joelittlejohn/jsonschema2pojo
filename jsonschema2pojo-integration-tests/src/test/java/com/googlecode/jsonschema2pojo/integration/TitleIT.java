@@ -39,7 +39,7 @@ public class TitleIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        File outputDirectory = generate("/schema/title/title.json", "com.example", true, false, false);
+        File outputDirectory = generate("/schema/title/title.json", "com.example");
         File generatedJavaFile = new File(outputDirectory, "com/example/Title.java");
 
         compile(outputDirectory);
@@ -82,7 +82,7 @@ public class TitleIT {
     @Test
     public void descriptionAppearsInSetterJavadoc() throws IOException {
 
-        JavaMethod javaMethod = classWithTitle.getMethodBySignature("setTitle", new Type[] {new Type("java.lang.String")});
+        JavaMethod javaMethod = classWithTitle.getMethodBySignature("setTitle", new Type[] { new Type("java.lang.String") });
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A title for this property"));

@@ -25,10 +25,10 @@ import org.junit.Test;
 public class CyclicalRefIT {
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void cyclicalRefsAreReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example", false, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example");
 
         Class class1 = resultsClassLoader.loadClass("com.example.RefToSubdirectory2");
         Class class2 = resultsClassLoader.loadClass("com.example.RefToSubdirectory1");

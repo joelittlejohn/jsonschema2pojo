@@ -37,7 +37,7 @@ public class DefaultIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", true, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example");
 
         classWithDefaults = resultsClassLoader.loadClass("com.example.Default");
 
@@ -121,7 +121,7 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void enumPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 
         Object instance = classWithDefaults.newInstance();

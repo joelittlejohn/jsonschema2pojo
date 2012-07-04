@@ -36,7 +36,7 @@ public class ArrayIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example", true, false, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
 
         classWithArrayProperties = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 
