@@ -56,7 +56,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
+        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
@@ -70,7 +70,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
+        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
@@ -94,7 +94,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().getAbsolutePath(), is("/home/source"));
+        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
         assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));

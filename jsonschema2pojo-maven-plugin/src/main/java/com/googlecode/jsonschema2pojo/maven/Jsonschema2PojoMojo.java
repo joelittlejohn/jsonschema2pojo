@@ -18,6 +18,8 @@ package com.googlecode.jsonschema2pojo.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -26,6 +28,7 @@ import org.apache.maven.project.MavenProject;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
+import com.googlecode.jsonschema2pojo.cli.SingleFileIterator;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -59,12 +62,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 	 * file or a directory of files.
 	 * 
 	 * @parameter expression="${jsonschema2pojo.sourceDirectory}"
-	 * @required
 	 * @since 0.1.0
 	 */
 	private File sourceDirectory;
 
-	/**
+    /**
+     * An array of locations of the JSON Schema file(s). Note: each item may
+     * refer to a single file or a directory of files.
+     * 
+     * @parameter expression="${jsonschema2pojo.sourceDirectories}"
+     * @required
+     * @since 0.3.1-SNAPSHOT
+     */
+    private File[] sourceDirectories;
+
+    /**
 	 * Package name used for generated Java classes (for types where a fully
 	 * qualified name has not been supplied in the schema using the 'javaType'
 	 * property).
@@ -162,6 +174,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 			return;
 		}
 
+		if (null == sourceDirectory && null == sourceDirectories) {
+		    String msg = "One of sourceDirectory or sourceDirectories must be provided";
+            throw new MojoExecutionException(msg);
+		}
+
 		if (addCompileSourceRoot) {
 			project.addCompileSourceRoot(outputDirectory.getPath());
 		}
@@ -207,8 +224,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 	}
 
 	@Override
-	public File getSource() {
-		return sourceDirectory;
+	public Iterator<File> getSource() {
+	    if (null != sourceDirectory) {
+	        return new SingleFileIterator(sourceDirectory);
+	    }
+	    return Arrays.asList(sourceDirectories).iterator();
 	}
 
 	@Override

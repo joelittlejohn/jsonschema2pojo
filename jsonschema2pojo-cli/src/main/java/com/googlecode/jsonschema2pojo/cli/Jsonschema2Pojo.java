@@ -17,12 +17,13 @@
 package com.googlecode.jsonschema2pojo.cli;
 
 import static org.apache.commons.lang.StringUtils.*;
-import static java.util.Arrays.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
@@ -78,18 +79,23 @@ public final class Jsonschema2Pojo {
 
         JCodeModel codeModel = new JCodeModel();
 
-        if (config.getSource().isDirectory()) {
-            
-        	List<File> schemaFiles = asList(config.getSource().listFiles());
-        	Collections.sort(schemaFiles);
-            
-			for (File child : schemaFiles) {
-                if (child.isFile()) {
-                    mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI().toURL());
+        for (Iterator<File> source = config.getSource(); source.hasNext();) {
+            File sourceFile = source.next();
+
+            if (sourceFile.isDirectory()) {
+
+                List<File> schemaFiles = Arrays.asList(sourceFile.listFiles());
+                Collections.sort(schemaFiles);
+
+                for (File child : schemaFiles) {
+                    if (child.isFile()) {
+                        mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI()
+                                .toURL());
+                    }
                 }
+            } else {
+                mapper.generate(codeModel, getNodeName(sourceFile), defaultString(config.getTargetPackage()), sourceFile.toURI().toURL());
             }
-        } else {
-            mapper.generate(codeModel, getNodeName(config.getSource()), defaultString(config.getTargetPackage()), config.getSource().toURI().toURL());
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {

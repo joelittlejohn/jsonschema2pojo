@@ -21,6 +21,14 @@ package com.googlecode.jsonschema2pojo.exception;
  */
 public class GenerationException extends RuntimeException {
 
+    public GenerationException() {
+        super();
+    }
+
+    public GenerationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public GenerationException(String message) {
         super(message);
     }
@@ -28,9 +36,5 @@ public class GenerationException extends RuntimeException {
     public GenerationException(Throwable cause) {
         super(cause);
     }
-
-	public GenerationException(String message, ClassNotFoundException cause) {
-		super(message, cause);
-	}
 
 }

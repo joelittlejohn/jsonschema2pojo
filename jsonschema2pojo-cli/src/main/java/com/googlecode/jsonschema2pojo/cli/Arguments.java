@@ -17,6 +17,7 @@
 package com.googlecode.jsonschema2pojo.cli;
 
 import java.io.File;
+import java.util.Iterator;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -89,8 +90,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public File getSource() {
-        return source;
+    public Iterator<File> getSource() {
+        return new SingleFileIterator(source);
     }
 
     @Override

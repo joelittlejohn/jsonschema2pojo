@@ -17,6 +17,7 @@
 package com.googlecode.jsonschema2pojo;
 
 import java.io.File;
+import java.util.Iterator;
 
 /**
  * A generation config that returns default values for all behavioural options.
@@ -43,7 +44,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * Unsupported since no default source is possible.
      */
     @Override
-    public File getSource() {
+    public Iterator<File> getSource() {
         throw new UnsupportedOperationException("No default source available");
     }
 
