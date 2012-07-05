@@ -80,10 +80,10 @@ public final class Jsonschema2Pojo {
 
         if (config.getSource().isDirectory()) {
             
-        	List<File> schemaFiles = asList(config.getSource().listFiles());
-        	Collections.sort(schemaFiles);
+            List<File> schemaFiles = asList(config.getSource().listFiles());
+            Collections.sort(schemaFiles);
             
-			for (File child : schemaFiles) {
+            for (File child : schemaFiles) {
                 if (child.isFile()) {
                     mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI().toURL());
                 }

@@ -120,7 +120,7 @@ public class Arguments implements GenerationConfig {
     
     @Override
     public boolean isUseLongIntegers() {
-    	return useLongIntegers;
+        return useLongIntegers;
     }
     
     protected void exit(int status) {

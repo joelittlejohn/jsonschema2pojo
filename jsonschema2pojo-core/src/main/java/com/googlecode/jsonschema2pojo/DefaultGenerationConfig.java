@@ -76,7 +76,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isUseLongIntegers() {
-    	return false;
+        return false;
     }
 
 }

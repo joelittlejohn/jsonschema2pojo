@@ -43,11 +43,11 @@ pushd $WORKING_DIR
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION-sources.jar
 
-	# download dependencies for cli
+    # download dependencies for cli
         wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/com/googlecode/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
-	mvn dependency:copy-dependencies -DincludeScope=runtime
-	mv target/lib .
-	rm -r target pom.xml
+    mvn dependency:copy-dependencies -DincludeScope=runtime
+    mv target/lib .
+    rm -r target pom.xml
 
         # do some shuffling for cleaner script names
         mv jsonschema2pojo-cli-$VERSION.bat jsonschema2pojo.bat
@@ -55,10 +55,10 @@ pushd $WORKING_DIR
         chmod +x jsonschema2pojo
 
         # create the release archives
-	pushd ..
+    pushd ..
             tar czf jsonschema2pojo-$VERSION.tar.gz jsonschema2pojo-$VERSION
             zip --recurse-paths jsonschema2pojo-$VERSION.zip jsonschema2pojo-$VERSION
-	popd
+    popd
 
         # checkout wiki to update & add docs
         git clone https://code.google.com/p/jsonschema2pojo.wiki/ wiki

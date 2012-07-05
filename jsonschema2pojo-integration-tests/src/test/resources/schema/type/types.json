@@ -25,9 +25,9 @@
         "objectProperty" : {
             "type" : "object",
             "properties" : {
-            	"property" : {
-            		"type" : "string"
-            	}
+                "property" : {
+                    "type" : "string"
+                }
             }
         },
         "defaultProperty" : {
@@ -44,7 +44,7 @@
             "javaType" : "com.example.ObjectProperty"
         },
         "primitiveJavaType" : {
-        	"type" : "object",
+            "type" : "object",
                 "javaType" : "long"
         }
     }

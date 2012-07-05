@@ -128,7 +128,7 @@ public class ArgumentsTest {
         }
         
         protected boolean didExit() {
-        	return (status != null);
+            return (status != null);
         }
     }
 

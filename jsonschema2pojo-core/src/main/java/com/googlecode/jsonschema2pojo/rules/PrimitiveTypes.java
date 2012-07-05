@@ -27,42 +27,42 @@ import com.sun.codemodel.JType;
  */
 public class PrimitiveTypes {
 
-	/**
-	 * Check if a name string refers to a given type.
-	 * 
-	 * @param name
-	 *            the name of a Java type
-	 * @param owner
-	 *            the current code model for type generation
-	 * @return <code>true</code> when the given name refers to a primitive Java
-	 *         type (e.g. "int"), otherwise <code>false</code>
-	 */
-	public static boolean isPrimitive(String name, JCodeModel owner) {
-		try {
-			return JType.parse(owner, name) != owner.VOID;
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
-	}
+    /**
+     * Check if a name string refers to a given type.
+     * 
+     * @param name
+     *            the name of a Java type
+     * @param owner
+     *            the current code model for type generation
+     * @return <code>true</code> when the given name refers to a primitive Java
+     *         type (e.g. "int"), otherwise <code>false</code>
+     */
+    public static boolean isPrimitive(String name, JCodeModel owner) {
+        try {
+            return JType.parse(owner, name) != owner.VOID;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
-	/**
-	 * Create a primitive type reference (for code generation) using the given
-	 * primitive type name.
-	 * 
-	 * @param name
-	 *            the name of a primitive Java type
-	 * @param owner
-	 *            the current code model for type generation
-	 * @return
-	 */
-	public static JPrimitiveType primitiveType(String name, JCodeModel owner) {
-		try {
-			return (JPrimitiveType) owner.parseType(name);
-		} catch (ClassNotFoundException e) {
-			throw new GenerationException(
-					"Given name does not refer to a primitive type, this type can't be found: "
-							+ name, e);
-		}
-	}
+    /**
+     * Create a primitive type reference (for code generation) using the given
+     * primitive type name.
+     * 
+     * @param name
+     *            the name of a primitive Java type
+     * @param owner
+     *            the current code model for type generation
+     * @return
+     */
+    public static JPrimitiveType primitiveType(String name, JCodeModel owner) {
+        try {
+            return (JPrimitiveType) owner.parseType(name);
+        } catch (ClassNotFoundException e) {
+            throw new GenerationException(
+                    "Given name does not refer to a primitive type, this type can't be found: "
+                            + name, e);
+        }
+    }
 
 }

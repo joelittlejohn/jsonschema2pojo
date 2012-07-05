@@ -112,7 +112,7 @@
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
-		    <artifactId>jcommander</artifactId>
+            <artifactId>jcommander</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
