@@ -89,7 +89,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", false, true, false);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("usePrimitives", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -103,8 +103,8 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        char[] wordDelimiters = new char[] { '_', ' ', '-' };
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example", false, true, false, wordDelimiters);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example",
+                config("usePrimitives", true, "propertyWordDelimiters", "_ -"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 
@@ -120,5 +120,4 @@ public class PropertiesIT {
         assertThat(jsonified.has("property-with-hyphens"), is(true));
         assertThat(jsonified.has("property_with mixed-delimiters"), is(true));
     }
-
 }

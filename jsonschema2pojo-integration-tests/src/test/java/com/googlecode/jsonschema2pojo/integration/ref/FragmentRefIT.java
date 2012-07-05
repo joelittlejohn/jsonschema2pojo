@@ -34,7 +34,7 @@ public class FragmentRefIT {
 
         Schema.clearCache();
 
-        ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/fragmentRefs.json", "com.example", true, false, false);
+        ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
 
         fragmentRefsClass = fragmentRefsClassLoader.loadClass("com.example.FragmentRefs");
 
