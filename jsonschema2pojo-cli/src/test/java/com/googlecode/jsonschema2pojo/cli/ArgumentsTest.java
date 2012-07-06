@@ -16,11 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.cli;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,7 +49,8 @@ public class ArgumentsTest {
     @Test
     public void parseRecognisesValidArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "--source", "/home/source", "--target", "/home/target", "--package", "mypackage", "--generate-builders", "--use-primitives"
+                "--source", "/home/source", "--target", "/home/target", "--package", "mypackage",
+                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring"
         });
 
         assertThat(args.didExit(), is(false));
@@ -61,12 +59,14 @@ public class ArgumentsTest {
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
+        assertThat(args.isIncludeHashcodeAndEquals(), is(false));
+        assertThat(args.isIncludeToString(), is(false));
     }
 
     @Test
     public void parseRecognisesShorthandArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P"
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S"
         });
 
         assertThat(args.didExit(), is(false));
@@ -75,6 +75,8 @@ public class ArgumentsTest {
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
+        assertThat(args.isIncludeHashcodeAndEquals(), is(false));
+        assertThat(args.isIncludeToString(), is(false));
     }
 
     @Test
@@ -83,12 +85,11 @@ public class ArgumentsTest {
                 "-s", "/home/source", "-t", "/home/target", "--word-delimiters", "-"
         });
 
-        assertThat(args.getPropertyWordDelimiters(), is(new char[]{'-'}));
+        assertThat(args.getPropertyWordDelimiters(), is(new char[] { '-' }));
     }
 
-
     @Test
-    public void packageIsOptional() {
+    public void allOptionalArgsCanBeOmittedAndDefaultsPrevail() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target"
         });
@@ -99,6 +100,8 @@ public class ArgumentsTest {
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));
         assertThat(args.isUsePrimitives(), is(false));
+        assertThat(args.isIncludeHashcodeAndEquals(), is(true));
+        assertThat(args.isIncludeToString(), is(true));
     }
 
     @Test
@@ -113,7 +116,7 @@ public class ArgumentsTest {
 
     @Test
     public void requestingHelpCausesHelp() throws IOException {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--help"});
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--help" });
 
         assertThat(args.status, is(notNullValue()));
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
@@ -126,9 +129,9 @@ public class ArgumentsTest {
         protected void exit(int status) {
             this.status = status;
         }
-        
+
         protected boolean didExit() {
-        	return (status != null);
+            return (status != null);
         }
     }
 

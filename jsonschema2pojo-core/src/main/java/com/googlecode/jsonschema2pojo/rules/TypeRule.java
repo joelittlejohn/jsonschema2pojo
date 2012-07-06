@@ -86,7 +86,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
         } else if (propertyTypeName.equals("integer")) {
 
             JType typeToUseForIntegers = getIntegerType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
-			type = unboxIfNecessary(typeToUseForIntegers, ruleFactory.getGenerationConfig());
+            type = unboxIfNecessary(typeToUseForIntegers, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("boolean")) {
 
             type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
@@ -108,17 +108,17 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
         return type;
     }
 
-	private String getTypeName(JsonNode node) {
-		if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0 ) {
-			return node.get("type").get(0).asText();
-		}
-		
-		if (node.has("type")) {
-			return node.get("type").asText();
-		}
-		
-		return DEFAULT_TYPE_NAME;
-	}
+    private String getTypeName(JsonNode node) {
+        if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0 ) {
+            return node.get("type").get(0).asText();
+        }
+        
+        if (node.has("type")) {
+            return node.get("type").asText();
+        }
+        
+        return DEFAULT_TYPE_NAME;
+    }
 
     private JType unboxIfNecessary(JType type, GenerationConfig config) {
         if (config.isUsePrimitives()) {
@@ -129,11 +129,11 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
     }
     
     private JType getIntegerType(JCodeModel owner, GenerationConfig config) {
-    	if (config.isUseLongIntegers()) {
-    		return owner.ref(Long.class);
-    	} else {
-    		return owner.ref(Integer.class);
-    	}
+        if (config.isUseLongIntegers()) {
+            return owner.ref(Long.class);
+        } else {
+            return owner.ref(Integer.class);
+        }
     }
 
 }

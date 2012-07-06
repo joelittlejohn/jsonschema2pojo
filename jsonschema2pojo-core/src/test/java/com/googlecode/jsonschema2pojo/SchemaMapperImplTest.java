@@ -16,9 +16,10 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,13 +44,12 @@ public class SchemaMapperImplTest {
 
         final JsonSchemaRule mockSchemaRule = mock(JsonSchemaRule.class);
 
-        final RuleFactory ruleFactory = new RuleFactoryImpl(null) {
+        final RuleFactory ruleFactory = new RuleFactoryImpl() {
             @Override
             public SchemaRule<JClassContainer, JType> getSchemaRule() {
                 return mockSchemaRule;
             }
         };
-
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
 
@@ -59,7 +59,7 @@ public class SchemaMapperImplTest {
         ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
 
         verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), capturePackage.capture(), isNull(Schema.class));
-        
+
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.getValue(), is(notNullValue()));
 

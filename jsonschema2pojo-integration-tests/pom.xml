@@ -112,8 +112,8 @@
             <artifactId>commons-jci-eclipse</artifactId>
         </dependency>
         <dependency>
-        	<groupId>qdox</groupId>
-        	<artifactId>qdox</artifactId>
+            <groupId>qdox</groupId>
+            <artifactId>qdox</artifactId>
         </dependency>
     </dependencies>
 

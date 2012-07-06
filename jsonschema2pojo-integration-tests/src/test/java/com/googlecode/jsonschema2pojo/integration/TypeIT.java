@@ -161,7 +161,7 @@ public class TypeIT {
 
     @Test
     public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, false, true);
+        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true));
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -172,7 +172,8 @@ public class TypeIT {
 
     @Test
     public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", true, true, true);
+        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example",
+                config("useLongIntegers", true, "usePrimitives", true));
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -182,7 +183,7 @@ public class TypeIT {
 
     @Test
     public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        File generatedTypesDirectory = generate("/schema/type/unionTypes.json", "com.example", true, false, false);
+        File generatedTypesDirectory = generate("/schema/type/unionTypes.json", "com.example");
         Class<?> classWithUnionProperties = compile(generatedTypesDirectory).loadClass("com.example.UnionTypes");
 
         Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");

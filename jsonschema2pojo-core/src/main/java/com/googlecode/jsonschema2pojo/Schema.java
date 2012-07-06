@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class Schema {
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.
-     *
+     * 
      * @param id
      *            the id of the schema being created
      * @return a schema object containing the contents of the given path
@@ -62,7 +63,7 @@ public class Schema {
         if (!schemas.containsKey(id)) {
 
             try {
-                JsonNode content = OBJECT_MAPPER.readTree(id.toURL().openStream());
+                JsonNode content = OBJECT_MAPPER.readTree(new File(removeFragment(id)));
 
                 if (id.toString().contains("#")) {
                     content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
@@ -76,6 +77,10 @@ public class Schema {
         }
 
         return schemas.get(id);
+    }
+
+    private static URI removeFragment(URI id) {
+        return URI.create(substringBefore(id.toString(), "#"));
     }
 
     /**

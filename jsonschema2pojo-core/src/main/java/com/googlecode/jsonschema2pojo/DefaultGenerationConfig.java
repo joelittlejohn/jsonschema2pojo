@@ -63,7 +63,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getTargetPackage() {
         return "";
     }
-    
+
     /**
      * @return an empty array (i.e. no word delimiters)
      */
@@ -73,11 +73,27 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
-     * @return <code>false</code> 
+     * @return <code>false</code>
      */
     @Override
     public boolean isUseLongIntegers() {
-    	return false;
+        return false;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeHashcodeAndEquals() {
+        return true;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeToString() {
+        return true;
     }
 
 }

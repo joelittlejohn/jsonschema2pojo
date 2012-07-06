@@ -37,4 +37,7 @@ public class GenerationException extends RuntimeException {
         super(cause);
     }
 
+    public GenerationException(String message, ClassNotFoundException cause) {
+        super(message, cause);
+    }
 }

@@ -16,9 +16,9 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.util.List;

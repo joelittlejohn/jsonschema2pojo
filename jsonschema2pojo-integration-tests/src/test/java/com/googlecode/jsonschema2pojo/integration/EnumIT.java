@@ -126,6 +126,30 @@ public class EnumIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void enumWithEmptyStringAsValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithEmptyString.json", "com.example");
+
+        Class<Enum> emptyEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithEmptyString");
+
+        assertThat(emptyEnumClass.getEnumConstants()[0].name(), is("__EMPTY__"));
+
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void enumWithNullValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
+
+        Class<Enum> emptyEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNullValue");
+
+        assertThat(emptyEnumClass.getEnumConstants().length, is(1));
+
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
 

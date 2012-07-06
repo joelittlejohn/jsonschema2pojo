@@ -29,7 +29,7 @@ public class RuleFactoryImplTest {
     @Test
     public void factoryMethodsCreateRules() {
 
-        RuleFactory ruleFactory = new RuleFactoryImpl(null);
+        RuleFactory ruleFactory = new RuleFactoryImpl();
 
         assertThat(ruleFactory.getAdditionalPropertiesRule(), notNullValue());
 

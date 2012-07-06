@@ -16,6 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.cli;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -50,12 +52,18 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
-    @Parameter(names = {"-d", "--word-delimiters"}, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
+    @Parameter(names = { "-d", "--word-delimiters" }, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
     private String propertyWordDelimiters;
-    
-    @Parameter(names = {"-l", "--long-integers"}, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
+
+    @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
-    
+
+    @Parameter(names = { "-E", "--omit-hashcode-and-equals" }, description = "Omit hashCode and equals methods in the generated Java types")
+    private boolean omitHashcodeAndEquals = false;
+
+    @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
+    private boolean omitToString = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -118,14 +126,24 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public char[] getPropertyWordDelimiters() {
-        return propertyWordDelimiters.toCharArray();
+        return defaultString(propertyWordDelimiters).toCharArray();
     }
-    
+
     @Override
     public boolean isUseLongIntegers() {
-    	return useLongIntegers;
+        return useLongIntegers;
     }
-    
+
+    @Override
+    public boolean isIncludeHashcodeAndEquals() {
+        return !omitHashcodeAndEquals;
+    }
+
+    @Override
+    public boolean isIncludeToString() {
+        return !omitToString;
+    }
+
     protected void exit(int status) {
         System.exit(status);
     }
