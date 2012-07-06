@@ -24,7 +24,8 @@
                          usePrimitives="true"
                          propertyWordDelimiters="_- "
     	                 useLongIntegers="true"
-                         includeHashcodeAndEquals="false"/>
+                         includeHashcodeAndEquals="false"
+                         includeToString="false"/>
     </target>
 
 </project>

@@ -58,6 +58,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeHashcodeAndEquals = true;
 
+    private boolean includeToString = true;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -208,6 +210,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.includeHashcodeAndEquals = includeHashcodeAndEquals;
     }
 
+    /**
+     * Sets the 'includeToString' property of this class
+     * 
+     * @param includeToString
+     *            Whether to include a <code>toString</code> method in generated
+     *            Java types.
+     */
+    public void setIncludeToString(boolean includeToString) {
+        this.includeToString = includeToString;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -255,6 +268,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeHashcodeAndEquals() {
         return includeHashcodeAndEquals;
+    }
+
+    @Override
+    public boolean isIncludeToString() {
+        return includeToString;
     }
 
 }

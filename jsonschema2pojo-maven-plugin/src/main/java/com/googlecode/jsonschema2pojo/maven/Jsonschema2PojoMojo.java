@@ -31,9 +31,6 @@ import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
  * When invoked, this goal reads one or more <a
  * href="http://json-schema.org/">JSON Schema</a> documents and generates DTO
  * style Java classes for data binding.
- * <p>
- * See <a href=
- * 'http://jsonschema2pojo.googlecode.com'>jsonschema2pojo.googlecode.com</a>.
  * 
  * @goal generate
  * @phase generate-sources
@@ -122,7 +119,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * JSON properties will be considered to contain a single word when creating
      * Java Bean property names.
      * 
-     * @parameter expression=${jsonschema2pojo.propertyWordDelimiters}
+     * @parameter expression="${jsonschema2pojo.propertyWordDelimiters}"
      *            default-value=""
      * @since 0.2.2
      */
@@ -133,7 +130,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * instead of <code>int</code> (or <code>Integer</code>) when representing
      * the JSON Schema type 'integer'.
      * 
-     * @parameter expression=${jsonschema2pojo.useLongIntegers}
+     * @parameter expression="${jsonschema2pojo.useLongIntegers}"
      *            default-value="false"
      * @since 0.2.2
      */
@@ -143,11 +140,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * Whether to include <code>hashCode</code> and <code>equals</code> methods
      * in generated Java types.
      * 
-     * @parameter expression=${jsonschema2pojo.includeHashcodeAndEquals}
+     * @parameter expression="${jsonschema2pojo.includeHashcodeAndEquals}"
      *            default-value="true"
      * @since 0.3.1
      */
     private boolean includeHashcodeAndEquals = true;
+
+    /**
+     * Whether to include a <code>toString</code> method in generated Java
+     * types.
+     * 
+     * @parameter expression="${jsonschema2pojo.includeToString}"
+     *            default-value="true"
+     * @since 0.3.1
+     */
+    private boolean includeToString = true;
 
     /**
      * The project being built.
@@ -182,8 +189,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Error generating classes from JSON Schema file(s) "
-                            + sourceDirectory.getPath(), e);
+                    "Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
         }
 
     }
@@ -192,10 +198,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 
         try {
 
-            ClassLoader oldClassLoader = Thread.currentThread()
-                    .getContextClassLoader();
-            ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(
-                    project, oldClassLoader, getLog());
+            ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(project, oldClassLoader, getLog());
             Thread.currentThread().setContextClassLoader(newClassLoader);
 
         } catch (DependencyResolutionRequiredException e) {
@@ -244,6 +248,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     @Override
     public boolean isIncludeHashcodeAndEquals() {
         return includeHashcodeAndEquals;
+    }
+
+    @Override
+    public boolean isIncludeToString() {
+        return includeToString;
     }
 
 }

@@ -109,7 +109,9 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
             ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
         }
 
-        addToString(jclass);
+        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
+            addToString(jclass);
+        }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
             addHashCode(jclass);

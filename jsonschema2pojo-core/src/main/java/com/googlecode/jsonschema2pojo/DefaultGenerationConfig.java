@@ -87,4 +87,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return true;
     }
 
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeToString() {
+        return true;
+    }
+
 }

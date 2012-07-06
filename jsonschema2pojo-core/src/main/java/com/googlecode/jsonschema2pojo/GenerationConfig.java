@@ -94,4 +94,12 @@ public interface GenerationConfig {
      */
     boolean isIncludeHashcodeAndEquals();
 
+    /**
+     * Gets the 'includeToString' configuration option.
+     * 
+     * @return Whether to use include a <code>toString</code> method in
+     *         generated Java types.
+     */
+    boolean isIncludeToString();
+
 }

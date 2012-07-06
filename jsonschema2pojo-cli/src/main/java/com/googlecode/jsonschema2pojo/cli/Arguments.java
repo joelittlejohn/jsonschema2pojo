@@ -56,6 +56,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-E", "--include-hashcode-and-equals" }, description = "Include hashCode and equals methods in the generated Java types")
     private boolean includeHashcodeAndEquals = true;
 
+    @Parameter(names = { "-S", "--include-tostring" }, description = "Include a toString method in the generated Java types")
+    private boolean includeToString = true;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -129,6 +132,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeHashcodeAndEquals() {
         return includeHashcodeAndEquals;
+    }
+
+    @Override
+    public boolean isIncludeToString() {
+        return includeToString;
     }
 
     protected void exit(int status) {
