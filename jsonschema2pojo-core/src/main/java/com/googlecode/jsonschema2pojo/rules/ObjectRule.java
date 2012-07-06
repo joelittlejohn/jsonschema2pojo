@@ -19,6 +19,7 @@ package com.googlecode.jsonschema2pojo.rules;
 import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 
 import javax.annotation.Generated;
@@ -57,7 +58,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
     private final RuleFactory ruleFactory;
-    
+
     protected ObjectRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
@@ -109,8 +110,11 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
         }
 
         addToString(jclass);
-        addHashCode(jclass);
-        addEquals(jclass);
+
+        if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
+            addHashCode(jclass);
+            addEquals(jclass);
+        }
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
 
@@ -148,7 +152,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
-                
+
                 try {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(_package.owner().ref(existingClass));
@@ -194,7 +198,6 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
         }
         return superType;
     }
-
 
     private void addGeneratedAnnotation(JDefinedClass jclass) {
         JAnnotationUse generated = jclass.annotate(Generated.class);

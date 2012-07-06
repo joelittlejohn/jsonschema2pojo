@@ -56,6 +56,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useLongIntegers;
 
+    private boolean includeHashcodeAndEquals = true;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -65,6 +67,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *             if this task cannot be completed due to some error reading
      *             schemas, generating types or writing output .java files.
      */
+    @Override
     public void execute() throws BuildException {
 
         if (skip) {
@@ -194,6 +197,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
                 .toCharArray();
     }
 
+    /**
+     * Sets the 'includeHashcodeAndEquals' property of this class
+     * 
+     * @param includeHashcodeAndEquals
+     *            Whether to include <code>hashCode</code> and
+     *            <code>equals</code> methods in generated Java types.
+     */
+    public void setIncludeHashcodeAndEquals(boolean includeHashcodeAndEquals) {
+        this.includeHashcodeAndEquals = includeHashcodeAndEquals;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -237,5 +251,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isUseLongIntegers() {
         return useLongIntegers;
     }
-    
+
+    @Override
+    public boolean isIncludeHashcodeAndEquals() {
+        return includeHashcodeAndEquals;
+    }
+
 }

@@ -86,4 +86,12 @@ public interface GenerationConfig {
      */
     boolean isUseLongIntegers();
 
+    /**
+     * Gets the 'includeHashcodeAndEquals' configuration option.
+     * 
+     * @return Whether to use include <code>hashCode</code> and
+     *         <code>equals</code> methods in generated Java types.
+     */
+    boolean isIncludeHashcodeAndEquals();
+
 }

@@ -83,7 +83,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      *            default-value="false"
      * @since 0.1.2
      */
-    private boolean generateBuilders;
+    private boolean generateBuilders = false;
 
     /**
      * Whether to use primitives (<code>long</code>, <code>double</code>,
@@ -95,7 +95,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      *            default-value="false"
      * @since 0.2.0
      */
-    private boolean usePrimitives;
+    private boolean usePrimitives = false;
 
     /**
      * Add the output directory to the project as a source root, so that the
@@ -129,15 +129,25 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     private String propertyWordDelimiters = "";
 
     /**
-     * Whether to use the java type <code>long</code> (or
-     * <code>Long</code>) instead of <code>int</code> (or
-     * <code>Integer</code>) when representing the JSON Schema type 'integer'.
+     * Whether to use the java type <code>long</code> (or <code>Long</code>)
+     * instead of <code>int</code> (or <code>Integer</code>) when representing
+     * the JSON Schema type 'integer'.
      * 
      * @parameter expression=${jsonschema2pojo.useLongIntegers}
      *            default-value="false"
      * @since 0.2.2
      */
     private boolean useLongIntegers = false;
+
+    /**
+     * Whether to include <code>hashCode</code> and <code>equals</code> methods
+     * in generated Java types.
+     * 
+     * @parameter expression=${jsonschema2pojo.includeHashcodeAndEquals}
+     *            default-value="true"
+     * @since 0.3.1
+     */
+    private boolean includeHashcodeAndEquals = true;
 
     /**
      * The project being built.
@@ -225,10 +235,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.toCharArray();
     }
-    
+
     @Override
     public boolean isUseLongIntegers() {
         return useLongIntegers;
+    }
+
+    @Override
+    public boolean isIncludeHashcodeAndEquals() {
+        return includeHashcodeAndEquals;
     }
 
 }

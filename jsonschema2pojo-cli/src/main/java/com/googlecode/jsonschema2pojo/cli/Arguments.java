@@ -47,12 +47,15 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
-    @Parameter(names = {"-d", "--word-delimiters"}, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
+    @Parameter(names = { "-d", "--word-delimiters" }, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
     private String propertyWordDelimiters;
-    
-    @Parameter(names = {"-l", "--long-integers"}, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
+
+    @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
-    
+
+    @Parameter(names = { "-E", "--include-hashcode-and-equals" }, description = "Include hashCode and equals methods in the generated Java types")
+    private boolean includeHashcodeAndEquals = true;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -117,12 +120,17 @@ public class Arguments implements GenerationConfig {
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.toCharArray();
     }
-    
+
     @Override
     public boolean isUseLongIntegers() {
         return useLongIntegers;
     }
-    
+
+    @Override
+    public boolean isIncludeHashcodeAndEquals() {
+        return includeHashcodeAndEquals;
+    }
+
     protected void exit(int status) {
         System.exit(status);
     }
