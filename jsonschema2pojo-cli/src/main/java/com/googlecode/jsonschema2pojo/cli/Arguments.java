@@ -16,6 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.cli;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.File;
 
 import com.beust.jcommander.JCommander;
@@ -53,11 +55,11 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
 
-    @Parameter(names = { "-E", "--include-hashcode-and-equals" }, description = "Include hashCode and equals methods in the generated Java types")
-    private boolean includeHashcodeAndEquals = true;
+    @Parameter(names = { "-E", "--omit-hashcode-and-equals" }, description = "Omit hashCode and equals methods in the generated Java types")
+    private boolean omitHashcodeAndEquals = false;
 
-    @Parameter(names = { "-S", "--include-tostring" }, description = "Include a toString method in the generated Java types")
-    private boolean includeToString = true;
+    @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
+    private boolean omitToString = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -121,7 +123,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public char[] getPropertyWordDelimiters() {
-        return propertyWordDelimiters.toCharArray();
+        return defaultString(propertyWordDelimiters).toCharArray();
     }
 
     @Override
@@ -131,12 +133,12 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isIncludeHashcodeAndEquals() {
-        return includeHashcodeAndEquals;
+        return !omitHashcodeAndEquals;
     }
 
     @Override
     public boolean isIncludeToString() {
-        return includeToString;
+        return !omitToString;
     }
 
     protected void exit(int status) {
