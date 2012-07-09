@@ -151,7 +151,7 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
 
         JInvocation newListImpl = JExpr._new(listImplClass);
 
-        if (node instanceof ArrayNode) {
+        if (node instanceof ArrayNode && node.size() > 0) {
             JInvocation invokeAsList = fieldType.owner().ref(Arrays.class).staticInvoke("asList");
             for (JsonNode defaultValue : node) {
                 invokeAsList.arg(getDefaultValue(listGenericType, defaultValue));

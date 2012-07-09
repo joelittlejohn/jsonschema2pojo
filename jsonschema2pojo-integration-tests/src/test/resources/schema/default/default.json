@@ -44,6 +44,13 @@
             },
             "default" : ["one", "two", "three"]
         },
+        "arrayWithEmptyDefault" : {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            },
+            "default" : []
+        },
         "complexPropertyWithDefault" : {
             "type" : "object",
             "properties" : {

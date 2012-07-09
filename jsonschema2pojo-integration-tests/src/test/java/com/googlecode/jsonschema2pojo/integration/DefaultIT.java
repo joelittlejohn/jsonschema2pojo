@@ -169,6 +169,25 @@ public class DefaultIT {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void arrayPropertyCanHaveEmptyDefaultArray() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getArrayWithEmptyDefault");
+
+        assertThat(getter.invoke(instance), is(instanceOf(List.class)));
+
+        List<String> defaultList = (List<String>) getter.invoke(instance);
+
+        assertThat(defaultList.size(), is(0));
+
+        // list should be mutable
+        assertThat(defaultList.add("anotherString"), is(true));
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void uniqueArrayPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
