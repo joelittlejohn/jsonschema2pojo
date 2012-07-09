@@ -11,19 +11,19 @@
     </taskdef>
 
     <target name="generate">
-    	<!-- use default config -->
+        <!-- use default config -->
         <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/propertiesWithWordDelimiters.json" 
                          targetDirectory="${targetDirectory}" 
                          targetPackage="com.example"/>
         
-    	<!-- specify every config arg -->
+        <!-- specify every config arg -->
         <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/propertiesWithWordDelimiters.json" 
                          targetDirectory="${targetDirectory}" 
                          targetPackage="com.example"
                          generateBuilders="true"
                          usePrimitives="true"
                          propertyWordDelimiters="_- "
-    	                 useLongIntegers="true"
+                         useLongIntegers="true"
                          includeHashcodeAndEquals="false"
                          includeToString="false"/>
     </target>

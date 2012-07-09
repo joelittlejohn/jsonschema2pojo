@@ -47,12 +47,12 @@ public interface GenerationConfig {
      */
     boolean isUsePrimitives();
 
-	/**
-	 * Gets the 'source' configuration option.
-	 * 
-	 * @return The source file(s) or directory(ies) from which JSON Schema will be read.
-	 */
-	Iterator<File> getSource();
+    /**
+     * Gets the 'source' configuration option.
+     * 
+     * @return The source file(s) or directory(ies) from which JSON Schema will be read.
+     */
+    Iterator<File> getSource();
 
     /**
      * Gets the 'targetDirectory' configuration option.

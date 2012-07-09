@@ -101,7 +101,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public Iterator<File> getSource() {
-	    return sourcePaths.iterator();
+        return sourcePaths.iterator();
     }
 
     @Override
