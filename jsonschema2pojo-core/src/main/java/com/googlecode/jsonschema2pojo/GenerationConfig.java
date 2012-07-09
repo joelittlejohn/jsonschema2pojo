@@ -17,6 +17,7 @@
 package com.googlecode.jsonschema2pojo;
 
 import java.io.File;
+import java.util.Iterator;
 
 /**
  * Defines the configuration options for Java type generation, including source
@@ -46,12 +47,12 @@ public interface GenerationConfig {
      */
     boolean isUsePrimitives();
 
-    /**
-     * Gets the 'source' configuration option.
-     * 
-     * @return The source file or directory from which JSON Schema will be read
-     */
-    File getSource();
+	/**
+	 * Gets the 'source' configuration option.
+	 * 
+	 * @return The source file(s) or directory(ies) from which JSON Schema will be read.
+	 */
+	Iterator<File> getSource();
 
     /**
      * Gets the 'targetDirectory' configuration option.

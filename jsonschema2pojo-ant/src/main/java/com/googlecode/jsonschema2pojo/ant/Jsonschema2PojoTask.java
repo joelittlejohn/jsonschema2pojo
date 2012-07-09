@@ -20,6 +20,8 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -232,8 +234,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public File getSource() {
-        return source;
+    public Iterator<File> getSource() {
+        return Collections.singleton(source).iterator();
     }
 
     @Override

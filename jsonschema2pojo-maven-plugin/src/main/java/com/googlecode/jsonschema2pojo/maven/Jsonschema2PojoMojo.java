@@ -18,6 +18,9 @@ package com.googlecode.jsonschema2pojo.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -56,10 +59,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * file or a directory of files.
      * 
      * @parameter expression="${jsonschema2pojo.sourceDirectory}"
-     * @required
      * @since 0.1.0
      */
     private File sourceDirectory;
+
+    /**
+     * An array of locations of the JSON Schema file(s). Note: each item may
+     * refer to a single file or a directory of files.
+     * 
+     * @parameter expression="${jsonschema2pojo.sourcePaths}"
+     * @since 0.3.1-SNAPSHOT
+     */
+    private File[] sourcePaths;
 
     /**
      * Package name used for generated Java classes (for types where a fully
@@ -179,6 +190,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
             return;
         }
 
+        if (null == sourceDirectory && null == sourcePaths) {
+            String msg = "One of sourceDirectory or sourcePaths must be provided";
+            throw new MojoExecutionException(msg);
+        }
+
         if (addCompileSourceRoot) {
             project.addCompileSourceRoot(outputDirectory.getPath());
         }
@@ -221,8 +237,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     }
 
     @Override
-    public File getSource() {
-        return sourceDirectory;
+    public Iterator<File> getSource() {
+        if (null != sourceDirectory) {
+            return Collections.singleton(sourceDirectory).iterator();
+        }
+        return Arrays.asList(sourcePaths).iterator();
     }
 
     @Override
