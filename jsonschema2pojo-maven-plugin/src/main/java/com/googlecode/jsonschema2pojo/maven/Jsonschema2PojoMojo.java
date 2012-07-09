@@ -68,7 +68,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * refer to a single file or a directory of files.
      * 
      * @parameter expression="${jsonschema2pojo.sourcePaths}"
-     * @since 0.3.1-SNAPSHOT
+     * @since 0.3.1
      */
     private File[] sourcePaths;
 

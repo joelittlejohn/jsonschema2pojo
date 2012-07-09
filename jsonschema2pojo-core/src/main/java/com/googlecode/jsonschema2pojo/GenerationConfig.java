@@ -50,7 +50,8 @@ public interface GenerationConfig {
     /**
      * Gets the 'source' configuration option.
      * 
-     * @return The source file(s) or directory(ies) from which JSON Schema will be read.
+     * @return The source file(s) or directory(ies) from which JSON Schema will
+     *         be read.
      */
     Iterator<File> getSource();
 
@@ -80,8 +81,8 @@ public interface GenerationConfig {
     /**
      * Gets the 'useLongIntegers' configuration option.
      * 
-     * @return Whether to use the java type {@link long} (or
-     *         {@link java.lang.Long}) instead of {@link int} (or
+     * @return Whether to use the java type <code>long</code> (or
+     *         {@link java.lang.Long}) instead of <code>int</code> (or
      *         {@link java.lang.Integer}) when representing the JSON Schema type
      *         'integer'.
      */

@@ -135,8 +135,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'useLongIntegers' property of this class
      * 
      * @param useLongIntegers
-     *            Whether to use the java type {@link long} (or
-     *            {@link java.lang.Long}) instead of {@link int} (or
+     *            Whether to use the java type <code>long</code> (or
+     *            {@link java.lang.Long}) instead of <code>int</code> (or
      *            {@link java.lang.Integer}) when representing the JSON Schema
      *            type 'integer'.
      */

@@ -36,8 +36,8 @@ public interface SchemaMapper {
      *            the name of the parent class the represented by this schema
      * @param packageName
      *            the target package that should be used for generated types
-     * @param schemaContent
-     *            the schema document content
+     * @param schema
+     *            location of the schema to be used as input
      * @throws IOException
      *             if the schema content cannot be read
      */
