@@ -60,6 +60,10 @@
             },
             "default" : {"abc" : "xyz"}
         },
+        "simplePropertyWithNullDefault" : {
+            "type" : "integer",
+            "default" : null
+        },
         "uniqueArrayWithDefault" : {
             "type" : "array",
             "uniqueItems" : true,

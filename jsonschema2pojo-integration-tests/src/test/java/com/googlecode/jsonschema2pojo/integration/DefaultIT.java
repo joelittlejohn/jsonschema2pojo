@@ -146,6 +146,17 @@ public class DefaultIT {
     }
 
     @Test
+    public void simplePropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getSimplePropertyWithNullDefault");
+
+        assertThat(getter.invoke(instance), is(nullValue()));
+
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void arrayPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 

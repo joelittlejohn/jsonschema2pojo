@@ -90,6 +90,10 @@ public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
 
     private JExpression getDefaultValue(JType fieldType, JsonNode node) {
 
+        if (!fieldType.isPrimitive() && node.isNull()) {
+            return JExpr._null();
+        }
+
         fieldType = fieldType.unboxify();
 
         if (fieldType.fullName().equals(String.class.getName())) {
