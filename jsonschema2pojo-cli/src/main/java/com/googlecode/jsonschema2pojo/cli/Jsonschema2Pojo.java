@@ -79,12 +79,12 @@ public final class Jsonschema2Pojo {
 
         JCodeModel codeModel = new JCodeModel();
 
-        for (Iterator<File> source = config.getSource(); source.hasNext();) {
-            File sourceFile = source.next();
+        for (Iterator<File> sources = config.getSource(); sources.hasNext();) {
+            File source = sources.next();
 
-            if (sourceFile.isDirectory()) {
+            if (source.isDirectory()) {
 
-                List<File> schemaFiles = Arrays.asList(sourceFile.listFiles());
+                List<File> schemaFiles = Arrays.asList(source.listFiles());
                 Collections.sort(schemaFiles);
 
                 for (File child : schemaFiles) {
@@ -94,7 +94,7 @@ public final class Jsonschema2Pojo {
                     }
                 }
             } else {
-                mapper.generate(codeModel, getNodeName(sourceFile), defaultString(config.getTargetPackage()), sourceFile.toURI().toURL());
+                mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source.toURI().toURL());
             }
         }
 

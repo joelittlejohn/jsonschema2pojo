@@ -19,6 +19,7 @@ package com.googlecode.jsonschema2pojo.maven;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -28,7 +29,6 @@ import org.apache.maven.project.MavenProject;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
-import com.googlecode.jsonschema2pojo.cli.SingleFileIterator;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -67,10 +67,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * An array of locations of the JSON Schema file(s). Note: each item may
      * refer to a single file or a directory of files.
      * 
-     * @parameter expression="${jsonschema2pojo.sourceDirectories}"
+     * @parameter expression="${jsonschema2pojo.sourcePaths}"
      * @since 0.3.1-SNAPSHOT
      */
-    private File[] sourceDirectories;
+    private File[] sourcePaths;
 
     /**
      * Package name used for generated Java classes (for types where a fully
@@ -190,8 +190,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
             return;
         }
 
-        if (null == sourceDirectory && null == sourceDirectories) {
-            String msg = "One of sourceDirectory or sourceDirectories must be provided";
+        if (null == sourceDirectory && null == sourcePaths) {
+            String msg = "One of sourceDirectory or sourcePaths must be provided";
             throw new MojoExecutionException(msg);
         }
 
@@ -239,9 +239,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     @Override
     public Iterator<File> getSource() {
         if (null != sourceDirectory) {
-            return new SingleFileIterator(sourceDirectory);
+            return Collections.singleton(sourceDirectory).iterator();
         }
-        return Arrays.asList(sourceDirectories).iterator();
+        return Arrays.asList(sourcePaths).iterator();
     }
 
     @Override

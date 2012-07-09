@@ -43,8 +43,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-t", "--target" }, description = "The target directory into which generated types will be written", required = true)
     private File targetDirectory;
 
-    @Parameter(names = { "-s", "--sourceDirectory" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, converter = FileConverter.class)
-    private List<File> sourceDirectory;
+    @Parameter(names = { "-s", "--source" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, converter = FileConverter.class)
+    private List<File> sourcePaths;
 
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
@@ -101,7 +101,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public Iterator<File> getSource() {
-	    return sourceDirectory.iterator();
+	    return sourcePaths.iterator();
     }
 
     @Override
