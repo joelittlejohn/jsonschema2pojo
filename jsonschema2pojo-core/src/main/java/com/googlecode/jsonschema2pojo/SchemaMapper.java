@@ -19,12 +19,40 @@ package com.googlecode.jsonschema2pojo;
 import java.io.IOException;
 import java.net.URL;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
 
 /**
- * Generates Java types from a JSON schema
+ * Generates Java types from a JSON schema. Can accept a factory which will be
+ * used to create type generation rules for this mapper.
  */
-public interface SchemaMapper {
+public class SchemaMapper {
+
+    private final RuleFactory ruleFactory;
+
+    /**
+     * Create a schema mapper with the given {@link RuleFactory}.
+     * 
+     * @param ruleFactory
+     *            A factory used by this mapper to create Java type generation
+     *            rules.
+     */
+    public SchemaMapper(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
+    }
+
+    /**
+     * Create a schema mapper with the default {@link RuleFactory}
+     * implementation.
+     * 
+     * @see RuleFactory
+     */
+    public SchemaMapper() {
+        this(new RuleFactory());
+    }
 
     /**
      * Reads a schema and adds generated types to the given code model.
@@ -41,6 +69,15 @@ public interface SchemaMapper {
      * @throws IOException
      *             if the schema content cannot be read
      */
-    void generate(JCodeModel codeModel, String className, String packageName, URL schema) throws IOException;
+    public void generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
+
+        JPackage jpackage = codeModel._package(packageName);
+
+        ObjectNode schemaNode = new ObjectMapper().createObjectNode();
+        schemaNode.put("$ref", schemaUrl.toString());
+
+        ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, null);
+
+    }
 
 }

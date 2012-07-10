@@ -29,7 +29,7 @@ public class RuleFactoryImplTest {
     @Test
     public void factoryMethodsCreateRules() {
 
-        RuleFactory ruleFactory = new RuleFactoryImpl();
+        RuleFactory ruleFactory = new RuleFactory();
 
         assertThat(ruleFactory.getAdditionalPropertiesRule(), notNullValue());
 
@@ -64,7 +64,7 @@ public class RuleFactoryImplTest {
 
         GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
 
-        RuleFactoryImpl ruleFactory = new RuleFactoryImpl(mockGenerationConfig);
+        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig);
 
         assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
 

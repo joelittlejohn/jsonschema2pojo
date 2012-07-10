@@ -28,9 +28,9 @@ import java.util.List;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
-import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
-import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
+import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
 
 /**
@@ -75,7 +75,7 @@ public final class Jsonschema2Pojo {
      */
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
 
-        SchemaMapper mapper = new SchemaMapperImpl(new RuleFactoryImpl(config));
+        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config));
 
         JCodeModel codeModel = new JCodeModel();
 

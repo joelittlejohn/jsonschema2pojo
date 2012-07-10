@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import com.googlecode.jsonschema2pojo.SchemaMapperImpl;
+import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.sun.codemodel.JCodeModel;
 
 public class Example {
@@ -33,7 +33,7 @@ public class Example {
         
         URL source = new URL("file:///path/to/my/schema.json");
         
-        new SchemaMapperImpl().generate(codeModel, "ClassName", "com.example", source);
+        new SchemaMapper().generate(codeModel, "ClassName", "com.example", source);
         
         codeModel.build(new File("output"));
         

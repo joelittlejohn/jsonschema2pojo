@@ -38,7 +38,7 @@ public class AdditionalPropertiesRuleTest {
 
     private static final String TARGET_CLASS_NAME = AdditionalPropertiesRuleTest.class.getName() + ".DummyClass";
 
-    private AdditionalPropertiesRule rule = new AdditionalPropertiesRule(new RuleFactoryImpl());
+    private AdditionalPropertiesRule rule = new AdditionalPropertiesRule(new RuleFactory());
 
     private static final String EXPECTED_RESULT_NO_ADDITIONAL_PROPS = "public class DummyClass {\n\n\n}\n";
 

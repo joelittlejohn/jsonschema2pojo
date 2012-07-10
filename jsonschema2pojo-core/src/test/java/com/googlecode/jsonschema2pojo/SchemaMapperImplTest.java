@@ -30,7 +30,7 @@ import org.mockito.ArgumentCaptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.rules.JsonSchemaRule;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
-import com.googlecode.jsonschema2pojo.rules.RuleFactoryImpl;
+import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
@@ -44,7 +44,7 @@ public class SchemaMapperImplTest {
 
         final JsonSchemaRule mockSchemaRule = mock(JsonSchemaRule.class);
 
-        final RuleFactory ruleFactory = new RuleFactoryImpl() {
+        final RuleFactory ruleFactory = new RuleFactory() {
             @Override
             public SchemaRule<JClassContainer, JType> getSchemaRule() {
                 return mockSchemaRule;
@@ -53,7 +53,7 @@ public class SchemaMapperImplTest {
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
 
-        new SchemaMapperImpl(ruleFactory).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
+        new SchemaMapper(ruleFactory).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
         ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);

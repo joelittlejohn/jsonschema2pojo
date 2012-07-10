@@ -38,7 +38,7 @@ import com.sun.codemodel.JPackage;
 public class ArrayRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
-    private final ArrayRule rule = new ArrayRule(new RuleFactoryImpl(config));
+    private final ArrayRule rule = new ArrayRule(new RuleFactory(config));
 
     @Before
     public void clearSchemaCache() {
