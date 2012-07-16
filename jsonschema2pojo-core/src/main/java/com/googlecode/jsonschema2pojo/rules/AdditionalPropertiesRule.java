@@ -19,8 +19,6 @@ package com.googlecode.jsonschema2pojo.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JClass;
@@ -35,7 +33,7 @@ import com.sun.codemodel.JVar;
 
 /**
  * Applies the "additionalProperties" JSON schema rule.
- *
+ * 
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5</a>
  */
@@ -58,8 +56,8 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
      * the schema) or empty, then a new bean property named
      * "additionalProperties", of type {@link Map<String,Object>} is added to
      * the generated type (with appropriate accessors). The accessors are
-     * annotated to allow Jackson to marshal/unmarshal unrecognised (additional)
-     * properties found in JSON data from/to this map.
+     * annotated to allow unrecognised (additional) properties found in JSON
+     * data to be marshalled/unmarshalled from/to this map.
      * <p>
      * If the additionalProperties node is present and specifies a schema, then
      * an "additionalProperties" map is added to the generated type. This time
@@ -118,7 +116,8 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
 
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperties");
-        setter.annotate(JsonAnySetter.class);
+
+        ruleFactory.getAnnotator().anySetter(setter);
 
         JVar nameParam = setter.param(String.class, "name");
         JVar valueParam = setter.param(propertyType, "value");
@@ -130,7 +129,9 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
 
     private JMethod addGetter(JDefinedClass jclass, JFieldVar field) {
         JMethod getter = jclass.method(JMod.PUBLIC, field.type(), "getAdditionalProperties");
-        getter.annotate(JsonAnyGetter.class);
+
+        ruleFactory.getAnnotator().anyGetter(getter);
+
         getter.body()._return(JExpr._this().ref(field));
         return getter;
     }

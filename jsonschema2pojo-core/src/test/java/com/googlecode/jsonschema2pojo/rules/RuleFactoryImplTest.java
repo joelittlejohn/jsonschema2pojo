@@ -16,13 +16,14 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.NoopAnnotator;
 
 public class RuleFactoryImplTest {
 
@@ -64,7 +65,7 @@ public class RuleFactoryImplTest {
 
         GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
 
-        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig);
+        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator());
 
         assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
 

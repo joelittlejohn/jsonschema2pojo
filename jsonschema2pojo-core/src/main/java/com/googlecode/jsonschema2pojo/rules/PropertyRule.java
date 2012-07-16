@@ -20,11 +20,8 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import org.apache.commons.lang.WordUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
-import com.sun.codemodel.JAnnotatable;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -77,13 +74,13 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
-        addPropertyAnnotation(field, nodeName);
+
+        ruleFactory.getAnnotator().propertyField(field, nodeName);
 
         JMethod getter = addGetter(jclass, field, nodeName);
         JMethod setter = addSetter(jclass, field, nodeName);
 
-        boolean shouldAddBuilders = ruleFactory.getGenerationConfig().isGenerateBuilders();
-        if (shouldAddBuilders) {
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             addBuilder(jclass, field);
         }
 
@@ -116,7 +113,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JBlock body = getter.body();
         body._return(field);
 
-        addPropertyAnnotation(getter, jsonPropertyName);
+        ruleFactory.getAnnotator().propertyGetter(getter, jsonPropertyName);
 
         return getter;
     }
@@ -128,7 +125,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         JBlock body = setter.body();
         body.assign(JExpr._this().ref(field), param);
 
-        addPropertyAnnotation(setter, jsonPropertyName);
+        ruleFactory.getAnnotator().propertySetter(setter, jsonPropertyName);
 
         return setter;
     }
@@ -144,29 +141,24 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         return builder;
     }
 
-    private void addPropertyAnnotation(JAnnotatable annotatable, String jsonPropertyName) {
-        JAnnotationUse jsonPropertyAnnotation = annotatable.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", jsonPropertyName);
-    }
-
     private String getPropertyName(String nodeName) {
         char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
-        
+
         if (containsAny(nodeName, wordDelimiters)) {
             nodeName = capitalizeTrailingWords(nodeName, wordDelimiters);
         }
-        
+
         return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
     }
 
     private String capitalizeTrailingWords(String nodeName, char[] wordDelimiters) {
         String capitalizedNodeName = WordUtils.capitalize(nodeName, wordDelimiters);
         capitalizedNodeName = nodeName.charAt(0) + capitalizedNodeName.substring(1);
-        
+
         for (char c : wordDelimiters) {
             capitalizedNodeName = remove(capitalizedNodeName, c);
         }
-        
+
         return capitalizedNodeName;
     }
 

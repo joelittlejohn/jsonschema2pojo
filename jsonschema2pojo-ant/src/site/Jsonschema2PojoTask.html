@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <td valign="top">source</td>
-        <td valign="top">The input json schema.</td>
+        <td valign="top">The input JSON schema.</td>
         <td align="center" valign="top">Yes</td>
       </tr>
       <tr>
@@ -54,6 +54,31 @@
         <td valign="top">useLongIntegers</td>
         <td valign="top">Whether to use the java type <code>long</code> (or <code>Long</code>) instead of <code>int</code> (or <code>Integer</code>) when representing the JSON Schema type 'integer'.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">propertyWordDelimiters</td>
+        <td valign="top">A string containing any characters that should act as word delimiters when choosing Java bean property names.</td>
+        <td align="center" valign="top">No (default none)</td>
+      </tr>
+      <tr>
+        <td valign="top">includeHashcodeAndEquals</td>
+        <td valign="top">Whether to use include <code>hashCode</code> and <code>equals</code> methods in generated Java types.</td>
+        <td align="center" valign="top">No (default <code>true</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">includeToString</td>
+        <td valign="top">Whether to use include a <code>toString</code> method in generated Java types.</td>
+        <td align="center" valign="top">No (default <code>true</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">annotationStyle</td>
+        <td valign="top">The style of annotations to use in the generated Java types. Supported values:
+          <ul>
+            <li><code>JACKSON</code> (apply annotations from the <a ref="http://jackson.codehaus.org/">Jackson</a> library)</li>
+            <li><code>NONE</code> (apply no annotations at all)</li>
+          </ul>
+        </td>
+        <td align="center" valign="top">No (default <code>JACKSON</code>)</td>
       </tr>
     </table>
         

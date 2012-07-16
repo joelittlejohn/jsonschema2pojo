@@ -26,6 +26,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
+import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 
 /**
@@ -63,6 +64,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
     private boolean omitToString = false;
+
+    @Parameter(names = { "-a", "--annotation-style" }, description = "The style of annotations to use in the generated Java types.")
+    private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -142,6 +146,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeToString() {
         return !omitToString;
+    }
+
+    @Override
+    public AnnotationStyle getAnnotationStyle() {
+        return annotationStyle;
     }
 
     protected void exit(int status) {

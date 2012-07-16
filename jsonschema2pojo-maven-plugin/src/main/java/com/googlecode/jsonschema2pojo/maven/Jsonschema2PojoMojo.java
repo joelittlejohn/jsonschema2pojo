@@ -27,6 +27,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
@@ -168,6 +169,24 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     private boolean includeToString = true;
 
     /**
+     * The style of annotations to use in the generated Java types.
+     * <p>
+     * Supported values:
+     * <ul>
+     * <li>
+     * <code>JACKSON</code> (apply annotations from the <a
+     * href="http://jackson.codehaus.org/">Jackson</a> library)</li>
+     * <li>
+     * <code>NONE</code> (apply no annotations at all)</li>
+     * </ul>
+     * 
+     * @parameter expression="${jsonschema2pojo.annotationStyle}"
+     *            default-value="JACKSON"
+     * @since 0.3.1
+     */
+    private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -274,4 +293,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
         return includeToString;
     }
 
+    @Override
+    public AnnotationStyle getAnnotationStyle() {
+        return annotationStyle;
+    }
 }

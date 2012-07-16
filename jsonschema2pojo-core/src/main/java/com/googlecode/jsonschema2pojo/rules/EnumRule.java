@@ -25,8 +25,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -55,10 +53,12 @@ import com.sun.codemodel.JVar;
 public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
     private static final String VALUE_FIELD_NAME = "value";
-
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
-    protected EnumRule() {
+    private final RuleFactory ruleFactory;
+
+    protected EnumRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
 
     /**
@@ -132,7 +132,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
         illegalArgumentException.arg(valueParam);
         body._throw(illegalArgumentException);
 
-        fromValue.annotate(JsonCreator.class);
+        ruleFactory.getAnnotator().enumCreatorMethod(fromValue);
     }
 
     private JFieldVar addValueField(JDefinedClass _enum) {
@@ -152,7 +152,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
         body._return(JExpr._this().ref(valueField));
 
-        toString.annotate(JsonValue.class);
+        ruleFactory.getAnnotator().enumValueMethod(toString);
         toString.annotate(Override.class);
     }
 

@@ -25,7 +25,8 @@
                          propertyWordDelimiters="_- "
                          useLongIntegers="true"
                          includeHashcodeAndEquals="false"
-                         includeToString="false"/>
+                         includeToString="false"
+                         annotationStyle="NONE"/>
     </target>
 
 </project>

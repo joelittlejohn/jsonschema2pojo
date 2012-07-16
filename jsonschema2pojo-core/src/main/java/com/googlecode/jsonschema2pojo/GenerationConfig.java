@@ -104,4 +104,20 @@ public interface GenerationConfig {
      */
     boolean isIncludeToString();
 
+    /**
+     * Gets the 'annotationStyle' configuration option.
+     * 
+     * @return The style of annotations to use in the generated Java types.
+     *         <p>
+     *         Supported values:
+     *         <ul>
+     *         <li>
+     *         <code>jackson</code> (apply annotations from the <a
+     *         href="http://jackson.codehaus.org/">Jackson</a> library)</li>
+     *         <li>
+     *         <code>none</code> (apply no annotations at all)</li>
+     *         </ul>
+     * @see AnnotatorFactory
+     */
+    AnnotationStyle getAnnotationStyle();
 }

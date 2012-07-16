@@ -96,4 +96,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return true;
     }
 
+    @Override
+    public AnnotationStyle getAnnotationStyle() {
+        return AnnotationStyle.JACKSON;
+    }
+
 }

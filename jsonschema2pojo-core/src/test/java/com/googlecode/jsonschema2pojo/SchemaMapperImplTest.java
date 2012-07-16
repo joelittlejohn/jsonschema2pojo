@@ -30,7 +30,6 @@ import org.mockito.ArgumentCaptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.rules.JsonSchemaRule;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
-import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;

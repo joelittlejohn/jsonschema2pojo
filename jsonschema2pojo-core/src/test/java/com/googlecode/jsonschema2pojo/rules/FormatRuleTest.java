@@ -17,9 +17,9 @@
 package com.googlecode.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
-import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.util.Collection;
@@ -33,6 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.NoopAnnotator;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
@@ -40,7 +41,7 @@ import com.sun.codemodel.JType;
 public class FormatRuleTest {
 
     private GenerationConfig config = mock(GenerationConfig.class);
-    private FormatRule rule = new FormatRule(new RuleFactory(config));
+    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator()));
 
     private final String formatValue;
     private final Class<?> expectedType;
@@ -48,19 +49,19 @@ public class FormatRuleTest {
     @Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
-                {"date-time", Date.class},
-                {"date", String.class},
-                {"time", String.class},
-                {"utc-millisec", Long.class},
-                {"regex", Pattern.class},
-                {"color", String.class},
-                {"style", String.class},
-                {"phone", String.class},
-                {"uri", URI.class},
-                {"email", String.class},
-                {"ip-address", String.class},
-                {"ipv6", String.class},
-                {"host-name", String.class}});
+                { "date-time", Date.class },
+                { "date", String.class },
+                { "time", String.class },
+                { "utc-millisec", Long.class },
+                { "regex", Pattern.class },
+                { "color", String.class },
+                { "style", String.class },
+                { "phone", String.class },
+                { "uri", URI.class },
+                { "email", String.class },
+                { "ip-address", String.class },
+                { "ipv6", String.class },
+                { "host-name", String.class } });
     }
 
     public FormatRuleTest(String formatValue, Class<?> expectedType) {

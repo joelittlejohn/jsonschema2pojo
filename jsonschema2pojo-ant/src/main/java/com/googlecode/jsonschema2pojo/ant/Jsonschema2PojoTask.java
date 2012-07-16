@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
@@ -61,6 +62,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeHashcodeAndEquals = true;
 
     private boolean includeToString = true;
+
+    private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -223,6 +226,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.includeToString = includeToString;
     }
 
+    /**
+     * Sets the 'annotationStyle' property of this class
+     * 
+     * @param annotationStyle
+     *            The style of annotations to use in the generated Java types.
+     */
+    public void setAnnotationStyle(AnnotationStyle annotationStyle) {
+        this.annotationStyle = annotationStyle;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -275,6 +288,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeToString() {
         return includeToString;
+    }
+
+    @Override
+    public AnnotationStyle getAnnotationStyle() {
+        return annotationStyle;
     }
 
 }

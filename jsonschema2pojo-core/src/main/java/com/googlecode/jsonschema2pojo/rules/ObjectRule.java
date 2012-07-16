@@ -29,7 +29,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -168,20 +167,10 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
-        return addAnnotations(newType);
+        ruleFactory.getAnnotator().propertyInclusion(newType);
 
-    }
+        return newType;
 
-    /**
-     * Add any class-level annotations required for a newly generated class.
-     * 
-     * @param _class
-     *            the newly generated class
-     * @return
-     */
-    private JDefinedClass addAnnotations(JDefinedClass _class) {
-        _class.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
-        return _class;
     }
 
     private boolean isFinal(JType superType) {

@@ -20,44 +20,61 @@ import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelp
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.beans.IntrospectionException;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask;
+
 public class Jsonschema2PojoTaskIT {
-    
+
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchema() throws URISyntaxException, ClassNotFoundException {
-        
+
         File outputDirectory = invokeAntBuild("/ant/build.xml");
-        
+
         ClassLoader resultsClassLoader = compile(outputDirectory);
-        
+
         Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
-        
+
         assertThat(generatedClass, is(notNullValue()));
+    }
+
+    @Test
+    public void antTaskDocumentationIncludesAllProperties() throws IntrospectionException, IOException {
+
+        String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"));
+
+        for (Field f : Jsonschema2PojoTask.class.getDeclaredFields()) {
+            assertThat(documentation, containsString(f.getName()));
+        }
+
     }
 
     private File invokeAntBuild(String pathToBuildFile) throws URISyntaxException {
         File buildFile = new File(this.getClass().getResource(pathToBuildFile).toURI());
 
         File targetDirectory = createTemporaryOutputFolder();
-        
+
         Project project = new Project();
         project.setUserProperty("ant.file", buildFile.getAbsolutePath());
         project.setUserProperty("targetDirectory", targetDirectory.getAbsolutePath());
         project.init();
-        
+
         ProjectHelper helper = ProjectHelper.getProjectHelper();
         project.addReference("ant.projecthelper", helper);
         helper.parse(project, buildFile);
-        
+
         project.executeTarget(project.getDefaultTarget());
-        
+
         return targetDirectory;
     }
-    
+
 }
