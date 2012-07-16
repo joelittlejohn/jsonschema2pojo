@@ -50,7 +50,7 @@ import com.sun.codemodel.JVar;
  * Applies the generation steps required for schemas of type "object".
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.1</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class ObjectRule implements SchemaRule<JPackage, JType> {
 

@@ -48,7 +48,7 @@ import com.sun.codemodel.JVar;
  * Applies the "enum" schema rule.
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.17</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
 public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 

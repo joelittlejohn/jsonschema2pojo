@@ -31,9 +31,9 @@ import com.sun.codemodel.JType;
  * Applies the "type":"array" schema rule.
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.3">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.3</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.5</a>
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.13</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15</a>
  */
 public class ArrayRule implements SchemaRule<JPackage, JClass> {
 
@@ -42,7 +42,7 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
     protected ArrayRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
-    
+
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
@@ -76,23 +76,23 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
     public JClass apply(String nodeName, JsonNode node, JPackage jpackage, Schema schema) {
 
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
-        
+
         JType itemType;
         if (node.has("items")) {
             itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), jpackage, schema);
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }
-        
+
         if (uniqueItems) {
             return jpackage.owner().ref(Set.class).narrow(itemType);
         } else {
             return jpackage.owner().ref(List.class).narrow(itemType);
         }
     }
-    
+
     private String makeSingular(String nodeName) {
         return removeEnd(removeEnd(nodeName, "s"), "S");
     }
-    
+
 }

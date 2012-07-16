@@ -35,7 +35,7 @@ import com.sun.codemodel.JVar;
  * Applies the "additionalProperties" JSON schema rule.
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.5</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6</a>
  */
 public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 

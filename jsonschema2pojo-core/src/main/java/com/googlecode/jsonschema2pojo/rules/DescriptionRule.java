@@ -25,7 +25,7 @@ import com.sun.codemodel.JDocCommentable;
  * Applies the "description" schema property.
  * 
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-02#section-5.19</a>
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
 public class DescriptionRule implements SchemaRule<JDocCommentable, JDocComment> {
 
