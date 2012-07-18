@@ -16,6 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.maven;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -174,17 +176,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * Supported values:
      * <ul>
      * <li>
-     * <code>JACKSON</code> (apply annotations from the <a
+     * <code>jackson</code> (apply annotations from the <a
      * href="http://jackson.codehaus.org/">Jackson</a> library)</li>
      * <li>
-     * <code>NONE</code> (apply no annotations at all)</li>
+     * <code>none</code> (apply no annotations at all)</li>
      * </ul>
      * 
      * @parameter expression="${jsonschema2pojo.annotationStyle}"
-     *            default-value="JACKSON"
+     *            default-value="jackson"
      * @since 0.3.1
      */
-    private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+    private String annotationStyle = "jackson";
 
     /**
      * The project being built.
@@ -205,13 +207,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
             "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
     public void execute() throws MojoExecutionException {
 
+        try {
+            AnnotationStyle.valueOf(upperCase(annotationStyle));
+        } catch (IllegalArgumentException e) {
+            throw new MojoExecutionException("Not a valid annotation style: " + annotationStyle);
+        }
+
         if (skip) {
             return;
         }
 
         if (null == sourceDirectory && null == sourcePaths) {
-            String msg = "One of sourceDirectory or sourcePaths must be provided";
-            throw new MojoExecutionException(msg);
+            throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
         }
 
         if (addCompileSourceRoot) {
@@ -295,6 +302,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
 
     @Override
     public AnnotationStyle getAnnotationStyle() {
-        return annotationStyle;
+        return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
     }
 }

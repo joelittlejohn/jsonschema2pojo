@@ -22,13 +22,13 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.Schema;
 
 public class AnnotationStyleIT {
@@ -58,7 +58,7 @@ public class AnnotationStyleIT {
     public void annotationStyleJacksonProducesJacksonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", AnnotationStyle.JACKSON));
+                config("annotationStyle", "jackson"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -74,7 +74,7 @@ public class AnnotationStyleIT {
     public void annotationStyleNoneProducesNoAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", AnnotationStyle.NONE));
+                config("annotationStyle", "none"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -83,6 +83,19 @@ public class AnnotationStyleIT {
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
         assertThat(generatedType.getAnnotation(JsonSerialize.class), is(nullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(nullValue()));
+
+    }
+
+    @Test
+    public void invalidAnnotationStyleCausesMojoException() {
+
+        try {
+            generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle"));
+            fail();
+        } catch (RuntimeException e) {
+            assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));
+            assertThat(e.getCause().getMessage(), is(containsString("invalidstyle")));
+        }
 
     }
 
