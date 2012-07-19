@@ -53,7 +53,7 @@ public class PrimitiveTypes {
      *            the name of a primitive Java type
      * @param owner
      *            the current code model for type generation
-     * @return
+     * @return a type reference created by the given owner
      */
     public static JPrimitiveType primitiveType(String name, JCodeModel owner) {
         try {

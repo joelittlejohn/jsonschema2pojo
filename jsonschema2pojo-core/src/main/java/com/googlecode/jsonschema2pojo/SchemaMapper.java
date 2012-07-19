@@ -64,7 +64,7 @@ public class SchemaMapper {
      *            the name of the parent class the represented by this schema
      * @param packageName
      *            the target package that should be used for generated types
-     * @param schema
+     * @param schemaUrl
      *            location of the schema to be used as input
      * @throws IOException
      *             if the schema content cannot be read

@@ -54,9 +54,9 @@ public class AdditionalPropertiesRule implements SchemaRule<JDefinedClass, JDefi
      * <p>
      * If the additionalProperties node is <code>null</code> (not specified in
      * the schema) or empty, then a new bean property named
-     * "additionalProperties", of type {@link Map<String,Object>} is added to
-     * the generated type (with appropriate accessors). The accessors are
-     * annotated to allow unrecognised (additional) properties found in JSON
+     * "additionalProperties", of type {@link Map}{@literal <String,Object>} is
+     * added to the generated type (with appropriate accessors). The accessors
+     * are annotated to allow unrecognised (additional) properties found in JSON
      * data to be marshalled/unmarshalled from/to this map.
      * <p>
      * If the additionalProperties node is present and specifies a schema, then

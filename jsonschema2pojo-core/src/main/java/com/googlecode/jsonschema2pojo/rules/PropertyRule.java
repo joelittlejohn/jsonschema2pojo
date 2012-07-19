@@ -55,8 +55,10 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
      * accessor methods.
      * <p>
      * If this rule's schema mapper is configured to include builder methods
-     * (see {@link RuleFactory#GENERATE_BUILDERS_PROPERTY}), then a builder
-     * method of the form <code>withFoo(Foo foo);</code> is also added.
+     * (see
+     * {@link com.googlecode.jsonschema2pojo.GenerationConfig#isGenerateBuilders()}
+     * ), then a builder method of the form <code>withFoo(Foo foo);</code> is
+     * also added.
      * 
      * @param nodeName
      *            the name of the property to be applied
