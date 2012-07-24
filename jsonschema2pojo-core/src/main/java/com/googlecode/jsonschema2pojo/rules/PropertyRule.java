@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang.StringUtils.*;
 
 import org.apache.commons.lang.WordUtils;
@@ -39,7 +40,7 @@ import com.sun.codemodel.JVar;
  */
 public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
-    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
+    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
     private final RuleFactory ruleFactory;
 
@@ -144,6 +145,11 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getPropertyName(String nodeName) {
+
+        if (isKeyword(nodeName)) {
+            nodeName += "_";
+        }
+
         char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
 
         if (containsAny(nodeName, wordDelimiters)) {

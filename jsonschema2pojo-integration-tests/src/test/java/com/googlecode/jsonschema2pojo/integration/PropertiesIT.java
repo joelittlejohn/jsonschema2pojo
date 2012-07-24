@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -33,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.googlecode.jsonschema2pojo.Schema;
 
 public class PropertiesIT {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Before
     public void clearSchemaCache() {
@@ -50,8 +53,6 @@ public class PropertiesIT {
 
         Method setter = new PropertyDescriptor("property", generatedType).getWriteMethod();
         setter.invoke(instance, "value");
-
-        ObjectMapper mapper = new ObjectMapper();
 
         assertThat(mapper.valueToTree(instance).toString(), containsString("property"));
 
@@ -76,7 +77,7 @@ public class PropertiesIT {
         new PropertyDescriptor("hastickets", generatedType).getWriteMethod().invoke(instance, true);
         new PropertyDescriptor("starttime", generatedType).getWriteMethod().invoke(instance, "4");
 
-        String serialized = new ObjectMapper().valueToTree(instance).toString();
+        String serialized = mapper.valueToTree(instance).toString();
 
         assertThat("Properties are not in expected order", serialized.indexOf("type"), is(lessThan(serialized.indexOf("id"))));
         assertThat("Properties are not in expected order", serialized.indexOf("id"), is(lessThan(serialized.indexOf("name"))));
@@ -114,10 +115,28 @@ public class PropertiesIT {
         new PropertyDescriptor("propertyWithHyphens", generatedType).getWriteMethod().invoke(instance, "a-b-c");
         new PropertyDescriptor("propertyWithMixedDelimiters", generatedType).getWriteMethod().invoke(instance, "a b_c-d");
 
-        JsonNode jsonified = new ObjectMapper().valueToTree(instance);
+        JsonNode jsonified = mapper.valueToTree(instance);
 
         assertThat(jsonified.has("property_with_underscores"), is(true));
         assertThat(jsonified.has("property-with-hyphens"), is(true));
         assertThat(jsonified.has("property_with mixed-delimiters"), is(true));
     }
+
+    @Test
+    public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
+
+        String valuesAsJsonString = "{\"public\":\"a\",\"void\":\"b\",\"enum\":\"c\"}";
+        Object valuesAsObject = mapper.readValue(valuesAsJsonString, generatedType);
+        JsonNode valueAsJsonNode = mapper.valueToTree(valuesAsObject);
+
+        assertThat(valueAsJsonNode.path("public").asText(), is("a"));
+        assertThat(valueAsJsonNode.path("void").asText(), is("b"));
+        assertThat(valueAsJsonNode.path("enum").asText(), is("c"));
+
+    }
+
 }
