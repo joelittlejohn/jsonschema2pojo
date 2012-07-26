@@ -77,7 +77,7 @@ public class TypeRuleTest {
 
         JType mockDateType = mock(JType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);
-        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), org.mockito.Mockito.isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
         when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
