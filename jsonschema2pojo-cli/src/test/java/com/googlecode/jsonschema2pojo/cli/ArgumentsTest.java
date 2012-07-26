@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -54,8 +55,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
-        assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
+        assertThat(args.getSource().next(), is(F("/home/source")));
+        assertThat(args.getTargetDirectory(), is(F("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
@@ -70,8 +71,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
-        assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
+        assertThat(args.getSource().next(), is(F("/home/source")));
+        assertThat(args.getTargetDirectory(), is(F("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
@@ -95,8 +96,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getAbsolutePath(), is("/home/source"));
-        assertThat(args.getTargetDirectory().getAbsolutePath(), is("/home/target"));
+        assertThat(args.getSource().next(), is(F("/home/source")));
+        assertThat(args.getTargetDirectory(), is(F("/home/target")));
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));
         assertThat(args.isUsePrimitives(), is(false));
@@ -122,6 +123,17 @@ public class ArgumentsTest {
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
     }
 
+    /**
+     * Creates a File from a path.
+     * 
+     * @param path
+     * 
+     * @return
+     */
+    private File F(String path) {
+        return new File(path);
+    }
+
     private static class ArgsForTest extends Arguments {
         protected Integer status;
 
@@ -134,5 +146,4 @@ public class ArgumentsTest {
             return (status != null);
         }
     }
-
 }
