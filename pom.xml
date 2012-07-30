@@ -262,6 +262,11 @@
                 <version>1.6.1</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.0.0.GA</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
