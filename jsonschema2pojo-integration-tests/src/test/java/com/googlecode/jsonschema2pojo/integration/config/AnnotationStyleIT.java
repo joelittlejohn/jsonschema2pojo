@@ -20,9 +20,11 @@ import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelp
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.integration.util.FileSearchMatcher;
 
 public class AnnotationStyleIT {
 
@@ -40,7 +43,7 @@ public class AnnotationStyleIT {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void defaultAnnotationStyeIsJackson() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void defaultAnnotationStyeIsJackson2() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
@@ -55,7 +58,7 @@ public class AnnotationStyleIT {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleJacksonProducesJacksonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void annotationStyleJacksonProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "jackson"));
@@ -67,6 +70,48 @@ public class AnnotationStyleIT {
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
         assertThat(generatedType.getAnnotation(JsonSerialize.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void annotationStyleJackson2ProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+
+        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
+                config("annotationStyle", "jackson2"));
+
+        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
+        assertThat(generatedOutputDirectory, containsText("com.fasterxml.jackson"));
+
+        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+
+        Method getter = generatedType.getMethod("getA");
+
+        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(JsonSerialize.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void annotationStyleJackson1ProducesJackson1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+
+        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
+                config("annotationStyle", "jackson1"));
+
+        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
+        assertThat(generatedOutputDirectory, containsText("org.codehaus.jackson"));
+
+        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+
+        Method getter = generatedType.getMethod("getA");
+
+        assertThat(generatedType.getAnnotation(org.codehaus.jackson.annotate.JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(org.codehaus.jackson.map.annotate.JsonSerialize.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(org.codehaus.jackson.annotate.JsonProperty.class), is(notNullValue()));
     }
 
     @Test
@@ -99,4 +144,7 @@ public class AnnotationStyleIT {
 
     }
 
+    private static Matcher<File> containsText(String searchText) {
+        return new FileSearchMatcher(searchText);
+    }
 }
