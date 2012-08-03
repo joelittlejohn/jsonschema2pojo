@@ -19,7 +19,7 @@ package com.googlecode.jsonschema2pojo.rules;
 import com.googlecode.jsonschema2pojo.Annotator;
 import com.googlecode.jsonschema2pojo.DefaultGenerationConfig;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
-import com.googlecode.jsonschema2pojo.JacksonAnnotator;
+import com.googlecode.jsonschema2pojo.Jackson2Annotator;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
@@ -56,7 +56,7 @@ public class RuleFactory {
      * @see DefaultGenerationConfig
      */
     public RuleFactory() {
-        this(new DefaultGenerationConfig(), new JacksonAnnotator());
+        this(new DefaultGenerationConfig(), new Jackson2Annotator());
     }
 
     /**

@@ -16,6 +16,10 @@
 
 package com.googlecode.jsonschema2pojo;
 
+/**
+ * Factory object for creating {@link Annotater}s for all the supported
+ * annotation styles.
+ */
 public class AnnotatorFactory {
 
     /**
@@ -30,7 +34,10 @@ public class AnnotatorFactory {
 
         switch (style) {
             case JACKSON:
-                return new JacksonAnnotator();
+            case JACKSON2:
+                return new Jackson2Annotator();
+            case JACKSON1:
+                return new Jackson1Annotator();
             case NONE:
                 return new NoopAnnotator();
             default:

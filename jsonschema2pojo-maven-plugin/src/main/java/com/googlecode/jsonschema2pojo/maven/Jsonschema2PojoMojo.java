@@ -176,14 +176,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * Supported values:
      * <ul>
      * <li>
-     * <code>jackson</code> (apply annotations from the <a
-     * href="http://jackson.codehaus.org/">Jackson</a> library)</li>
+     * <code>jackson2</code> (apply annotations from the <a
+     * href="https://github.com/FasterXML/jackson-annotations">Jackson 2.x</a>
+     * library)</li>
+     * <li>
+     * <code>jackson1</code> (apply annotations from the <a
+     * href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
      * <li>
      * <code>none</code> (apply no annotations at all)</li>
      * </ul>
      * 
      * @parameter expression="${jsonschema2pojo.annotationStyle}"
-     *            default-value="jackson"
+     *            default-value="jackson2"
      * @since 0.3.1
      */
     private String annotationStyle = "jackson";
