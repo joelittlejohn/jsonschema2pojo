@@ -32,7 +32,13 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
-public class JacksonAnnotator implements Annotator {
+/**
+ * Annotates generated Java types using the Jackson 2.x mapping annotations.
+ * 
+ * @see <a
+ *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+ */
+public class Jackson2Annotator implements Annotator {
 
     @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {

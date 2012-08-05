@@ -16,6 +16,39 @@
 
 package com.googlecode.jsonschema2pojo;
 
+/**
+ * The style of annotations to be used on generated java types (to allow them to
+ * support whatever kind of binding to JSON is required). Each JSON
+ * parser/mapper library will have its own set of mapping annotations.
+ */
 public enum AnnotationStyle {
-    JACKSON, NONE
+
+    /**
+     * Jackson 2.x (alias of {@link #JACKSON2})
+     * 
+     * @see <a
+     *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+     */
+    JACKSON,
+
+    /**
+     * Jackson 1.x
+     * 
+     * @see <a
+     *      href="http://jackson.codehaus.org/">http://jackson.codehaus.org/</a>
+     */
+    JACKSON1,
+
+    /**
+     * Jackson 2.x
+     * 
+     * @see <a
+     *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+     */
+    JACKSON2,
+
+    /**
+     * No-op style, adds no annotations at all.
+     */
+    NONE
 }

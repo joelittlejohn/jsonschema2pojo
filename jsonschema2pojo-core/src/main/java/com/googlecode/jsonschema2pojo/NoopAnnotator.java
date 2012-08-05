@@ -21,6 +21,10 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
+/**
+ * No-op annotator that produces no annotations. Useful for producing truly
+ * <em>plain old</em> Java types that have no mapping annotations at all.
+ */
 public class NoopAnnotator implements Annotator {
 
     @Override
