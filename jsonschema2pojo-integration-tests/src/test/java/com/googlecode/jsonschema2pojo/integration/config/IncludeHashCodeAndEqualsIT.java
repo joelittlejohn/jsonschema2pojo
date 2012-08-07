@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class IncludeHashCodeAndEqualsIT {
 
     @Before
@@ -32,7 +33,6 @@ public class IncludeHashCodeAndEqualsIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansIncludeHashCodeAndEqualsByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
@@ -46,7 +46,6 @@ public class IncludeHashCodeAndEqualsIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeHashcodeAndEquals", false));
 
