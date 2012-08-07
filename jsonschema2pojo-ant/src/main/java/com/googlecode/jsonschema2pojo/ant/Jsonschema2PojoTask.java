@@ -65,6 +65,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
+    private boolean includeJsr303Annotations = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -236,6 +238,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.annotationStyle = annotationStyle;
     }
 
+    /**
+     * Sets the 'includeJsr303Annotations' property of this class
+     * 
+     * @param includeJsr303Annotations
+     *            Whether to include <a
+     *            href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a>
+     *            annotations (for schema rules like minimum, maximum, etc) in
+     *            generated Java types.
+     */
+    public void setIncludeJsr303Annotations(boolean includeJsr303Annotations) {
+        this.includeJsr303Annotations = includeJsr303Annotations;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -293,6 +308,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public boolean isIncludeJsr303Annotations() {
+        return includeJsr303Annotations;
     }
 
 }

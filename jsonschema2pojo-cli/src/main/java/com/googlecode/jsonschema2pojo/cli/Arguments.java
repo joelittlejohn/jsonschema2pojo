@@ -68,6 +68,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-a", "--annotation-style" }, description = "The style of annotations to use in the generated Java types.")
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
+    @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
+    private boolean includeJsr303Annotations = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -151,6 +154,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public boolean isIncludeJsr303Annotations() {
+        return includeJsr303Annotations;
     }
 
     protected void exit(int status) {

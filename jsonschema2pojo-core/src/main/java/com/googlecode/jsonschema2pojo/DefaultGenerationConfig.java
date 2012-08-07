@@ -96,9 +96,20 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return true;
     }
 
+    /**
+     * @return {@link AnnotationStyle#JACKSON2}
+     */
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.JACKSON;
+    }
+
+    /**
+     * return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeJsr303Annotations() {
+        return false;
     }
 
 }
