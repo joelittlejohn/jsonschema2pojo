@@ -55,8 +55,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(F("/home/source")));
-        assertThat(args.getTargetDirectory(), is(F("/home/target")));
+        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
@@ -71,8 +71,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(F("/home/source")));
-        assertThat(args.getTargetDirectory(), is(F("/home/target")));
+        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
@@ -96,8 +96,8 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(F("/home/source")));
-        assertThat(args.getTargetDirectory(), is(F("/home/target")));
+        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));
         assertThat(args.isUsePrimitives(), is(false));
@@ -123,14 +123,7 @@ public class ArgumentsTest {
         assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
     }
 
-    /**
-     * Creates a File from a path.
-     * 
-     * @param path
-     * 
-     * @return
-     */
-    private File F(String path) {
+    private File theFile(String path) {
         return new File(path);
     }
 

@@ -16,12 +16,14 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -77,7 +79,7 @@ public class TypeRuleTest {
 
         JType mockDateType = mock(JType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);
-        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), org.mockito.Mockito.isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), Mockito.isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
         when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
