@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.integration.util.FileSearchMatcher;
 
 @SuppressWarnings("rawtypes")
 public class IncludeJsr303AnnotationsIT {
@@ -47,10 +48,17 @@ public class IncludeJsr303AnnotationsIT {
 
     @Test
     public void jsrAnnotationsAreNotIncludedByDefault() throws ClassNotFoundException {
-        File outputDirectory = generate("/schema/jsr303/all.json", "com.example",
-                config("includeJsr303Annotations", true));
+        File outputDirectory = generate("/schema/jsr303/all.json", "com.example");
 
-        //assertThat(outputDirectory, not(containsText("javax.validation"));
+        assertThat(outputDirectory, not(containsText("javax.validation")));
+    }
+
+    @Test
+    public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() throws ClassNotFoundException {
+        File outputDirectory = generate("/schema/jsr303/all.json", "com.example",
+                config("includeJsr303Annotations", false));
+
+        assertThat(outputDirectory, not(containsText("javax.validation")));
     }
 
     @Test
@@ -197,4 +205,7 @@ public class IncludeJsr303AnnotationsIT {
         }
     }
 
+    private static Matcher<File> containsText(String searchText) {
+        return new FileSearchMatcher(searchText);
+    }
 }
