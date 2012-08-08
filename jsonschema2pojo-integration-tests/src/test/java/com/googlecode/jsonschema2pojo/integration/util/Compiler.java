@@ -17,62 +17,54 @@
 package com.googlecode.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.apache.commons.lang.StringUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import org.apache.commons.jci.compilers.CompilationResult;
-import org.apache.commons.jci.compilers.JavaCompiler;
-import org.apache.commons.jci.compilers.JavaCompilerFactory;
-import org.apache.commons.jci.compilers.JavaCompilerSettings;
-import org.apache.commons.jci.readers.FileResourceReader;
-import org.apache.commons.jci.stores.FileResourceStore;
-import org.apache.commons.lang.ArrayUtils;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Compiles java source files in a given output directory using Apache Commons
- * JCI.
+ * Compiles all the Java source files found in a given directory using the
+ * JSR-199 API in Java 6.
  */
 public class Compiler {
-    
+
     private static final String PRINT_SOURCE_PROPERTY = "printSource";
-    
-    public void compile(File outputDirectory) {
-        
-        JavaCompiler compiler = new JavaCompilerFactory().createCompiler("eclipse");
-        
-        JavaCompilerSettings compilerSettings = compiler.createDefaultSettings();
-        compilerSettings.setSourceVersion("1.5");
-        compilerSettings.setTargetVersion("1.5");
-        
-        CompilationResult result = compiler.compile(findAllSourceFiles(outputDirectory), new FileResourceReader(outputDirectory), new FileResourceStore(outputDirectory), Thread.currentThread().getContextClassLoader(), compilerSettings);
-        
-        assertThat(ArrayUtils.toString(result.getErrors()), result.getErrors().length, is(0));
-    }
-    
-    @SuppressWarnings("unchecked")
-    private String[] findAllSourceFiles(File outputDirectory) {
-        
-        List<String> javaSourceFileNames = new ArrayList<String>();
-        
-        for (File file : (Collection<File>) listFiles(outputDirectory, new String[] { "java" }, true)) {
-            debugOutput(file);
-            
-            javaSourceFileNames.add(removeStart(file.getAbsolutePath(), outputDirectory.getAbsolutePath() + File.separator));
+
+    public void compile(File directory) {
+
+        JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
+        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
+
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(directory));
+
+        if (compilationUnits.iterator().hasNext()) {
+            Boolean success = javaCompiler.getTask(null, fileManager, null, null, null, compilationUnits).call();
+            assertThat("Compilation was not successful, check stdout for errors", success, is(true));
         }
-        
-        return javaSourceFileNames.toArray(new String[javaSourceFileNames.size()]);
+
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_ALWAYS_NULL", 
-            justification="Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
+    private Collection<File> findAllSourceFiles(File directory) {
+        Collection<File> files = listFiles(directory, new String[] { "java" }, true);
+
+        for (File file : files) {
+            debugOutput(file);
+        }
+
+        return files;
+    }
+
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_ALWAYS_NULL",
+            justification = "Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
     private void debugOutput(File file) {
         if (StringUtils.equals(System.getProperty(PRINT_SOURCE_PROPERTY), "true")) {
             try {
@@ -82,5 +74,5 @@ public class Compiler {
             }
         }
     }
-    
+
 }
