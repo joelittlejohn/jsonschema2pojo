@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import com.googlecode.jsonschema2pojo.Schema;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings("rawtypes")
 public class IncludeJsr303AnnotationsIT {
 
     private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();;
@@ -79,11 +79,11 @@ public class IncludeJsr303AnnotationsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Maximum");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10.0d);
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8.9d);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8.9d);
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10.9d);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 

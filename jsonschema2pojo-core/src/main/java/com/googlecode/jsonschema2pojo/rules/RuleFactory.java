@@ -137,7 +137,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "required" declaration.
      */
     public SchemaRule<JDocCommentable, JDocComment> getRequiredRule() {
-        return new RequiredRule();
+        return new RequiredRule(this);
     }
 
     /**
@@ -174,8 +174,8 @@ public class RuleFactory {
     }
 
     /**
-     * Provides a rule instance that should be applied when an schema
-     * declaration is found in the schema.
+     * Provides a rule instance that should be applied when a schema declaration
+     * is found in the schema.
      * 
      * @return a schema rule that can handle a schema declaration.
      */
@@ -184,7 +184,7 @@ public class RuleFactory {
     }
 
     /**
-     * Provides a rule instance that should be applied when an property
+     * Provides a rule instance that should be applied when a property
      * declaration is found in the schema to assign any appropriate default
      * value to that property.
      * 
@@ -192,6 +192,38 @@ public class RuleFactory {
      */
     public SchemaRule<JFieldVar, JFieldVar> getDefaultRule() {
         return new DefaultRule();
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a property
+     * declaration is found in the schema, to assign any minimum/maximum
+     * validation on that property
+     * 
+     * @return a schema rule that can handle the "default" declaration.
+     */
+    public SchemaRule<JFieldVar, JFieldVar> getMinimumMaximumRule() {
+        return new MinimumMaximumRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a property
+     * declaration is found in the schema, to assign any size validation
+     * (minItems/maxItems) on that property
+     * 
+     * @return a schema rule that can handle the "default" declaration.
+     */
+    public SchemaRule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
+        return new MinItemsMaxItemsRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a "pattern"
+     * declaration is found in the schema for a property.
+     * 
+     * @return a schema rule that can handle the "pattern" declaration.
+     */
+    public SchemaRule<JFieldVar, JFieldVar> getPatternRule() {
+        return new PatternRule(this);
     }
 
     /**

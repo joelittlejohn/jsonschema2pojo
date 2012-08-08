@@ -32,7 +32,7 @@ public class RequiredRuleTest {
 
     private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
 
-    private RequiredRule rule = new RequiredRule();
+    private RequiredRule rule = new RequiredRule(new RuleFactory());
 
     @Test
     public void applyAddsTextWhenRequired() throws JClassAlreadyExistsException {
