@@ -1,0 +1,13 @@
+{
+    "type" : "object",
+    "properties" : {
+    	"x" : {
+    	    "minimum" : 1.1,
+    	    "minimum" : 2.2,
+    		"minItems" : "1",
+    		"maxItems" : "2",
+    		"pattern" : "abc.*",
+    		"required" : true
+    	}
+    }
+}

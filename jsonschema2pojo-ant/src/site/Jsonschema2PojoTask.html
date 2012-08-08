@@ -81,7 +81,22 @@
         </td>
         <td align="center" valign="top">No (default <code>JACKSON2</code>)</td>
       </tr>
-    </table>
+      <tr>
+        <td valign="top">includeJsr303Annotations</td>
+        <td valign="top">Whether to include <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations (for schema rules like minimum, maximum, etc) in generated Java types.
+          <p>
+          Schema rules and the annotation they produce:
+          <ul>
+            <li>maximum = <code>@DecimalMax</code>
+            <li>minimum = <code>@DecimalMin</code>
+            <li>minItems,maxItems = <code>@Size</code>
+            <li>pattern = <code>@Pattern</code>
+            <li>required = <code>@NotNull</code>
+          </ul>
+        </td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+    </tr>
+	</table>
         
     <h3>Examples</h3>
     <pre>

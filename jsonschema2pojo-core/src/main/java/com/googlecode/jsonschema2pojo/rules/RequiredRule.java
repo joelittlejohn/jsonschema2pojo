@@ -16,10 +16,13 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JFieldVar;
 
 /**
  * Applies the "required" schema rule.
@@ -34,7 +37,10 @@ public class RequiredRule implements SchemaRule<JDocCommentable, JDocComment> {
      */
     public static final String REQUIRED_COMMENT_TEXT = "\n(Required)";
 
-    protected RequiredRule() {
+    private final RuleFactory ruleFactory;
+
+    protected RequiredRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
 
     /**
@@ -61,6 +67,11 @@ public class RequiredRule implements SchemaRule<JDocCommentable, JDocComment> {
 
         if (node.asBoolean()) {
             javadoc.append(REQUIRED_COMMENT_TEXT);
+
+            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
+                    && generatableType instanceof JFieldVar) {
+                ((JFieldVar) generatableType).annotate(NotNull.class);
+            }
         }
 
         return javadoc;

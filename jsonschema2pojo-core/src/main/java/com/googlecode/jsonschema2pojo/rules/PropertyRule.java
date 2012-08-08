@@ -105,7 +105,15 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), setter, schema);
         }
 
+        if (node.has("pattern")) {
+            ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), field, schema);
+        }
+
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
+
+        ruleFactory.getMinimumMaximumRule().apply(nodeName, node, field, schema);
+
+        ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
 
         return jclass;
     }

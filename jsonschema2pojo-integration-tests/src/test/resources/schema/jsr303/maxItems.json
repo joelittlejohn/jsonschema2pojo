@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "properties" : {
+    	"maxItems" : {
+    		"type" : "array",
+    		"maxItems" : 5    		
+    	}
+    }
+}

@@ -120,4 +120,15 @@ public interface GenerationConfig {
      * @see AnnotatorFactory
      */
     AnnotationStyle getAnnotationStyle();
+
+    /**
+     * Gets the 'includeJsr303Annotations' configuration option.
+     * 
+     * @return Whether to include <a
+     *         href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a>
+     *         annotations (for schema rules like minimum, maximum, etc) in
+     *         generated Java types.
+     */
+    boolean isIncludeJsr303Annotations();
+
 }

@@ -26,7 +26,8 @@
                          useLongIntegers="true"
                          includeHashcodeAndEquals="false"
                          includeToString="false"
-                         annotationStyle="NONE"/>
+                         annotationStyle="NONE"
+                         includeJsr303Annotations="true"/>
     </target>
 
 </project>

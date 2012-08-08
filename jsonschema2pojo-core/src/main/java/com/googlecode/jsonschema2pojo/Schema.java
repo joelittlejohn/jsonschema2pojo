@@ -71,8 +71,7 @@ public class Schema {
 
                 schemas.put(id, new Schema(id, content));
             } catch (IOException e) {
-                String msg = "Error with schema: " + id;
-                throw new GenerationException(msg, e);
+                throw new GenerationException("Error with schema: " + id, e);
             }
         }
 

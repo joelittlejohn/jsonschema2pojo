@@ -193,6 +193,26 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     private String annotationStyle = "jackson";
 
     /**
+     * Whether to include <a
+     * href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations (for
+     * schema rules like minimum, maximum, etc) in generated Java types.
+     * <p>
+     * Schema rules and the annotation they produce:
+     * <ul>
+     * <li>maximum = {@literal @DecimalMax}
+     * <li>minimum = {@literal @DecimalMin}
+     * <li>minItems,maxItems = {@literal @Size}
+     * <li>pattern = {@literal @Pattern}
+     * <li>required = {@literal @NotNull}
+     * </ul>
+     * 
+     * @parameter expression="${jsonschema2pojo.includeJsr303Annotations}"
+     *            default-value="false"
+     * @since 0.3.2
+     */
+    private boolean includeJsr303Annotations = false;
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -308,4 +328,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
     }
+
+    @Override
+    public boolean isIncludeJsr303Annotations() {
+        return includeJsr303Annotations;
+    }
+
 }
