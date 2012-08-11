@@ -65,7 +65,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
     private boolean omitToString = false;
 
-    @Parameter(names = { "-a", "--annotation-style" }, description = "The style of annotations to use in the generated Java types.")
+    @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
