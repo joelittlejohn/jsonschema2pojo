@@ -16,17 +16,9 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.apache.commons.lang.StringUtils.*;
-
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.JType;
 
 /**
@@ -34,80 +26,13 @@ import com.sun.codemodel.JType;
  */
 public class Schema {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    private static Map<URI, Schema> schemas = new HashMap<URI, Schema>();
-
-    private static FragmentResolver fragmentResolver = new FragmentResolverImpl();
-
     private URI id;
     private JsonNode content;
     private JType javaType;
 
-    private Schema(URI id, JsonNode content) {
+    protected Schema(URI id, JsonNode content) {
         this.id = id;
         this.content = content;
-    }
-
-    /**
-     * Create or look up a new schema which has the given ID and read the
-     * contents of the given ID as a URL. If a schema with the given ID is
-     * already known, then a reference to the original schema will be returned.
-     * 
-     * @param id
-     *            the id of the schema being created
-     * @return a schema object containing the contents of the given path
-     */
-    public static synchronized Schema create(URI id) {
-
-        if (!schemas.containsKey(id)) {
-
-            try {
-                JsonNode content = OBJECT_MAPPER.readTree(new File(removeFragment(id)));
-
-                if (id.toString().contains("#")) {
-                    content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
-                }
-
-                schemas.put(id, new Schema(id, content));
-            } catch (IOException e) {
-                throw new GenerationException("Error with schema: " + id, e);
-            }
-        }
-
-        return schemas.get(id);
-    }
-
-    private static URI removeFragment(URI id) {
-        return URI.create(substringBefore(id.toString(), "#"));
-    }
-
-    /**
-     * Create or look up a new schema using the given schema as a parent and the
-     * path as a relative reference. If a schema with the given parent and
-     * relative path is already known, then a reference to the original schema
-     * will be returned.
-     * 
-     * @param parent
-     *            the schema which is the parent of the schema to be created.
-     * @param path
-     *            the relative path of this schema (will be used to create a
-     *            complete URI by resolving this path against the parent
-     *            schema's id)
-     * @return a schema object containing the contents of the given path
-     */
-    public static Schema create(Schema parent, String path) {
-
-        if (path.equals("#")) {
-            return parent;
-        }
-
-        path = stripEnd(path, "#?&/");
-
-        URI id = (parent == null) ? URI.create(path) : parent.getId().resolve(path);
-
-        return create(id);
-
     }
 
     public JType getJavaType() {
@@ -134,10 +59,6 @@ public class Schema {
 
     public boolean isGenerated() {
         return (javaType != null);
-    }
-
-    public static synchronized void clearCache() {
-        schemas.clear();
     }
 
 }

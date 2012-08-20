@@ -19,17 +19,9 @@ package com.googlecode.jsonschema2pojo.integration.config;
 import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.Schema;
-
 public class IncludeToStringIT {
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })

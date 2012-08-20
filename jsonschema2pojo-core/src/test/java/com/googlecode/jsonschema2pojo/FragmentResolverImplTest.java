@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class FragmentResolverImplTest {
 
-    private FragmentResolverImpl resolver = new FragmentResolverImpl();
+    private FragmentResolver resolver = new FragmentResolver();
 
     @Test
     public void hashResolvesToRoot() {

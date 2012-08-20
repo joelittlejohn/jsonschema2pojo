@@ -26,16 +26,12 @@ import java.lang.reflect.Type;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.Schema;
-
 public class RelativeRefIT {
 
     private static Class<?> relativeRefsClass;
 
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
-
-        Schema.clearCache();
 
         ClassLoader relativeRefsClassLoader = generateAndCompile("/schema/ref/refsToA.json", "com.example");
 

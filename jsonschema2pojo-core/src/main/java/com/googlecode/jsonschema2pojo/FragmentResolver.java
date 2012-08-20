@@ -16,27 +16,44 @@
 
 package com.googlecode.jsonschema2pojo;
 
+import static java.util.Arrays.*;
+import static org.apache.commons.lang.StringUtils.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
-/**
- * Resolves fragments of a schema.
- * 
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-6.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-6.2</a>
- */
-public interface FragmentResolver {
+public class FragmentResolver {
 
-    /**
-     * Resolves a fragment path and returns a fragment of the given tree.
-     * 
-     * @param tree
-     *            the complete tree of nodes, against which the path will be
-     *            resolved.
-     * @param path
-     *            the path that represents a fragment within the document
-     *            (either slash-delimited or dot-delimited).
-     * @return a part/fragment of the document, referred to by the given path
-     */
-    JsonNode resolve(JsonNode tree, String path);
+    public JsonNode resolve(JsonNode tree, String path) {
 
+        return resolve(tree, new ArrayList<String>(asList(split(path, "#/."))));
+
+    }
+
+    private JsonNode resolve(JsonNode tree, List<String> path) {
+
+        if (path.isEmpty()) {
+            return tree;
+        } else {
+            String part = path.remove(0);
+
+            if (tree.isArray()) {
+                try {
+                    int index = Integer.parseInt(part);
+                    return resolve(tree.get(index), path);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Not a valid array index: " + part);
+                }
+            }
+
+            if (tree.has(part)) {
+                return resolve(tree.get(part), path);
+            } else {
+                throw new IllegalArgumentException("Path not present: " + part);
+            }
+        }
+
+    }
 }

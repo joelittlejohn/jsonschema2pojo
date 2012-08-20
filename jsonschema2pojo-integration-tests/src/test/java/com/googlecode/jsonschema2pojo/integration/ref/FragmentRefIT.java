@@ -23,16 +23,12 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.Schema;
-
 public class FragmentRefIT {
 
     private static Class<?> fragmentRefsClass;
 
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
-
-        Schema.clearCache();
 
         ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
 

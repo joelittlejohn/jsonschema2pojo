@@ -19,18 +19,10 @@ package com.googlecode.jsonschema2pojo.integration.config;
 import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import com.googlecode.jsonschema2pojo.Schema;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class IncludeHashCodeAndEqualsIT {
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     public void beansIncludeHashCodeAndEqualsByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {

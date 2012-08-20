@@ -30,6 +30,7 @@ import com.googlecode.jsonschema2pojo.Annotator;
 import com.googlecode.jsonschema2pojo.AnnotatorFactory;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.SchemaStore;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
@@ -77,7 +78,7 @@ public final class Jsonschema2Pojo {
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
 
         Annotator annotator = new AnnotatorFactory().getAnnotator(config.getAnnotationStyle());
-        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator));
+        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()));
 
         JCodeModel codeModel = new JCodeModel();
 

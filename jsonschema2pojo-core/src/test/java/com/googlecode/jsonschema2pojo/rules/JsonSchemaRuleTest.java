@@ -16,14 +16,14 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -44,11 +45,6 @@ public class JsonSchemaRuleTest {
     private RuleFactory mockRuleFactory = mock(RuleFactory.class);
     private JsonSchemaRule rule = new JsonSchemaRule(mockRuleFactory);
 
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
-
     @Test
     public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {
 
@@ -61,6 +57,7 @@ public class JsonSchemaRuleTest {
 
         TypeRule mockTypeRule = mock(TypeRule.class);
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
+        when(mockRuleFactory.getSchemaStore()).thenReturn(new SchemaStore());
 
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
@@ -108,8 +105,11 @@ public class JsonSchemaRuleTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = Schema.create(schemaUri);
+        SchemaStore schemaStore = new SchemaStore();
+        Schema schema = schemaStore.create(schemaUri);
         schema.setJavaType(previouslyGeneratedType);
+
+        when(mockRuleFactory.getSchemaStore()).thenReturn(schemaStore);
 
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());

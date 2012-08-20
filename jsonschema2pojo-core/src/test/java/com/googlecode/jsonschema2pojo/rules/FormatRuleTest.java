@@ -34,6 +34,7 @@ import org.junit.runners.Parameterized.Parameters;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.NoopAnnotator;
+import com.googlecode.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
@@ -41,7 +42,7 @@ import com.sun.codemodel.JType;
 public class FormatRuleTest {
 
     private GenerationConfig config = mock(GenerationConfig.class);
-    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator()));
+    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
 
     private final String formatValue;
     private final Class<?> expectedType;

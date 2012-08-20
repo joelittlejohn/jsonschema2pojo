@@ -22,8 +22,10 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
+import com.googlecode.jsonschema2pojo.DefaultGenerationConfig;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.NoopAnnotator;
+import com.googlecode.jsonschema2pojo.SchemaStore;
 
 public class RuleFactoryImplTest {
 
@@ -56,7 +58,11 @@ public class RuleFactoryImplTest {
 
         assertThat(ruleFactory.getTypeRule(), notNullValue());
 
-        assertThat(ruleFactory.getPropertiesRule(), notNullValue());
+        assertThat(ruleFactory.getMinimumMaximumRule(), notNullValue());
+
+        assertThat(ruleFactory.getMinItemsMaxItemsRule(), notNullValue());
+
+        assertThat(ruleFactory.getPatternRule(), notNullValue());
 
     }
 
@@ -65,9 +71,21 @@ public class RuleFactoryImplTest {
 
         GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
 
-        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator());
+        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator(), new SchemaStore());
 
         assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
 
     }
+
+    @Test
+    public void schemaStoreIsReturned() {
+
+        SchemaStore mockSchemaStore = mock(SchemaStore.class);
+
+        RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), mockSchemaStore);
+
+        assertThat(ruleFactory.getSchemaStore(), is(sameInstance(mockSchemaStore)));
+
+    }
+
 }

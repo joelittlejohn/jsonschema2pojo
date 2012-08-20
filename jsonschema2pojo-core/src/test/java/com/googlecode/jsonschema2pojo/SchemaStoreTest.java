@@ -16,37 +16,27 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.apache.commons.lang.StringUtils.removeEnd;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.apache.commons.lang.StringUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
-public class SchemaTest {
+public class SchemaStoreTest {
 
-    @Before 
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
-    
     @Test
     public void createWithAbsolutePath() throws URISyntaxException {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = Schema.create(schemaUri);
+        Schema schema = new SchemaStore().create(schemaUri);
 
         assertThat(schema, is(notNullValue()));
         assertThat(schema.getId(), is(equalTo(schemaUri)));
@@ -60,8 +50,9 @@ public class SchemaTest {
 
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema addressSchema = Schema.create(addressSchemaUri);
-        Schema enumSchema = Schema.create(addressSchema, "enum.json");
+        SchemaStore schemaStore = new SchemaStore();
+        Schema addressSchema = schemaStore.create(addressSchemaUri);
+        Schema enumSchema = schemaStore.create(addressSchema, "enum.json");
 
         String expectedUri = removeEnd(addressSchemaUri.toString(), "address.json") + "enum.json";
 
@@ -76,8 +67,9 @@ public class SchemaTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema addressSchema = Schema.create(schemaUri);
-        Schema selfRefSchema = Schema.create(addressSchema, "#");
+        SchemaStore schemaStore = new SchemaStore();
+        Schema addressSchema = schemaStore.create(schemaUri);
+        Schema selfRefSchema = schemaStore.create(addressSchema, "#");
 
         assertThat(addressSchema, is(sameInstance(selfRefSchema)));
 
@@ -88,8 +80,9 @@ public class SchemaTest {
 
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema addressSchema = Schema.create(addressSchemaUri);
-        Schema innerSchema = Schema.create(addressSchema, "#/properties/post-office-box");
+        SchemaStore schemaStore = new SchemaStore();
+        Schema addressSchema = schemaStore.create(addressSchemaUri);
+        Schema innerSchema = schemaStore.create(addressSchema, "#/properties/post-office-box");
 
         String expectedUri = addressSchemaUri.toString() + "#/properties/post-office-box";
 
@@ -105,30 +98,32 @@ public class SchemaTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema1 = Schema.create(schemaUri);
+        SchemaStore schemaStore = new SchemaStore();
 
-        Schema schema2 = Schema.create(schemaUri);
+        Schema schema1 = schemaStore.create(schemaUri);
+
+        Schema schema2 = schemaStore.create(schemaUri);
 
         assertThat(schema1, is(sameInstance(schema2)));
 
     }
-    
+
     @Test
     public void setIfEmptyOnlySetsIfEmpty() throws URISyntaxException {
-        
+
         JType firstClass = mock(JDefinedClass.class);
         JType secondClass = mock(JDefinedClass.class);
-        
+
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = Schema.create(schemaUri);
-        
+        Schema schema = new SchemaStore().create(schemaUri);
+
         schema.setJavaTypeIfEmpty(firstClass);
         assertThat(schema.getJavaType(), is(equalTo(firstClass)));
-        
+
         schema.setJavaTypeIfEmpty(secondClass);
         assertThat(schema.getJavaType(), is(not(equalTo(secondClass))));
-        
+
     }
 
 }

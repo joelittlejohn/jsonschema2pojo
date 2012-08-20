@@ -30,21 +30,14 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hamcrest.Matcher;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.integration.util.FileSearchMatcher;
 
 @SuppressWarnings("rawtypes")
 public class IncludeJsr303AnnotationsIT {
 
     private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();;
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     public void jsrAnnotationsAreNotIncludedByDefault() throws ClassNotFoundException {

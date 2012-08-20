@@ -24,7 +24,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.NoopAnnotator;
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -39,12 +39,7 @@ import com.sun.codemodel.JPackage;
 public class ArrayRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
-    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator()));
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
+    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {

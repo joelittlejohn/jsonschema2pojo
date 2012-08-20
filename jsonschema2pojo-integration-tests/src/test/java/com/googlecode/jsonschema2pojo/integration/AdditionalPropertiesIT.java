@@ -28,22 +28,15 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.googlecode.jsonschema2pojo.Schema;
 
 public class AdditionalPropertiesIT {
 
     private ObjectMapper mapper = new ObjectMapper();
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     @SuppressWarnings("unchecked")

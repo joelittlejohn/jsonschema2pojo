@@ -41,6 +41,7 @@ import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
  * @goal generate
  * @phase generate-sources
  * @requiresDependencyResolution compile
+ * @threadSafe
  * @see <a
  *      href="http://maven.apache.org/developers/mojo-api-specification.html">Mojo
  *      API Specification</a>

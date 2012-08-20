@@ -24,11 +24,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.googlecode.jsonschema2pojo.Schema;
 
 public class TypeIT {
 
@@ -41,11 +38,6 @@ public class TypeIT {
         generatedTypesDirectory = generate("/schema/type/types.json", "com.example");
         classWithManyTypes = compile(generatedTypesDirectory).loadClass("com.example.Types");
 
-    }
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
     }
 
     @Test

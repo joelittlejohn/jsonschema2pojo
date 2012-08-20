@@ -25,21 +25,14 @@ import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.Matcher;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.integration.util.FileSearchMatcher;
 
 public class AnnotationStyleIT {
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -44,11 +44,6 @@ public class TypeRuleTest {
     private TypeRule rule = new TypeRule(ruleFactory);
 
     @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
-
-    @Before
     public void wireUpConfig() {
         when(ruleFactory.getGenerationConfig()).thenReturn(config);
     }

@@ -20,17 +20,9 @@ import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelp
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.jsonschema2pojo.Schema;
-
 public class ExtendsIT {
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     @SuppressWarnings("rawtypes")

@@ -26,21 +26,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jsonschema2pojo.Schema;
 
 public class PropertiesIT {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
-    @Before
-    public void clearSchemaCache() {
-        Schema.clearCache();
-    }
 
     @Test
     @SuppressWarnings("rawtypes")

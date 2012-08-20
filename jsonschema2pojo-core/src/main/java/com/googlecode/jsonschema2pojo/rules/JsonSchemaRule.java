@@ -56,13 +56,13 @@ public class JsonSchemaRule implements SchemaRule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
-            schema = Schema.create(schema, schemaNode.get("$ref").asText());
+            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText());
             schemaNode = schema.getContent();
 
             if (schema.isGenerated()) {
                 return schema.getJavaType();
             }
-            
+
             return apply(nodeName, schemaNode, generatableType, schema);
         }
 
@@ -73,7 +73,7 @@ public class JsonSchemaRule implements SchemaRule<JClassContainer, JType> {
             javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, generatableType.getPackage(), schema);
         }
         schema.setJavaTypeIfEmpty(javaType);
-        
+
         return javaType;
     }
 }
