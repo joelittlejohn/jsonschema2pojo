@@ -105,11 +105,19 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
-     * return <code>false</code>
+     * @return <code>false</code>
      */
     @Override
     public boolean isIncludeJsr303Annotations() {
         return false;
+    }
+
+    /**
+     * @return {@link SourceType#JSONSCHEMA}
+     */
+    @Override
+    public SourceType getSourceType() {
+        return SourceType.JSONSCHEMA;
     }
 
 }

@@ -95,7 +95,19 @@
           </ul>
         </td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
-    </tr>
+      </tr>
+      <tr>
+        <td valign="top">sourceType</td>
+        <td valign="top">The type of input documents that will be read
+          <p>
+          Supported values:
+          <ul>
+            <li><code>JSONSCHEMA</code> (schema documents, containing formal rules that describe the structure of json data)</li>
+            <li><code>JSON</code> (documents that represent an example of the kind of json data that the generated Java types will be mapped to)</li>
+          </ul>
+          </td>
+          <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+        </tr>
 	</table>
         
     <h3>Examples</h3>

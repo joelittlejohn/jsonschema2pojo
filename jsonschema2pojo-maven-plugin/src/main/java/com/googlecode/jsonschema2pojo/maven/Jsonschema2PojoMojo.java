@@ -31,6 +31,7 @@ import org.apache.maven.project.MavenProject;
 
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.SourceType;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
 /**
@@ -214,6 +215,23 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     private boolean includeJsr303Annotations = false;
 
     /**
+     * The type of input documents that will be read
+     * <p>
+     * Supported values:
+     * <ul>
+     * <li><code>jsonschema</code> (schema documents, containing formal rules
+     * that describe the structure of json data)</li>
+     * <li><code>json</code> (documents that represent an example of the kind of
+     * json data that the generated Java types will be mapped to)</li>
+     * </ul>
+     * 
+     * @parameter expression="${jsonschema2pojo.sourceType}"
+     *            default-value="jsonschema"
+     * @since 0.3.3
+     */
+    private String sourceType = "jsonschema";
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -333,6 +351,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public SourceType getSourceType() {
+        return SourceType.valueOf(sourceType.toUpperCase());
     }
 
 }
