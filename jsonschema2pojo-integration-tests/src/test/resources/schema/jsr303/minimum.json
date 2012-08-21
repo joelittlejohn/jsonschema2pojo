@@ -1,9 +1,9 @@
 {
     "type" : "object",
     "properties" : {
-    	"minimum" : {
-    		"type" : "number",
-    		"minimum" : 1.1
-    	}
+        "minimum" : {
+            "type" : "number",
+            "minimum" : 1.1
+        }
     }
 }

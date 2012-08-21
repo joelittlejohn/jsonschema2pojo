@@ -1,9 +1,9 @@
 {
     "type" : "object",
     "properties" : {
-    	"maximum" : {
-    		"type" : "number",
-    		"maximum" : 9.9
-    	}
+        "maximum" : {
+            "type" : "number",
+            "maximum" : 9.9
+        }
     }
 }

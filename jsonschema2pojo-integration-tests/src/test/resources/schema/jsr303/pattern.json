@@ -1,9 +1,9 @@
 {
     "type" : "object",
     "properties" : {
-    	"pattern" : {
-    		"type" : "string",
-    		"pattern" : "abc.*"
-    	}
+        "pattern" : {
+            "type" : "string",
+            "pattern" : "abc.*"
+        }
     }
 }

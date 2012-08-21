@@ -1,6 +1,6 @@
 {
-	"type" : "object",
-	"additionalProperties" : {
-	    "type" : "object"
-	}
+    "type" : "object",
+    "additionalProperties" : {
+        "type" : "object"
+    }
 }

@@ -1,10 +1,10 @@
 {
     "type" : "object",
     "properties" : {
-    	"minAndMaxItems" : {
-    		"type" : "array",
-    		"minItems" : 2,
-    		"maxItems" : 4    		
-    	}
+        "minAndMaxItems" : {
+            "type" : "array",
+            "minItems" : 2,
+            "maxItems" : 4            
+        }
     }
 }
