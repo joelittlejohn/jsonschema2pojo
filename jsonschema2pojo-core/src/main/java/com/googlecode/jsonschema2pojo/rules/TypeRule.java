@@ -109,14 +109,14 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
     }
 
     private String getTypeName(JsonNode node) {
-        if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0 ) {
+        if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0) {
             return node.get("type").get(0).asText();
         }
-        
+
         if (node.has("type")) {
             return node.get("type").asText();
         }
-        
+
         return DEFAULT_TYPE_NAME;
     }
 
@@ -127,7 +127,7 @@ public class TypeRule implements SchemaRule<JClassContainer, JType> {
             return type;
         }
     }
-    
+
     private JType getIntegerType(JCodeModel owner, GenerationConfig config) {
         if (config.isUseLongIntegers()) {
             return owner.ref(Long.class);

@@ -25,7 +25,10 @@ import com.sun.codemodel.JType;
  * Helper for checking and creating primitive type references during code
  * generation.
  */
-public class PrimitiveTypes {
+public final class PrimitiveTypes {
+
+    private PrimitiveTypes() {
+    }
 
     /**
      * Check if a name string refers to a given type.

@@ -202,8 +202,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *            creating Java Bean property names.
      */
     public void setPropertyWordDelimiters(String propertyWordDelimiters) {
-        this.propertyWordDelimiters = defaultString(propertyWordDelimiters)
-                .toCharArray();
+        this.propertyWordDelimiters = defaultString(propertyWordDelimiters).toCharArray();
     }
 
     /**
@@ -278,7 +277,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     @Override
     public char[] getPropertyWordDelimiters() {
-        return propertyWordDelimiters;
+        return propertyWordDelimiters.clone();
     }
 
     /**

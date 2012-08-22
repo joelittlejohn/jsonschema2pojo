@@ -50,8 +50,8 @@ public class Jackson2Annotator implements Annotator {
     }
 
     @Override
-    public void propertyInclusion(JDefinedClass _class) {
-        _class.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
+    public void propertyInclusion(JDefinedClass clazz) {
+        clazz.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
     }
 
     @Override
