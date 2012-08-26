@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ByExampleJsonIT {
+public class JsonTypesIT {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

@@ -1,0 +1,170 @@
+{
+    "result": {
+        "data": {
+            "userFeaturePref": {
+                "hasAddressGuard": true,
+                "intl": "pl",
+                "governingJurisdiction": "pl",
+                "hasMailPlus": false,
+                "hasStationery": false,
+                "hasAds": true,
+                "ymvm": "",
+                "isMobileDeviceRegistered": false,
+                "mailboxQuota": 322122547200,
+                "mailboxQuotaMegabytes": 307200,
+                "quotaUsed": 728926165,
+                "quotaUsedMegabytes": 695.158162117,
+                "soundNewMail": "",
+                "attachFiles": 50,
+                "attachFileSize": 26214400,
+                "attachTotalSize": 26214400,
+                "attachTotalEncodedSize": 34865152,
+                "mailCheckInterval": 1,
+                "partnerType": "",
+                "partnerName": "Yahoo!",
+                "silo": "132120",
+                "bulkAction": 0,
+                "isPremium": false,
+                "hasArchiving": false,
+                "hasForwarding": true,
+                "filtersMax": 100,
+                "mobileFiltersMax": "100",
+                "isMaster": false,
+                "btTier": "",
+                "rogersTier": "",
+                "hasAliasEnabled": true,
+                "isUpsellEnabled": true,
+                "optInState": "4",
+                "mailRegTime": "1334726388.0",
+                "mailForward": "",
+                "domainMembership": "",
+                "timezone": {
+                    "name": "+1",
+                    "fullname": "Europe/Paris"
+                },
+                "isThreadingEnabled": true
+            },
+            "userUIPref": {
+                "composeFontFamily": "arial, helvetica, sans-serif",
+                "composeFontSize": "12",
+                "defaultSortOrder": "down",
+                "useRichText": "dynamic",
+                "imageBlocking": "0",
+                "goOnMessageDelete": "box",
+                "showTo": false,
+                "msgPaneVisible": true,
+                "newsCategory": "",
+                "showCalendarStrip": false,
+                "messagesPerPage": "25",
+                "showSnippets": true,
+                "showNoise": false,
+                "searchPromo": false,
+                "pimBeta": "",
+                "pimTheme": "",
+                "pimColor": "blue",
+                "language": "pl-PL",
+                "showAttachmentColumn": true,
+                "showSizeColumn": true,
+                "showFlagColumn": true
+            },
+            "userSpamPref": {
+                "spamGuardPlusEnabled": false,
+                "spamFilterActive": true,
+                "spamMoveToInbox": 0,
+                "spamBlockSender": false,
+                "spamCleanupPeriod": 30
+            },
+            "userVacationPref": {
+                "vacationResponseOn": false,
+                "vacationResponseSubject": "",
+                "vacationResponseText": "",
+                "vacationResponseSpecialText": "",
+                "vacationResponseDomain0": "",
+                "vacationResponseDomain1": "",
+                "vacationResponseStartDate": "",
+                "vacationResponseEndDate": "",
+                "vacationAddressBookOnly": false
+            },
+            "userSendPref": {
+                "firstName": "xxxx",
+                "lastName": "xxxxx",
+                "defaultID": "xxxxxxxxx@dgferger.de",
+                "loggedInAlias": "rghtrhtrh",
+                "defaultFromName": "htrhtrhtrhr",
+                "defaultFromAddress": "xxxxxxxxx@dgferger.de",
+                "defaultReplyToAddress": "",
+                "canSendFromPopAcct": true,
+                "showCcBcc": "hide",
+                "includeMsgOnReply": "short",
+                "signatureActive": true,
+                "richTextSignature": "dhtml",
+                "signatureText": "none",
+                "addUnknownContact": "always",
+                "autosaveOnSend": "yes"
+            },
+            "userPopPref": {
+                "hasPOP": false,
+                "popSetupEligible": true,
+                "popNoBulk": false,
+                "popBulkSubjectPrefix": false
+            },
+            "externalAccounts": {
+                "extAccountsTotal": 1,
+                "extAccount": [
+                    {
+                        "accountName": "rget4nhrthjrth",
+                        "fromName": "",
+                        "address": "htrhtr@hrhtrhtr.de",
+                        "mailFromAllowed": true,
+                        "replyTo": "",
+                        "server": "rgerghehtr",
+                        "username": "ferfergergerge",
+                        "colorIndicator": " ",
+                        "folder": "Inbox",
+                        "port": "995",
+                        "leaveMail": true,
+                        "retrieveOnlyNew": true,
+                        "useFilters": true,
+                        "protocol": "pop3",
+                        "isDefault": false,
+                        "sslFlag": true
+                    }
+                ]
+            },
+            "disposableAddresses": {
+                "deaNamesTotal": 0,
+                "deaDomain": "bvdfbdg.fd"
+            },
+            "aliases": {
+                "alias": [
+                    {
+                        "address": "gergergerger@gerger.de",
+                        "isDefault": false
+                    }
+                ],
+                "aliasesTotal": 1
+            },
+            "otherYahooMboxes": {
+                "otherYahooMboxesTotal": 0,
+                "yMbox": []
+            },
+            "blockedAddresses": {
+                "blockedAddressesMax": 500,
+                "blockedAddress": [],
+                "blockedAddressesTotal": 0
+            },
+            "switches": {
+                "noFormWarning": false
+            },
+            "filters": {
+                "filtersMax": 100,
+                "mobileFiltersMax": "100",
+                "numberOfFilters": 8,
+                "numberOfMobileFilters": 0,
+                "numberOfMailFilters": 8
+            }
+        }
+    },
+    "error": null,
+    "id": "c58b64ca-7e83-404f-ab2a-f4666ade521f"
+}
