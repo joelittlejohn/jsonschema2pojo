@@ -91,7 +91,7 @@ public class SchemaStore {
 
         path = stripEnd(path, "#?&/");
 
-        URI id = (parent == null) ? URI.create(path) : parent.getId().resolve(path);
+        URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
 
         return create(id);
 

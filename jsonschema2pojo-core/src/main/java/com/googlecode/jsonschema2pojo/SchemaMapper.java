@@ -32,6 +32,7 @@ import com.sun.codemodel.JPackage;
 public class SchemaMapper {
 
     private final RuleFactory ruleFactory;
+    private final SchemaGenerator schemaGenerator;
 
     /**
      * Create a schema mapper with the given {@link RuleFactory}.
@@ -39,9 +40,13 @@ public class SchemaMapper {
      * @param ruleFactory
      *            A factory used by this mapper to create Java type generation
      *            rules.
+     * @param schemaGenerator
+     *            the generator that this mapper will use if the config dictates
+     *            that the input documents are plain json (not json schema)
      */
-    public SchemaMapper(RuleFactory ruleFactory) {
+    public SchemaMapper(RuleFactory ruleFactory, SchemaGenerator schemaGenerator) {
         this.ruleFactory = ruleFactory;
+        this.schemaGenerator = schemaGenerator;
     }
 
     /**
@@ -51,7 +56,7 @@ public class SchemaMapper {
      * @see RuleFactory
      */
     public SchemaMapper() {
-        this(new RuleFactory());
+        this(new RuleFactory(), new SchemaGenerator());
     }
 
     /**
@@ -73,11 +78,24 @@ public class SchemaMapper {
 
         JPackage jpackage = codeModel._package(packageName);
 
-        ObjectNode schemaNode = new ObjectMapper().createObjectNode();
-        schemaNode.put("$ref", schemaUrl.toString());
+        ObjectNode schemaNode = readSchema(schemaUrl);
 
-        ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, null);
+        ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
 
     }
 
+    private ObjectNode readSchema(URL schemaUrl) {
+
+        switch (ruleFactory.getGenerationConfig().getSourceType()) {
+            case JSONSCHEMA:
+                ObjectNode schemaNode = new ObjectMapper().createObjectNode();
+                schemaNode.put("$ref", schemaUrl.toString());
+                return schemaNode;
+            case JSON:
+                return schemaGenerator.schemaFromExample(schemaUrl);
+            default:
+                throw new IllegalArgumentException("Unrecognised source type: " + ruleFactory.getGenerationConfig().getSourceType());
+        }
+
+    }
 }
