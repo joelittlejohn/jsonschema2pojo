@@ -28,7 +28,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
@@ -56,20 +55,17 @@ public class Jackson1Annotator implements Annotator {
 
     @Override
     public void propertyField(JFieldVar field, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = field.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        field.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
     public void propertyGetter(JMethod getter, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = getter.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        getter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
     public void propertySetter(JMethod setter, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = setter.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        setter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override

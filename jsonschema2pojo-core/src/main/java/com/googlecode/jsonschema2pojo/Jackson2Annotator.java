@@ -21,13 +21,12 @@ import java.util.Iterator;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
@@ -51,25 +50,22 @@ public class Jackson2Annotator implements Annotator {
 
     @Override
     public void propertyInclusion(JDefinedClass clazz) {
-        clazz.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
+        clazz.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
     }
 
     @Override
     public void propertyField(JFieldVar field, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = field.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        field.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
     public void propertyGetter(JMethod getter, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = getter.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        getter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
     public void propertySetter(JMethod setter, String propertyName) {
-        JAnnotationUse jsonPropertyAnnotation = setter.annotate(JsonProperty.class);
-        jsonPropertyAnnotation.param("value", propertyName);
+        setter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override

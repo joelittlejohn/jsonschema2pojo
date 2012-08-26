@@ -27,6 +27,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -45,7 +46,7 @@ public class AnnotationStyleIT {
         Method getter = generatedType.getMethod("getA");
 
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonSerialize.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
     }
 
@@ -61,7 +62,7 @@ public class AnnotationStyleIT {
         Method getter = generatedType.getMethod("getA");
 
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonSerialize.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
     }
 
@@ -82,7 +83,7 @@ public class AnnotationStyleIT {
         Method getter = generatedType.getMethod("getA");
 
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonSerialize.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
     }
 
