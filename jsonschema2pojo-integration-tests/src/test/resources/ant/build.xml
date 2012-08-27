@@ -28,6 +28,12 @@
                          includeToString="false"
                          annotationStyle="NONE"
                          includeJsr303Annotations="true"/>
-    </target>
+
+        <!-- use json input -->
+        <jsonschema2pojo source="${project.build.directory}/test-classes/json/example/torrent.json" 
+                         targetDirectory="${targetDirectory}" 
+                         targetPackage="com.example"
+                         sourceType="JSON"/>
+</target>
 
 </project>

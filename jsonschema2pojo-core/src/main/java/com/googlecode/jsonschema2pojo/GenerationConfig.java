@@ -112,8 +112,12 @@ public interface GenerationConfig {
      *         Supported values:
      *         <ul>
      *         <li>
-     *         <code>jackson</code> (apply annotations from the <a
-     *         href="http://jackson.codehaus.org/">Jackson</a> library)</li>
+     *         <code>jackson1</code> (apply annotations from the <a
+     *         href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
+     *         <li>
+     *         <code>jackson2</code> (apply annotations from the <a
+     *         href="https://github.com/FasterXML/jackson-annotations">Jackson
+     *         2.x</a> library)</li>
      *         <li>
      *         <code>none</code> (apply no annotations at all)</li>
      *         </ul>
@@ -130,5 +134,18 @@ public interface GenerationConfig {
      *         generated Java types.
      */
     boolean isIncludeJsr303Annotations();
+
+    /**
+     * Gets the 'sourceType' configuration option.
+     * 
+     * @return The type of input documents that will be read
+     *         <p>
+     *         Supported values:
+     *         <ul>
+     *         <li><code>jsonschema</code></li>
+     *         <li><code>json</code></li>
+     *         </ul>
+     */
+    SourceType getSourceType();
 
 }

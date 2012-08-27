@@ -36,7 +36,7 @@ import com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask;
 public class Jsonschema2PojoTaskIT {
 
     @Test
-    public void antTaskExecutesSuccessfullyWithValidSchema() throws URISyntaxException, ClassNotFoundException {
+    public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
 
         File outputDirectory = invokeAntBuild("/ant/build.xml");
 

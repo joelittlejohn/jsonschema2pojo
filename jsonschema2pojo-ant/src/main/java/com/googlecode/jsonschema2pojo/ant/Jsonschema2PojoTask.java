@@ -28,6 +28,7 @@ import org.apache.tools.ant.Task;
 
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.SourceType;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
 /**
@@ -66,6 +67,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     private boolean includeJsr303Annotations = false;
+
+    private SourceType sourceType = SourceType.JSONSCHEMA;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -250,6 +253,22 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.includeJsr303Annotations = includeJsr303Annotations;
     }
 
+    /**
+     * Sets the 'sourceType' property of this class
+     * 
+     * @param sourceType
+     *            The type of input documents that will be read
+     *            <p>
+     *            Supported values:
+     *            <ul>
+     *            <li><code>jsonschema</code></li>
+     *            <li><code>json</code></li>
+     *            </ul>
+     */
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -312,6 +331,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public SourceType getSourceType() {
+        return sourceType;
     }
 
 }

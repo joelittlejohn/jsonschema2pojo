@@ -28,6 +28,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.SourceType;
 
 /**
  * Describes and parses the command line arguments supported by the
@@ -70,6 +71,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
+
+    @Parameter(names = { "-T", "--source-type" })
+    private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -159,6 +163,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public SourceType getSourceType() {
+        return sourceType;
     }
 
     protected void exit(int status) {

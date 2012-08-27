@@ -1,3 +1,6 @@
+# Git derived files #
+*.orig
+
 # Eclipse files #
 .classpath
 .settings

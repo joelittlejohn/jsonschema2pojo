@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class FragmentResolverImplTest {
+public class FragmentResolverTest {
 
     private FragmentResolver resolver = new FragmentResolver();
 

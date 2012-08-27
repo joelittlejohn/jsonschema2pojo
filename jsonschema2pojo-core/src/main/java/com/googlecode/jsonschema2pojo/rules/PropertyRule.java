@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang.StringUtils.*;
 
@@ -162,6 +163,10 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         if (containsAny(nodeName, wordDelimiters)) {
             nodeName = capitalizeTrailingWords(nodeName, wordDelimiters);
+        }
+
+        if (isDigit(nodeName.charAt(0))) {
+            nodeName = "_" + nodeName;
         }
 
         return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
