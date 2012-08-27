@@ -9,6 +9,9 @@
         },
         "enum" : {
             "type" : "string"
+        },
+        "abstract" : {
+            "type" : "string"
         }
     }
 }

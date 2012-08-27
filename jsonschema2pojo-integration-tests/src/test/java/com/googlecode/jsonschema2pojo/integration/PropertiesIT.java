@@ -122,13 +122,14 @@ public class PropertiesIT {
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
-        String valuesAsJsonString = "{\"public\":\"a\",\"void\":\"b\",\"enum\":\"c\"}";
+        String valuesAsJsonString = "{\"public\":\"a\",\"void\":\"b\",\"enum\":\"c\",\"abstract\":\"d\"}";
         Object valuesAsObject = mapper.readValue(valuesAsJsonString, generatedType);
         JsonNode valueAsJsonNode = mapper.valueToTree(valuesAsObject);
 
         assertThat(valueAsJsonNode.path("public").asText(), is("a"));
         assertThat(valueAsJsonNode.path("void").asText(), is("b"));
         assertThat(valueAsJsonNode.path("enum").asText(), is("c"));
+        assertThat(valueAsJsonNode.path("abstract").asText(), is("d"));
 
     }
 
