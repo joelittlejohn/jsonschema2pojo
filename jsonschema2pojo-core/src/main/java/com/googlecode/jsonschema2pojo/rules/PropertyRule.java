@@ -155,10 +155,6 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
     private String getPropertyName(String nodeName) {
 
-        if (isKeyword(nodeName)) {
-            nodeName += "_";
-        }
-
         char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
 
         if (containsAny(nodeName, wordDelimiters)) {
@@ -167,6 +163,10 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         if (isDigit(nodeName.charAt(0))) {
             nodeName = "_" + nodeName;
+        }
+
+        if (isKeyword(nodeName)) {
+            nodeName += "_";
         }
 
         return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");

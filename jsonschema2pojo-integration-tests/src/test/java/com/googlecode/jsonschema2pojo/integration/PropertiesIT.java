@@ -118,7 +118,8 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
+                config("propertyWordDelimiters", "-_"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -132,5 +133,4 @@ public class PropertiesIT {
         assertThat(valueAsJsonNode.path("abstract").asText(), is("d"));
 
     }
-
 }
