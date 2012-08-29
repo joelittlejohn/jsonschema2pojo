@@ -16,11 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static java.lang.Character.*;
-import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang.StringUtils.*;
-
-import org.apache.commons.lang.WordUtils;
+import static javax.lang.model.SourceVersion.isKeyword;
+import static org.apache.commons.lang.StringUtils.capitalize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
@@ -40,7 +37,6 @@ import com.sun.codemodel.JVar;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
-
     private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
     private final RuleFactory ruleFactory;
@@ -120,7 +116,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
-        JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(field.name(), field.type()));
+        JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type()));
 
         JBlock body = getter.body();
         body._return(field);
@@ -131,7 +127,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
-        JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(field.name()));
+        JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName));
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
@@ -154,14 +150,10 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getPropertyName(String nodeName) {
-
-        char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
-
-        if (containsAny(nodeName, wordDelimiters)) {
-            nodeName = capitalizeTrailingWords(nodeName, wordDelimiters);
-        }
-
-        if (isDigit(nodeName.charAt(0))) {
+    	nodeName = nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+    	nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);		
+    	
+        if (isKeyword(nodeName)) {
             nodeName = "_" + nodeName;
         }
 
@@ -169,31 +161,23 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
             nodeName += "_";
         }
 
-        return nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
-    }
-
-    private String capitalizeTrailingWords(String nodeName, char[] wordDelimiters) {
-        String capitalizedNodeName = WordUtils.capitalize(nodeName, wordDelimiters);
-        capitalizedNodeName = nodeName.charAt(0) + capitalizedNodeName.substring(1);
-
-        for (char c : wordDelimiters) {
-            capitalizedNodeName = remove(capitalizedNodeName, c);
-        }
-
-        return capitalizedNodeName;
+        return nodeName;
     }
 
     private String getSetterName(String propertyName) {
-        return "set" + capitalize(propertyName);
+    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        return "set" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getBuilderName(String propertyName) {
-        return "with" + capitalize(propertyName);
+    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        return "with" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getGetterName(String propertyName, JType type) {
         String prefix = (type.equals(type.owner()._ref(boolean.class))) ? "is" : "get";
-        return prefix + capitalize(propertyName);
+    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        return prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
 }

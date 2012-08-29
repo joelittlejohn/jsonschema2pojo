@@ -16,9 +16,9 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static java.lang.Character.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.apache.commons.lang.StringUtils.capitalize;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -233,12 +233,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
 
     private String getClassName(String nodeName) {
         String className = capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
-
-        if (isDigit(className.charAt(0))) {
-            className = "_" + className;
-        }
-
-        return className;
+        return ruleFactory.getNameHelper().normalizeName(className);
     }
 
 }
