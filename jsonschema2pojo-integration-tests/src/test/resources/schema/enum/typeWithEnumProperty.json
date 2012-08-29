@@ -1,7 +1,7 @@
 {
     "type" : "object",
     "properties" : {
-        "enumProperty" : {
+        "enum_Property" : {
             "type" : "string",
             "enum" : ["one", "secondOne", "3rd one", "4 ! 1"]
         }

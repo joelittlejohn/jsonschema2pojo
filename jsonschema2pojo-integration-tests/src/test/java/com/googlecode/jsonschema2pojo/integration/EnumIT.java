@@ -44,7 +44,8 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
+                config("propertyWordDelimiters", "_"));
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
@@ -162,16 +163,16 @@ public class EnumIT {
         JsonNode jsonTree = objectMapper.readTree(jsonString);
 
         assertThat(jsonTree.size(), is(1));
-        assertThat(jsonTree.has("enumProperty"), is(true));
-        assertThat(jsonTree.get("enumProperty").isTextual(), is(true));
-        assertThat(jsonTree.get("enumProperty").asText(), is("3rd one"));
+        assertThat(jsonTree.has("enum_Property"), is(true));
+        assertThat(jsonTree.get("enum_Property").isTextual(), is(true));
+        assertThat(jsonTree.get("enum_Property").asText(), is("3rd one"));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanUnmarshalEnums() throws IOException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
 
-        String jsonString = "{\"enumProperty\" : \"3rd one\"}";
+        String jsonString = "{\"enum_Property\" : \"3rd one\"}";
 
         Object result = new ObjectMapper().readValue(jsonString, parentClass);
 
