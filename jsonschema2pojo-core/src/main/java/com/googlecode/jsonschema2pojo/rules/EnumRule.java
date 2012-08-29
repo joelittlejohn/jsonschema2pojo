@@ -173,7 +173,8 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
     }
 
     private String getEnumName(String nodeName) {
-        return capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        String className = capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        return ruleFactory.getNameHelper().normalizeName(className);
     }
 
     private String getConstantName(String nodeName) {
