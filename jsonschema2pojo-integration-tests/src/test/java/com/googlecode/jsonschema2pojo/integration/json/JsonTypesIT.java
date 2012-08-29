@@ -78,10 +78,10 @@ public class JsonTypesIT {
         Object b = complexObjectClass.getMethod("getB").invoke(complexObject);
         assertThat(b.getClass().getMethod("getAa").invoke(b), is(notNullValue()));
 
-        Object _1 = complexObjectClass.getMethod("get_1").invoke(complexObject);
-        Object _2 = _1.getClass().getMethod("get_2").invoke(_1);
+        Object _1 = complexObjectClass.getMethod("get1").invoke(complexObject);
+        Object _2 = _1.getClass().getMethod("get2").invoke(_1);
         assertThat(_2, is(notNullValue()));
-        Object _3 = _1.getClass().getMethod("get_3").invoke(_1);
+        Object _3 = _1.getClass().getMethod("get3").invoke(_1);
         assertThat((List<Integer>) _3, is(equalTo(asList(1, 2, 3))));
 
     }
@@ -100,9 +100,9 @@ public class JsonTypesIT {
 
         List<?> valueA = (List) arrayType.getMethod("getA").invoke(deserialisedValue);
         assertThat(((ParameterizedType) arrayType.getMethod("getA").getGenericReturnType()).getActualTypeArguments()[0], is(equalTo((Type) itemType)));
-        assertThat((Integer) itemType.getMethod("get_0").invoke(valueA.get(0)), is(0));
-        assertThat((Integer) itemType.getMethod("get_1").invoke(valueA.get(1)), is(1));
-        assertThat((Integer) itemType.getMethod("get_2").invoke(valueA.get(2)), is(2));
+        assertThat((Integer) itemType.getMethod("get0").invoke(valueA.get(0)), is(0));
+        assertThat((Integer) itemType.getMethod("get1").invoke(valueA.get(1)), is(1));
+        assertThat((Integer) itemType.getMethod("get2").invoke(valueA.get(2)), is(2));
 
         Object valueB = arrayType.getMethod("getB").invoke(deserialisedValue);
         assertThat(valueB, is(instanceOf(List.class)));

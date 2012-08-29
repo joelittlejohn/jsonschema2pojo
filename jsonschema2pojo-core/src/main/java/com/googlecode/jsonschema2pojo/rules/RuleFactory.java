@@ -38,6 +38,7 @@ public class RuleFactory {
     private final GenerationConfig generationConfig;
     private final Annotator annotator;
     private final SchemaStore schemaStore;
+    private final NameHelper nameHelper;
 
     /**
      * Create a new rule factory with the given generation config options.
@@ -56,6 +57,7 @@ public class RuleFactory {
         this.generationConfig = generationConfig;
         this.annotator = annotator;
         this.schemaStore = schemaStore;
+        this.nameHelper = new NameHelper(this);
     }
 
     /**
@@ -265,6 +267,15 @@ public class RuleFactory {
      */
     public SchemaStore getSchemaStore() {
         return schemaStore;
+    }
+    
+    /**
+     * Gets the name helper that is used to generate normalized Class and field names.
+     * 
+     * @return a name helper instance that can be used to normalize Class and field names.
+     */
+    public NameHelper getNameHelper() {
+    	return nameHelper;
     }
 
 }
