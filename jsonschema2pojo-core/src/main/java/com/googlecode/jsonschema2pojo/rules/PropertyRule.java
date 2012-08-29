@@ -150,9 +150,9 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getPropertyName(String nodeName) {
-    	nodeName = nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
-    	nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);		
-    	
+        nodeName = nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);        
+        
         if (isKeyword(nodeName)) {
             nodeName = "_" + nodeName;
         }
@@ -165,18 +165,18 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getSetterName(String propertyName) {
-    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
         return "set" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getBuilderName(String propertyName) {
-    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
         return "with" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getGetterName(String propertyName, JType type) {
         String prefix = (type.equals(type.owner()._ref(boolean.class))) ? "is" : "get";
-    	propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
         return prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 

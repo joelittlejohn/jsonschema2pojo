@@ -99,21 +99,21 @@ pushd $WORKING_DIR
         git commit -m "[release] updating wiki links and examples to $VERSION"
         git push
 
-	# update example 
-	wget http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/com/googlecode/jsonschema2pojo/example/Example.java
-	sed '/BEGIN EXAMPLE/q' GettingStarted.wiki > GettingStarted.wiki.new
-	echo '{{{' >> GettingStarted.wiki.new
-	sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> GettingStarted.wiki.new
-	echo '}}}' >> GettingStarted.wiki.new
-	sed -n '/END EXAMPLE/,$p' GettingStarted.wiki >> GettingStarted.wiki.new
-	mv GettingStarted.wiki.new GettingStarted.wiki
-	rm Example.java
+        # update example 
+        wget http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/com/googlecode/jsonschema2pojo/example/Example.java
+        sed '/BEGIN EXAMPLE/q' GettingStarted.wiki > GettingStarted.wiki.new
+        echo '{{{' >> GettingStarted.wiki.new
+        sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> GettingStarted.wiki.new
+        echo '}}}' >> GettingStarted.wiki.new
+        sed -n '/END EXAMPLE/,$p' GettingStarted.wiki >> GettingStarted.wiki.new
+        mv GettingStarted.wiki.new GettingStarted.wiki
+        rm Example.java
 
-	# commit wiki updates and push to main repo
-	git add .
-	git commit -m "[release] updating example code to $VERSION" || true
-	git push || true
-	
+        # commit wiki updates and push to main repo
+        git add .
+        git commit -m "[release] updating example code to $VERSION" || true
+        git push || true
+    
     popd
 
     # upload to google code

@@ -275,7 +275,7 @@ public class RuleFactory {
      * @return a name helper instance that can be used to normalize Class and field names.
      */
     public NameHelper getNameHelper() {
-    	return nameHelper;
+        return nameHelper;
     }
 
 }

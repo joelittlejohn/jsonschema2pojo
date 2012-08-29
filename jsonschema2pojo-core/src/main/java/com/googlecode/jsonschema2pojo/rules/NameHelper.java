@@ -23,22 +23,22 @@ import static org.apache.commons.lang.StringUtils.remove;
 import org.apache.commons.lang.WordUtils;
 
 public class NameHelper {
-	private RuleFactory ruleFactory;
-	
-	public NameHelper(RuleFactory ruleFactory) {
-		this.ruleFactory = ruleFactory;
-	}
-	
-	public String normalizeName(String nodeName) {
-		nodeName = capitalizeTrailingWords(nodeName);
-		
+    private RuleFactory ruleFactory;
+    
+    public NameHelper(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
+    }
+    
+    public String normalizeName(String nodeName) {
+        nodeName = capitalizeTrailingWords(nodeName);
+        
         if (isDigit(nodeName.charAt(0))) {
             nodeName = "_" + nodeName;
         }
 
         return nodeName;
-	}
-	
+    }
+    
     public String capitalizeTrailingWords(String nodeName) {
         char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
 
@@ -47,7 +47,7 @@ public class NameHelper {
             nodeName = nodeName.charAt(0) + capitalizedNodeName.substring(1);
 
             for (char c : wordDelimiters) {
-            	nodeName = remove(nodeName, c);
+                nodeName = remove(nodeName, c);
             }
         }
 
