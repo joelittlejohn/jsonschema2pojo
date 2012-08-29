@@ -16,9 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.apache.commons.lang.StringUtils.capitalize;
+import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
@@ -54,8 +53,6 @@ import com.sun.codemodel.JVar;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class ObjectRule implements SchemaRule<JPackage, JType> {
-
-    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
     private final RuleFactory ruleFactory;
 
@@ -232,7 +229,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
     }
 
     private String getClassName(String nodeName) {
-        String className = capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
         return ruleFactory.getNameHelper().normalizeName(className);
     }
 

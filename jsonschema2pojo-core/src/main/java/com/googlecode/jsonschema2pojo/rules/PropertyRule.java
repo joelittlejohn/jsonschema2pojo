@@ -16,8 +16,8 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static javax.lang.model.SourceVersion.isKeyword;
-import static org.apache.commons.lang.StringUtils.capitalize;
+import static javax.lang.model.SourceVersion.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
@@ -37,7 +37,6 @@ import com.sun.codemodel.JVar;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
-    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
     private final RuleFactory ruleFactory;
 
@@ -150,9 +149,9 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getPropertyName(String nodeName) {
-        nodeName = nodeName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
-        nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);        
-        
+        nodeName = ruleFactory.getNameHelper().replaceIllegalCharacters(nodeName);
+        nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);
+
         if (isKeyword(nodeName)) {
             nodeName = "_" + nodeName;
         }
@@ -165,18 +164,18 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     }
 
     private String getSetterName(String propertyName) {
-        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
         return "set" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getBuilderName(String propertyName) {
-        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
         return "with" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 
     private String getGetterName(String propertyName, JType type) {
         String prefix = (type.equals(type.owner()._ref(boolean.class))) ? "is" : "get";
-        propertyName = propertyName.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
         return prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
     }
 

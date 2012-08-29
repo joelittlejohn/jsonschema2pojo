@@ -53,7 +53,6 @@ import com.sun.codemodel.JVar;
 public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
     private static final String VALUE_FIELD_NAME = "value";
-    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z]";
 
     private final RuleFactory ruleFactory;
 
@@ -173,7 +172,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
     }
 
     private String getEnumName(String nodeName) {
-        String className = capitalize(nodeName).replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
         return ruleFactory.getNameHelper().normalizeName(className);
     }
 
@@ -182,7 +181,7 @@ public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
 
         String enumName = "";
         for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {
-            if (containsOnly(iter.next().replaceAll(ILLEGAL_CHARACTER_REGEX, "_"), "_")) {
+            if (containsOnly(ruleFactory.getNameHelper().replaceIllegalCharacters(iter.next()), "_")) {
                 iter.remove();
             }
         }

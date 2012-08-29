@@ -16,41 +16,49 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static java.lang.Character.isDigit;
-import static org.apache.commons.lang.StringUtils.containsAny;
-import static org.apache.commons.lang.StringUtils.remove;
+import static java.lang.Character.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 import org.apache.commons.lang.WordUtils;
 
+import com.googlecode.jsonschema2pojo.GenerationConfig;
+
 public class NameHelper {
-    private RuleFactory ruleFactory;
-    
-    public NameHelper(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+
+    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
+
+    private final GenerationConfig generationConfig;
+
+    public NameHelper(GenerationConfig generationConfig) {
+        this.generationConfig = generationConfig;
     }
-    
-    public String normalizeName(String nodeName) {
-        nodeName = capitalizeTrailingWords(nodeName);
-        
-        if (isDigit(nodeName.charAt(0))) {
-            nodeName = "_" + nodeName;
+
+    public String replaceIllegalCharacters(String name) {
+        return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+    }
+
+    public String normalizeName(String name) {
+        name = capitalizeTrailingWords(name);
+
+        if (isDigit(name.charAt(0))) {
+            name = "_" + name;
         }
 
-        return nodeName;
+        return name;
     }
-    
-    public String capitalizeTrailingWords(String nodeName) {
-        char[] wordDelimiters = ruleFactory.getGenerationConfig().getPropertyWordDelimiters();
 
-        if (containsAny(nodeName, wordDelimiters)) {
-            String capitalizedNodeName = WordUtils.capitalize(nodeName, wordDelimiters);
-            nodeName = nodeName.charAt(0) + capitalizedNodeName.substring(1);
+    public String capitalizeTrailingWords(String name) {
+        char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
+
+        if (containsAny(name, wordDelimiters)) {
+            String capitalizedNodeName = WordUtils.capitalize(name, wordDelimiters);
+            name = name.charAt(0) + capitalizedNodeName.substring(1);
 
             for (char c : wordDelimiters) {
-                nodeName = remove(nodeName, c);
+                name = remove(name, c);
             }
         }
 
-        return nodeName;
+        return name;
     }
 }

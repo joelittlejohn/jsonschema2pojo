@@ -3,7 +3,7 @@
     "properties" : {
         "enumProperty" : {
             "type" : "string",
-            "enum" : ["one", "secondOne", "3rd one"]
+            "enum" : ["one", "secondOne", "3rd one", "4 ! 1"]
         }
     }
 }

@@ -33,16 +33,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SuppressWarnings("rawtypes")
 public class EnumIT {
 
-    @SuppressWarnings("rawtypes")
     private static Class parentClass;
 
-    @SuppressWarnings("rawtypes")
     private static Class<Enum> enumClass;
 
     @BeforeClass
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example");
@@ -68,6 +67,7 @@ public class EnumIT {
         assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
         assertThat(enumClass.getEnumConstants()[1].name(), is("SECOND_ONE"));
         assertThat(enumClass.getEnumConstants()[2].name(), is("_3_RD_ONE"));
+        assertThat(enumClass.getEnumConstants()[3].name(), is("_4_1"));
 
     }
 
@@ -85,7 +85,6 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void enumContainsWorkingAnnotatedDeserializationMethod() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
@@ -113,7 +112,7 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public void enumAtRootCreatesATopLevelType() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
@@ -126,7 +125,7 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public void enumWithEmptyStringAsValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithEmptyString.json", "com.example");
@@ -138,7 +137,7 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public void enumWithNullValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
@@ -169,7 +168,7 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public void jacksonCanUnmarshalEnums() throws IOException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
 
         String jsonString = "{\"enumProperty\" : \"3rd one\"}";
