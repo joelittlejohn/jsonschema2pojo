@@ -17,7 +17,7 @@
 package com.googlecode.jsonschema2pojo;
 
 /**
- * Factory object for creating {@link Annotater}s for all the supported
+ * Factory object for creating {@link Annotator}s for all the supported
  * annotation styles.
  */
 public class AnnotatorFactory {
