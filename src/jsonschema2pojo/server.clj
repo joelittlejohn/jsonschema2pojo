@@ -13,7 +13,7 @@
 
 (defroutes routes
 
-  (POST "/generator" {params :params}
+  (POST "/generator/:name" {params :params}
         (try
           (let [schema (.readTree object-mapper (params "schema"))
                 classname (params "classname")
