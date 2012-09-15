@@ -1,9 +1,10 @@
 (ns jsonschema2pojo.server
   (:use [jsonschema2pojo.bridge]
         [clojure.tools.logging :only [error]]
-        [compojure.core :only [defroutes POST]]
+        [compojure.core :only [defroutes GET POST]]
         [compojure.route :only [not-found]]
-        [ring.middleware.params])
+        [ring.middleware.params]
+        [ring.util.response :only (resource-response)])
   (:import [java.io ByteArrayInputStream]
            [com.fasterxml.jackson.databind ObjectMapper])
   (:gen-class))
@@ -26,6 +27,8 @@
             {:status 500
              :headers {"Content-Type" "text/html"}
              :body "<h1>Internal Server Error</h1>"})))
+
+  (GET "/" {} (resource-response "public/index.html"))
 
   (not-found "<h1>Not Found</h1>"))
 
