@@ -2,8 +2,10 @@
   (:use [clojure.java.io]
         [clojure.string :only [upper-case]])
   (:import [java.io ByteArrayOutputStream]
-           [com.googlecode.jsonschema2pojo Schema SchemaGenerator SchemaStore]
-           [com.googlecode.jsonschema2pojo AnnotatorFactory AnnotationStyle GenerationConfig SourceType DefaultGenerationConfig]
+           [com.googlecode.jsonschema2pojo
+            Schema SchemaGenerator SchemaStore
+            GenerationConfig DefaultGenerationConfig
+            AnnotatorFactory AnnotationStyle SourceType ]
            [com.googlecode.jsonschema2pojo.rules RuleFactory]
            [com.sun.codemodel JCodeModel]
            [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]))
@@ -27,52 +29,48 @@
 (def ^:private default-config
   (DefaultGenerationConfig.))
 
-(defn json-based-config [node]
+(defn post-params-based-config [params]
   (proxy [GenerationConfig] []
     (isGenerateBuilders []
-      (if (.has node "generatebuilders")
-        (.asBoolean (.get node "generatebuilders"))
+      (if (contains? params "generatebuilders")
+        (boolean (Boolean/valueOf (params "generatebuilders")))
         (.isGenerateBuilders default-config)))
     (isUsePrimitives []
-      (if (.has node "useprimitives")
-        (.asBoolean (.get node "useprimitives"))
+      (if (contains? params "useprimitives")
+        (boolean (Boolean/valueOf (params "useprimitives")))
         (.isUsePrimitives default-config)))
     (getTargetPackage []
-      (.asText (.get node "targetpackage")))
+      (params "targetpackage"))
     (getPropertyWordDelimiters []
-      (if (.has node "useprimitives")
-        (char-array (.asText (.get node "propertyworddelimiters")))
+      (if (contains? params "propertyworddelimiters")
+        (char-array (params "propertyworddelimiters"))
         (.getPropertyWordDelimiters default-config)))
     (isUseLongIntegers []
-      (if (.has node "uselongintegers")
-        (.asBoolean (.get node "uselongintegers"))
+      (if (contains? params "uselongintegers")
+        (boolean (Boolean/valueOf (params "uselongintegers")))
         (.isUseLongIntegers default-config)))
     (isIncludeHashcodeAndEquals []
-      (if (.has node "includehashcodeandequals")
-        (.asBoolean (.get node "includehashcodeandequals"))
+      (if (contains? params "includehashcodeandequals")
+        (boolean (Boolean/valueOf (params "includehashcodeandequals")))
         (.isIncludeHashcodeAndEquals default-config)))
     (isIncludeToString []
-      (if (.has node "includetostring")
-        (.asBoolean (.get node "includetostring"))
+      (if (contains? params "includetostring")
+        (boolean (Boolean/valueOf (params "includetostring")))
         (.isIncludeToString default-config)))
     (getAnnotationStyle []
-      (if (.has node "annotationStyle")
-        (AnnotationStyle/valueOf (upper-case (.asText (.get node "annotationstyle"))))
+      (if (contains? params "annotationStyle")
+        (AnnotationStyle/valueOf (upper-case (params "annotationstyle")))
         (.getAnnotationStyle default-config)))
     (isIncludeJsr303Annotations []
-      (if (.has node "includejsr303annotations")
-        (.asBoolean (.get node "includejsr303annotations"))
+      (if (contains? "includejsr303annotations")
+        (boolean (Boolean/valueOf (params "includejsr303annotations")))
         (.isIncludeJsr303Annotations default-config)))
     (getSourceType []
-      (if (.has node "sourcetype")
-        (SourceType/valueOf (upper-case (.asText (.get node "sourcetype"))))
+      (if (contains? params "sourcetype")
+        (SourceType/valueOf (upper-case (params "sourcetype")))
         (.getSourceType default-config)))))
 
 (defn generate
-  ([schema-and-config]
-     (generate (.get schema-and-config "schema")
-               (.asText (.get schema-and-config "classname"))
-               (json-based-config schema-and-config)))
   ([schema classname config]
      (let [code-model (JCodeModel.)]
        (generate-java-types schema classname config code-model)
