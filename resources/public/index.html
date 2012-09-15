@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>jsonschema2pojo</title>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <h1>jsonschema2pojo</h1>
+      <p class="lead">
+        Generate Plain Old Java Objects from JSON or JSON-Schema.
+      </p>
+
+      <form action="generator" method="post">
+        <div class="row">
+          <div class="span6">
+            <textarea name="schema" rows="13" style="width: 100%"></textarea>
+          </div>
+          <div class="span4">
+            <label>
+              Package
+              <input name="targetpackage" value="com.example">
+            </label>
+            <label>
+              Class name
+              <input name="classname" value="Example">
+            </label>
+            <label>
+              Source type
+              <label class="radio inline">
+                <input type="radio" name="sourcetype"
+                       id="sourceType1" value="jsonschema" checked>
+                JSON Schema
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="sourcetype"
+                       id="sourceType2" value="json">
+                JSON
+              </label>
+            </label>
+            <label>
+              Annotation style
+              <label class="radio inline">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle1" value="jackson2" checked>
+                Jackson 2.x
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle2" value="jackson1">
+                Jackson 1.x
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle3" value="none">
+                None
+              </label>
+            </label>
+            <label class="checkbox">
+              <input name="generatebuilders" value="true" type="checkbox">Generate builders
+            </label>
+            <label class="checkbox">
+              <input name="useprimitives" value="true" type="checkbox">Use primitives
+            </label>
+            <label class="checkbox">
+              <input name="uselongintegers" value="true" type="checkbox">Use long integers
+            </label>
+            <label class="checkbox">
+              <input name="includehashcodeandequals" value="true" type="checkbox" checked="checked">Include <code>hashCode</code> and <code>equals</code>
+            </label>
+            <label class="checkbox">
+              <input name="includetostring" value="true" type="checkbox" checked="checked">Include <code>toString</code>
+            </label>
+            <label class="checkbox">
+              <input name="includejsr303annotations" value="true" type="checkbox">Include JSR-303 annotations
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn">Generate</button>
+      </form>
+
+      <p class="muted">
+        <small>Copyright © 2012 <a href="http://github.com/joelittlejohn">Joe Littlejohn</a></small>
+      </p>
+    </div>
+  </body>
+
+</html>
