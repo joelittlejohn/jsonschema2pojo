@@ -31,40 +31,26 @@
 
 (defn post-params-based-config [params]
   (proxy [GenerationConfig] []
-    (isGenerateBuilders []
-      (if (contains? params "generatebuilders")
-        (boolean (Boolean/valueOf (params "generatebuilders")))
-        (.isGenerateBuilders default-config)))
-    (isUsePrimitives []
-      (if (contains? params "useprimitives")
-        (boolean (Boolean/valueOf (params "useprimitives")))
-        (.isUsePrimitives default-config)))
     (getTargetPackage []
       (params "targetpackage"))
-    (getPropertyWordDelimiters []
-      (if (contains? params "propertyworddelimiters")
-        (char-array (params "propertyworddelimiters"))
-        (.getPropertyWordDelimiters default-config)))
+    (isGenerateBuilders []
+      (boolean (Boolean/valueOf (params "generatebuilders"))))
+    (isUsePrimitives []
+      (boolean (Boolean/valueOf (params "useprimitives"))))
     (isUseLongIntegers []
-      (if (contains? params "uselongintegers")
-        (boolean (Boolean/valueOf (params "uselongintegers")))
-        (.isUseLongIntegers default-config)))
+      (boolean (Boolean/valueOf (params "uselongintegers"))))
     (isIncludeHashcodeAndEquals []
-      (if (contains? params "includehashcodeandequals")
-        (boolean (Boolean/valueOf (params "includehashcodeandequals")))
-        (.isIncludeHashcodeAndEquals default-config)))
+      (boolean (Boolean/valueOf (params "includehashcodeandequals"))))
     (isIncludeToString []
-      (if (contains? params "includetostring")
-        (boolean (Boolean/valueOf (params "includetostring")))
-        (.isIncludeToString default-config)))
+      (boolean (Boolean/valueOf (params "includetostring"))))
+    (isIncludeJsr303Annotations []
+      (boolean (Boolean/valueOf (params "includejsr303annotations"))))
+    (getPropertyWordDelimiters []
+      (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []
-      (if (contains? params "annotationStyle")
+      (if (contains? params "annotationstyle")
         (AnnotationStyle/valueOf (upper-case (params "annotationstyle")))
         (.getAnnotationStyle default-config)))
-    (isIncludeJsr303Annotations []
-      (if (contains? "includejsr303annotations")
-        (boolean (Boolean/valueOf (params "includejsr303annotations")))
-        (.isIncludeJsr303Annotations default-config)))
     (getSourceType []
       (if (contains? params "sourcetype")
         (SourceType/valueOf (upper-case (params "sourcetype")))
