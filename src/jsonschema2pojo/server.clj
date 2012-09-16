@@ -4,7 +4,8 @@
         [compojure.core :only [defroutes GET POST]]
         [compojure.route :only [not-found]]
         [ring.middleware.params]
-        [ring.util.response :only (resource-response)])
+        [ring.util.response :only [resource-response]]
+        [ring.adapter.jetty :only [run-jetty]])
   (:import [java.io ByteArrayInputStream]
            [com.fasterxml.jackson.databind ObjectMapper])
   (:gen-class))
@@ -33,3 +34,6 @@
   (not-found "<h1>Not Found</h1>"))
 
 (def app (wrap-params routes))
+
+(defn -main [port]
+  (run-jetty app {:port (Integer. port)}))
