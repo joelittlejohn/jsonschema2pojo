@@ -12,17 +12,32 @@
 
 (def object-mapper (ObjectMapper.))
 
+(defn parse [schema]
+  (try
+    (.readTree object-mapper schema)
+    (catch Exception e (throw (IllegalArgumentException. (.getMessage e))))))
+
+(defn not-blank [params name]
+  (if (empty? (params name))
+    (throw (IllegalArgumentException. (str name " cannot be blank")))
+    (params name)))
+
 (defroutes routes
 
   (POST "/generator/:name" {params :params}
         (try
-          (let [schema (.readTree object-mapper (params "schema"))
-                classname (params "classname")
+          (let [schema (parse (params "schema"))
+                classname (not-blank params "classname")
+                targetpackage (not-blank params "targetpackage")
                 config (post-params-based-config params)
                 zip-bytes (generate schema classname config)]
             {:status 200
              :headers {"Content-Type" "application/zip"}
              :body (ByteArrayInputStream. zip-bytes)})
+          (catch IllegalArgumentException e
+            {:status 400
+             :headers {"Content-Type" "text/html"}
+             :body (str "<h1>Bad Request</h1>" (.getMessage e))})
           (catch Exception e
             (error "Failed to generate schema" e)
             {:status 500
