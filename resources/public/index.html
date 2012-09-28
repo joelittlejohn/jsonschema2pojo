@@ -8,6 +8,33 @@
     <link href="lib/bootstrap.min.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#form").submit(function(e) {
+          e.preventDefault();
+
+          $("#downloadButton").addClass("hide");
+          $("#progressBar").removeClass("hide");
+
+          $.ajax({
+            url: "generator/java-source.zip",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(data) {
+              $("#downloadButton").attr("href", "data:application/zip;base64," + data);
+              $("#downloadButton").attr("download", $("#classname").val() + ".zip");
+              $("#downloadButton").removeClass("hide");
+              $("#progressBar").addClass("hide");
+            },
+            error: function(xhr) {
+              $("#progressBar").addClass("hide");
+              alert(xhr.responseText);
+            }
+          });
+        })
+      });
+    </script>
   </head>
 
   <body>
@@ -83,7 +110,19 @@
             </label>
           </div>
         </div>
-        <button type="submit" class="btn">Generate</button>
+
+        <div class="row">
+          <div class="span1" style="margin-right:2em;">
+            <button type="submit" class="btn">Generate</button>
+          </div>
+          <div class="span3">
+            <div id="progressBar" class="progress progress-striped active hide" style="margin-top: 0.3em;">
+              <div class="bar" style="width: 100%;"></div>
+            </div>
+            <a id="downloadButton" download="src.zip" class="btn btn-success hide">Download</a>
+          </div>
+        </div>
+
       </form>
 
       <p class="muted">
