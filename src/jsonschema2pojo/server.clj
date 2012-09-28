@@ -2,7 +2,7 @@
   (:use [jsonschema2pojo.bridge]
         [clojure.tools.logging :only [error]]
         [compojure.core :only [defroutes GET POST]]
-        [compojure.route :only [not-found]]
+        [compojure.route :only [not-found resources]]
         [ring.middleware.params]
         [ring.util.response :only [resource-response]]
         [ring.adapter.jetty :only [run-jetty]])
@@ -46,7 +46,9 @@
 
   (GET "/" {} (resource-response "public/index.html"))
 
-  (not-found "<h1>Not Found</h1>"))
+  (resources "/lib" {:root "public/lib"})
+
+  (not-found "Not found"))
 
 (def app (wrap-params routes))
 
