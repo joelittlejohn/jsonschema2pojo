@@ -5,7 +5,8 @@
         [compojure.route :only [not-found resources]]
         [ring.middleware.params]
         [ring.util.response :only [resource-response]]
-        [ring.adapter.jetty :only [run-jetty]])
+        [ring.adapter.jetty :only [run-jetty]]
+        [clojure.data.codec.base64 :as b64])
   (:import [java.io ByteArrayInputStream]
            [com.fasterxml.jackson.databind ObjectMapper])
   (:gen-class))
@@ -33,7 +34,7 @@
                 zip-bytes (generate schema classname config)]
             {:status 200
              :headers {"Content-Type" "application/zip"}
-             :body (ByteArrayInputStream. zip-bytes)})
+             :body (ByteArrayInputStream. (b64/encode zip-bytes))})
           (catch IllegalArgumentException e
             {:status 400
              :headers {"Content-Type" "text/html"}
