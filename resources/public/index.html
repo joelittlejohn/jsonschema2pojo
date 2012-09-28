@@ -18,10 +18,10 @@
         Generate Plain Old Java Objects from JSON or JSON-Schema.
       </p>
 
-      <form action="generator/java-source.zip" method="post">
+      <form action="generator/java-source.zip" method="post" id="form">
         <div class="row">
-          <div class="span6">
-            <textarea name="schema" rows="13" style="width: 100%"></textarea>
+          <div class="span6" style="margin-right:1em;">
+            <textarea name="schema" rows="16" style="width: 100%"></textarea>
           </div>
           <div class="span4">
             <label>
@@ -30,10 +30,10 @@
             </label>
             <label>
               Class name
-              <input name="classname" value="Example">
+              <input id="classname" name="classname" value="Example">
             </label>
-            <label>
-              Source type
+            <label style="margin-top: 1em;">
+              Source type:<br>
               <label class="radio inline">
                 <input type="radio" name="sourcetype"
                        id="sourceType1" value="jsonschema" checked>
@@ -45,8 +45,8 @@
                 JSON
               </label>
             </label>
-            <label>
-              Annotation style
+            <label style="margin-top: 1em;">
+              Annotation style:<br>
               <label class="radio inline">
                 <input type="radio" name="annotationstyle"
                        id="annotationStyle1" value="jackson2" checked>
@@ -63,7 +63,7 @@
                 None
               </label>
             </label>
-            <label class="checkbox">
+            <label style="margin-top: 1em;" class="checkbox">
               <input name="generatebuilders" value="true" type="checkbox">Generate builders
             </label>
             <label class="checkbox">

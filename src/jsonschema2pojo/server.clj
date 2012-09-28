@@ -27,23 +27,24 @@
 
   (POST "/generator/:name" {params :params}
         (try
-          (let [schema (parse (params "schema"))
+          (let [schema (parse (not-blank params "schema"))
                 classname (not-blank params "classname")
                 targetpackage (not-blank params "targetpackage")
                 config (post-params-based-config params)
                 zip-bytes (generate schema classname config)]
+            (Thread/sleep 1000)
             {:status 200
              :headers {"Content-Type" "application/zip"}
              :body (ByteArrayInputStream. (b64/encode zip-bytes))})
           (catch IllegalArgumentException e
             {:status 400
              :headers {"Content-Type" "text/html"}
-             :body (str "<h1>Bad Request</h1>" (.getMessage e))})
+             :body (str (.getMessage e))})
           (catch Exception e
             (error "Failed to generate schema" e)
             {:status 500
              :headers {"Content-Type" "text/html"}
-             :body "<h1>Internal Server Error</h1>"})))
+             :body "Internal server error :("})))
 
   (GET "/" {} (resource-response "public/index.html"))
 
