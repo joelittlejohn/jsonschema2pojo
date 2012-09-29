@@ -32,7 +32,7 @@
                 targetpackage (not-blank params "targetpackage")
                 config (post-params-based-config params)
                 zip-bytes (generate schema classname config)]
-            (Thread/sleep 1000)
+            (Thread/sleep 500)
             {:status 200
              :headers {"Content-Type" "application/zip"}
              :body (ByteArrayInputStream. (b64/encode zip-bytes))})
