@@ -16,6 +16,12 @@
       (.build code-model writer))
     (.toByteArray zip-bytes)))
 
+(defn- output-to-string [code-model]
+  (let [code-as-bytes (ByteArrayOutputStream.)]
+    (with-open [writer (SingleStreamCodeWriter. code-as-bytes)]
+      (.build code-model writer))
+    (.toByteArray code-as-bytes)))
+
 (defn- annotator [config]
   (.. (AnnotatorFactory.)
       (getAnnotator (.getAnnotationStyle config))))
@@ -56,8 +62,12 @@
         (SourceType/valueOf (upper-case (params "sourcetype")))
         (.getSourceType default-config)))))
 
-(defn generate
-  ([schema classname config]
-     (let [code-model (JCodeModel.)]
-       (generate-java-types schema classname config code-model)
-       (output-to-zip code-model))))
+(defn generate [schema classname config]
+  (let [code-model (JCodeModel.)]
+    (generate-java-types schema classname config code-model)
+    (output-to-zip code-model)))
+
+(defn preview [schema classname config]
+  (let [code-model (JCodeModel.)]
+    (generate-java-types schema classname config code-model)
+    (output-to-string code-model)))

@@ -28,26 +28,55 @@
 
         $("#form").submit(function(e) {
           e.preventDefault();
+          return false;
+        });
 
-          $("#downloadButton").addClass("hide");
-          $("#progressBar").removeClass("hide");
+        $("#generateButton").click(function(e) {
+
+          $("#generateButton").button("loading");
+          $("#downloadJarLink").addClass("hide");
+          schemaTextArea.value = myCodeMirror.getValue();
 
           $.ajax({
-            url: "generator/java-source.zip",
+            url: "generator",
             type: "POST",
-            data: $(this).serialize(),
+            data: $("#form").serialize(),
             success: function(data) {
-              $("#downloadButton").attr("href", "data:application/zip;base64," + data);
-              $("#downloadButton").attr("download", $("#classname").val() + ".zip");
-              $("#downloadButton").removeClass("hide");
-              $("#progressBar").addClass("hide");
+              $("#downloadJarLink").attr("href", "data:application/zip;base64," + data);
+              $("#downloadJarLink").attr("download", $("#classname").val() + ".jar");
+              $("#downloadJarLink").text($("#classname").val() + ".jar");
+              $("#downloadJarLink").removeClass("hide");
+
+              $("#generateButton").button("reset");
             },
             error: function(xhr) {
-              $("#progressBar").addClass("hide");
+              $("#generateButton").button("reset");
               alert(xhr.responseText);
             }
           });
-        })
+        });
+
+        $("#previewButton").click(function(e) {
+
+          $("#previewButton").button("loading");
+          schemaTextArea.value = myCodeMirror.getValue();
+
+          $.ajax({
+            url: "generator/preview",
+            type: "POST",
+            data: $("#form").serialize(),
+            success: function(data) {
+              $("#previewButton").button("reset");
+              $("#preview").val(data);
+              $("#previewModal").modal();
+            },
+            error: function(xhr) {
+              $("#previewButton").button("reset");
+              alert(xhr.responseText);
+            }
+          });
+        });
+
       });
     </script>
 
@@ -71,11 +100,18 @@
 
     <style>
       .CodeMirror-scroll {
-        height: 24em;
+        height: 25em;
       }
       .CodeMirror {
         border: 1px solid #aaa
       }
+      .modal.fade {
+        -webkit-transition: none;
+        -moz-transition: none;
+        -ms-transition: none;
+        -o-transition: none;
+        transition: none;
+      }​
     </style>
   </head>
 
@@ -87,10 +123,10 @@
         Generate Plain Old Java Objects from JSON or JSON-Schema.
       </p>
 
-      <form action="generator/java-source.zip" method="post" id="form">
+      <form id="form" method="post">
         <div class="row">
-          <div class="span6" style="margin-right:1em;">
-            <textarea id="schema" name="schema" style="width: 100%; height: 100%"></textarea>
+          <div class="span6" style="margin-right:0.5generateem;">
+            <textarea id="schema" name="schema"></textarea>
           </div>
           <div class="span4">
             <label>
@@ -153,18 +189,27 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="span1" style="margin-right:2em;">
-            <button type="submit" class="btn">Generate</button>
-          </div>
-          <div class="span3">
-            <div id="progressBar" class="progress progress-striped active hide" style="margin-top: 0.3em;">
-              <div class="bar" style="width: 100%;"></div>
-            </div>
-            <a id="downloadButton" download="src.zip" class="btn btn-success hide">Download</a>
+        <div class="row" style="margin-top: 1em;">
+          <div class="span6">
+            <button class="btn" id="previewButton" style="margin-right: 1em;" data-loading-text="Generating...">Preview</button>
+            <button class="btn" id="generateButton" style="margin-right: 1em;" data-loading-text="Generating...">Jar</button>
+            <a id="downloadJarLink" class="hide"></a>
           </div>
         </div>
       </form>
+
+      <div id="previewModal" class="modal hide fade">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>Preview</h3>
+        </div>
+        <div class="modal-body" style="overflow: auto">
+          <textarea id="preview" style="width: 515px; height: 20em;"></textaread>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn">Close</a>
+        </div>
+      </div>
 
       <p class="muted">
         <small>

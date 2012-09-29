@@ -1,5 +1,5 @@
 (ns jsonschema2pojo.server
-  (:use [jsonschema2pojo.bridge]
+  (:use [jsonschema2pojo.bridge :as j2p]
         [clojure.tools.logging :only [error]]
         [compojure.core :only [defroutes GET POST]]
         [compojure.route :only [not-found resources]]
@@ -23,28 +23,34 @@
     (throw (IllegalArgumentException. (str name " cannot be blank")))
     (params name)))
 
+(defn generate-response [params generator content-type]
+  (try
+    (let [schema (parse (not-blank params "schema"))
+          classname (not-blank params "classname")
+          targetpackage (not-blank params "targetpackage")
+          config (j2p/post-params-based-config params)
+          code-bytes (generator schema classname config)]
+      (Thread/sleep 500)
+      {:status 200
+       :headers {"Content-Type" content-type}
+       :body (ByteArrayInputStream. code-bytes)})
+    (catch IllegalArgumentException e
+      {:status 400
+       :headers {"Content-Type" "text/html"}
+       :body (str (.getMessage e))})
+    (catch Exception e
+      (error "Failed to generate schema" e)
+      {:status 500
+       :headers {"Content-Type" "text/html"}
+       :body "Internal server error :("})))
+
 (defroutes routes
 
-  (POST "/generator/:name" {params :params}
-        (try
-          (let [schema (parse (not-blank params "schema"))
-                classname (not-blank params "classname")
-                targetpackage (not-blank params "targetpackage")
-                config (post-params-based-config params)
-                zip-bytes (generate schema classname config)]
-            (Thread/sleep 500)
-            {:status 200
-             :headers {"Content-Type" "application/zip"}
-             :body (ByteArrayInputStream. (b64/encode zip-bytes))})
-          (catch IllegalArgumentException e
-            {:status 400
-             :headers {"Content-Type" "text/html"}
-             :body (str (.getMessage e))})
-          (catch Exception e
-            (error "Failed to generate schema" e)
-            {:status 500
-             :headers {"Content-Type" "text/html"}
-             :body "Internal server error :("})))
+  (POST "/generator" {params :params}
+        (generate-response params (comp b64/encode j2p/generate) "application/octet-stream"))
+
+  (POST "/generator/preview" {params :params}
+        (generate-response params j2p/preview "text/java"))
 
   (GET "/" {} (resource-response "public/index.html"))
 
