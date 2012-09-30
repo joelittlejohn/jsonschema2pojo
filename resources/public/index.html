@@ -11,19 +11,18 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
     <script src="lib/codemirror-compressed.js"></script>
+    <script src="lib/runmode.js"></script>
     <link rel="stylesheet" href="lib/codemirror.css">
-    <link rel="stylesheet" href="lib/codemirror-neat.css">
+    <link rel="stylesheet" href="lib/eclipse.css">
 
     <script type="text/javascript">
       $(document).ready(function() {
 
         var schemaTextArea = document.getElementById("schema");
         var myCodeMirror = CodeMirror.fromTextArea(schemaTextArea, {
-          theme: "neat",
-          mode: "javascript",
+          mode: {name: "javascript", json: true},
           lineNumbers: true,
-          matchBrackets: true,
-          json: true
+          matchBrackets: true
         });
 
         $("#form").submit(function(e) {
@@ -67,7 +66,8 @@
             data: $("#form").serialize(),
             success: function(data) {
               $("#previewButton").button("reset");
-              $("#preview").val(data);
+              CodeMirror.runMode(data, "text/x-java", document.getElementById("preview"),
+                                 {indentUnit:4});
               $("#previewModal").modal();
             },
             error: function(xhr) {
@@ -203,11 +203,8 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h3>Preview</h3>
         </div>
-        <div class="modal-body" style="overflow: auto">
-          <textarea id="preview" style="width: 515px; height: 20em;"></textaread>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="btn">Close</a>
+        <div id="preview" class="modal-body CodeMirror" style="overflow: auto">
+
         </div>
       </div>
 
