@@ -10,6 +10,8 @@
            [com.sun.codemodel JCodeModel]
            [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]))
 
+(def ^:private schema-generator (SchemaGenerator.))
+
 (defn- output-to-zip [code-model]
   (let [zip-bytes (ByteArrayOutputStream.)]
     (with-open [writer (ZipCodeWriter. zip-bytes)]
@@ -26,8 +28,9 @@
   (.. (AnnotatorFactory.)
       (getAnnotator (.getAnnotationStyle config))))
 
-(defn- generate-java-types [schema classname config code-model]
-  (let [package (._package code-model (.getTargetPackage config))]
+(defn- generate-java-types [input classname config code-model]
+  (let [package (._package code-model (.getTargetPackage config))
+        schema (if (= (.getSourceType config) (SourceType/JSON)) (.schemaFromExample schema-generator input) input)]
     (.. (RuleFactory. config (annotator config) (SchemaStore.))
         (getSchemaRule)
         (apply classname schema package (proxy [Schema] [nil schema])))))
