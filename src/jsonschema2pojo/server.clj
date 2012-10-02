@@ -23,11 +23,16 @@
     (throw (IllegalArgumentException. (str name " cannot be blank")))
     (params name)))
 
+(defn size-limit [limit s]
+  (if (> (.length s) limit)
+    (throw (IllegalArgumentException. (str s " cannot be larger than " limit "characters")))
+    s))
+
 (defn generate-response [params generator content-type]
   (try
-    (let [schema (parse (not-blank params "schema"))
-          classname (not-blank params "classname")
-          targetpackage (not-blank params "targetpackage")
+    (let [schema (parse (size-limit 51200 (not-blank params "schema")))
+          classname (size-limit 128 (not-blank params "classname"))
+          targetpackage (size-limit 256 (not-blank params "targetpackage"))
           config (j2p/post-params-based-config params)
           code-bytes (generator schema classname config)]
       (Thread/sleep 500)
