@@ -22,7 +22,12 @@
         var myCodeMirror = CodeMirror.fromTextArea(schemaTextArea, {
           mode: {name: "javascript", json: true},
           lineNumbers: true,
-          matchBrackets: true
+          matchBrackets: true,
+          onChange : function() {
+            if (!$("#downloadJarLink").hasClass("hide")) {
+              $("#downloadJarLink").addClass("hide");
+            }
+          }
         });
 
         $("#form").submit(function(e) {
