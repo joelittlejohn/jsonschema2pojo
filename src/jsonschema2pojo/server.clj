@@ -59,7 +59,7 @@
 
   (GET "/" {} (resource-response "public/index.html"))
 
-  (resources "/lib" {:root "public/lib"})
+  (resources "/")
 
   (not-found "Not found"))
 

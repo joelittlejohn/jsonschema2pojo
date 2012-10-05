@@ -1,0 +1,30 @@
+/* CodeMirror overrides */
+
+.CodeMirror-scroll {
+  height: 25em;
+}
+.CodeMirror {
+  border: 1px solid #aaa
+}
+
+/* Bootstrap overrides */
+
+.modal.fade {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+div.alert {
+  background-color: #df5d5c;
+}
+
+/* misc */
+
+.form-section {
+  margin-top: 1em;
+}
+.btn.submit {
+  margin-right: 1em;
+}

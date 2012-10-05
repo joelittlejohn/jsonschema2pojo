@@ -7,83 +7,18 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="description" content="Generate Plain Old Java Objects from JSON or JSON-Schema.">
     <meta name="keywords" content="json, jsonschema, pojo, java, javascript, jsonschema2java, jsonschema2pojo, jsonschema2dto, code generation, dto">
+
     <link href="lib/bootstrap.min.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
     <script src="lib/codemirror-compressed.js"></script>
     <script src="lib/runmode.js"></script>
+    <script src="index.js"></script>
+
     <link rel="stylesheet" href="lib/codemirror.css">
     <link rel="stylesheet" href="lib/eclipse.css">
+    <link rel="stylesheet" href="index.css">
 
-    <script type="text/javascript">
-      $(document).ready(function() {
-
-        var schemaTextArea = document.getElementById("schema");
-        var myCodeMirror = CodeMirror.fromTextArea(schemaTextArea, {
-          mode: {name: "javascript", json: true},
-          lineNumbers: true,
-          matchBrackets: true,
-          onChange : function() {
-            if (!$("#downloadJarLink").hasClass("hide")) {
-              $("#downloadJarLink").addClass("hide");
-            }
-          }
-        });
-
-        $("#form").submit(function(e) {
-          e.preventDefault();
-          return false;
-        });
-
-        $("#generateButton").click(function(e) {
-
-          $("#generateButton").button("loading");
-          $("#downloadJarLink").addClass("hide");
-          schemaTextArea.value = myCodeMirror.getValue();
-
-          $.ajax({
-            url: "generator",
-            type: "POST",
-            data: $("#form").serialize(),
-            success: function(data) {
-              $("#downloadJarLink").attr("href", "data:application/zip;base64," + data);
-              $("#downloadJarLink").attr("download", $("#classname").val() + ".jar");
-              $("#downloadJarLink").text($("#classname").val() + ".jar");
-              $("#downloadJarLink").removeClass("hide");
-
-              $("#generateButton").button("reset");
-            },
-            error: function(xhr) {
-              $("#generateButton").button("reset");
-              alert(xhr.responseText);
-            }
-          });
-        });
-
-        $("#previewButton").click(function(e) {
-
-          $("#previewButton").button("loading");
-          schemaTextArea.value = myCodeMirror.getValue();
-
-          $.ajax({
-            url: "generator/preview",
-            type: "POST",
-            data: $("#form").serialize(),
-            success: function(data) {
-              $("#previewButton").button("reset");
-              CodeMirror.runMode(data, "text/x-java", document.getElementById("preview"),
-                                 {indentUnit:4});
-              $("#previewModal").modal();
-            },
-            error: function(xhr) {
-              $("#previewButton").button("reset");
-              alert(xhr.responseText);
-            }
-          });
-        });
-
-      });
-    </script>
 
     <script type="text/javascript">
       var _gaq = _gaq || [];
@@ -102,22 +37,6 @@
         s.parentNode.insertBefore(ga, s);
       })();
     </script>
-
-    <style>
-      .CodeMirror-scroll {
-        height: 25em;
-      }
-      .CodeMirror {
-        border: 1px solid #aaa
-      }
-      .modal.fade {
-        -webkit-transition: none;
-        -moz-transition: none;
-        -ms-transition: none;
-        -o-transition: none;
-        transition: none;
-      }​
-    </style>
   </head>
 
   <body>
@@ -130,19 +49,40 @@
 
       <form id="form" method="post">
         <div class="row">
-          <div class="span6" style="margin-right:0.5generateem;">
-            <textarea id="schema" name="schema"></textarea>
+          <div class="span6">
+            <textarea id="schema" name="schema">
+{
+  "type":"object",
+  "properties": {
+    "foo": {
+      "type": "string"
+    },
+    "bar": {
+       "type": "integer"
+     },
+    "baz": {
+      "type": "boolean"
+    }
+  }
+}
+            </textarea>
           </div>
           <div class="span4">
+            <div class="control-group">
             <label>
               Package
-              <input name="targetpackage" value="com.example">
+              <input id="targetpackage" name="targetpackage" value="com.example">
             </label>
+            </div>
+
+            <div class="control-group">
             <label>
               Class name
               <input id="classname" name="classname" value="Example">
             </label>
-            <label style="margin-top: 1em;">
+            </div>
+
+            <label class="form-section">
               Source type:<br>
               <label class="radio inline">
                 <input type="radio" name="sourcetype"
@@ -155,7 +95,7 @@
                 JSON
               </label>
             </label>
-            <label style="margin-top: 1em;">
+            <label class="form-section">
               Annotation style:<br>
               <label class="radio inline">
                 <input type="radio" name="annotationstyle"
@@ -173,11 +113,11 @@
                 None
               </label>
             </label>
-            <label style="margin-top: 1em;" class="checkbox">
-              <input name="generatebuilders" value="true" type="checkbox">Generate builders
+            <label class="form-section" class="checkbox">
+              <input name="generatebuilders" value="true" type="checkbox">Generate builder methods
             </label>
             <label class="checkbox">
-              <input name="useprimitives" value="true" type="checkbox">Use primitives
+              <input name="useprimitives" value="true" type="checkbox">Use primitive types
             </label>
             <label class="checkbox">
               <input name="uselongintegers" value="true" type="checkbox">Use long integers
@@ -194,23 +134,25 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top: 1em;">
+        <div class="row form-section">
           <div class="span6">
-            <button class="btn" id="previewButton" style="margin-right: 1em;" data-loading-text="Generating...">Preview</button>
-            <button class="btn" id="generateButton" style="margin-right: 1em;" data-loading-text="Generating...">Jar</button>
-            <a id="downloadJarLink" class="hide"></a>
+            <button class="btn submit" id="preview-button" data-loading-text="Generating...">Preview</button>
+            <button class="btn submit" id="jar-button" data-loading-text="Generating...">Jar</button>
+            <a id="download-jar-link" class="hide"></a>
           </div>
         </div>
       </form>
 
-      <div id="previewModal" class="modal hide fade">
+      <div id="preview-modal" class="modal hide fade">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h3>Preview</h3>
         </div>
         <div id="preview" class="modal-body CodeMirror" style="overflow: auto">
-
         </div>
+      </div>
+
+      <div id="alert-area">
       </div>
 
       <p class="muted">
