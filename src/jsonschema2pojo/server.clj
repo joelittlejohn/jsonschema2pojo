@@ -1,6 +1,7 @@
 (ns jsonschema2pojo.server
   (:use [jsonschema2pojo.bridge :as j2p]
         [clojure.tools.logging :only [error]]
+        [clojure.string :only [split-lines replace-first]]
         [compojure.core :only [defroutes GET POST]]
         [compojure.route :only [not-found resources]]
         [ring.middleware.params]
@@ -8,15 +9,24 @@
         [ring.adapter.jetty :only [run-jetty]]
         [clojure.data.codec.base64 :as b64])
   (:import [java.io ByteArrayInputStream]
-           [com.fasterxml.jackson.databind ObjectMapper])
+           [com.fasterxml.jackson.databind ObjectMapper]
+           [com.fasterxml.jackson.core JsonProcessingException])
   (:gen-class))
 
 (def object-mapper (ObjectMapper.))
 
+(defn format-parse-error [e]
+  (let [message  (-> (.getMessage e) split-lines first)
+        location (.getLocation e)
+        line (.getLineNr location)
+        column (.getColumnNr location)]
+    (str message " (line " line ", column " column ")")))
+
 (defn parse [schema]
   (try
     (.readTree object-mapper schema)
-    (catch Exception e (throw (IllegalArgumentException. (.getMessage e))))))
+    (catch JsonProcessingException e
+      (throw (IllegalArgumentException. (format-parse-error e))))))
 
 (defn not-blank [params k name]
   (if (empty? (params k))
