@@ -68,6 +68,7 @@ $(document).ready(function() {
   $("#preview-button").click(function(e) {
 
     $("#preview-button").button("loading");
+    $(".alert").alert("close");
     schemaTextArea.value = myCodeMirror.getValue();
 
     $.ajax({
