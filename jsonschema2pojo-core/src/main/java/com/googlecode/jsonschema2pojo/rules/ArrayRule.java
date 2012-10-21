@@ -92,7 +92,13 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
     }
 
     private String makeSingular(String nodeName) {
-        return removeEnd(removeEnd(nodeName, "s"), "S");
+
+        if (endsWith(nodeName, "ies")) {
+            return removeEnd(nodeName, "ies") + "y";
+        } else {
+            return removeEnd(removeEnd(nodeName, "s"), "S");
+        }
+
     }
 
 }

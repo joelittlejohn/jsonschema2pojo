@@ -35,6 +35,18 @@
             "items" : {
                 "type" : "array"
             }
+        },
+        "things" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
+        },
+        "properties" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
         }
     }
 }

@@ -126,4 +126,26 @@ public class ArrayIT {
 
     }
 
+    @Test
+    public void arrayItemTypeIsSingularFormOfPropertyName() throws NoSuchMethodException {
+
+        Method getterMethod = classWithArrayProperties.getMethod("getThings");
+
+        // assert List<Thing>
+        Class<?> genericType = (Class<?>) ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(genericType.getName(), is("com.example.Thing"));
+
+    }
+
+    @Test
+    public void arrayItemTypeIsSingularFormOfPropertyNameWhenNameEndsInIES() throws NoSuchMethodException {
+
+        Method getterMethod = classWithArrayProperties.getMethod("getProperties");
+
+        // assert List<Thing>
+        Class<?> genericType = (Class<?>) ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(genericType.getName(), is("com.example.Property"));
+
+    }
+
 }
