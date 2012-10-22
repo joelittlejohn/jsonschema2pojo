@@ -45,7 +45,6 @@
           targetpackage (size-limit 256 (not-blank params "targetpackage" "Package"))
           config (j2p/post-params-based-config params)
           code-bytes (generator schema classname config)]
-      (Thread/sleep 500)
       {:status 200
        :headers {"Content-Type" content-type}
        :body (ByteArrayInputStream. code-bytes)})
