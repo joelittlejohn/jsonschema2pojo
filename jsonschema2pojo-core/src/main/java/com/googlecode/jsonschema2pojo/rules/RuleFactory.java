@@ -225,6 +225,17 @@ public class RuleFactory {
     public SchemaRule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
         return new MinItemsMaxItemsRule(this);
     }
+    
+    /**
+     * Provides a rule instance that should be applied when a property
+     * declaration is found in the schema, to assign any size validation
+     * (minLength/maxLength) on that property
+     * 
+     * @return a schema rule that can handle the "default" declaration.
+     */
+    public SchemaRule<JFieldVar, JFieldVar> getMinLengthMaxLengthRule() {
+        return new MinLengthMaxLengthRule(this);
+    }
 
     /**
      * Provides a rule instance that should be applied when a "pattern"

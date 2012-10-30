@@ -110,6 +110,8 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         ruleFactory.getMinimumMaximumRule().apply(nodeName, node, field, schema);
 
         ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
+        
+        ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, field, schema);
 
         return jclass;
     }

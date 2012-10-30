@@ -6,6 +6,8 @@
             "minimum" : 2.2,
             "minItems" : "1",
             "maxItems" : "2",
+            "minLength" : "1",
+            "maxLength" : "2",
             "pattern" : "abc.*",
             "required" : true
         }

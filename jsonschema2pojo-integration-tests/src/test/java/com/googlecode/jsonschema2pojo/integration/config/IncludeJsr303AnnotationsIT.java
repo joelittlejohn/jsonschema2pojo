@@ -180,6 +180,40 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
     }
+    
+    @Test
+    public void jsr303SizeValidationIsAddedForSchemaRuleMinLength() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/minLength.json", "com.example",
+                config("includeJsr303Annotations", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.MinLength");
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "minLength", "Long enough");
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minLength", "Too short");
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+    }
+    
+    @Test
+    public void jsr303SizeValidationIsAddedForSchemaRuleMaxLength() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/maxLength.json", "com.example",
+                config("includeJsr303Annotations", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.MaxLength");
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "maxLength", "Short");
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maxLength", "Tooooo long");
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+    }
 
     private static void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
         Set<ConstraintViolation<Object>> violationsForValidInstance = validator.validate(instance);

@@ -204,6 +204,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * <li>maximum = {@literal @DecimalMax}
      * <li>minimum = {@literal @DecimalMin}
      * <li>minItems,maxItems = {@literal @Size}
+     * <li>minLength,maxLength = {@literal @Size}
      * <li>pattern = {@literal @Pattern}
      * <li>required = {@literal @NotNull}
      * </ul>
