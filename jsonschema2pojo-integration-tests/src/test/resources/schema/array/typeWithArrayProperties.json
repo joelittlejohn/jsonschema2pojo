@@ -47,6 +47,12 @@
             "items" : {
                 "type" : "object"
             }
+        },
+        "refToArray1" : {
+            "$ref" : "arrayAsRoot.json"
+        },
+        "refToArray2" : {
+            "$ref" : "arrayAsRoot.json"
         }
     }
 }

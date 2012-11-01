@@ -76,6 +76,7 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
     public JClass apply(String nodeName, JsonNode node, JPackage jpackage, Schema schema) {
 
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
+        boolean rootSchemaIsArray = !schema.isGenerated();
 
         JType itemType;
         if (node.has("items")) {
@@ -84,11 +85,18 @@ public class ArrayRule implements SchemaRule<JPackage, JClass> {
             itemType = jpackage.owner().ref(Object.class);
         }
 
+        JClass arrayType;
         if (uniqueItems) {
-            return jpackage.owner().ref(Set.class).narrow(itemType);
+            arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
         } else {
-            return jpackage.owner().ref(List.class).narrow(itemType);
+            arrayType = jpackage.owner().ref(List.class).narrow(itemType);
         }
+
+        if (rootSchemaIsArray) {
+            schema.setJavaType(arrayType);
+        }
+
+        return arrayType;
     }
 
     private String makeSingular(String nodeName) {

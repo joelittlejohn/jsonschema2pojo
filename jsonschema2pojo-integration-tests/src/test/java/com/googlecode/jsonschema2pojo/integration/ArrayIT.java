@@ -142,10 +142,31 @@ public class ArrayIT {
 
         Method getterMethod = classWithArrayProperties.getMethod("getProperties");
 
-        // assert List<Thing>
+        // assert List<Property>
         Class<?> genericType = (Class<?>) ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(genericType.getName(), is("com.example.Property"));
 
+    }
+
+    /**
+     * @see <a
+     *      href="http://code.google.com/p/jsonschema2pojo/issues/detail?id=76">issue
+     *      76</a>
+     */
+    @Test
+    public void propertiesThatReferenceAnArraySchemaAlwaysHaveCorrectCollectionType() throws NoSuchMethodException, ClassNotFoundException {
+
+        Method array1GetterMethod = classWithArrayProperties.getMethod("getRefToArray1");
+
+        // assert List<RootArrayItem>
+        Class<?> array1GenericType = (Class<?>) ((ParameterizedType) array1GetterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(array1GenericType.getName(), is("com.example.RootArrayItem"));
+
+        Method array2GetterMethod = classWithArrayProperties.getMethod("getRefToArray2");
+
+        // assert List<RootArrayItem>
+        Class<?> array2GenericType = (Class<?>) ((ParameterizedType) array2GetterMethod.getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(array2GenericType.getName(), is("com.example.RootArrayItem"));
     }
 
 }
