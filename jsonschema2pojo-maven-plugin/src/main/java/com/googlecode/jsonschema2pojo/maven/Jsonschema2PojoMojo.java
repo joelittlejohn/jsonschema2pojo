@@ -208,6 +208,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
      * <li>pattern = {@literal @Pattern}
      * <li>required = {@literal @NotNull}
      * </ul>
+     * Any Java fields which are an object or array of objects will be annotated
+     * with {@literal @Valid} to support validation of an entire document tree.
      * 
      * @parameter expression="${jsonschema2pojo.includeJsr303Annotations}"
      *            default-value="false"

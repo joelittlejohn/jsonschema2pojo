@@ -246,6 +246,17 @@ public class RuleFactory {
     public SchemaRule<JFieldVar, JFieldVar> getPatternRule() {
         return new PatternRule(this);
     }
+    
+    /**
+     * Provides a rule instance that should be applied when a property
+     * declaration is found in the schema which itself contains properties,
+     * to assign validation of the properties within that property
+     * 
+     * @return a schema rule that can handle the "default" declaration.
+     */
+    public SchemaRule<JFieldVar, JFieldVar> getValidRule() {
+    	return new ValidRule(this);
+    }
 
     /**
      * Gets the configuration options that will influence the java code

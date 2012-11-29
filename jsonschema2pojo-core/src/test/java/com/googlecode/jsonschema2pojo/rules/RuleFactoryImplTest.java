@@ -65,6 +65,8 @@ public class RuleFactoryImplTest {
         assertThat(ruleFactory.getPatternRule(), notNullValue());
         
         assertThat(ruleFactory.getMinLengthMaxLengthRule(), notNullValue());
+        
+        assertThat(ruleFactory.getValidRule(), notNullValue());
 
     }
 

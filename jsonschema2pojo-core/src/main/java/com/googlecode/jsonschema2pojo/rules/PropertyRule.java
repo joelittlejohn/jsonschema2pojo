@@ -112,8 +112,21 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
         
         ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, field, schema);
+        
+        if (isObject(node) || isArrayOfObjects(node)) {
+        	ruleFactory.getValidRule().apply(nodeName, node, field, schema);
+        }
 
         return jclass;
+    }
+    
+    private boolean isObject(JsonNode node) {
+    	return node.has("type") && node.get("type").asText().equals("object");
+    }
+    
+    private boolean isArrayOfObjects(JsonNode node) {
+    	return (node.has("items") && node.get("items").has("type") &&
+				node.get("items").get("type").asText().equals("object"));
     }
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {

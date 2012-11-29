@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "primitivefield" : {
+        	"type": "string"
+        },
+        "objectfield" : {
+        	"type": "object",
+        	"properties": {
+        		"childprimitivefield" : {
+        			"type": "string",
+        			"maxLength" : 5
+        		}
+        	}
+        }
+    }
+}
