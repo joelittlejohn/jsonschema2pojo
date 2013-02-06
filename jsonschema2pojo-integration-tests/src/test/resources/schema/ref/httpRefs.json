@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "address" : {
+            "$ref" : "http://json-schema.org/address"
+        },
+        "card" : {
+            "$ref" : "http://json-schema.org/card"
+        }
+    }
+}

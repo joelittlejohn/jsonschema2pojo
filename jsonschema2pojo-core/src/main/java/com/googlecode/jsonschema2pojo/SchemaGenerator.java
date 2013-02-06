@@ -16,9 +16,7 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -42,7 +40,7 @@ public class SchemaGenerator {
     public ObjectNode schemaFromExample(URL example) {
 
         try {
-            JsonNode content = OBJECT_MAPPER.readTree(new File(URI.create(example.toString())));
+            JsonNode content = OBJECT_MAPPER.readTree(example);
             return schemaFromExample(content);
         } catch (IOException e) {
             throw new GenerationException("Could not process JSON in source file", e);

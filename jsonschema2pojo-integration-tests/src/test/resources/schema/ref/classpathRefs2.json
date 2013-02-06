@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "propertyRelativeRef" : {
+            "$ref" : "classpathRefs3.json"
+        }
+    }
+}

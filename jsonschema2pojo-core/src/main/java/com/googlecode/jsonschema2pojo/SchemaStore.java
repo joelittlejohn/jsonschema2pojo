@@ -16,25 +16,22 @@
 
 package com.googlecode.jsonschema2pojo;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.stripEnd;
+import static org.apache.commons.lang.StringUtils.substringAfter;
+import static org.apache.commons.lang.StringUtils.substringBefore;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jsonschema2pojo.exception.GenerationException;
 
 public class SchemaStore {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private Map<URI, Schema> schemas = new HashMap<URI, Schema>();
 
     private FragmentResolver fragmentResolver = new FragmentResolver();
+    private ContentResolver contentResolver = new ContentResolver();
 
     /**
      * Create or look up a new schema which has the given ID and read the
@@ -49,17 +46,13 @@ public class SchemaStore {
 
         if (!schemas.containsKey(id)) {
 
-            try {
-                JsonNode content = OBJECT_MAPPER.readTree(new File(removeFragment(id)));
+            JsonNode content = contentResolver.resolve(removeFragment(id));
 
-                if (id.toString().contains("#")) {
-                    content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
-                }
-
-                schemas.put(id, new Schema(id, content));
-            } catch (IOException e) {
-                throw new GenerationException("Error with schema: " + id, e);
+            if (id.toString().contains("#")) {
+                content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
             }
+
+            schemas.put(id, new Schema(id, content));
         }
 
         return schemas.get(id);

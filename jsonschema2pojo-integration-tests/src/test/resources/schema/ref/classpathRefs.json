@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "propertyClasspathRef" : {
+            "$ref" : "classpath:/schema/ref/a.json"
+        },
+        "propertyResourceRef" : {
+            "$ref" : "resource:/schema/title/title.json"
+        },
+        "propertyJavaRef" : {
+            "$ref" : "java:/schema/description/description.json"
+        },
+        "transitiveRelativeClasspathRef" : {
+            "$ref" : "java:/schema/ref/classpathRefs2.json"
+        }
+    }
+}
