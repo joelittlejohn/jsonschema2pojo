@@ -48,20 +48,15 @@ public class HttpRefIT {
     @Test
     public void relativeRefToHttpResourceWithinHttpResource() throws NoSuchMethodException {
 
-        Class<?> cardClass = httpRefsClass.getMethod("getCard").getReturnType();
+        Class<?> transitiveRefClass = httpRefsClass.getMethod("getRefsToA").getReturnType();
 
-        assertThat(cardClass.getName(), is("com.example.Card"));
-        assertThat(cardClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getAdr"))));
+        assertThat(transitiveRefClass.getName(), is("com.example.RefsToA"));
+        assertThat(transitiveRefClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getA"))));
 
-        Class<?> adrClass = cardClass.getMethod("getAdr").getReturnType();
+        Class<?> aClass = transitiveRefClass.getMethod("getA").getReturnType();
 
-        assertThat(adrClass.getName(), is("com.example.Adr"));
-        assertThat(adrClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getRegion"))));
-
-        Class<?> geoClass = cardClass.getMethod("getGeo").getReturnType();
-
-        assertThat(geoClass.getName(), is("com.example.Geo"));
-        assertThat(geoClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getLatitude"))));
+        assertThat(aClass.getName(), is("com.example.A"));
+        assertThat(aClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPropertyOfA"))));
 
     }
 
