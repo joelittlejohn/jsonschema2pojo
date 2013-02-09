@@ -118,8 +118,7 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
-                config("propertyWordDelimiters", "-_"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -131,6 +130,21 @@ public class PropertiesIT {
         assertThat(valueAsJsonNode.path("void").asText(), is("b"));
         assertThat(valueAsJsonNode.path("enum").asText(), is("c"));
         assertThat(valueAsJsonNode.path("abstract").asText(), is("d"));
+
+    }
+
+    @Test
+    public void propertyCalledClassCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertyCalledClass.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertyCalledClass");
+
+        String valuesAsJsonString = "{\"class\":\"a\"}";
+        Object valuesAsObject = mapper.readValue(valuesAsJsonString, generatedType);
+        JsonNode valueAsJsonNode = mapper.valueToTree(valuesAsObject);
+
+        assertThat(valueAsJsonNode.path("class").asText(), is("a"));
 
     }
 }

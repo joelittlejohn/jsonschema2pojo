@@ -110,23 +110,22 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
         ruleFactory.getMinimumMaximumRule().apply(nodeName, node, field, schema);
 
         ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
-        
+
         ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, field, schema);
-        
+
         if (isObject(node) || isArrayOfObjects(node)) {
-        	ruleFactory.getValidRule().apply(nodeName, node, field, schema);
+            ruleFactory.getValidRule().apply(nodeName, node, field, schema);
         }
 
         return jclass;
     }
-    
+
     private boolean isObject(JsonNode node) {
-    	return node.has("type") && node.get("type").asText().equals("object");
+        return node.has("type") && node.get("type").asText().equals("object");
     }
-    
+
     private boolean isArrayOfObjects(JsonNode node) {
-    	return (node.has("items") && node.get("items").has("type") &&
-				node.get("items").get("type").asText().equals("object"));
+        return (node.has("items") && node.get("items").has("type") && node.get("items").get("type").asText().equals("object"));
     }
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
@@ -180,7 +179,13 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
     private String getSetterName(String propertyName) {
         propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
-        return "set" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
+        String setterName = "set" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
+
+        if (setterName.equals("setClass")) {
+            setterName = "setClass_";
+        }
+
+        return setterName;
     }
 
     private String getBuilderName(String propertyName) {
@@ -191,7 +196,13 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
     private String getGetterName(String propertyName, JType type) {
         String prefix = (type.equals(type.owner()._ref(boolean.class))) ? "is" : "get";
         propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
-        return prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
+        String getterName = prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
+
+        if (getterName.equals("getClass")) {
+            getterName = "getClass_";
+        }
+
+        return getterName;
     }
 
 }
