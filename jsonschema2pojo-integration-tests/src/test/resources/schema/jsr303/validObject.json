@@ -2,16 +2,16 @@
     "type" : "object",
     "properties" : {
         "primitivefield" : {
-        	"type": "string"
+            "type": "string"
         },
         "objectfield" : {
-        	"type": "object",
-        	"properties": {
-        		"childprimitivefield" : {
-        			"type": "string",
-        			"maxLength" : 5
-        		}
-        	}
+            "type": "object",
+            "properties": {
+            	"childprimitivefield" : {
+            		"type": "string",
+            		"maxLength" : 5
+            	}
+            }
         }
     }
 }

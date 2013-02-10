@@ -255,7 +255,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "default" declaration.
      */
     public SchemaRule<JFieldVar, JFieldVar> getValidRule() {
-    	return new ValidRule(this);
+        return new ValidRule(this);
     }
 
     /**

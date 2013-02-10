@@ -23,21 +23,21 @@ import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JFieldVar;
 
 public class ValidRule implements SchemaRule<JFieldVar, JFieldVar> {
-	
-	private final RuleFactory ruleFactory;
-	
-	public ValidRule(RuleFactory ruleFactory) {
-		this.ruleFactory = ruleFactory;
-	}
+    
+    private final RuleFactory ruleFactory;
+    
+    public ValidRule(RuleFactory ruleFactory) {
+    	this.ruleFactory = ruleFactory;
+    }
 
-	@Override
-	public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
-		
-		if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+    @Override
+    public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
+    	
+    	if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
             field.annotate(Valid.class);
         }
-		
+    	
         return field;
-	}
-	
+    }
+    
 }
