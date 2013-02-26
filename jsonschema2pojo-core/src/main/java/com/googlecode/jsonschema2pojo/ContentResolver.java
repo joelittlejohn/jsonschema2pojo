@@ -18,6 +18,7 @@ package com.googlecode.jsonschema2pojo;
 
 import static java.util.Arrays.*;
 import static org.apache.commons.lang.StringUtils.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ContentResolver {
 
     private static final Set<String> CLASSPATH_SCHEMES = new HashSet<String>(asList("classpath", "resource", "java"));
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+        .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     /**
      * Resolve a given URI to read its contents and parse the result as JSON.
