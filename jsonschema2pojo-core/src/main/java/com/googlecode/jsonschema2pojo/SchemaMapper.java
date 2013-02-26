@@ -19,7 +19,7 @@ package com.googlecode.jsonschema2pojo;
 import java.io.IOException;
 import java.net.URL;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
@@ -30,6 +30,7 @@ import com.sun.codemodel.JPackage;
  * used to create type generation rules for this mapper.
  */
 public class SchemaMapper {
+    private static final JsonNodeFactory NODE_FACTORY = JsonNodeFactory.instance;
 
     private final RuleFactory ruleFactory;
     private final SchemaGenerator schemaGenerator;
@@ -88,7 +89,7 @@ public class SchemaMapper {
 
         switch (ruleFactory.getGenerationConfig().getSourceType()) {
             case JSONSCHEMA:
-                ObjectNode schemaNode = new ObjectMapper().createObjectNode();
+                ObjectNode schemaNode = NODE_FACTORY.objectNode();
                 schemaNode.put("$ref", schemaUrl.toString());
                 return schemaNode;
             case JSON:
