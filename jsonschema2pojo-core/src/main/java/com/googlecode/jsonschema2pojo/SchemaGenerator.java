@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Iterator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -35,7 +36,8 @@ import com.googlecode.jsonschema2pojo.exception.GenerationException;
 
 public class SchemaGenerator {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+        .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     public ObjectNode schemaFromExample(URL example) {
 
