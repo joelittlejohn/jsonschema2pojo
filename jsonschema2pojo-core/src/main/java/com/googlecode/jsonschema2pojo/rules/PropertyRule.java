@@ -72,6 +72,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
+        node = resolveRefs(node, schema);
+
         JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
@@ -118,6 +120,16 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         return jclass;
+    }
+
+    private JsonNode resolveRefs(JsonNode node, Schema parent) {
+        if (node.has("$ref")) {
+            Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText());
+            JsonNode refNode = refSchema.getContent();
+            return resolveRefs(refNode, parent);
+        } else {
+            return node;
+        }
     }
 
     private boolean isObject(JsonNode node) {
