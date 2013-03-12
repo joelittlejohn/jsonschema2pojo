@@ -190,7 +190,7 @@ public class RuleFactory {
      * @return a schema rule that can handle a schema declaration.
      */
     public Rule<JClassContainer, JType> getSchemaRule() {
-        return new JsonSchemaRule(this);
+        return new SchemaRule(this);
     }
 
     /**

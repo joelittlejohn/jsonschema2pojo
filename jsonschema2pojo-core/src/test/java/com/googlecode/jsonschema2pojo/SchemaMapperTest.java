@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.googlecode.jsonschema2pojo.rules.JsonSchemaRule;
+import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -40,7 +40,7 @@ public class SchemaMapperTest {
     @Test
     public void generateReadsSchemaAsObject() throws IOException {
 
-        final JsonSchemaRule mockSchemaRule = mock(JsonSchemaRule.class);
+        final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
         final RuleFactory mockRuleFactory = mock(RuleFactory.class);
         when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
@@ -67,7 +67,7 @@ public class SchemaMapperTest {
 
         ObjectNode schemaNode = mock(ObjectNode.class);
 
-        final JsonSchemaRule mockSchemaRule = mock(JsonSchemaRule.class);
+        final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
         when(mockGenerationConfig.getSourceType()).thenReturn(SourceType.JSON);

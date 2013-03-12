@@ -43,7 +43,7 @@ public class JsonSchemaRuleTest {
     private static final String TARGET_CLASS_NAME = JsonSchemaRuleTest.class.getName() + ".DummyClass";
 
     private RuleFactory mockRuleFactory = mock(RuleFactory.class);
-    private JsonSchemaRule rule = new JsonSchemaRule(mockRuleFactory);
+    private SchemaRule rule = new SchemaRule(mockRuleFactory);
 
     @Test
     public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {

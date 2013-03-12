@@ -27,11 +27,11 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
-public class JsonSchemaRule implements Rule<JClassContainer, JType> {
+public class SchemaRule implements Rule<JClassContainer, JType> {
 
     private final RuleFactory ruleFactory;
 
-    protected JsonSchemaRule(RuleFactory ruleFactory) {
+    protected SchemaRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
 
