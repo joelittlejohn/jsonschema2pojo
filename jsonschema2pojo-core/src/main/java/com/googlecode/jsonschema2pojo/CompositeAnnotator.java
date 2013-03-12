@@ -50,16 +50,16 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyInclusion(JDefinedClass clazz) {
+    public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
         for (Annotator annotator : annotators) {
-            annotator.propertyInclusion(clazz);
+            annotator.propertyInclusion(clazz, schema);
         }
     }
 
     @Override
-    public void propertyField(JFieldVar field, String propertyName) {
+    public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         for (Annotator annotator : annotators) {
-            annotator.propertyField(field, propertyName);
+            annotator.propertyField(field, clazz, propertyName, propertyNode);
         }
     }
 

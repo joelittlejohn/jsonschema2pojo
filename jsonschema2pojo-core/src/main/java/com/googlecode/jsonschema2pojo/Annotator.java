@@ -44,18 +44,24 @@ public interface Annotator {
      * 
      * @param clazz
      *            a generated pojo class, that is serialized to JSON
+     * @param schemaNode
+     *            the object schema associated with this clazz
      */
-    void propertyInclusion(JDefinedClass clazz);
+    void propertyInclusion(JDefinedClass clazz, JsonNode schema);
 
     /**
      * Add the necessary annotation to mark a Java field as a JSON property
      * 
      * @param field
      *            the field that contains data that will be serialized
+     * @param clazz
+     *            the owner of the field (class to which the field belongs)
      * @param propertyName
      *            the name of the JSON property that this field represents
+     * @param propertyNode
+     *            the schema node defining this property
      */
-    void propertyField(JFieldVar field, String propertyName);
+    void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode);
 
     /**
      * Add the necessary annotation to mark a Java method as the getter for a

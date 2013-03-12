@@ -32,11 +32,11 @@ public class NoopAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyInclusion(JDefinedClass clazz) {
+    public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
     }
 
     @Override
-    public void propertyField(JFieldVar field, String propertyName) {
+    public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
     }
 
     @Override

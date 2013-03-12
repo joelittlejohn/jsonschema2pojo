@@ -49,12 +49,12 @@ public class Jackson2Annotator implements Annotator {
     }
 
     @Override
-    public void propertyInclusion(JDefinedClass clazz) {
+    public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
         clazz.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
     }
 
     @Override
-    public void propertyField(JFieldVar field, String propertyName) {
+    public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         field.annotate(JsonProperty.class).param("value", propertyName);
     }
 
