@@ -36,7 +36,7 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
-public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
+public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private final RuleFactory ruleFactory;
 

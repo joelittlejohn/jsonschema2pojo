@@ -31,7 +31,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
  */
-public class FormatRule implements SchemaRule<JType, JType> {
+public class FormatRule implements Rule<JType, JType> {
 
     private final RuleFactory ruleFactory;
 

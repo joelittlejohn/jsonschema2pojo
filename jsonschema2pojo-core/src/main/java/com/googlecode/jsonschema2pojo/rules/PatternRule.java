@@ -23,7 +23,7 @@ import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
-public class PatternRule implements SchemaRule<JFieldVar, JFieldVar> {
+public class PatternRule implements Rule<JFieldVar, JFieldVar> {
 
     private RuleFactory ruleFactory;
 

@@ -50,7 +50,7 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
-public class EnumRule implements SchemaRule<JClassContainer, JDefinedClass> {
+public class EnumRule implements Rule<JClassContainer, JDefinedClass> {
 
     private static final String VALUE_FIELD_NAME = "value";
 

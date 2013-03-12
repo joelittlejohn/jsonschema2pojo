@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JFieldVar;
 
-public class ValidRule implements SchemaRule<JFieldVar, JFieldVar> {
+public class ValidRule implements Rule<JFieldVar, JFieldVar> {
     
     private final RuleFactory ruleFactory;
     

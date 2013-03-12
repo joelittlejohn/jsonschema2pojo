@@ -24,7 +24,7 @@ import com.googlecode.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
-public class MinimumMaximumRule implements SchemaRule<JFieldVar, JFieldVar> {
+public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
 
     private final RuleFactory ruleFactory;
 

@@ -52,7 +52,7 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
-public class ObjectRule implements SchemaRule<JPackage, JType> {
+public class ObjectRule implements Rule<JPackage, JType> {
 
     private final RuleFactory ruleFactory;
 
@@ -65,7 +65,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
      * <p>
      * When this rule is applied for schemas of type object, the properties of
      * the schema are used to generate a new Java class and determine its
-     * characteristics. See other implementers of {@link SchemaRule} for
+     * characteristics. See other implementers of {@link Rule} for
      * details.
      * <p>
      * A new Java type will be created when this rule is applied, it is

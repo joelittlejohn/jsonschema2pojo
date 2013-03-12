@@ -29,7 +29,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
-public class TypeRule implements SchemaRule<JClassContainer, JType> {
+public class TypeRule implements Rule<JClassContainer, JType> {
 
     private static final String DEFAULT_TYPE_NAME = "any";
 

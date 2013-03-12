@@ -75,7 +75,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "array" declaration.
      */
-    public SchemaRule<JPackage, JClass> getArrayRule() {
+    public Rule<JPackage, JClass> getArrayRule() {
         return new ArrayRule(this);
     }
 
@@ -85,7 +85,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "description" declaration.
      */
-    public SchemaRule<JDocCommentable, JDocComment> getDescriptionRule() {
+    public Rule<JDocCommentable, JDocComment> getDescriptionRule() {
         return new DescriptionRule();
     }
 
@@ -95,7 +95,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "enum" declaration.
      */
-    public SchemaRule<JClassContainer, JDefinedClass> getEnumRule() {
+    public Rule<JClassContainer, JDefinedClass> getEnumRule() {
         return new EnumRule(this);
     }
 
@@ -105,7 +105,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "format" declaration.
      */
-    public SchemaRule<JType, JType> getFormatRule() {
+    public Rule<JType, JType> getFormatRule() {
         return new FormatRule(this);
     }
 
@@ -115,7 +115,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "object" declaration.
      */
-    public SchemaRule<JPackage, JType> getObjectRule() {
+    public Rule<JPackage, JType> getObjectRule() {
         return new ObjectRule(this);
     }
 
@@ -125,7 +125,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "properties" declaration.
      */
-    public SchemaRule<JDefinedClass, JDefinedClass> getPropertiesRule() {
+    public Rule<JDefinedClass, JDefinedClass> getPropertiesRule() {
         return new PropertiesRule(this);
     }
 
@@ -136,7 +136,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle a property declaration.
      */
-    public SchemaRule<JDefinedClass, JDefinedClass> getPropertyRule() {
+    public Rule<JDefinedClass, JDefinedClass> getPropertyRule() {
         return new PropertyRule(this);
     }
 
@@ -146,7 +146,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "required" declaration.
      */
-    public SchemaRule<JDocCommentable, JDocComment> getRequiredRule() {
+    public Rule<JDocCommentable, JDocComment> getRequiredRule() {
         return new RequiredRule(this);
     }
 
@@ -158,7 +158,7 @@ public class RuleFactory {
      * @return a schema rule that can find/generate the relevant Java type for a
      *         given schema node.
      */
-    public SchemaRule<JClassContainer, JType> getTypeRule() {
+    public Rule<JClassContainer, JType> getTypeRule() {
         return new TypeRule(this);
     }
 
@@ -169,7 +169,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "additionalProperties"
      *         declaration.
      */
-    public SchemaRule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule() {
+    public Rule<JDefinedClass, JDefinedClass> getAdditionalPropertiesRule() {
         return new AdditionalPropertiesRule(this);
     }
 
@@ -179,7 +179,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "title" declaration.
      */
-    public SchemaRule<JDocCommentable, JDocComment> getTitleRule() {
+    public Rule<JDocCommentable, JDocComment> getTitleRule() {
         return new TitleRule();
     }
 
@@ -189,7 +189,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle a schema declaration.
      */
-    public SchemaRule<JClassContainer, JType> getSchemaRule() {
+    public Rule<JClassContainer, JType> getSchemaRule() {
         return new JsonSchemaRule(this);
     }
 
@@ -200,7 +200,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getDefaultRule() {
+    public Rule<JFieldVar, JFieldVar> getDefaultRule() {
         return new DefaultRule();
     }
 
@@ -211,7 +211,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getMinimumMaximumRule() {
+    public Rule<JFieldVar, JFieldVar> getMinimumMaximumRule() {
         return new MinimumMaximumRule(this);
     }
 
@@ -222,7 +222,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
+    public Rule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
         return new MinItemsMaxItemsRule(this);
     }
     
@@ -233,7 +233,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getMinLengthMaxLengthRule() {
+    public Rule<JFieldVar, JFieldVar> getMinLengthMaxLengthRule() {
         return new MinLengthMaxLengthRule(this);
     }
 
@@ -243,7 +243,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "pattern" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getPatternRule() {
+    public Rule<JFieldVar, JFieldVar> getPatternRule() {
         return new PatternRule(this);
     }
     
@@ -254,7 +254,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
-    public SchemaRule<JFieldVar, JFieldVar> getValidRule() {
+    public Rule<JFieldVar, JFieldVar> getValidRule() {
         return new ValidRule(this);
     }
 

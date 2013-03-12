@@ -45,7 +45,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
  */
-public class DefaultRule implements SchemaRule<JFieldVar, JFieldVar> {
+public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
     /**
      * Applies this schema rule to take the required code generation steps.
