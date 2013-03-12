@@ -27,7 +27,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
+import com.googlecode.jsonschema2pojo.Annotator;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.NoopAnnotator;
 import com.googlecode.jsonschema2pojo.SourceType;
 
 /**
@@ -68,6 +70,11 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements com.googlecode.jsonschema2pojo.Annotator " +
+            "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none",
+            converter = ClassConverter.class)
+    private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
@@ -158,6 +165,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public Class<? extends Annotator> getCustomAnnotator() {
+        return customAnnotator;
     }
 
     @Override

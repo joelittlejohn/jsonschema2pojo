@@ -105,6 +105,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * {@link NoopAnnotator}
+     */
+    @Override
+    public Class<? extends Annotator> getCustomAnnotator() {
+        return NoopAnnotator.class;
+    }
+
+    /**
      * @return <code>false</code>
      */
     @Override

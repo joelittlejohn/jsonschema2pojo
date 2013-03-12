@@ -165,7 +165,7 @@ public class ObjectRule implements SchemaRule<JPackage, JType> {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
-        ruleFactory.getAnnotator().propertyInclusion(newType);
+        ruleFactory.getAnnotator().propertyInclusion(newType, node);
 
         return newType;
 

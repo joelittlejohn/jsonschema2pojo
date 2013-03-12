@@ -74,7 +74,7 @@ public class PropertyRule implements SchemaRule<JDefinedClass, JDefinedClass> {
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
 
-        ruleFactory.getAnnotator().propertyField(field, nodeName);
+        ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         JMethod getter = addGetter(jclass, field, nodeName);
         JMethod setter = addSetter(jclass, field, nodeName);
