@@ -30,7 +30,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
+import com.googlecode.jsonschema2pojo.Annotator;
+import com.googlecode.jsonschema2pojo.AnnotatorFactory;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.NoopAnnotator;
 import com.googlecode.jsonschema2pojo.SourceType;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
@@ -47,8 +50,7 @@ import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
  *      href="http://maven.apache.org/developers/mojo-api-specification.html">Mojo
  *      API Specification</a>
  */
-public class Jsonschema2PojoMojo extends AbstractMojo implements
-        GenerationConfig {
+public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfig {
 
     /**
      * Target directory for generated Java source files.
@@ -195,6 +197,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     private String annotationStyle = "jackson";
 
     /**
+     * A fully qualified class name, referring to a custom annotator class that
+     * implements <code>com.googlecode.jsonschema2pojo.Annotator</code> and will
+     * be used in addition to the one chosen by <code>annotationStyle</code>.
+     * <p>
+     * If you want to use the custom annotator alone, set
+     * <code>annotationStyle</code> to <code>none</code>.
+     * 
+     * @parameter expression="${jsonschema2pojo.customAnnotator}"
+     *            default-value="com.googlecode.jsonschema2pojo.NoopAnnotator"
+     * @since 0.3.6
+     */
+    private String customAnnotator = NoopAnnotator.class.getName();
+
+    /**
      * Whether to include <a
      * href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations (for
      * schema rules like minimum, maximum, etc) in generated Java types.
@@ -254,9 +270,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     public void execute() throws MojoExecutionException {
 
         try {
-            AnnotationStyle.valueOf(upperCase(annotationStyle));
+            getAnnotationStyle();
         } catch (IllegalArgumentException e) {
             throw new MojoExecutionException("Not a valid annotation style: " + annotationStyle);
+        }
+
+        try {
+            new AnnotatorFactory().getAnnotator(getCustomAnnotator());
+        } catch (IllegalArgumentException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
 
         if (skip) {
@@ -349,6 +371,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<? extends Annotator> getCustomAnnotator() {
+        if (isNotBlank(customAnnotator)) {
+            try {
+                return (Class<? extends Annotator>) Class.forName(customAnnotator);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            return NoopAnnotator.class;
+        }
     }
 
     @Override

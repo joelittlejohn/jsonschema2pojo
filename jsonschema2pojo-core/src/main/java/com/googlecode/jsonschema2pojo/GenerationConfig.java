@@ -126,6 +126,14 @@ public interface GenerationConfig {
     AnnotationStyle getAnnotationStyle();
 
     /**
+     * Gets the 'customAnnotator' configuration option.
+     * 
+     * @return An annotator that will be used in addition to the one chosen by
+     *         {@link #getAnnotationStyle()}
+     */
+    Class<? extends Annotator> getCustomAnnotator();
+
+    /**
      * Gets the 'includeJsr303Annotations' configuration option.
      * 
      * @return Whether to include <a

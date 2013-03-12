@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.googlecode.jsonschema2pojo.Annotator;
 import com.googlecode.jsonschema2pojo.AnnotatorFactory;
+import com.googlecode.jsonschema2pojo.CompositeAnnotator;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
 import com.googlecode.jsonschema2pojo.SchemaGenerator;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
@@ -78,7 +79,7 @@ public final class Jsonschema2Pojo {
      */
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
 
-        Annotator annotator = new AnnotatorFactory().getAnnotator(config.getAnnotationStyle());
+        Annotator annotator = getAnnotator(config);
         SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()), new SchemaGenerator());
 
         JCodeModel codeModel = new JCodeModel();
@@ -107,6 +108,12 @@ public final class Jsonschema2Pojo {
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
+    }
+
+    private static Annotator getAnnotator(GenerationConfig config) {
+        Annotator coreAnnotator = new AnnotatorFactory().getAnnotator(config.getAnnotationStyle());
+        Annotator customAnnotator = new AnnotatorFactory().getAnnotator(config.getCustomAnnotator());
+        return new CompositeAnnotator(coreAnnotator, customAnnotator);
     }
 
     private static String getNodeName(File file) {

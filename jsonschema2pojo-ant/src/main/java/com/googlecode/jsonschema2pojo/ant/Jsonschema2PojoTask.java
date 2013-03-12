@@ -27,7 +27,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
+import com.googlecode.jsonschema2pojo.Annotator;
 import com.googlecode.jsonschema2pojo.GenerationConfig;
+import com.googlecode.jsonschema2pojo.NoopAnnotator;
 import com.googlecode.jsonschema2pojo.SourceType;
 import com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo;
 
@@ -65,6 +67,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeToString = true;
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
 
     private boolean includeJsr303Annotations = false;
 
@@ -241,6 +245,25 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'customAnnotator' property of this class
+     * 
+     * @param customAnnotator
+     *            A custom annotator to use to annotate the generated types
+     */
+    @SuppressWarnings("unchecked")
+    public void setCustomAnnotator(String customAnnotator) {
+        if (isNotBlank(customAnnotator)) {
+            try {
+                this.customAnnotator = (Class<? extends Annotator>) Class.forName(customAnnotator);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            this.customAnnotator = NoopAnnotator.class;
+        }
+    }
+
+    /**
      * Sets the 'includeJsr303Annotations' property of this class
      * 
      * @param includeJsr303Annotations
@@ -326,6 +349,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public Class<? extends Annotator> getCustomAnnotator() {
+        return customAnnotator;
     }
 
     @Override

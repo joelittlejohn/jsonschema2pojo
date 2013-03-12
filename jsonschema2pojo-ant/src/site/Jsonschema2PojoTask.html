@@ -82,6 +82,14 @@
         <td align="center" valign="top">No (default <code>JACKSON2</code>)</td>
       </tr>
       <tr>
+        <td valign="top">customAnnotator</td>
+        <td valign="top">
+          <p>A fully qualified class name, referring to a custom annotator class that implements <code>com.googlecode.jsonschema2pojo.Annotator</code> and will be used in addition to the one chosen by <code>annotationStyle</code>.</p>
+          <p>If you want to use the custom annotator alone, set <code>annotationStyle</code> to <code>none</code>.</p>
+        </td>
+        <td align="center" valign="top">No</td>
+      </tr>
+      <tr>
         <td valign="top">includeJsr303Annotations</td>
         <td valign="top">Whether to include <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations (for schema rules like minimum, maximum, etc) in generated Java types.
           <p>

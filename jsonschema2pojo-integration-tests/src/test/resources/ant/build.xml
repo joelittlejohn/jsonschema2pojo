@@ -27,6 +27,7 @@
                          includeHashcodeAndEquals="false"
                          includeToString="false"
                          annotationStyle="NONE"
+        	             customAnnotator="com.googlecode.jsonschema2pojo.NoopAnnotator"
                          includeJsr303Annotations="true"/>
 
         <!-- use json input -->

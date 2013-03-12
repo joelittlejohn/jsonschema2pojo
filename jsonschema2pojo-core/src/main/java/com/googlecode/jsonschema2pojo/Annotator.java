@@ -33,6 +33,8 @@ public interface Annotator {
      * 
      * @param clazz
      *            a generated pojo class, that is serialized to JSON
+     * @param propertiesNode
+     *            the properties to be ordered
      */
     void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode);
 
