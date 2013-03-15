@@ -175,8 +175,8 @@ public class TypeIT {
 
     @Test
     public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        File generatedTypesDirectory = generate("/schema/type/unionTypes.json", "com.example");
-        Class<?> classWithUnionProperties = compile(generatedTypesDirectory).loadClass("com.example.UnionTypes");
+
+        Class<?> classWithUnionProperties = generateAndCompile("/schema/type/unionTypes.json", "com.example").loadClass("com.example.UnionTypes");
 
         Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
 
@@ -189,6 +189,16 @@ public class TypeIT {
         Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
 
         assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void typeNameConflictDoesNotCauseTypeReuse() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        Class<?> classWithNameConflict = generateAndCompile("/schema/type/typeNameConflict.json", "com.example").loadClass("com.example.TypeNameConflict");
+
+        Method getterMethod = classWithNameConflict.getMethod("getTypeNameConflict");
+
+        assertThat((Class) getterMethod.getReturnType(), is(not((Class) classWithNameConflict)));
     }
 
 }

@@ -65,8 +65,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * <p>
      * When this rule is applied for schemas of type object, the properties of
      * the schema are used to generate a new Java class and determine its
-     * characteristics. See other implementers of {@link Rule} for
-     * details.
+     * characteristics. See other implementers of {@link Rule} for details.
      * <p>
      * A new Java type will be created when this rule is applied, it is
      * annotated as {@link Generated}, it is given <code>equals</code>,
@@ -159,7 +158,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     newType = _package.owner()._class(fqn);
                 }
             } else {
-                newType = _package._class(getClassName(nodeName));
+                newType = _package._class(getClassName(nodeName, _package));
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
@@ -228,9 +227,20 @@ public class ObjectRule implements Rule<JPackage, JType> {
         equals.annotate(Override.class);
     }
 
-    private String getClassName(String nodeName) {
+    private String getClassName(String nodeName, JPackage _package) {
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
-        return ruleFactory.getNameHelper().normalizeName(className);
+        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
+        return makeUnique(normalizedName, _package);
+    }
+
+    private String makeUnique(String className, JPackage _package) {
+        try {
+            JDefinedClass _class = _package._class(className);
+            _package.remove(_class);
+            return className;
+        } catch (JClassAlreadyExistsException e) {
+            return makeUnique(className + "_", _package);
+        }
     }
 
 }
