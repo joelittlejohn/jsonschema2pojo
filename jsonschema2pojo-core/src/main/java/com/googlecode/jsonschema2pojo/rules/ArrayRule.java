@@ -16,13 +16,12 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang.StringUtils.*;
-
 import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
+import com.googlecode.jsonschema2pojo.util.Inflector;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
@@ -100,13 +99,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
     }
 
     private String makeSingular(String nodeName) {
-
-        if (endsWith(nodeName, "ies")) {
-            return removeEnd(nodeName, "ies") + "y";
-        } else {
-            return removeEnd(removeEnd(nodeName, "s"), "S");
-        }
-
+        return Inflector.getInstance().singularize(nodeName);
     }
 
 }
