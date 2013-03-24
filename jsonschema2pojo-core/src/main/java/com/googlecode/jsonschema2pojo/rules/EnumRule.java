@@ -20,8 +20,10 @@ import static java.util.Arrays.*;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Generated;
 
@@ -32,8 +34,10 @@ import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
@@ -116,22 +120,39 @@ public class EnumRule implements Rule<JClassContainer, JDefinedClass> {
     }
 
     private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {
+        JFieldVar quickLookupMap = addQuickLookupMap(_enum);
+
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
         JVar valueParam = fromValue.param(String.class, "value");
+
         JBlock body = fromValue.body();
+        JVar constant = body.decl(_enum, "constant");
+        constant.init(quickLookupMap.invoke("get").arg(valueParam));
 
-        JForEach forEach = body.forEach(_enum, "c", _enum.staticInvoke("values"));
-
-        JInvocation invokeEquals = forEach.var().ref("value").invoke("equals");
-        invokeEquals.arg(valueParam);
-
-        forEach.body()._if(invokeEquals)._then()._return(forEach.var());
+        JConditional _if = body._if(constant.eq(JExpr._null()));
 
         JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
         illegalArgumentException.arg(valueParam);
-        body._throw(illegalArgumentException);
+        _if._then()._throw(illegalArgumentException);
+        _if._else()._return(constant);
 
         ruleFactory.getAnnotator().enumCreatorMethod(fromValue);
+    }
+
+    private JFieldVar addQuickLookupMap(JDefinedClass _enum) {
+
+        JClass lookupType = _enum.owner().ref(Map.class).narrow(_enum.owner().ref(String.class), _enum);
+        JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC, lookupType, "constants");
+
+        JClass lookupImplType = _enum.owner().ref(HashMap.class).narrow(_enum.owner().ref(String.class), _enum);
+        lookupMap.init(JExpr._new(lookupImplType));
+
+        JForEach forEach = _enum.init().forEach(_enum, "c", _enum.staticInvoke("values"));
+        JInvocation put = forEach.body().invoke(lookupMap, "put");
+        put.arg(forEach.var().ref("value"));
+        put.arg(forEach.var());
+
+        return lookupMap;
     }
 
     private JFieldVar addValueField(JDefinedClass _enum) {

@@ -29,15 +29,11 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Compiles all the Java source files found in a given directory using the
  * JSR-199 API in Java 6.
  */
 public class Compiler {
-
-    private static final String PRINT_SOURCE_PROPERTY = "printSource";
 
     public void compile(File directory) {
 
@@ -66,7 +62,8 @@ public class Compiler {
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_ALWAYS_NULL",
             justification = "Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
     private void debugOutput(File file) {
-        if (StringUtils.equals(System.getProperty(PRINT_SOURCE_PROPERTY), "true")) {
+
+        if (System.getProperty("debug") != null) {
             try {
                 System.out.println(readFileToString(file));
             } catch (IOException e) {
