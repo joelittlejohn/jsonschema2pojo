@@ -17,6 +17,7 @@
 package com.googlecode.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.apache.commons.lang.StringUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -30,6 +31,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -114,7 +116,17 @@ public class CodeGenerationHelper {
      */
     public static ClassLoader compile(File sourceDirectory) {
 
-        new Compiler().compile(sourceDirectory);
+        return compile(sourceDirectory, new ArrayList<String>());
+
+    }
+
+    public static ClassLoader compile(File sourceDirectory, List<String> classpath) {
+
+        List<String> fullClasspath = new ArrayList<String>();
+        fullClasspath.addAll(classpath);
+        fullClasspath.add(System.getProperty("java.class.path"));
+
+        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar));
 
         try {
             return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());

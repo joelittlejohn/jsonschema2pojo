@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.integration.util;
 
+import static java.util.Arrays.*;
 import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -35,7 +36,7 @@ import javax.tools.ToolProvider;
  */
 public class Compiler {
 
-    public void compile(File directory) {
+    public void compile(File directory, String classpath) {
 
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
@@ -43,7 +44,7 @@ public class Compiler {
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(directory));
 
         if (compilationUnits.iterator().hasNext()) {
-            Boolean success = javaCompiler.getTask(null, fileManager, null, null, null, compilationUnits).call();
+            Boolean success = javaCompiler.getTask(null, fileManager, null, asList("-classpath", classpath), null, compilationUnits).call();
             assertThat("Compilation was not successful, check stdout for errors", success, is(true));
         }
 

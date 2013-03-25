@@ -117,7 +117,29 @@
           </ul>
           </td>
           <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
-        </tr>
+      </tr>
+      <tr>
+        <td valign="top">classpath</td>
+        <td valign="top">Additional classpath to use. Any path elements provided here will be added to the classpath when this task is invoked.
+        <p>
+        If a support for filesets/filelists/dirsets etc is required, this property can also be set as a nested element like:
+            <pre>
+&lt;jsonschema2pojo ...
+    &lt;classpath>
+        &lt;fileset dir="custom-libs">
+            &lt;include name="**/*.jar" />
+        &lt;/fileset>
+    &lt;/classpath>
+&lt;jsonschema2pojo/>
+</pre>
+        </td>
+        <td align="center" valign="top">No</td>
+      </tr>
+      <tr>
+        <td valign="top">classpathRef</td>
+        <td valign="top">Additional classpath to use, given as a reference to a path defined elsewhere. Can be used in conjuction with the <code>classpath</code> option (the result is the union of all paths).</td>
+        <td align="center" valign="top">No</td>
+      </tr>
     </table>
         
     <h3>Examples</h3>

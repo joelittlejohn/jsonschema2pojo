@@ -57,17 +57,37 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- copy dependencies so that tests for Ant task can build a classpath -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
+                    <!-- copy dependencies so that tests for Ant task can build a taskdef classpath -->
                     <execution>
+                        <id>ant-libs</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/ant-libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- copy dependencies from some random artifact so that tests for Ant task can custom classpath -->
+                    <execution>
+                        <id>custom-libs</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.clojure</groupId>
+                                    <artifactId>clojure</artifactId>
+                                    <version>1.5.1</version>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/custom-libs</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

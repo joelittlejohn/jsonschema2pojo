@@ -17,6 +17,7 @@
 package com.googlecode.jsonschema2pojo.integration.ant;
 
 import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.Project;
@@ -40,11 +42,22 @@ public class Jsonschema2PojoTaskIT {
 
         File outputDirectory = invokeAntBuild("/ant/build.xml");
 
-        ClassLoader resultsClassLoader = compile(outputDirectory);
+        ClassLoader resultsClassLoader = compile(outputDirectory, buildCustomClasspath());
 
         Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
 
         assertThat(generatedClass, is(notNullValue()));
+
+    }
+
+    /**
+     * This test uses the ant 'classpath' config and the schemas refer to a
+     * class from a custom classpath element. This should result in the custom
+     * classpath element being read and no new type being generated. To test the
+     * result, we need to compile with the same custom classpath.
+     */
+    private List<String> buildCustomClasspath() {
+        return asList(new File("target/custom-libs/clojure-1.5.1.jar").getAbsolutePath());
     }
 
     @Test

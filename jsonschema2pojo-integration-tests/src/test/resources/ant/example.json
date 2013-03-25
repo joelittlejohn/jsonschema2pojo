@@ -1,0 +1,15 @@
+{
+    "type" : "object",
+    "javaType" : "com.example.WordDelimit",
+    "properties" : {
+        "property_with_underscores" : {
+            "type" : "string"
+        },
+        "property-with-hyphens" : {
+            "type" : "string"
+        },
+        "property_with mixed-delimiters" : {
+            "type" : "string"
+        }
+    }
+}

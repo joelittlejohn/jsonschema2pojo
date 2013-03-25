@@ -20,11 +20,20 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
 
 import com.googlecode.jsonschema2pojo.AnnotationStyle;
 import com.googlecode.jsonschema2pojo.Annotator;
@@ -74,6 +83,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
+    private Path classpath;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -105,13 +116,42 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
             return;
         }
 
+        ClassLoader extendedClassloader = buildExtendedClassloader();
+        Thread.currentThread().setContextClassLoader(extendedClassloader);
+
         try {
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {
-            throw new BuildException(
-                    "Error generating classes from JSON Schema file(s) "
-                            + source.getPath(), e);
+            throw new BuildException("Error generating classes from JSON Schema file(s) " + source.getPath(), e);
         }
+    }
+
+    /**
+     * Build a classloader using the additional elements specified in
+     * <code>classpath</code> and <code>classpathRef</code>.
+     * 
+     * @return a new classloader that includes the extra path elements found in
+     *         the <code>classpath</code> and <code>classpathRef</code> config
+     *         values
+     */
+    private ClassLoader buildExtendedClassloader() {
+        final List<URL> classpathUrls = new ArrayList<URL>();
+        for (String pathElement : getClasspath().list()) {
+            try {
+                classpathUrls.add(new File(pathElement).toURI().toURL());
+            } catch (MalformedURLException e) {
+                throw new BuildException("Unable to use classpath entry as it could not be understood as a valid URL: " + pathElement, e);
+            }
+        }
+
+        final ClassLoader parentClassloader = Thread.currentThread().getContextClassLoader();
+
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]), parentClassloader);
+            }
+        });
     }
 
     /**
@@ -364,6 +404,29 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public SourceType getSourceType() {
         return sourceType;
+    }
+
+    public Path createClasspath() {
+        if (classpath == null) {
+            classpath = new Path(getProject());
+        }
+        return classpath.createPath();
+    }
+
+    public void setClasspath(Path classpath) {
+        if (classpath == null) {
+            this.classpath = classpath;
+        } else {
+            this.classpath.append(classpath);
+        }
+    }
+
+    public void setClasspathRef(Reference classpathRef) {
+        createClasspath().setRefid(classpathRef);
+    }
+
+    public Path getClasspath() {
+        return (classpath == null) ? new Path(getProject()) : classpath;
     }
 
 }

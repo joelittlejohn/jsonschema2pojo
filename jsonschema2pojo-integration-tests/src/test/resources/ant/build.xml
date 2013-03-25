@@ -11,13 +11,20 @@
     </taskdef>
 
     <target name="generate">
+    	
+        <path id="custom.libs">
+            <fileset dir="${project.build.directory}/custom-libs">
+                <include name="**/*.jar" />
+            </fileset>
+        </path>
+    	
         <!-- use default config -->
-        <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/propertiesWithWordDelimiters.json" 
+        <jsonschema2pojo source="${project.build.directory}/test-classes/ant/example.json" 
                          targetDirectory="${targetDirectory}" 
                          targetPackage="com.example"/>
         
         <!-- specify every config arg -->
-        <jsonschema2pojo source="${project.build.directory}/test-classes/schema/properties/propertiesWithWordDelimiters.json" 
+        <jsonschema2pojo source="${project.build.directory}/test-classes/ant/exampleWithExtraClasspath.json" 
                          targetDirectory="${targetDirectory}" 
                          targetPackage="com.example"
                          generateBuilders="true"
@@ -28,7 +35,14 @@
                          includeToString="false"
                          annotationStyle="NONE"
         	             customAnnotator="com.googlecode.jsonschema2pojo.NoopAnnotator"
-                         includeJsr303Annotations="true"/>
+                         includeJsr303Annotations="true"
+        	             classpathRef="custom.libs">
+        	<classpath>
+                <fileset dir="${project.build.directory}/custom-libs">
+                    <include name="**/*.jar" />
+                </fileset>
+    		</classpath>
+    	</jsonschema2pojo>
 
         <!-- use json input -->
         <jsonschema2pojo source="${project.build.directory}/test-classes/json/example/torrent.json" 
