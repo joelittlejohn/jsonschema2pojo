@@ -128,4 +128,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return SourceType.JSONSCHEMA;
     }
 
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isRemoveOldOutput() {
+        return false;
+    }
 }

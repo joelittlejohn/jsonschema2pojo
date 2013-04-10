@@ -251,6 +251,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String sourceType = "jsonschema";
 
     /**
+     * Whether to empty the target directory before generation occurs, to clear
+     * out all source files that have been generated previously.
+     * <p>
+     * <strong>Be warned</strong>, when activated this option will cause
+     * jsonschema2pojo to <strong>indiscriminately delete the entire contents of
+     * the target directory (all files and folders)</strong> before it begins
+     * generating sources.
+     * 
+     * @parameter expression="${jsonschema2pojo.removeOldOutput}"
+     * @since 0.3.6
+     */
+    private boolean removeOldOutput = false;
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -395,6 +409,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public SourceType getSourceType() {
         return SourceType.valueOf(sourceType.toUpperCase());
+    }
+
+    @Override
+    public boolean isRemoveOldOutput() {
+        return removeOldOutput;
     }
 
 }

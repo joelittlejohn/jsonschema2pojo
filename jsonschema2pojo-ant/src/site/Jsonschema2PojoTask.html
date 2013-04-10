@@ -3,6 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Language" content="en-gb">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     <link rel="stylesheet" type="text/css" href="http://ant.apache.org/manual/stylesheets/style.css">
     <title>Jsonschema2Pojo Task</title>
 </head>
@@ -115,8 +116,16 @@
             <li><code>JSONSCHEMA</code> (schema documents, containing formal rules that describe the structure of json data)</li>
             <li><code>JSON</code> (documents that represent an example of the kind of json data that the generated Java types will be mapped to)</li>
           </ul>
-          </td>
-          <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+        </td>
+        <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">removeOldOutput</td>
+        <td valign="top">Whether to empty the target directory before generation occurs, to clear out all source files that have been generated previously.
+          <p>
+          <strong>Be warned</strong>, when activated this option will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target directory (all files and folders)</strong> before it begins generating sources.
+        </td>
+        <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
       </tr>
       <tr>
         <td valign="top">classpath</td>
@@ -158,7 +167,8 @@
                      targetPackage="com.example"/>
 &lt;/target>
     </pre>
+    <p>
     The above uses the taskdef task to make the jsonschema2pojo task available. The generate target invokes the jsonschema2pojo task to generate java classes based on an input schema called <a href="http://json-schema.org/address">address.json</a>. 
-
+    </p>
 </body>
 </html>

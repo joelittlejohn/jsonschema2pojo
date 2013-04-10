@@ -82,6 +82,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-T", "--source-type" })
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
+    @Parameter(names = { "-R", "--remove-old-output" }, description = "Whether to empty the target directory before generation occurs, to clear out all source files that have been generated previously (indiscriminately deletes all files and folders).")
+    private boolean removeOldOutput = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -180,6 +183,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public SourceType getSourceType() {
         return sourceType;
+    }
+
+    @Override
+    public boolean isRemoveOldOutput() {
+        return removeOldOutput;
     }
 
     protected void exit(int status) {
