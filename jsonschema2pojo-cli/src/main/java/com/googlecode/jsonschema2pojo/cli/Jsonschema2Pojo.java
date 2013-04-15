@@ -104,7 +104,7 @@ public final class Jsonschema2Pojo {
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
-            codeModel.build(config.getTargetDirectory());
+            codeModel.build(config.getTargetDirectory(), new NullPrintStream());
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
