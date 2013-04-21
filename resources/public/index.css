@@ -19,6 +19,9 @@
 div.alert {
   background-color: #df5d5c;
 }
+div.span2 {
+  margin-left: 1em;
+}
 
 /* misc */
 
