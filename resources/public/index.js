@@ -49,8 +49,8 @@ $(document).ready(function() {
       data: $("#form").serialize(),
       success: function(data) {
         $("#download-jar-link").attr("href", "data:application/zip;base64," + data);
-        $("#download-jar-link").attr("download", $("#classname").val() + ".jar");
-        $("#download-jar-link").text($("#classname").val() + ".jar");
+        $("#download-jar-link").attr("download", $("#classname").val() + "-sources.jar");
+        $("#download-jar-link").text($("#classname").val() + "-sources.jar");
         $("#download-jar-link").removeClass("hide");
 
         $("#jar-button").button("reset");
