@@ -13,7 +13,7 @@
         },
         "property-refer-custom-classpath" : {
             "type" : "object",
-            "javaType" : "clojure.lang.Var"
+            "javaType" : "de.flapdoodle.embedmongo.Paths"
         }
     }
 }

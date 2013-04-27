@@ -47,7 +47,6 @@ public class Jsonschema2PojoTaskIT {
         Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
 
         assertThat(generatedClass, is(notNullValue()));
-
     }
 
     /**
@@ -57,7 +56,7 @@ public class Jsonschema2PojoTaskIT {
      * result, we need to compile with the same custom classpath.
      */
     private List<String> buildCustomClasspath() {
-        return asList(new File("target/custom-libs/clojure-1.5.1.jar").getAbsolutePath());
+        return asList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar").getAbsolutePath());
     }
 
     @Test
