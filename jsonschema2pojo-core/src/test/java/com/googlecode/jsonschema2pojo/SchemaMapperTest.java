@@ -29,9 +29,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
+import com.googlecode.jsonschema2pojo.rules.SchemaRule;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
@@ -65,7 +66,7 @@ public class SchemaMapperTest {
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
 
-        ObjectNode schemaNode = mock(ObjectNode.class);
+        ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
