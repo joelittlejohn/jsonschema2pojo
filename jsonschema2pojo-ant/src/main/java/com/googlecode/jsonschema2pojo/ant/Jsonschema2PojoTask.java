@@ -85,6 +85,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Path classpath;
 
+    private boolean removeOldOutput;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -332,6 +334,21 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.sourceType = sourceType;
     }
 
+    /**
+     * Sets the 'removeOldOutput' property of this class
+     * 
+     * @param removeOldOutput
+     *            Whether to empty the target directory before generation
+     *            occurs, to clear out all source files that have been generated
+     *            previously. <strong>Be warned</strong>, when activated this
+     *            option will cause jsonschema2pojo to <strong>indiscriminately
+     *            delete the entire contents of the target directory (all files
+     *            and folders)</strong> before it begins generating sources.
+     */
+    public void setRemoveOldOutput(boolean removeOldOutput) {
+        this.removeOldOutput = removeOldOutput;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -427,6 +444,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     public Path getClasspath() {
         return (classpath == null) ? new Path(getProject()) : classpath;
+    }
+
+    @Override
+    public boolean isRemoveOldOutput() {
+        return removeOldOutput;
     }
 
 }

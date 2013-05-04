@@ -84,6 +84,10 @@ public final class Jsonschema2Pojo {
 
         JCodeModel codeModel = new JCodeModel();
 
+        if (config.isRemoveOldOutput()) {
+            removeOldOutput(config.getTargetDirectory());
+        }
+
         for (Iterator<File> sources = config.getSource(); sources.hasNext();) {
             File source = sources.next();
 
@@ -108,6 +112,23 @@ public final class Jsonschema2Pojo {
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
+    }
+
+    private static void removeOldOutput(File targetDirectory) {
+        if (targetDirectory.exists()) {
+            for (File f : targetDirectory.listFiles()) {
+                delete(f);
+            }
+        }
+    }
+
+    private static void delete(File f) {
+        if (f.isDirectory()) {
+            for (File child : f.listFiles()) {
+                delete(child);
+            }
+        }
+        f.delete();
     }
 
     private static Annotator getAnnotator(GenerationConfig config) {

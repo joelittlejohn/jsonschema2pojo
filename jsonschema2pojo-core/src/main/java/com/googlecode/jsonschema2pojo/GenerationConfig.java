@@ -156,4 +156,15 @@ public interface GenerationConfig {
      */
     SourceType getSourceType();
 
+    /**
+     * Gets the 'removeOldOutput' configuration option.
+     * 
+     * @return Whether to empty the target directory before generation occurs,
+     *         to clear out all source files that have been generated
+     *         previously. <strong>Be warned</strong>, when activated this
+     *         option will cause jsonschema2pojo to <strong>indiscriminately
+     *         delete the entire contents of the target directory (all files and
+     *         folders)</strong> before it begins generating sources.
+     */
+    boolean isRemoveOldOutput();
 }
