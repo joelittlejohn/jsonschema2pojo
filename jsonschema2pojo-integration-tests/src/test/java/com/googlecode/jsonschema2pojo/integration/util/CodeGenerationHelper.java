@@ -55,7 +55,7 @@ public class CodeGenerationHelper {
 
     public static File generate(String schema, String targetPackage, Map<String, Object> configValues) {
         URL schemaUrl = CodeGenerationHelper.class.getResource(schema);
-        assertThat("Unable to read schema resource from the classpath", schemaUrl, is(notNullValue()));
+        assertThat("Unable to read schema resource from the classpath: " + schema, schemaUrl, is(notNullValue()));
 
         return generate(schemaUrl, targetPackage, configValues);
     }

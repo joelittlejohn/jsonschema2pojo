@@ -48,7 +48,12 @@ public enum AnnotationStyle {
     JACKSON2,
 
     /**
+     * Gson 2.2.4
+     */
+    GSON,
+    
+    /**
      * No-op style, adds no annotations at all.
      */
-    NONE
+    NONE, 
 }

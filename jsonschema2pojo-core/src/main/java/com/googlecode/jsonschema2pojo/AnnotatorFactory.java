@@ -38,6 +38,8 @@ public class AnnotatorFactory {
                 return new Jackson2Annotator();
             case JACKSON1:
                 return new Jackson1Annotator();
+            case GSON:
+        	return new GsonAnnotator();
             case NONE:
                 return new NoopAnnotator();
             default:
