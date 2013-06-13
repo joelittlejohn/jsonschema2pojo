@@ -76,7 +76,8 @@ public class CodeGenerationHelper {
         final File outputDirectory = createTemporaryOutputFolder();
 
         try {
-            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
+            @SuppressWarnings("serial")
+	    Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
                 {
                     put("sourceDirectory", new File(schema.toURI()));
                     put("outputDirectory", outputDirectory);

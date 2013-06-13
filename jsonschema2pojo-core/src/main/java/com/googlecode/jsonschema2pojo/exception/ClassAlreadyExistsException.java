@@ -25,6 +25,8 @@ import com.sun.codemodel.JType;
  */
 public class ClassAlreadyExistsException extends Exception {
 
+    private static final long serialVersionUID = 7694477714975772317L;
+    
     private final JType existingClass;
 
     /**
