@@ -78,7 +78,6 @@ public final class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
-
         Annotator annotator = getAnnotator(config);
         SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()), new SchemaGenerator());
 
@@ -92,16 +91,7 @@ public final class Jsonschema2Pojo {
             File source = sources.next();
 
             if (source.isDirectory()) {
-
-                List<File> schemaFiles = Arrays.asList(source.listFiles());
-                Collections.sort(schemaFiles);
-
-                for (File child : schemaFiles) {
-                    if (child.isFile()) {
-                        mapper.generate(codeModel, getNodeName(child), defaultString(config.getTargetPackage()), child.toURI()
-                                .toURL());
-                    }
-                }
+                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(source.listFiles()));
             } else {
                 mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source.toURI().toURL());
             }
@@ -111,6 +101,18 @@ public final class Jsonschema2Pojo {
             codeModel.build(config.getTargetDirectory(), new NullPrintStream());
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
+        }
+    }
+
+    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws FileNotFoundException, IOException {
+        Collections.sort(schemaFiles);
+
+        for (File child : schemaFiles) {
+            if (child.isFile()) {
+                mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
+            }else{
+                generateRecursive(config, mapper, codeModel, packageName+"."+child.getName(), Arrays.asList(child.listFiles()));
+            }
         }
     }
 
