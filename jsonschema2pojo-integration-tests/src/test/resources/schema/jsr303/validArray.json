@@ -18,6 +18,23 @@
             		}
             	}
             }
+        },
+        "refarray" : {
+            "type": "array",
+            "items": {
+                "$ref": "#definitions/product"
+            }
+        }
+    },
+    "definitions": {
+        "product": {
+            "type": "object",
+            "properties": {
+                "arrayitem":{
+                    "type": "string",
+                    "maxLength" : 5
+                }
+            }
         }
     }
 }

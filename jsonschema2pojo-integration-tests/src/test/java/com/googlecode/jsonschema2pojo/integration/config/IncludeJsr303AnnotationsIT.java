@@ -182,7 +182,7 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
     }
-    
+
     @Test
     public void jsr303SizeValidationIsAddedForSchemaRuleMinLength() throws ClassNotFoundException {
 
@@ -199,7 +199,7 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
     }
-    
+
     @Test
     public void jsr303SizeValidationIsAddedForSchemaRuleMaxLength() throws ClassNotFoundException {
 
@@ -216,46 +216,69 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
     }
-    
+
     @Test
     public void jsr303ValidAnnotationIsAddedForSchemaRuleValidOnObject() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/validObject.json", "com.example",
                 config("includeJsr303Annotations", true));
-        
+
         Class validObjectType = resultsClassLoader.loadClass("com.example.ValidObject");
         Class objectFieldType = resultsClassLoader.loadClass("com.example.Objectfield");
-        
+
         Object invalidObjectFieldInstance = createInstanceWithPropertyValue(objectFieldType, "childprimitivefield", "Too long");
         Object validObjectInstance = createInstanceWithPropertyValue(validObjectType, "objectfield", invalidObjectFieldInstance);
-        
+
         assertNumberOfConstraintViolationsOn(validObjectInstance, is(1));
-        
+
         Object validObjectFieldInstance = createInstanceWithPropertyValue(objectFieldType, "childprimitivefield", "OK");
         validObjectInstance = createInstanceWithPropertyValue(validObjectType, "objectfield", validObjectFieldInstance);
-        
+
         assertNumberOfConstraintViolationsOn(validObjectInstance, is(0));
     }
-    
+
     @Test
     public void jsr303ValidAnnotationIsAddedForSchemaRuleValidOnArrayOfObjects() throws ClassNotFoundException, NoSuchFieldException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/validArray.json", "com.example",
                 config("includeJsr303Annotations", true));
-        
+
         Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         Class objectArrayType = resultsClassLoader.loadClass("com.example.Objectarray");
-        
+
         List<Object> objectArrayList = new ArrayList<Object>();
-        
+
         Object objectArrayInstance = createInstanceWithPropertyValue(objectArrayType, "arrayitem", "OK");
         objectArrayList.add(objectArrayInstance);
         Object validArrayInstance = createInstanceWithPropertyValue(validArrayType, "objectarray", objectArrayList);
-        
+
         assertNumberOfConstraintViolationsOn(validArrayInstance, is(0));
-        
+
         Object invalidObjectArrayInstance = createInstanceWithPropertyValue(objectArrayType, "arrayitem", "Too long");
         objectArrayList.add(invalidObjectArrayInstance);
         validArrayInstance = createInstanceWithPropertyValue(validArrayType, "objectarray", objectArrayList);
-        
+
+        assertNumberOfConstraintViolationsOn(validArrayInstance, is(1));
+    }
+
+    @Test
+    public void jsr303ValidAnnotationIsAddedForArrayWithRef() throws ClassNotFoundException, NoSuchFieldException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/validArray.json", "com.example",
+                config("includeJsr303Annotations", true));
+
+        Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
+        Class refarrayType = resultsClassLoader.loadClass("com.example.Refarray");
+
+        List<Object> objectArrayList = new ArrayList<Object>();
+
+        Object objectArrayInstance = createInstanceWithPropertyValue(refarrayType, "arrayitem", "OK");
+        objectArrayList.add(objectArrayInstance);
+        Object validArrayInstance = createInstanceWithPropertyValue(validArrayType, "refarray", objectArrayList);
+
+        assertNumberOfConstraintViolationsOn(validArrayInstance, is(0));
+
+        Object invalidObjectArrayInstance = createInstanceWithPropertyValue(refarrayType, "arrayitem", "Too long");
+        objectArrayList.add(invalidObjectArrayInstance);
+        validArrayInstance = createInstanceWithPropertyValue(validArrayType, "refarray", objectArrayList);
+
         assertNumberOfConstraintViolationsOn(validArrayInstance, is(1));
     }
 
