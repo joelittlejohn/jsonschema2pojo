@@ -114,6 +114,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addEquals(jclass);
         }
 
+        if (node.has("javaInterfaces")) {
+            addInterfaces(jclass, node.get("javaInterfaces"));
+        }
+
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
 
         return jclass;
@@ -225,6 +229,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
         body._return(reflectionEquals);
 
         equals.annotate(Override.class);
+    }
+
+    private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
+        for (JsonNode i : javaInterfaces) {
+            jclass._implements(jclass.owner().ref(i.asText()));
+        }
     }
 
     private String getClassName(String nodeName, JPackage _package) {

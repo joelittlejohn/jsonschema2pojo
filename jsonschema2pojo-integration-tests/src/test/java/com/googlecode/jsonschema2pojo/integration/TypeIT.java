@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -199,6 +200,17 @@ public class TypeIT {
         Method getterMethod = classWithNameConflict.getMethod("getTypeNameConflict");
 
         assertThat((Class) getterMethod.getReturnType(), is(not((Class) classWithNameConflict)));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void typeImplementsAdditionalJavaInterfaces() throws NoSuchMethodException {
+        Method getterMethod = classWithManyTypes.getMethod("getTypeWithInterfaces");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.TypeWithInterfaces"));
+        assertThat(getterMethod.getReturnType().getInterfaces().length, is(2));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Cloneable.class));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Serializable.class));
     }
 
 }

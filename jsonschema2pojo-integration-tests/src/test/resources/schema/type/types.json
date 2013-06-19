@@ -45,7 +45,11 @@
         },
         "primitiveJavaType" : {
             "type" : "object",
-                "javaType" : "long"
+            "javaType" : "long"
+        },
+        "typeWithInterfaces" : {
+            "type" : "object",
+            "javaInterfaces" : ["java.io.Serializable", "Cloneable"]
         }
     }
 }
