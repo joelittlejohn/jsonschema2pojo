@@ -16,6 +16,7 @@
 
 package com.googlecode.jsonschema2pojo.rules;
 
+import static com.googlecode.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static java.util.Arrays.*;
 import static org.apache.commons.lang.StringUtils.*;
 
@@ -30,6 +31,7 @@ import javax.annotation.Generated;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.googlecode.jsonschema2pojo.Schema;
 import com.googlecode.jsonschema2pojo.SchemaMapper;
+import com.googlecode.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
@@ -46,6 +48,7 @@ import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -54,7 +57,7 @@ import com.sun.codemodel.JVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
-public class EnumRule implements Rule<JClassContainer, JDefinedClass> {
+public class EnumRule implements Rule<JClassContainer, JType> {
 
     private static final String VALUE_FIELD_NAME = "value";
 
@@ -90,33 +93,55 @@ public class EnumRule implements Rule<JClassContainer, JDefinedClass> {
      *         given enum
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JClassContainer container, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JClassContainer container, Schema schema) {
 
-        JDefinedClass _enum = createEnum(nodeName, container);
+        JDefinedClass _enum;
+        try {
+            _enum = createEnum(node, nodeName, container);
+        } catch (ClassAlreadyExistsException e) {
+            return e.getExistingClass();
+        }
+
         schema.setJavaTypeIfEmpty(_enum);
 
         addGeneratedAnnotation(_enum);
 
         JFieldVar valueField = addValueField(_enum);
         addToString(_enum, valueField);
-        addEnumConstants(node, _enum);
-        addFactoryMethod(node, _enum);
+        addEnumConstants(node.path("enum"), _enum);
+        addFactoryMethod(node.path("enum"), _enum);
 
         return _enum;
     }
 
-    private JDefinedClass createEnum(String nodeName, JClassContainer container) {
+    private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
         int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC | JMod.STATIC;
 
-        String name = getEnumName(nodeName);
-
         try {
-            return container._class(modifiers, name, ClassType.ENUM);
-        } catch (JClassAlreadyExistsException e) {
-            throw new GenerationException(e);
-        }
+            if (node.has("javaType")) {
+                String fqn = node.get("javaType").asText();
 
+                if (isPrimitive(fqn, container.owner())) {
+                    throw new GenerationException("Primitive type '" + fqn + "' cannot be used as an enum.");
+                }
+
+                try {
+                    Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
+                    throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
+                } catch (ClassNotFoundException e) {
+                    return container.owner()._class(fqn, ClassType.ENUM);
+                }
+            } else {
+                try {
+                    return container._class(modifiers, getEnumName(nodeName), ClassType.ENUM);
+                } catch (JClassAlreadyExistsException e) {
+                    throw new GenerationException(e);
+                }
+            }
+        } catch (JClassAlreadyExistsException e) {
+            throw new ClassAlreadyExistsException(e.getExistingClass());
+        }
     }
 
     private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {

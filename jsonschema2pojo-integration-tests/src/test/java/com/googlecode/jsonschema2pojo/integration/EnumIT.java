@@ -118,7 +118,7 @@ public class EnumIT {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
 
-        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumAsRoot");
+        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.EnumAsRoot");
 
         assertThat(rootEnumClass.isEnum(), is(true));
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));

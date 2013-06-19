@@ -37,10 +37,10 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
-public class JsonSchemaRuleTest {
+public class SchemaRuleTest {
 
     private static final String NODE_NAME = "nodeName";
-    private static final String TARGET_CLASS_NAME = JsonSchemaRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = SchemaRuleTest.class.getName() + ".DummyClass";
 
     private RuleFactory mockRuleFactory = mock(RuleFactory.class);
     private SchemaRule rule = new SchemaRule(mockRuleFactory);
@@ -93,7 +93,7 @@ public class JsonSchemaRuleTest {
 
         rule.apply(NODE_NAME, schemaContent, jclass, schema);
 
-        verify(enumRule).apply(NODE_NAME, enumNode, jclass, schema);
+        verify(enumRule).apply(NODE_NAME, schemaContent, jclass, schema);
         verify(schema, atLeastOnce()).setJavaTypeIfEmpty(jclass);
 
     }

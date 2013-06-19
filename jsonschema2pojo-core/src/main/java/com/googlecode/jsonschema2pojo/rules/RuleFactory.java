@@ -95,7 +95,7 @@ public class RuleFactory {
      * 
      * @return a schema rule that can handle the "enum" declaration.
      */
-    public Rule<JClassContainer, JDefinedClass> getEnumRule() {
+    public Rule<JClassContainer, JType> getEnumRule() {
         return new EnumRule(this);
     }
 
@@ -225,7 +225,7 @@ public class RuleFactory {
     public Rule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
         return new MinItemsMaxItemsRule(this);
     }
-    
+
     /**
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any size validation
@@ -246,11 +246,11 @@ public class RuleFactory {
     public Rule<JFieldVar, JFieldVar> getPatternRule() {
         return new PatternRule(this);
     }
-    
+
     /**
      * Provides a rule instance that should be applied when a property
-     * declaration is found in the schema which itself contains properties,
-     * to assign validation of the properties within that property
+     * declaration is found in the schema which itself contains properties, to
+     * assign validation of the properties within that property
      * 
      * @return a schema rule that can handle the "default" declaration.
      */
