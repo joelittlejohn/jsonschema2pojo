@@ -75,6 +75,13 @@ public class CodeGenerationHelper {
     public static File generate(final URL schema, final String targetPackage, final Map<String, Object> configValues) {
         final File outputDirectory = createTemporaryOutputFolder();
 
+        generate(schema, targetPackage, configValues, outputDirectory);
+
+        return outputDirectory;
+    }
+
+    public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
+
         try {
             Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
                 {
@@ -95,7 +102,6 @@ public class CodeGenerationHelper {
             throw new RuntimeException(e);
         }
 
-        return outputDirectory;
     }
 
     private static MavenProject getMockProject() throws DependencyResolutionRequiredException {

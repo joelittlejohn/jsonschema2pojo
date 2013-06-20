@@ -19,21 +19,12 @@ package com.googlecode.jsonschema2pojo.integration;
 import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.junit.Test;
-
-import com.googlecode.jsonschema2pojo.integration.util.TestableJsonschema2PojoMojo;
-import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 
 public class RegressionIT {
 
@@ -43,44 +34,12 @@ public class RegressionIT {
 
         File file = new File("src/test/resources/schema/regression/spaces in path.json");
 
-        File sourcesDirectory = generate(file, "com.example", new HashMap<String, Object>());
+        File sourcesDirectory = generate(file.toURI().toURL(), "com.example", new HashMap<String, Object>());
         ClassLoader resultsClassLoader = compile(sourcesDirectory);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Spaces_in_path");
         assertThat(generatedType, is(notNullValue()));
 
-    }
-
-    public static File generate(final File schema, final String targetPackage, final Map<String, Object> configValues) {
-        final File outputDirectory = createTemporaryOutputFolder();
-
-        try {
-            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
-                {
-                    put("sourceDirectory", schema);
-                    put("outputDirectory", outputDirectory);
-                    put("project", getMockProject());
-                    put("targetPackage", targetPackage);
-                    putAll(configValues);
-                }
-            });
-
-            pluginMojo.execute();
-        } catch (MojoExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (DependencyResolutionRequiredException e) {
-            throw new RuntimeException(e);
-        }
-
-        return outputDirectory;
-    }
-
-    private static MavenProject getMockProject() throws DependencyResolutionRequiredException {
-
-        MavenProject project = mock(MavenProject.class);
-        when(project.getCompileClasspathElements()).thenReturn(new ArrayList<String>());
-
-        return project;
     }
 
 }
