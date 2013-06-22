@@ -27,7 +27,7 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
 public class JsonAssert {
 
     public static void assertEqualsJsonIgnoreAdditions(String expectedJson, String actualJson) throws JSONException {
-        assertEqualsJson(expectedJson, actualJson, JSONCompareMode.LENIENT);
+        assertEqualsJson(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
 
     }
 

@@ -150,6 +150,11 @@ public class CustomAnnotatorIT {
             valueMethod.annotate(Deprecated.class);
         }
 
+        @Override
+        public boolean isAdditionalPropertiesSupported() {
+            return true;
+        }
+
     }
 
 }

@@ -50,4 +50,9 @@ public class GsonAnnotator extends AbstractAnnotator {
         field.annotate(Expose.class);
     }
 
+    @Override
+    public boolean isAdditionalPropertiesSupported() {
+        return false;
+    }
+
 }

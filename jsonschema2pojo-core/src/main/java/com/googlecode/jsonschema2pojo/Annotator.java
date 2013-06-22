@@ -130,4 +130,22 @@ public interface Annotator {
      */
     void enumValueMethod(JMethod valueMethod);
 
+    /**
+     * Indicates whether the annotation style that this annotator uses can
+     * support the JSON Schema 'additionalProperties' feature. In other words,
+     * can the deserializer associated with this annotation style gather
+     * unexpected, additional json properties and does it expect to include them
+     * somewhere in the target Java instance.
+     * <p>
+     * Jackson is able to use it's <code>JsonAnyGetter</code> and
+     * <code>JsonAnySetter</code> features for this purpose, hence for Jackson
+     * annotators, this method will return <code>true</code>. Gson does not
+     * support 'additional' property values (they are silently discarded at
+     * deserialization time), hence for Gson annotators, this method would
+     * return <code>false</code>.
+     * 
+     * @return Whether this annotator has any way to support 'additional
+     *         properties'.
+     */
+    boolean isAdditionalPropertiesSupported();
 }

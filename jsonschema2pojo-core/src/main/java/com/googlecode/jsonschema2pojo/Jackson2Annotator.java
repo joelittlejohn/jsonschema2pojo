@@ -88,4 +88,9 @@ public class Jackson2Annotator implements Annotator {
         valueMethod.annotate(JsonValue.class);
     }
 
+    @Override
+    public boolean isAdditionalPropertiesSupported() {
+        return true;
+    }
+
 }

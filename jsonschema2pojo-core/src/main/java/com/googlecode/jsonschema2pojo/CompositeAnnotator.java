@@ -105,4 +105,14 @@ public class CompositeAnnotator implements Annotator {
         }
     }
 
+    @Override
+    public boolean isAdditionalPropertiesSupported() {
+        for (Annotator annotator : annotators) {
+            if (!annotator.isAdditionalPropertiesSupported()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
