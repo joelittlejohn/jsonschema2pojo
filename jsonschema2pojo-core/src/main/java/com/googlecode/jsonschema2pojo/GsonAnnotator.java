@@ -25,25 +25,26 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
 /**
- * Annotates generated Java types using the Gson. The annotations used here are
- * most useful when the JSON fields have characters (like underscores) that are
+ * Annotates generated Java types using Gson. The annotations used here are most
+ * useful when the JSON fields have characters (like underscores) that are
  * poorly suited for beans. By using the {@link SerializedName} annotation, we
  * are able to preserve the original format. Use this in conjunction with
- * {@link SchemaMapper#getPropertyWordDelimiters} to filter out underscores or
- * other unwanted delimiters but still marshal/unmarshal the same content.
+ * {@link GenerationConfig#getPropertyWordDelimiters} to filter out underscores
+ * or other unwanted delimiters but still marshal/unmarshal the same content.
+ * 
+ * @see <a
+ *      href="https://code.google.com/p/google-gson/">https://code.google.com/p/google-gson/</a>
  */
 public class GsonAnnotator extends AbstractAnnotator {
-    
+
     @Override
-    public void propertyField(JFieldVar field, JDefinedClass clazz,
-	    String propertyName, JsonNode propertyNode) {
-	
-	boolean fieldDiffersFromPropertyName =
-		field != null && field.name() != null && !field.name().equals(propertyName);
-	if(fieldDiffersFromPropertyName) {
-	field.annotate(SerializedName.class).param("value", propertyName);
+    public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
+
+        boolean fieldDiffersFromPropertyName = !field.name().equals(propertyName);
+
+        if (fieldDiffersFromPropertyName) {
+            field.annotate(SerializedName.class).param("value", propertyName);
+        }
     }
-    
-}
-    
+
 }

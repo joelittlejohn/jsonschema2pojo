@@ -16,9 +16,10 @@
 
 package com.googlecode.jsonschema2pojo.integration.generation;
 
+import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.runner.RunWith;
@@ -32,49 +33,44 @@ public class GsonIT extends GenerationTestSupport {
 
     private String schema;
     private static final Gson gson = new Gson();
-    
+
     public GsonIT(String schema) {
-	super();
-	this.schema = schema;
+        this.schema = schema;
     }
-    
+
     @Parameters
     public static Collection<Object[]> data() {
-	return Arrays.asList(new Object[][] { 
-		{ "Person.json" },
-		{ "ProductSet.json" },
-		{ "FstabEntry.json" }
-	});
+        return Arrays.asList(new Object[][] {
+                { "Person.json" },
+                { "ProductSet.json" },
+                { "FstabEntry.json" }
+        });
     }
-    
+
     @Override
     protected Map<String, Object> getConfigValues() {
-	Map<String, Object> configValues = new HashMap<String, Object>();
-	configValues.put("annotationStyle", 		"gson");
-	configValues.put("propertyWordDelimiters", 	"_- ");
-	return configValues;
+        return config("annotationStyle", "gson",
+                "propertyWordDelimiters", "_- ");
     }
 
     @Override
     protected String getSchemaFileName() {
-	return schema;
+        return schema;
     }
-    
+
     @Override
     protected Object getTestInstanceId() {
         return schema;
     }
 
     @Override
-    protected String marshalExample(Object unmarshalledResult,
-	    Class<?> jsonExampleClass) {
-	return gson.toJson(unmarshalledResult, jsonExampleClass);
+    protected String marshalExample(Object unmarshalledResult, Class<?> jsonExampleClass) {
+        return gson.toJson(unmarshalledResult, jsonExampleClass);
     }
 
     @Override
-    protected <T> T unmarshalExample(String jsonExample,
-	    Class<T> jsonExampleClass) {
-	return gson.fromJson(jsonExample, jsonExampleClass);
+    protected <T> T unmarshalExample(String jsonExample, Class<T> jsonExampleClass) {
+        return gson.fromJson(jsonExample, jsonExampleClass);
     }
-    
+
 }

@@ -95,27 +95,27 @@ public class AnnotationStyleIT {
         assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
     }
-    
+
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-	
-	File generatedOutputDirectory = generate("/integration/input/schema/ProductSet.json", "com.example",
-		config("annotationStyle", "gson", "propertyWordDelimiters", "_- "));
-	
-	assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
-	assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
-	assertThat(generatedOutputDirectory, containsText("com.google.gson"));
-	assertThat(generatedOutputDirectory, containsText("@SerializedName"));
-	
-	ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
-	
-	Class generatedType = resultsClassLoader.loadClass("com.example.ProductSet");
-	Method getter = generatedType.getMethod("getWarehouseLocation");
-	
-	assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
-	assertThat(generatedType.getAnnotation(JsonInclude.class), is(nullValue()));
-	assertThat(getter.getAnnotation(JsonProperty.class), is(nullValue()));
+
+        File generatedOutputDirectory = generate("/integration/input/schema/ProductSet.json", "com.example",
+                config("annotationStyle", "gson", "propertyWordDelimiters", "_- "));
+
+        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
+        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
+        assertThat(generatedOutputDirectory, containsText("com.google.gson"));
+        assertThat(generatedOutputDirectory, containsText("@SerializedName"));
+
+        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.ProductSet");
+        Method getter = generatedType.getMethod("getWarehouseLocation");
+
+        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(nullValue()));
+        assertThat(getter.getAnnotation(JsonProperty.class), is(nullValue()));
     }
 
     @Test

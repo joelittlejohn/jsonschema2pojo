@@ -16,18 +16,14 @@
 
 package com.googlecode.jsonschema2pojo.integration.generation;
 
-import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.compile;
-import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.generate;
-import static com.googlecode.jsonschema2pojo.integration.util.JsonAssert.assertEqualsJsonIgnoreAdditions;
-import static org.apache.commons.io.FileUtils.listFiles;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static com.googlecode.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static com.googlecode.jsonschema2pojo.integration.util.JsonAssert.*;
+import static java.util.Arrays.*;
+import static org.apache.commons.io.FileUtils.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,24 +61,17 @@ import com.googlecode.jsonschema2pojo.maven.Jsonschema2PojoMojo;
  */
 public abstract class GenerationTestSupport {
 
-    // --------------------------------------------------------------------------
-    //
-    // Properties: Static
-    //
-    // --------------------------------------------------------------------------
-
     /**
      * The parent directory above all expected integration file directories. By
      * default, this is <code>src/test/resources/integration/</code>
      * 
      */
-    protected static final String ROOT_RESOURCE_DIR = "src/test/resources"
-	    + "/integration";
+    protected static final String ROOT_RESOURCE_DIR = "src/test/resources/integration";
 
     /** Default configuration for all tests */
     protected static Map<String, Object> DEFAULT_CONFIG;
     static {
-	resetDefaultConfig();
+        resetDefaultConfig();
     }
 
     protected static final SimplePredicate<File> filesExist = new FilesExist();
@@ -155,14 +144,14 @@ public abstract class GenerationTestSupport {
      */
     @Test
     public void expectedFilesWereCreatedTest() {
-	String remedy = "To fix this, either determine why these expected"
-		+ " files are not being generated or remove these"
-		+ " files from this test's expected output directory: "
-		+ directoryWithExpectedFiles + "/\n";
+        String remedy = "To fix this, either determine why these expected"
+                + " files are not being generated or remove these"
+                + " files from this test's expected output directory: "
+                + directoryWithExpectedFiles + "/\n";
 
-	verifyRelatedFiles(expectedFiles, directoryWithExpectedFiles,
-		outputDirectory, filesExist,
-		"Some files were expected but not generated", remedy);
+        verifyRelatedFiles(expectedFiles, directoryWithExpectedFiles,
+                outputDirectory, filesExist,
+                "Some files were expected but not generated", remedy);
     }
 
     /**
@@ -182,14 +171,14 @@ public abstract class GenerationTestSupport {
      */
     @Test
     public void createdFilesWereExpectedTest() {
-	String remedy = "To fix this, either determine why these unexpected files are"
-		+ " being generated or account for these files by creating them"
-		+ " in the expected output directory for this test: "
-		+ directoryWithExpectedFiles + "/\n";
+        String remedy = "To fix this, either determine why these unexpected files are"
+                + " being generated or account for these files by creating them"
+                + " in the expected output directory for this test: "
+                + directoryWithExpectedFiles + "/\n";
 
-	verifyRelatedFiles(generatedFiles, outputDirectory,
-		directoryWithExpectedFiles, filesExist,
-		"Some files were generated but not expected", remedy);
+        verifyRelatedFiles(generatedFiles, outputDirectory,
+                directoryWithExpectedFiles, filesExist,
+                "Some files were generated but not expected", remedy);
     }
 
     /**
@@ -209,15 +198,15 @@ public abstract class GenerationTestSupport {
      */
     @Test
     public void createdFilesContentExactlyMatchesExpectedFilesTest() {
-	String remedy = "The diffs must be reconciled";
+        String remedy = "The diffs must be reconciled";
 
-	verifyRelatedFiles(
-		generatedFiles,
-		outputDirectory,
-		directoryWithExpectedFiles,
-		filesMatch,
-		"Some generated files did not exactly match what was expected:",
-		remedy);
+        verifyRelatedFiles(
+                generatedFiles,
+                outputDirectory,
+                directoryWithExpectedFiles,
+                filesMatch,
+                "Some generated files did not exactly match what was expected:",
+                remedy);
     }
 
     /**
@@ -254,25 +243,23 @@ public abstract class GenerationTestSupport {
      */
     @Test
     public void roundTripJsonTest() throws Exception {
-	Class<?> jsonExampleClass = null;
-	try {
-	    String jsonExample = getJsonExample();
-	    jsonExampleClass = getJsonExampleClass();
-	    Object unmarshalledResult = unmarshalExample(jsonExample,
-		    jsonExampleClass);
-	    String marshalledResult = marshalExample(unmarshalledResult,
-		    jsonExampleClass);
+        Class<?> jsonExampleClass = null;
+        try {
+            String jsonExample = getJsonExample();
+            jsonExampleClass = getJsonExampleClass();
+            Object unmarshalledResult = unmarshalExample(jsonExample, jsonExampleClass);
+            String marshalledResult = marshalExample(unmarshalledResult, jsonExampleClass);
 
-	    assertEqualsJsonIgnoreAdditions(jsonExample, marshalledResult);
-	} catch (Exception e) {
-	    String msg = "ERROR [GenerationTestSupport.roundTripJsonTest] : error"
-		    + " while attempting json roundtrip for "
-		    + jsonExampleClass
-		    + ". Verify that the sample file contains valid json (via"
-		    + " jsonlint.com, for example). If it is valid, then verify"
-		    + " that it matches the property types in the expected class.";
-	    throw new RuntimeException(msg, e);
-	}
+            assertEqualsJsonIgnoreAdditions(jsonExample, marshalledResult);
+        } catch (Exception e) {
+            String msg = "ERROR [GenerationTestSupport.roundTripJsonTest] : error"
+                    + " while attempting json roundtrip for "
+                    + jsonExampleClass
+                    + ". Verify that the sample file contains valid json (via"
+                    + " jsonlint.com, for example). If it is valid, then verify"
+                    + " that it matches the property types in the expected class.";
+            throw new RuntimeException(msg, e);
+        }
     }
 
     // --------------------------------------------------------------------------
@@ -289,16 +276,16 @@ public abstract class GenerationTestSupport {
      */
     @Before
     public void setup() {
-	// Shortcut to generate output once without using @BeforeClass, which
-	// forces too many things to be static. Also provides a simple way to
-	// reset things between parameterized tests, while also not
-	// re-generating
-	// code / expectedFiles needlessly between every unit test. -kg
-	if (isNewTest()) {
-	    resetDefaultConfig().putAll(getConfigValues());
-	    createExpectedFiles();
-	    createGeneratedFiles();
-	}
+        // Shortcut to generate output once without using @BeforeClass, which
+        // forces too many things to be static. Also provides a simple way to
+        // reset things between parameterized tests, while also not
+        // re-generating
+        // code / expectedFiles needlessly between every unit test. -kg
+        if (isNewTest()) {
+            resetDefaultConfig().putAll(getConfigValues());
+            createExpectedFiles();
+            createGeneratedFiles();
+        }
     }
 
     /**
@@ -307,13 +294,12 @@ public abstract class GenerationTestSupport {
      * @return true when this instance id is different from the previous one.
      */
     protected boolean isNewTest() {
-	if (previousInstanceIndicator == null
-		|| !previousInstanceIndicator.equals(getTestInstanceId())) {
-	    previousInstanceIndicator = getTestInstanceId();
-	    return true;
-	} else {
-	    return false;
-	}
+        if (previousInstanceIndicator == null || !previousInstanceIndicator.equals(getTestInstanceId())) {
+            previousInstanceIndicator = getTestInstanceId();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -322,14 +308,15 @@ public abstract class GenerationTestSupport {
      * @return the DEFAULT_CONFIG map so that this method can be used fluidly.
      */
     private static Map<String, Object> resetDefaultConfig() {
-	if (DEFAULT_CONFIG == null)
-	    DEFAULT_CONFIG = new HashMap<String, Object>();
-	else
-	    DEFAULT_CONFIG.clear();
+        if (DEFAULT_CONFIG == null) {
+            DEFAULT_CONFIG = new HashMap<String, Object>();
+        } else {
+            DEFAULT_CONFIG.clear();
+        }
 
-	DEFAULT_CONFIG.put("includeHashcodeAndEquals", false);
-	DEFAULT_CONFIG.put("includeToString", false);
-	return DEFAULT_CONFIG;
+        DEFAULT_CONFIG.put("includeHashcodeAndEquals", false);
+        DEFAULT_CONFIG.put("includeToString", false);
+        return DEFAULT_CONFIG;
     }
 
     /**
@@ -344,8 +331,8 @@ public abstract class GenerationTestSupport {
      *         return a new value.
      */
     protected Object getTestInstanceId() {
-	// by default, always a new instance
-	return null;
+        // by default, always a new instance
+        return null;
     }
 
     /**
@@ -353,14 +340,10 @@ public abstract class GenerationTestSupport {
      * into the {@link #directoryWithExpectedFiles} property.
      */
     protected void createExpectedFiles() {
-	directoryWithExpectedFiles = new File(
-		getDirectoryNameForExpectedFiles());
-	assertTrue("Parent directory for the expected files did not exist: "
-		+ directoryWithExpectedFiles,
-		directoryWithExpectedFiles.exists());
-	expectedFiles = listFiles(directoryWithExpectedFiles, null, true);
-	assertNotNull("The parent directory for the expcted files was invalid",
-		expectedFiles);
+        directoryWithExpectedFiles = new File(getDirectoryNameForExpectedFiles());
+        assertTrue("Parent directory for the expected files did not exist: " + directoryWithExpectedFiles, directoryWithExpectedFiles.exists());
+        expectedFiles = listFiles(directoryWithExpectedFiles, null, true);
+        assertNotNull("The parent directory for the expected files was invalid", expectedFiles);
     }
 
     /**
@@ -373,10 +356,10 @@ public abstract class GenerationTestSupport {
      * @see CodeGenerationHelper#generate(String, String, Map)
      */
     protected void createGeneratedFiles() {
-	outputDirectory = generateOutput();
-	assertNotNull("Generated output directory was null.", outputDirectory);
-	generatedFiles = listFiles(outputDirectory, null, true);
-	assertNotNull("The output directory was invalid.", generatedFiles);
+        outputDirectory = generateOutput();
+        assertNotNull("Generated output directory was null.", outputDirectory);
+        generatedFiles = listFiles(outputDirectory, null, true);
+        assertNotNull("The output directory was invalid.", generatedFiles);
     }
 
     /**
@@ -386,10 +369,11 @@ public abstract class GenerationTestSupport {
      * @see CodeGenerationHelper#generate(String, String, Map)
      */
     protected File generateOutput() {
-	String schema = getSchema();
-	if (schema.startsWith("src/test/resources"))
-	    schema = schema.replace("src/test/resources", "");
-	return generate(schema, getDefaultPackage(), DEFAULT_CONFIG);
+        String schema = getSchema();
+        if (schema.startsWith("src/test/resources")) {
+            schema = schema.replace("src/test/resources", "");
+        }
+        return generate(schema, getDefaultPackage(), DEFAULT_CONFIG);
     }
 
     /**
@@ -419,28 +403,27 @@ public abstract class GenerationTestSupport {
      *            gives a bit of guidance on troubleshooting the base error.
      */
     public void verifyRelatedFiles(Collection<File> filesToCheck,
-	    File filesToCheckRootDir, File relatedDir,
-	    SimplePredicate<File> predicate, String baseErrorMessage,
-	    String remedy) {
-	assertNotNull(
-		baseErrorMessage
-			+ "\n\tThere were no files to check!"
-			+ " This most likely means that code generation completely failed.",
-		filesToCheck);
+            File filesToCheckRootDir, File relatedDir,
+            SimplePredicate<File> predicate, String baseErrorMessage,
+            String remedy) {
+        assertNotNull(
+                baseErrorMessage
+                        + "\n\tThere were no files to check!"
+                        + " This most likely means that code generation completely failed.",
+                filesToCheck);
 
-	StringBuilder errorMessage = null;
-	for (File fileToCheck : filesToCheck) {
-	    File relatedFile = getRelatedFile(fileToCheck, filesToCheckRootDir,
-		    relatedDir);
-	    if (!predicate.apply(fileToCheck, relatedFile)) {
-		if (errorMessage == null)
-		    errorMessage = new StringBuilder(baseErrorMessage);
-		errorMessage.append("\n\t").append(
-			relativeName(fileToCheck, filesToCheckRootDir));
-	    }
-	}
+        StringBuilder errorMessage = null;
+        for (File fileToCheck : filesToCheck) {
+            File relatedFile = getRelatedFile(fileToCheck, filesToCheckRootDir, relatedDir);
+            if (!predicate.apply(fileToCheck, relatedFile)) {
+                if (errorMessage == null) {
+                    errorMessage = new StringBuilder(baseErrorMessage);
+                }
+                errorMessage.append("\n\t").append(relativeName(fileToCheck, filesToCheckRootDir));
+            }
+        }
 
-	assertTrue(errorMessage + "\n\n" + remedy, errorMessage == null);
+        assertTrue(errorMessage + "\n\n" + remedy, errorMessage == null);
     }
 
     /**
@@ -459,18 +442,17 @@ public abstract class GenerationTestSupport {
      *            exist.
      * @return the related file, based on the directory for related files
      */
-    protected File getRelatedFile(File file, File fileRootDirectory,
-	    File relatedDirectory) {
-	String relativeName = relativeName(file, fileRootDirectory);
-	String expectedFileName = relatedDirectory + "/" + relativeName;
-	return new File(expectedFileName);
+    protected File getRelatedFile(File file, File fileRootDirectory, File relatedDirectory) {
+        String relativeName = relativeName(file, fileRootDirectory);
+        String expectedFileName = relatedDirectory + "/" + relativeName;
+        return new File(expectedFileName);
     }
 
     /**
      * @return the package plus the name of the unit test as the package.
      */
     protected String getDefaultPackage() {
-	return getClass().getCanonicalName().toLowerCase();
+        return getClass().getCanonicalName().toLowerCase();
     }
 
     /**
@@ -483,12 +465,11 @@ public abstract class GenerationTestSupport {
      * 
      */
     protected String getDirectoryNameForExpectedFiles() {
-	String schemaSimpleName = "";
-	if (getSchema() != null)
-	    schemaSimpleName = "/"
-		    + getSimpleFileName(getSchema()).toLowerCase();
-	return ROOT_RESOURCE_DIR + "/output/" + getClass().getSimpleName()
-		+ schemaSimpleName;
+        String schemaSimpleName = "";
+        if (getSchema() != null) {
+            schemaSimpleName = "/" + getSimpleFileName(getSchema()).toLowerCase();
+        }
+        return ROOT_RESOURCE_DIR + "/output/" + getClass().getSimpleName() + schemaSimpleName;
     }
 
     /**
@@ -498,12 +479,11 @@ public abstract class GenerationTestSupport {
      * @return the expected json example file
      */
     protected String getJsonExampleFileName() {
-	File schema = new File(getSchema());
-	String jsonDirectoryName = // input/json instead of input/schema
-	schema.getParentFile().getParentFile().getAbsolutePath() + "/json";
-	String name = getRelatedFile(schema, schema.getParentFile(),
-		new File(jsonDirectoryName)).getAbsolutePath();
-	return name;
+        File schema = new File(getSchema());
+        String jsonDirectoryName = // input/json instead of input/schema
+        schema.getParentFile().getParentFile().getAbsolutePath() + "/json";
+        String name = getRelatedFile(schema, schema.getParentFile(), new File(jsonDirectoryName)).getAbsolutePath();
+        return name;
     }
 
     /**
@@ -512,15 +492,15 @@ public abstract class GenerationTestSupport {
      * @return the contents of the JSON example file.
      */
     protected String getJsonExample() {
-	File jsonExample = new File(getJsonExampleFileName());
-	assertTrue("Example Json file did not exist: " + jsonExample,
-		jsonExample.exists());
-	try {
-	    return FileUtils.readFileToString(jsonExample);
-	} catch (IOException e) {
-	    fail("Failed to read json example file as String due to: " + e);
-	    return null; // dead code but it quiets the warning.
-	}
+        File jsonExample = new File(getJsonExampleFileName());
+        assertTrue("Example Json file did not exist: " + jsonExample,
+                jsonExample.exists());
+        try {
+            return FileUtils.readFileToString(jsonExample);
+        } catch (IOException e) {
+            fail("Failed to read json example file as String due to: " + e);
+            return null; // dead code but it quiets the warning.
+        }
 
     }
 
@@ -532,21 +512,19 @@ public abstract class GenerationTestSupport {
      *         under test.
      */
     protected Class<?> getJsonExampleClass() {
-	assertTrue(
-		"Failed to get example class because output directory"
-			+ " is missing. This most likely means that code generation failed.",
-		outputDirectory != null && outputDirectory.exists());
+        assertTrue("Failed to get example class because output directory"
+                + " is missing. This most likely means that code generation failed.",
+                outputDirectory != null && outputDirectory.exists());
 
-	ClassLoader classLoader = compile(outputDirectory,
-		Arrays.asList(outputDirectory.getAbsolutePath()));
-	String className = getSimpleFileName(getJsonExampleFileName());
-	try {
-	    String fullClassName = getDefaultPackage() + "." + className;
-	    return classLoader.loadClass(fullClassName);
-	} catch (ClassNotFoundException e) {
-	    fail("Unable to load json example class : " + className);
-	    return null; // dead code but it quiets the warning.
-	}
+        ClassLoader classLoader = compile(outputDirectory, asList(outputDirectory.getAbsolutePath()));
+        String className = getSimpleFileName(getJsonExampleFileName());
+        try {
+            String fullClassName = getDefaultPackage() + "." + className;
+            return classLoader.loadClass(fullClassName);
+        } catch (ClassNotFoundException e) {
+            fail("Unable to load json example class : " + className);
+            return null; // dead code but it quiets the warning.
+        }
     }
 
     /**
@@ -556,7 +534,7 @@ public abstract class GenerationTestSupport {
      * @return the expected path to the schema file.
      */
     protected String getSchema() {
-	return ROOT_RESOURCE_DIR + "/input/schema/" + getSchemaFileName();
+        return ROOT_RESOURCE_DIR + "/input/schema/" + getSchemaFileName();
     }
 
     // --------------------------------------------------------------------------
@@ -576,18 +554,20 @@ public abstract class GenerationTestSupport {
      * @return the file name with the directory portion removed
      */
     protected String relativeName(File file, File directory) {
-	if (file == null || directory == null)
-	    return null;
-	if (!file.getAbsolutePath().startsWith(directory.getAbsolutePath()))
-	    throw new IllegalArgumentException(
-		    "ERROR [GenerationTestSupport.java]: cannot return a "
-			    + "file relative to a directory if that file is not in "
-			    + "the directory.\n\tFile: "
-			    + file.getAbsolutePath() + "\n\tDirectory: "
-			    + directory.getAbsolutePath());
+        if (file == null || directory == null) {
+            return null;
+        }
+        if (!file.getAbsolutePath().startsWith(directory.getAbsolutePath())) {
+            throw new IllegalArgumentException(
+                    "ERROR [GenerationTestSupport.java]: cannot return a "
+                            + "file relative to a directory if that file is not in "
+                            + "the directory.\n\tFile: "
+                            + file.getAbsolutePath() + "\n\tDirectory: "
+                            + directory.getAbsolutePath());
+        }
 
-	return file.getAbsolutePath().substring(
-		directory.getAbsolutePath().length() + 1);
+        return file.getAbsolutePath().substring(
+                directory.getAbsolutePath().length() + 1);
     }
 
     /**
@@ -600,22 +580,24 @@ public abstract class GenerationTestSupport {
      * @return the name of the file, minus the directory and extension
      */
     protected String getSimpleFileName(String absolutePath) {
-	/*
-	 * note this method could be relocated to a string utility or replaced
-	 * by some library call
-	 */
-	if (absolutePath == null)
-	    return "";
+        /*
+         * note this method could be relocated to a string utility or replaced
+         * by some library call
+         */
+        if (absolutePath == null) {
+            return "";
+        }
 
-	String simpleName = absolutePath;
-	if (simpleName.contains(File.separator)) {
-	    simpleName = simpleName.substring(simpleName
-		    .lastIndexOf(File.separator) + 1);
-	}
-	if (simpleName.contains("."))
-	    simpleName = simpleName.substring(0, simpleName.lastIndexOf("."));
+        String simpleName = absolutePath;
+        if (simpleName.contains(File.separator)) {
+            simpleName = simpleName.substring(simpleName
+                    .lastIndexOf(File.separator) + 1);
+        }
+        if (simpleName.contains(".")) {
+            simpleName = simpleName.substring(0, simpleName.lastIndexOf("."));
+        }
 
-	return simpleName;
+        return simpleName;
     }
 
     // --------------------------------------------------------------------------
@@ -626,39 +608,41 @@ public abstract class GenerationTestSupport {
 
     /** Simple predicate interface */
     protected static interface SimplePredicate<T> {
-	boolean apply(T... input);
+        boolean apply(T... input);
     }
 
     /** Quick predicate to determine whether all files exist */
     protected static final class FilesExist implements SimplePredicate<File> {
-	@Override
-	public boolean apply(File... inputFiles) {
-	    boolean allExist = true;
-	    for (File f : inputFiles)
-		allExist = allExist && (f != null && f.exists());
-	    return allExist;
-	}
+        @Override
+        public boolean apply(File... inputFiles) {
+            boolean allExist = true;
+            for (File f : inputFiles) {
+                allExist = allExist && (f != null && f.exists());
+            }
+            return allExist;
+        }
     }
 
     /** Quick predicate to determine whether all files match */
     protected static final class FilesMatch implements SimplePredicate<File> {
-	@Override
-	public boolean apply(File... inputFiles) {
-	    if (inputFiles.length != 2)
-		return false;
-	    try {
-		// simple way to generate a diff UI in the final test results
-		// -kg
-		assertEquals("Some generated files did not match what was "
-			+ "expected.\n\t\tGenerated file: " + inputFiles[0]
-			+ "\n\t\tExpected file: " + inputFiles[1] + "\n",
-			FileUtils.readFileToString(inputFiles[1]),
-			FileUtils.readFileToString(inputFiles[0]));
-		return true;
-	    } catch (IOException e) {
-		return false;
-	    }
-	}
+        @Override
+        public boolean apply(File... inputFiles) {
+            if (inputFiles.length != 2) {
+                return false;
+            }
+            try {
+                // simple way to generate a diff UI in the final test results
+                // -kg
+                assertEquals("Some generated files did not match what was "
+                        + "expected.\n\t\tGenerated file: " + inputFiles[0]
+                        + "\n\t\tExpected file: " + inputFiles[1] + "\n",
+                        FileUtils.readFileToString(inputFiles[1]),
+                        FileUtils.readFileToString(inputFiles[0]));
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
     }
 
     // --------------------------------------------------------------------------
@@ -718,7 +702,7 @@ public abstract class GenerationTestSupport {
      * @return the resulting string
      */
     protected abstract String marshalExample(Object unmarshalledResult,
-	    Class<?> jsonExampleClass);
+            Class<?> jsonExampleClass);
 
     /**
      * Unmrashal the given json into an Object of the specified type.
@@ -730,6 +714,6 @@ public abstract class GenerationTestSupport {
      * @return the unmarshalled object.
      */
     protected abstract <T> T unmarshalExample(String jsonExample,
-	    Class<T> jsonExampleClass);
+            Class<T> jsonExampleClass);
 
 }
