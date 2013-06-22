@@ -20,6 +20,7 @@
 package com.googlecode.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
@@ -45,6 +46,8 @@ public class GsonAnnotator extends AbstractAnnotator {
         if (fieldDiffersFromPropertyName) {
             field.annotate(SerializedName.class).param("value", propertyName);
         }
+
+        field.annotate(Expose.class);
     }
 
 }

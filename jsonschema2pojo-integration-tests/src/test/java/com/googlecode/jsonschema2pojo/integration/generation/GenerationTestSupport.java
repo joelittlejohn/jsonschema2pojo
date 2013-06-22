@@ -183,34 +183,6 @@ public abstract class GenerationTestSupport {
 
     /**
      * <p>
-     * After setup generates java files, this test verifies that every file
-     * matches its expected counterpart, line-by-line. Expected files are
-     * declared in:
-     * </p>
-     * <p>
-     * <code>src/test/resources/[testSimpleName]/[schemaName]</code>
-     * </p>
-     * <p>
-     * Where <code>[testSimpleName]</code> is the simpleName of the class under
-     * test and <code>[schemaName]</code> is the filename of the schema, without
-     * the extension, all lowercase.
-     * </p>
-     */
-    @Test
-    public void createdFilesContentExactlyMatchesExpectedFilesTest() {
-        String remedy = "The diffs must be reconciled";
-
-        verifyRelatedFiles(
-                generatedFiles,
-                outputDirectory,
-                directoryWithExpectedFiles,
-                filesMatch,
-                "Some generated files did not exactly match what was expected:",
-                remedy);
-    }
-
-    /**
-     * <p>
      * By convention, this test assumes there is a sample JSON file that
      * corresponds to the schema file being tested. Schema files are expected
      * in:
