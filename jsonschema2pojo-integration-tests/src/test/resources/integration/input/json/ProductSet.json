@@ -1,0 +1,19 @@
+{
+    "id": 12345.67,
+    "name": "Google Glass",
+    "price": 1500.00,
+    "tags": [
+        "#Google",
+        "#Glass",
+        "#GoogleIO"
+    ],
+    "dimensions": {
+        "length": 9.0,
+        "width": 6.0,
+        "height": 2.0
+    },
+    "warehouse_location": {
+    	"latitude": 30.0,
+    	"longitude": 30.0 
+	}
+}

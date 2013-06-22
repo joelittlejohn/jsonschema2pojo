@@ -21,6 +21,8 @@ package com.googlecode.jsonschema2pojo.exception;
  */
 public class GenerationException extends RuntimeException {
 
+    private static final long serialVersionUID = -2105441912033842653L;
+
     public GenerationException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -5,6 +5,7 @@
 .classpath
 .settings
 .project
+.metadata
 
 # Maven derived files #
 target/

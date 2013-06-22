@@ -55,7 +55,7 @@ public class CodeGenerationHelper {
 
     public static File generate(String schema, String targetPackage, Map<String, Object> configValues) {
         URL schemaUrl = CodeGenerationHelper.class.getResource(schema);
-        assertThat("Unable to read schema resource from the classpath", schemaUrl, is(notNullValue()));
+        assertThat("Unable to read schema resource from the classpath: " + schema, schemaUrl, is(notNullValue()));
 
         return generate(schemaUrl, targetPackage, configValues);
     }
@@ -83,7 +83,8 @@ public class CodeGenerationHelper {
     public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
 
         try {
-            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
+            @SuppressWarnings("serial")
+	    Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
                 {
                     put("sourceDirectory", new File(schema.toURI()));
                     put("outputDirectory", outputDirectory);

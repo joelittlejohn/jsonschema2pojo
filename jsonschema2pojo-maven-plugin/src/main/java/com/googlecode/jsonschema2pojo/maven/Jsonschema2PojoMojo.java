@@ -187,6 +187,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <code>jackson1</code> (apply annotations from the <a
      * href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
      * <li>
+     * <code>gson</code> (apply annotations from the <a
+     * href="https://code.google.com/p/google-gson/">gson</a> library)</li>
+     * <li>
      * <code>none</code> (apply no annotations at all)</li>
      * </ul>
      * 
