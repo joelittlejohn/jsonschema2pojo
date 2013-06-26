@@ -4,12 +4,23 @@ _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and ca
 
 If you want to play with some of the features of this project you can [try jsonschema2pojo online](http://jsonschema2pojo.org/).
 
-Maven plugin details:
+Maven plugin example:
 ```xml
 <plugin>
     <groupId>com.googlecode.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>
     <version>0.3.7</version>
+    <configuration>
+        <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
+        <targetPackage>com.example.types</targetPackage>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
 </plugin>
 ```
 
@@ -25,9 +36,8 @@ Project resources:
   * [Roadmap](http://code.google.com/p/jsonschema2pojo/issues/list?can=2&q=label:Type-Enhancement%20status:Accepted&sort=milestone&colspec=ID%20Milestone%20Summary)
 
 Contribute:
-  * [Clone the source](http://code.google.com/p/jsonschema2pojo/source/clones)
   * [Developer Help](https://github.com/joelittlejohn/jsonschema2pojo22/wiki/Developer-Help)
-  * [Raise a bug](http://code.google.com/p/jsonschema2pojo/issues/entry)
+  * [Raise a bug](https://github.com/joelittlejohn/jsonschema2pojo/issues)
   * [Request a feature](http://code.google.com/p/jsonschema2pojo/issues/entry?labels=Type-Enhancement&comment=Enter%20a%20description%20of%20your%20new%20feature) / [Comment on an existing feature request](http://code.google.com/p/jsonschema2pojo/issues/list?can=2&q=label:Type-Enhancement)
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
