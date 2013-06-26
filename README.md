@@ -9,16 +9,16 @@ Maven plugin details:
 <plugin>
     <groupId>com.googlecode.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7</version>
 </plugin>
 ```
 
 Useful pages:
   * **[Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
   * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
-  * [Latest Javadocs](http://wiki.jsonschema2pojo.googlecode.com/git/javadocs/0.3.6/index.html)
-  * [Documentation for the Maven plugin](http://wiki.jsonschema2pojo.googlecode.com/git/site/0.3.6/plugin-info.html)
-  * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.6/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
+  * [Latest Javadocs](http://wiki.jsonschema2pojo.googlecode.com/git/javadocs/0.3.7/index.html)
+  * [Documentation for the Maven plugin](http://wiki.jsonschema2pojo.googlecode.com/git/site/0.3.7/plugin-info.html)
+  * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.7/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
 
 Project resources:
   * [Release Notes](http://code.google.com/p/jsonschema2pojo/issues/list?can=1&q=status:Fixed&sort=-milestone&colspec=Type%20Milestone%20Summary)
