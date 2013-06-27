@@ -32,6 +32,7 @@ Useful pages:
   * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.7/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
 
 Project resources:
+  * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
   * [Release Notes](http://code.google.com/p/jsonschema2pojo/issues/list?can=1&q=status:Fixed&sort=-milestone&colspec=Type%20Milestone%20Summary)
   * [Roadmap](http://code.google.com/p/jsonschema2pojo/issues/list?can=2&q=label:Type-Enhancement%20status:Accepted&sort=milestone&colspec=ID%20Milestone%20Summary)
 
