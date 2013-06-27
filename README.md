@@ -38,6 +38,6 @@ Project resources:
 Contribute:
   * [Developer Help](https://github.com/joelittlejohn/jsonschema2pojo22/wiki/Developer-Help)
   * [Raise a bug](https://github.com/joelittlejohn/jsonschema2pojo/issues)
-  * [Request a feature](http://code.google.com/p/jsonschema2pojo/issues/entry?labels=Type-Enhancement&comment=Enter%20a%20description%20of%20your%20new%20feature) / [Comment on an existing feature request](http://code.google.com/p/jsonschema2pojo/issues/list?can=2&q=label:Type-Enhancement)
+  * [Request a feature](https://github.com/joelittlejohn/jsonschema2pojo/issues/new) / [Comment on an existing feature request](https://github.com/joelittlejohn/jsonschema2pojo/issues?labels=enhancement&page=1&state=open)
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
