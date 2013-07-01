@@ -2,9 +2,11 @@
 
 _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and can fully annotate those types for data-binding with Jackson 1.x or 2.x.
 
-If you want to play with some of the features of this project you can [try jsonschema2pojo online](http://jsonschema2pojo.org/).
+### [Try jsonschema2pojo online](http://jsonschema2pojo.org/)
 
-Maven plugin example:
+You can also use jsonschema2pojo as a Maven plugin, an Ant task, a command line utility, a Gradle plugin or embedded within your own Java app. The [Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started) guide will show you how.
+
+A very simple Maven example:
 ```xml
 <plugin>
     <groupId>com.googlecode.jsonschema2pojo</groupId>
