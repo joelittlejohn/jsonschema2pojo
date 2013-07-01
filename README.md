@@ -33,12 +33,5 @@ Useful pages:
 
 Project resources:
   * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
-  * [Release Notes](http://code.google.com/p/jsonschema2pojo/issues/list?can=1&q=status:Fixed&sort=-milestone&colspec=Type%20Milestone%20Summary)
-  * [Roadmap](http://code.google.com/p/jsonschema2pojo/issues/list?can=2&q=label:Type-Enhancement%20status:Accepted&sort=milestone&colspec=ID%20Milestone%20Summary)
-
-Contribute:
-  * [Developer Help](https://github.com/joelittlejohn/jsonschema2pojo22/wiki/Developer-Help)
-  * [Raise a bug](https://github.com/joelittlejohn/jsonschema2pojo/issues)
-  * [Request a feature](https://github.com/joelittlejohn/jsonschema2pojo/issues/new) / [Comment on an existing feature request](https://github.com/joelittlejohn/jsonschema2pojo/issues?labels=enhancement&page=1&state=open)
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
