@@ -1,4 +1,4 @@
-# jsonschema2pojo
+# jsonschema2pojo [![Build Status](https://travis-ci.org/joelittlejohn/jsonschema2pojo.png)](https://travis-ci.org/joelittlejohn/jsonschema2pojo)
 
 _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and can fully annotate those types for data-binding with Jackson 1.x or 2.x.
 
