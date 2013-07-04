@@ -34,6 +34,7 @@ Useful pages:
   * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.7/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
 
 Project resources:
+  * [Downloads](https://code.google.com/p/jsonschema2pojo/downloads)
   * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
