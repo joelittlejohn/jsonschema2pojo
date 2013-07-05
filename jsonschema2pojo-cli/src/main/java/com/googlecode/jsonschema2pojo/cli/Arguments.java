@@ -85,6 +85,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-R", "--remove-old-output" }, description = "Whether to empty the target directory before generation occurs, to clear out all source files that have been generated previously (indiscriminately deletes all files and folders).")
     private boolean removeOldOutput = false;
 
+    @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files")
+    private String outputEncoding = "UTF-8";
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -188,6 +191,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public String getOutputEncoding() {
+        return outputEncoding;
     }
 
     protected void exit(int status) {

@@ -129,6 +129,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return UTF-8
+     */
+    @Override
+    public String getOutputEncoding() {
+        return "UTF-8";
+    }
+
+    /**
      * @return false
      */
     @Override

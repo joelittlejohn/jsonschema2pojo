@@ -77,6 +77,7 @@
           <ul>
             <li><code>JACKSON2</code> (apply annotations from the <a href="https://github.com/FasterXML/jackson-annotations">Jackson 2.x</a> library)</li>
             <li><code>JACKSON1</code> (apply annotations from the <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
+            <li><code>GSON</code> (apply annotations from the <a href="https://code.google.com/p/google-gson//">Gson</a> library)</li>
             <li><code>NONE</code> (apply no annotations at all)</li>
           </ul>
         </td>
@@ -149,8 +150,13 @@
         <td valign="top">Additional classpath to use, given as a reference to a path defined elsewhere. Can be used in conjuction with the <code>classpath</code> option (the result is the union of all paths).</td>
         <td align="center" valign="top">No</td>
       </tr>
+      <tr>
+        <td valign="top">outputEncoding</td>
+        <td valign="top">The character encoding that should be used when writing the generated Java source files.</td>
+        <td align="center" valign="top">No (default <code>UTF-8</code>)</td>
+      </tr>
     </table>
-        
+    
     <h3>Examples</h3>
     <pre>
 &lt;taskdef name="jsonschema2pojo" classname="com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask">

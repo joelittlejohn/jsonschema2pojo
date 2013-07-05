@@ -35,7 +35,9 @@ import com.googlecode.jsonschema2pojo.SchemaMapper;
 import com.googlecode.jsonschema2pojo.SchemaStore;
 import com.googlecode.jsonschema2pojo.exception.GenerationException;
 import com.googlecode.jsonschema2pojo.rules.RuleFactory;
+import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.writer.FileCodeWriter;
 
 /**
  * Main class, providing a command line interface for jsonschema2pojo.
@@ -98,7 +100,9 @@ public final class Jsonschema2Pojo {
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
-            codeModel.build(config.getTargetDirectory(), new NullPrintStream());
+            CodeWriter sourcesWriter = new FileCodeWriter(config.getTargetDirectory(), config.getOutputEncoding());
+            CodeWriter resourcesWriter = new FileCodeWriter(config.getTargetDirectory(), config.getOutputEncoding());
+            codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
@@ -110,8 +114,8 @@ public final class Jsonschema2Pojo {
         for (File child : schemaFiles) {
             if (child.isFile()) {
                 mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
-            }else{
-                generateRecursive(config, mapper, codeModel, packageName+"."+child.getName(), Arrays.asList(child.listFiles()));
+            } else {
+                generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles()));
             }
         }
     }

@@ -170,4 +170,13 @@ public interface GenerationConfig {
      *         folders)</strong> before it begins generating sources.
      */
     boolean isRemoveOldOutput();
+
+    /**
+     * Gets the 'outputEncoding' configuration option.
+     * 
+     * @return The character encoding that should be used when writing the
+     *         generated Java source files.
+     */
+    String getOutputEncoding();
+
 }

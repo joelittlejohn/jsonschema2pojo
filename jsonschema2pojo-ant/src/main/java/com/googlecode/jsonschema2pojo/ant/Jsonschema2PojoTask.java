@@ -87,6 +87,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean removeOldOutput;
 
+    private String outputEncoding = "UTF-8";
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -349,6 +351,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.removeOldOutput = removeOldOutput;
     }
 
+    /**
+     * Sets the 'outputEncoding' property of this class
+     * 
+     * @param outputEncoding
+     *            The character encoding that should be used when writing the
+     *            generated Java source files
+     */
+    public void setOutputEncoding(String outputEncoding) {
+        this.outputEncoding = outputEncoding;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -449,6 +462,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public String getOutputEncoding() {
+        return outputEncoding;
     }
 
 }

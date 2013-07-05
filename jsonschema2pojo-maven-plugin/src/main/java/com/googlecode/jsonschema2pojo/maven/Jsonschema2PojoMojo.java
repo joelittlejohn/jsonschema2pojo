@@ -263,9 +263,19 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * generating sources.
      * 
      * @parameter expression="${jsonschema2pojo.removeOldOutput}"
-     * @since 0.3.6
+     *            default="false"
+     * @since 0.3.7
      */
     private boolean removeOldOutput = false;
+
+    /**
+     * The character encoding that should be used when writing the generated
+     * Java source files.
+     * 
+     * @parameter expression="${jsonschema2pojo.outputEncoding}" default="UTF-8"
+     * @since 0.4.0
+     */
+    private String outputEncoding = "UTF-8";
 
     /**
      * The project being built.
@@ -417,6 +427,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public String getOutputEncoding() {
+        return outputEncoding;
     }
 
 }
