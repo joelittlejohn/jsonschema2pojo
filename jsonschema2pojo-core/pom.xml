@@ -4,7 +4,7 @@
 
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
-        <groupId>com.googlecode.jsonschema2pojo</groupId>
+        <groupId>org.jsonschema2pojo</groupId>
         <version>0.3.8-SNAPSHOT</version>
     </parent>
 

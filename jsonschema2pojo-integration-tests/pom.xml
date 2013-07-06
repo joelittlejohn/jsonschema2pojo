@@ -4,7 +4,7 @@
 
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
-        <groupId>com.googlecode.jsonschema2pojo</groupId>
+        <groupId>org.jsonschema2pojo</groupId>
         <version>0.3.8-SNAPSHOT</version>
     </parent>
 
@@ -97,13 +97,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.jsonschema2pojo</groupId>
+            <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-maven-plugin</artifactId>
             <version>${project.version}</version>
             <type>maven-plugin</type>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.jsonschema2pojo</groupId>
+            <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-ant</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -4,7 +4,7 @@
 
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
-        <groupId>com.googlecode.jsonschema2pojo</groupId>
+        <groupId>org.jsonschema2pojo</groupId>
         <version>0.3.8-SNAPSHOT</version>
     </parent>
 
@@ -13,7 +13,7 @@
     <packaging>maven-plugin</packaging>
 
     <name>jsonschema2pojo-maven-plugin</name>
-    <url>http://jsonschema2pojo.googlecode.com/</url>
+    <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
     <build>
         <plugins>
@@ -36,7 +36,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.jsonschema2pojo</groupId>
+            <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-cli</artifactId>
             <version>${project.version}</version>
         </dependency>

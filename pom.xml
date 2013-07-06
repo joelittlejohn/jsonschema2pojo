@@ -8,14 +8,14 @@
         <version>5</version>
     </parent>
 
-    <groupId>com.googlecode.jsonschema2pojo</groupId>
+    <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
     <version>0.3.8-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
     <description>Generate DTO style Java classes from JSON Schema documents</description>
-    <url>http://jsonschema2pojo.googlecode.com/</url>
+    <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
     <modules>
         <module>jsonschema2pojo-ant</module>
@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <url>https://code.google.com/p/jsonschema2pojo/source/checkout</url>
-        <connection>scm:git:https://code.google.com/p/jsonschema2pojo/</connection>
-        <developerConnection>scm:git:https://code.google.com/p/jsonschema2pojo/</developerConnection>
+        <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
+        <connection>scm:git:git@github.com:joelittlejohn/jsonschema2pojo.git</connection>
+        <developerConnection>scm:git:git@github.com:joelittlejohn/jsonschema2pojo.git</developerConnection>
     </scm>
 
     <licenses>
