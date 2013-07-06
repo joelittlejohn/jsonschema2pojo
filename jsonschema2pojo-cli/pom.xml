@@ -52,7 +52,7 @@
                         <manifest>
                             <classpathPrefix>lib/</classpathPrefix>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.googlecode.jsonschema2pojo.cli.Jsonschema2Pojo</mainClass>
+                            <mainClass>org.jsonschema2pojo.cli.Jsonschema2Pojo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

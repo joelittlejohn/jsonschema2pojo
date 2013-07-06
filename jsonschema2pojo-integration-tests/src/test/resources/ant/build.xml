@@ -2,7 +2,7 @@
 <project name="jsonschema2pojo-test" default="generate">
     <description>Integration test build file that invokes the jsonschema2pojo ant task</description>
 
-    <taskdef name="jsonschema2pojo" classname="com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask">
+    <taskdef name="jsonschema2pojo" classname="org.jsonschema2pojo.ant.Jsonschema2PojoTask">
         <classpath>
             <fileset dir="${project.build.directory}/ant-libs">
                 <include name="**/*.jar" />
@@ -34,7 +34,7 @@
                          includeHashcodeAndEquals="false"
                          includeToString="false"
                          annotationStyle="NONE"
-        	             customAnnotator="com.googlecode.jsonschema2pojo.NoopAnnotator"
+        	             customAnnotator="org.jsonschema2pojo.NoopAnnotator"
                          includeJsr303Annotations="true"
         	             classpathRef="custom.libs">
         	<classpath>

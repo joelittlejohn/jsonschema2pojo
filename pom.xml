@@ -64,6 +64,7 @@
                     <encoding>UTF-8</encoding>
                     <excludes>
                         <exclude>**/src/main/java/com/googlecode/jsonschema2pojo/util/Inflector.java</exclude>
+                        <exclude>**/src/main/java/org/jsonschema2pojo/util/Inflector.java</exclude>
                     </excludes>
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>

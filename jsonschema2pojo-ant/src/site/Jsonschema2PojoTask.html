@@ -86,7 +86,7 @@
       <tr>
         <td valign="top">customAnnotator</td>
         <td valign="top">
-          <p>A fully qualified class name, referring to a custom annotator class that implements <code>com.googlecode.jsonschema2pojo.Annotator</code> and will be used in addition to the one chosen by <code>annotationStyle</code>.</p>
+          <p>A fully qualified class name, referring to a custom annotator class that implements <code>org.jsonschema2pojo.Annotator</code> and will be used in addition to the one chosen by <code>annotationStyle</code>.</p>
           <p>If you want to use the custom annotator alone, set <code>annotationStyle</code> to <code>none</code>.</p>
         </td>
         <td align="center" valign="top">No</td>
@@ -159,7 +159,7 @@
     
     <h3>Examples</h3>
     <pre>
-&lt;taskdef name="jsonschema2pojo" classname="com.googlecode.jsonschema2pojo.ant.Jsonschema2PojoTask">
+&lt;taskdef name="jsonschema2pojo" classname="org.jsonschema2pojo.ant.Jsonschema2PojoTask">
     &lt;classpath> &lt;!-- classpath only required if jars have *NOT* been added to $ANT_HOME/lib -->
         &lt;fileset dir="my-downloaded-libs">
             &lt;include name="**/*.jar" />
