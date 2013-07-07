@@ -28,7 +28,6 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.AnnotatorFactory;
@@ -138,10 +137,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Java Bean property names.
      * 
      * @parameter expression="${jsonschema2pojo.propertyWordDelimiters}"
-     *            default-value=""
+     *            default-value="- _"
      * @since 0.2.2
      */
-    private String propertyWordDelimiters = "";
+    private String propertyWordDelimiters = "- _";
 
     /**
      * Whether to use the java type <code>long</code> (or <code>Long</code>)
@@ -201,8 +200,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     /**
      * A fully qualified class name, referring to a custom annotator class that
-     * implements <code>org.jsonschema2pojo.Annotator</code> and will
-     * be used in addition to the one chosen by <code>annotationStyle</code>.
+     * implements <code>org.jsonschema2pojo.Annotator</code> and will be used in
+     * addition to the one chosen by <code>annotationStyle</code>.
      * <p>
      * If you want to use the custom annotator alone, set
      * <code>annotationStyle</code> to <code>none</code>.

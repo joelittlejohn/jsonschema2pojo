@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class RegressionIT {
         File sourcesDirectory = generate(file.toURI().toURL(), "com.example", new HashMap<String, Object>());
         ClassLoader resultsClassLoader = compile(sourcesDirectory);
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.Spaces_in_path");
+        Class generatedType = resultsClassLoader.loadClass("com.example.SpacesInPath");
         assertThat(generatedType, is(notNullValue()));
 
     }

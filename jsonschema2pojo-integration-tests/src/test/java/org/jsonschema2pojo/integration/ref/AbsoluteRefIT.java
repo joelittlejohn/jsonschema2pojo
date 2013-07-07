@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.ref;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class AbsoluteRefIT {
         Class<?> addressClass = absoluteRefClass.getMethod("getAddress").getReturnType();
 
         assertThat(addressClass.getName(), is("com.example.Address"));
-        assertThat(addressClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPostal_code"))));
+        assertThat(addressClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPostalCode"))));
 
     }
 

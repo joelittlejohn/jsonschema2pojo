@@ -69,7 +69,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public char[] getPropertyWordDelimiters() {
-        return new char[] {};
+        return new char[] { '-', ' ', '_' };
     }
 
     /**

@@ -34,7 +34,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
@@ -67,7 +66,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean skip;
 
-    private char[] propertyWordDelimiters = new char[] {};
+    private char[] propertyWordDelimiters = new char[] { '-', ' ', '_' };
 
     private boolean useLongIntegers;
 
