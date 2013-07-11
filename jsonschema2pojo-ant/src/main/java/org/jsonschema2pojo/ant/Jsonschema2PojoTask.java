@@ -88,6 +88,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String outputEncoding = "UTF-8";
 
+    private boolean useJodaDates;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -361,6 +363,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.outputEncoding = outputEncoding;
     }
 
+    /**
+     * Sets the 'useJodaDates' property of this class
+     * 
+     * @param useJodaDates
+     *            Whether to use {@link org.joda.time.DateTime} instead of
+     *            {@link java.util.Date} when adding date type fields to
+     *            generated Java types.
+     */
+    public void setUseJodaDates(boolean useJodaDates) {
+        this.useJodaDates = useJodaDates;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -466,6 +480,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isUseJodaDates() {
+        return useJodaDates;
     }
 
 }

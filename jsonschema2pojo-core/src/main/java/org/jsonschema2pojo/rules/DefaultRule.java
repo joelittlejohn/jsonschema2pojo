@@ -26,10 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -46,6 +48,12 @@ import com.sun.codemodel.JType;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
  */
 public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
+
+    private final RuleFactory ruleFactory;
+
+    public DefaultRule(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
+    }
 
     /**
      * Applies this schema rule to take the required code generation steps.
@@ -108,10 +116,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
             return JExpr.lit(Boolean.parseBoolean(node.asText()));
 
-        } else if (fieldType.fullName().equals(Date.class.getName())) {
+        } else if (fieldType.fullName().equals(getDateType().getName())) {
             long millisecs = parseDateToMillisecs(node.asText());
 
-            JInvocation newDate = JExpr._new(fieldType.owner().ref(Date.class));
+            JInvocation newDate = JExpr._new(fieldType);
             newDate.arg(JExpr.lit(millisecs));
 
             return newDate;
@@ -128,6 +136,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         }
 
+    }
+
+    private Class<?> getDateType() {
+        return ruleFactory.getGenerationConfig().isUseJodaDates() ? DateTime.class : Date.class;
     }
 
     /**

@@ -20,9 +20,11 @@ import java.net.URI;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.joda.time.DateTime;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
 
 /**
@@ -74,7 +76,7 @@ public class FormatRule implements Rule<JType, JType> {
     public JType apply(String nodeName, JsonNode node, JType baseType, Schema schema) {
 
         if (node.asText().equals("date-time")) {
-            return baseType.owner().ref(Date.class);
+            return baseType.owner().ref(getDateType());
 
         } else if (node.asText().equals("date")) {
             return baseType.owner().ref(String.class);
@@ -116,6 +118,10 @@ public class FormatRule implements Rule<JType, JType> {
             return baseType;
         }
 
+    }
+
+    private Class<?> getDateType() {
+        return ruleFactory.getGenerationConfig().isUseJodaDates() ? DateTime.class : Date.class;
     }
 
     private JType unboxIfNecessary(JType type, GenerationConfig config) {

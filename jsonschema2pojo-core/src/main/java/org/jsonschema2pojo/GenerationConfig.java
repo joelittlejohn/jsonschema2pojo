@@ -179,4 +179,13 @@ public interface GenerationConfig {
      */
     String getOutputEncoding();
 
+    /**
+     * Gets the 'useJodaDates' configuration option.
+     * 
+     * @return Whether to use {@link org.joda.time.DateTime} instead of
+     *         {@link java.util.Date} when adding date type fields to generated
+     *         Java types.
+     */
+    boolean isUseJodaDates();
+
 }

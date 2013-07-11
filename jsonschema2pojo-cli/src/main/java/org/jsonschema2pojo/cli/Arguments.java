@@ -89,6 +89,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files")
     private String outputEncoding = "UTF-8";
 
+    @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java.util.Date when adding date type fields to generated Java types.")
+    private boolean useJodaDates = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -197,6 +200,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isUseJodaDates() {
+        return useJodaDates;
     }
 
     protected void exit(int status) {

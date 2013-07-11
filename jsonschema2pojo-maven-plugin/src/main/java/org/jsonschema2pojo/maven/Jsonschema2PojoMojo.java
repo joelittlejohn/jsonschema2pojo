@@ -277,6 +277,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String outputEncoding = "UTF-8";
 
     /**
+     * Whether to use {@link org.joda.time.DateTime} instead of
+     * {@link java.util.Date} when adding date type fields to generated Java
+     * types.
+     * 
+     * @parameter expression="${jsonschema2pojo.useJodaDates}" default="false"
+     * @since 0.4.0
+     */
+    private boolean useJodaDates = false;
+
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -431,6 +441,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isUseJodaDates() {
+        return useJodaDates;
     }
 
 }

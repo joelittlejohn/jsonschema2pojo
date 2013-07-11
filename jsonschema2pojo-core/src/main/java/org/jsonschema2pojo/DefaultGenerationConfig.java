@@ -143,4 +143,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isRemoveOldOutput() {
         return false;
     }
+
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isUseJodaDates() {
+        return false;
+    }
 }

@@ -21,6 +21,7 @@ import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
 import org.jsonschema2pojo.SchemaStore;
+
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
@@ -201,7 +202,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getDefaultRule() {
-        return new DefaultRule();
+        return new DefaultRule(this);
     }
 
     /**
