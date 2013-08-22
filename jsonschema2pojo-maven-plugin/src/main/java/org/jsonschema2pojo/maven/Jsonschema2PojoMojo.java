@@ -196,7 +196,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="jackson2"
      * @since 0.3.1
      */
-    private String annotationStyle = "jackson";
+    private String annotationStyle = "jackson2";
 
     /**
      * A fully qualified class name, referring to a custom annotator class that
