@@ -11,6 +11,9 @@
 target/
 apidocs
 
+# Gradle derived files #
+build/
+
 # IntelliJ files #
 .idea
 *.iml
