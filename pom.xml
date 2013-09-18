@@ -21,6 +21,7 @@
         <module>jsonschema2pojo-ant</module>
         <module>jsonschema2pojo-cli</module>
         <module>jsonschema2pojo-core</module>
+        <module>jsonschema2pojo-gradle-plugin</module>
         <module>jsonschema2pojo-maven-plugin</module>
         <module>jsonschema2pojo-integration-tests</module>
     </modules>
@@ -50,6 +51,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <gradle.version>1.6</gradle.version>
         <gson.version>2.2.4</gson.version>
     </properties>
     
@@ -273,5 +275,26 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>maven-central</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>gradle</id>
+            <url>http://repo.gradle.org/gradle/libs-releases-local</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>gradle-workaround</id>
+            <url>http://flywaydb.org/repo</url>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

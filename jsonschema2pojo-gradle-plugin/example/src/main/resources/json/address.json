@@ -1,0 +1,17 @@
+{
+  "description": "An Address following the convention of http://microformats.org/wiki/hcard",
+  "type": "object",
+  "properties": {
+    "post_office_box": { "type": "string" },
+    "extended_address": { "type": "string" },
+    "street_address": { "type": "string" },
+    "locality":{ "type": "string", "required": true },
+    "region": { "type": "string", "required": true },
+    "postal_code": { "type": "string" },
+    "country_name": { "type": "string", "required": true}
+  },
+  "dependencies": {
+    "post_office_box": "street_address",
+    "extended_address": "street_address"
+  }
+}
