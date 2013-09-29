@@ -1,0 +1,8 @@
+/* TEAM */
+    Author: Joe Littlejohn
+    Site: https://github.com/joelittlejohn
+    Twitter: @joelittlejohn
+    Location: Bristol, UK
+                            
+/* SITE */
+    Components: Clojure, Compojure, Bootstrap, Code Mirror, jQuery
