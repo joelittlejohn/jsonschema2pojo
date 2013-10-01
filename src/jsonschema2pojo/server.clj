@@ -15,35 +15,35 @@
 
 (def object-mapper (ObjectMapper.))
 
-(defn format-parse-error [e]
+(defn- format-parse-error [e]
   (let [message  (-> (.getMessage e) split-lines first)
         location (.getLocation e)
         line (.getLineNr location)
         column (.getColumnNr location)]
     (str message " (line " line ", column " column ")")))
 
-(defn parse [schema]
+(defn- parse [schema]
   (try
     (.readTree object-mapper schema)
     (catch JsonProcessingException e
       (throw (IllegalArgumentException. (format-parse-error e))))))
 
-(defn not-blank [params k name]
+(defn- not-blank [params k name]
   (if (empty? (params k))
     (throw (IllegalArgumentException. (str name " can't be blank, try adding some text")))
     (params k)))
 
-(defn size-limit [limit s]
+(defn- size-limit [limit s]
   (if (> (.length s) limit)
     (throw (IllegalArgumentException. (str "Your input was larger than " limit " characters, try making this a bit smaller")))
     s))
 
-(defn generate-response [params generator content-type]
+(defn- generate-response [params generator content-type]
   (try
     (let [schema (parse (size-limit 51200 (not-blank params "schema" "JSON Schema (or example JSON)")))
           classname (size-limit 128 (not-blank params "classname" "Class name"))
           targetpackage (size-limit 256 (not-blank params "targetpackage" "Package"))
-          config (j2p/post-params-based-config params)
+          config (j2p/params-based-config params)
           code-bytes (generator schema classname config)]
       {:status 200
        :headers {"Content-Type" content-type}

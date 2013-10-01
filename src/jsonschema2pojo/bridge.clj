@@ -38,7 +38,7 @@
 (def ^:private default-config
   (DefaultGenerationConfig.))
 
-(defn post-params-based-config [params]
+(defn params-based-config [params]
   (proxy [GenerationConfig] []
     (getTargetPackage []
       (params "targetpackage"))
