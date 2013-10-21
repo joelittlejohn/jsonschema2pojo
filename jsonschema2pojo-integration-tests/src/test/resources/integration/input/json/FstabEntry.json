@@ -1,6 +1,0 @@
-{
-	"storage" : {
-	},
-    "read_only" : false,
-    "options" : [ "foo", "bar", "baz" ]
-}

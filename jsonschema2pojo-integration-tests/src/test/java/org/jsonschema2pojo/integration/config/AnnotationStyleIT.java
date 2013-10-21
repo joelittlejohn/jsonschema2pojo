@@ -16,31 +16,21 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.compile;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generate;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 
 public class AnnotationStyleIT {
 
@@ -98,28 +88,6 @@ public class AnnotationStyleIT {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-
-        File generatedOutputDirectory = generate("/integration/input/schema/ProductSet.json", "com.example",
-                config("annotationStyle", "gson", "propertyWordDelimiters", "_- "));
-
-        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
-        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
-        assertThat(generatedOutputDirectory, containsText("com.google.gson"));
-        assertThat(generatedOutputDirectory, containsText("@SerializedName"));
-
-        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.ProductSet");
-        Method getter = generatedType.getMethod("getWarehouseLocation");
-
-        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
-        assertThat(generatedType.getAnnotation(JsonInclude.class), is(nullValue()));
-        assertThat(getter.getAnnotation(JsonProperty.class), is(nullValue()));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJackson1ProducesJackson1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
@@ -169,7 +137,4 @@ public class AnnotationStyleIT {
 
     }
 
-    private static Matcher<File> containsText(String searchText) {
-        return new FileSearchMatcher(searchText);
-    }
 }

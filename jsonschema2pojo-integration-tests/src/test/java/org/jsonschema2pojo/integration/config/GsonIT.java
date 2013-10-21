@@ -1,0 +1,83 @@
+/**
+ * Copyright © 2010-2013 Nokia
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.jsonschema2pojo.integration.config;
+
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
+import static org.jsonschema2pojo.integration.util.JsonAssert.*;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.Gson;
+
+public class GsonIT {
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+
+        File generatedOutputDirectory = generate("/json/examples/torrent.json", "com.example",
+                config("annotationStyle", "gson",
+                        "propertyWordDelimiters", "_",
+                        "sourceType", "json"));
+
+        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
+        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
+        assertThat(generatedOutputDirectory, containsText("com.google.gson"));
+        assertThat(generatedOutputDirectory, containsText("@SerializedName"));
+
+        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Torrent");
+        Method getter = generatedType.getMethod("getBuild");
+
+        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(nullValue()));
+        assertThat(getter.getAnnotation(JsonProperty.class), is(nullValue()));
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void annotationStyleGsonMakesTypesThatWorkWithGson() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, IOException {
+
+        File generatedOutputDirectory = generate("/json/examples/torrent.json", "com.example",
+                config("annotationStyle", "gson",
+                        "propertyWordDelimiters", "_",
+                        "sourceType", "json"));
+
+        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Torrent");
+
+        String expectedJson = IOUtils.toString(getClass().getResource("/json/examples/torrent.json"));
+        Object javaInstance = new Gson().fromJson(expectedJson, generatedType);
+        String actualJson = new Gson().toJson(javaInstance);
+
+        assertEqualsJson(expectedJson, actualJson);
+    }
+
+}

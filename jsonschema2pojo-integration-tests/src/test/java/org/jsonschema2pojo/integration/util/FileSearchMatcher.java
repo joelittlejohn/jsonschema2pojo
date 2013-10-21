@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
 /**
  * Matcher that is successful if the matched object is a file that contains the
@@ -82,5 +83,9 @@ public class FileSearchMatcher extends BaseMatcher<File> {
     @Override
     public void describeTo(Description description) {
         description.appendText("a file or directory that contains the text \"" + searchText + "\"");
+    }
+
+    public static Matcher<File> containsText(String searchText) {
+        return new FileSearchMatcher(searchText);
     }
 }
