@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
+import org.jsonschema2pojo.exception.GenerationException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,12 +34,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-import org.jsonschema2pojo.exception.GenerationException;
 
 public class SchemaGenerator {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-        .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+            .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     public ObjectNode schemaFromExample(URL example) {
 
@@ -128,6 +129,10 @@ public class SchemaGenerator {
 
         if (valueAsJavaType == null) {
             return NullSerializer.instance;
+        } else if (valueAsJavaType instanceof Long) {
+            // longs are 'integers' in schema terms
+            JsonSerializer<Object> valueSerializer = serializerProvider.findValueSerializer(Integer.class, null);
+            return (SchemaAware) valueSerializer;
         } else {
             Class<? extends Object> javaTypeForValue = valueAsJavaType.getClass();
             JsonSerializer<Object> valueSerializer = serializerProvider.findValueSerializer(javaTypeForValue, null);

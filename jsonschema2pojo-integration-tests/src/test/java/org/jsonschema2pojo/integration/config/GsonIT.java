@@ -61,19 +61,25 @@ public class GsonIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleGsonMakesTypesThatWorkWithGson() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, IOException {
 
-        File generatedOutputDirectory = generate("/json/examples/torrent.json", "com.example",
+        File generatedOutputDirectory = generate("/json/examples/", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_",
-                        "sourceType", "json"));
+                        "sourceType", "json",
+                        "useLongIntegers", true));
 
         ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.Torrent");
+        assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
+        assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
+    }
 
-        String expectedJson = IOUtils.toString(getClass().getResource("/json/examples/torrent.json"));
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
+        Class generatedType = resultsClassLoader.loadClass(className);
+
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource));
         Object javaInstance = new Gson().fromJson(expectedJson, generatedType);
         String actualJson = new Gson().toJson(javaInstance);
 

@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.json;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -34,7 +34,8 @@ public class RealJsonExamplesIT {
     public void getUserDataProducesValidTypes() throws Exception {
 
         ClassLoader resultsClassLoader = generateAndCompile("/json/examples/GetUserData.json", "com.example",
-                config("sourceType", "json"));
+                config("sourceType", "json",
+                        "useLongIntegers", true));
 
         Class<?> userDataType = resultsClassLoader.loadClass("com.example.GetUserData");
 
