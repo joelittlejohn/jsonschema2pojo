@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -30,12 +30,31 @@ import org.junit.Test;
 public class OutputEncodingIT {
 
     @Test
-    public void writeExtendedCharactersAsUtf8SourceCode() throws IOException {
+    public void writeExtendedCharactersAsUtf8SourceCodeByDefault() throws IOException {
         File outputDirectory = generate("/schema/regression/extendedCharacters.json", "com.example");
         File sourceFile = new File(outputDirectory, "com/example/ExtendedCharacters.java");
         String javaSource = IOUtils.toString(new FileInputStream(sourceFile), "utf-8");
 
         assertThat(javaSource, containsString("ЫЩДђиЊЉЯ"));
+    }
+
+    @Test
+    public void writeAsUtf8WorksWhenPlatformCharsetIsSingleByte() throws IOException {
+
+        String platformCharset = System.getProperty("file.encoding");
+
+        try {
+            System.setProperty("file.encoding", "Cp1252");
+
+            File outputDirectory = generate("/schema/regression/extendedCharacters.json", "com.example");
+            File sourceFile = new File(outputDirectory, "com/example/ExtendedCharacters.java");
+            String javaSource = IOUtils.toString(new FileInputStream(sourceFile), "utf-8");
+
+            assertThat(javaSource, containsString("ЫЩДђиЊЉЯ"));
+        } finally {
+            System.setProperty("file.encoding", platformCharset);
+        }
+
     }
 
     @Test

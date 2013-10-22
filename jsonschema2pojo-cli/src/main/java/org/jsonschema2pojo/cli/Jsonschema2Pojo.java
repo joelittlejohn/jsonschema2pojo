@@ -35,9 +35,9 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.writer.FileCodeWriter;
 
 /**
  * Main class, providing a command line interface for jsonschema2pojo.
