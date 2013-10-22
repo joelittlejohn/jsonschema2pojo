@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "TimeFormat" : {
+            "enum" : ["12h", "24h"]
+        }
+    }
+}
