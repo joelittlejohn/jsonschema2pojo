@@ -150,6 +150,15 @@ public class EnumIT {
     }
 
     @Test
+    public void enumWithUppercaseProperty() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithUppercaseProperty.json", "com.example");
+
+        resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty");
+        resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty$TimeFormat");
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
 

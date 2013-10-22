@@ -218,8 +218,8 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     private String getEnumName(String nodeName) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
-        return ruleFactory.getNameHelper().normalizeName(className);
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(nodeName);
+        return ruleFactory.getNameHelper().normalizeName(className, true);
     }
 
     private String getConstantName(String nodeName) {
