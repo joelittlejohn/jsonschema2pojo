@@ -70,6 +70,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useLongIntegers;
 
+    private boolean useDoubleNumbers;
+
     private boolean includeHashcodeAndEquals = true;
 
     private boolean includeToString = true;
@@ -199,6 +201,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setUseLongIntegers(boolean useLongIntegers) {
         this.useLongIntegers = useLongIntegers;
+    }
+
+    /**
+     * Sets the 'useDoubleNumbers' property of this class
+     * 
+     * @param useDoubleNumbers
+     *            Whether to use the java type <code>double</code> (or
+     *            {@link java.lang.Double}) instead of <code>float</code> (or
+     *            {@link java.lang.Float}) when representing the JSON Schema
+     *            type 'number'.
+     */
+    public void setUseDoubleNumbers(boolean useDoubleNumbers) {
+        this.useDoubleNumbers = useDoubleNumbers;
     }
 
     /**
@@ -417,6 +432,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseLongIntegers() {
         return useLongIntegers;
+    }
+
+    @Override
+    public boolean isUseDoubleNumbers() {
+        return useDoubleNumbers;
     }
 
     @Override

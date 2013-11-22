@@ -82,7 +82,8 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            type = unboxIfNecessary(jClassContainer.owner().ref(Double.class), ruleFactory.getGenerationConfig());
+            JType typeToUseForNumbers = getNumberType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
+            type = unboxIfNecessary(typeToUseForNumbers, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
             JType typeToUseForIntegers = getIntegerType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
@@ -133,6 +134,14 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             return owner.ref(Long.class);
         } else {
             return owner.ref(Integer.class);
+        }
+    }
+
+    private JType getNumberType(JCodeModel owner, GenerationConfig config) {
+        if (config.isUseDoubleNumbers()) {
+            return owner.ref(Double.class);
+        } else {
+            return owner.ref(Float.class);
         }
     }
 

@@ -78,6 +78,7 @@ public class ArrayRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
+        when(config.isUseDoubleNumbers()).thenReturn(true);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 
@@ -103,6 +104,7 @@ public class ArrayRuleTest {
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
         when(config.isUsePrimitives()).thenReturn(true);
+        when(config.isUseDoubleNumbers()).thenReturn(true);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
 

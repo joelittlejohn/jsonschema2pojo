@@ -63,6 +63,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
 
+    @Parameter(names = { "-f", "--float-numbers" }, description = "Use float (or Float) instead of double (or Double) when the JSON Schema type 'number' is encountered")
+    private boolean useFloatNumbers = false;
+
     @Parameter(names = { "-E", "--omit-hashcode-and-equals" }, description = "Omit hashCode and equals methods in the generated Java types")
     private boolean omitHashcodeAndEquals = false;
 
@@ -160,6 +163,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseLongIntegers() {
         return useLongIntegers;
+    }
+
+    @Override
+    public boolean isUseDoubleNumbers() {
+        return !useFloatNumbers;
     }
 
     @Override

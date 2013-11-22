@@ -127,6 +127,9 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.fullName().equals(long.class.getName())) {
             return JExpr.lit(Long.parseLong(node.asText()));
 
+        } else if (fieldType.fullName().equals(float.class.getName())) {
+            return JExpr.lit(Float.parseFloat(node.asText()));
+
         } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
 
             return getDefaultEnum(fieldType, node);

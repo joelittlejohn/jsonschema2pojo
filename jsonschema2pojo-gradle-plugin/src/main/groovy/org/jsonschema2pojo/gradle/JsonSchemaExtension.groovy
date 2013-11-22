@@ -35,6 +35,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String targetPackage
   char[] propertyWordDelimiters
   boolean useLongIntegers
+  boolean useDoubleNumbers
   boolean includeHashcodeAndEquals
   boolean includeToString
   AnnotationStyle annotationStyle
@@ -94,6 +95,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetPackage = ${targetPackage}
        |propertyWordDelimiters = ${Arrays.toString(propertyWordDelimiters)}
        |useLongIntegers = ${useLongIntegers}
+       |useDoubleNumbers = ${useDoubleNumbers}
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}
        |includeToString = ${includeToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}

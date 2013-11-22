@@ -154,6 +154,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useLongIntegers = false;
 
     /**
+     * Whether to use the java type <code>double</code> (or <code>Double</code>)
+     * instead of <code>float</code> (or <code>Float</code>) when representing
+     * the JSON Schema type 'number'.
+     * 
+     * @parameter expression="${jsonschema2pojo.useDoubleNumbers}"
+     *            default-value="true"
+     * @since 0.2.2
+     */
+    private boolean useDoubleNumbers = true;
+
+    /**
      * Whether to include <code>hashCode</code> and <code>equals</code> methods
      * in generated Java types.
      * 
@@ -392,6 +403,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseLongIntegers() {
         return useLongIntegers;
+    }
+
+    @Override
+    public boolean isUseDoubleNumbers() {
+        return useDoubleNumbers;
     }
 
     @Override
