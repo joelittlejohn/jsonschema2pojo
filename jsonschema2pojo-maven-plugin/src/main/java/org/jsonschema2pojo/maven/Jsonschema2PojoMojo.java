@@ -160,7 +160,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * 
      * @parameter expression="${jsonschema2pojo.useDoubleNumbers}"
      *            default-value="true"
-     * @since 0.2.2
+     * @since 0.4.0
      */
     private boolean useDoubleNumbers = true;
 

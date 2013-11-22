@@ -70,7 +70,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useLongIntegers;
 
-    private boolean useDoubleNumbers;
+    private boolean useDoubleNumbers = true;
 
     private boolean includeHashcodeAndEquals = true;
 
