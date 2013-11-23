@@ -80,6 +80,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    @Override
+    public boolean isUseDoubleNumbers() {
+        return true;
+    }
+
     /**
      * @return <code>true</code>
      */

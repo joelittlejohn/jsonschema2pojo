@@ -175,6 +175,28 @@ public class TypeIT {
     }
 
     @Test
+    public void useDoubleNumbersParameterCausesNumbersToBecomeDoubles() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/numberAsDouble.json", "com.example", config("useDoubleNumbers", true));
+        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsDouble");
+
+        Method getterMethod = classWithDoubleProperty.getMethod("getDoubleProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Double"));
+
+    }
+
+    @Test
+    public void useDoubleNumbersParameterCausesPrimitiveNumbersToBecomeDoubles() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/numberAsDouble.json", "com.example",
+                config("useDoubleNumbers", true, "usePrimitives", true));
+        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsDouble");
+
+        Method getterMethod = classWithDoubleProperty.getMethod("getDoubleProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("double"));
+    }
+
+    @Test
     public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         Class<?> classWithUnionProperties = generateAndCompile("/schema/type/unionTypes.json", "com.example").loadClass("com.example.UnionTypes");

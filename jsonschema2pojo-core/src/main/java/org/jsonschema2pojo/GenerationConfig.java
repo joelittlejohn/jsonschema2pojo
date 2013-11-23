@@ -89,6 +89,16 @@ public interface GenerationConfig {
     boolean isUseLongIntegers();
 
     /**
+     * Gets the 'useDoubleNumbers' configuration option.
+     * 
+     * @return Whether to use the java type <code>double</code> (or
+     *         {@link java.lang.Double}) instead of <code>float</code> (or
+     *         {@link java.lang.Float}) when representing the JSON Schema type
+     *         'number'.
+     */
+    boolean isUseDoubleNumbers();
+
+    /**
      * Gets the 'includeHashcodeAndEquals' configuration option.
      * 
      * @return Whether to use include <code>hashCode</code> and

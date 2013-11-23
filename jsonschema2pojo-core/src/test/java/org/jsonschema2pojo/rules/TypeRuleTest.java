@@ -118,6 +118,8 @@ public class TypeRuleTest {
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
 
+        when(config.isUseDoubleNumbers()).thenReturn(true);
+
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is(Double.class.getName()));
@@ -132,6 +134,7 @@ public class TypeRuleTest {
         objectNode.put("type", "number");
 
         when(config.isUsePrimitives()).thenReturn(true);
+        when(config.isUseDoubleNumbers()).thenReturn(true);
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
