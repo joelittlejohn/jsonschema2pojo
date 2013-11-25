@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -175,25 +175,25 @@ public class TypeIT {
     }
 
     @Test
-    public void useDoubleNumbersParameterCausesNumbersToBecomeDoubles() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/numberAsDouble.json", "com.example", config("useDoubleNumbers", true));
-        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsDouble");
+    public void useDoubleNumbersFalseCausesNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false));
+        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsFloat");
 
-        Method getterMethod = classWithDoubleProperty.getMethod("getDoubleProperty");
+        Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
 
-        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Double"));
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Float"));
 
     }
 
     @Test
-    public void useDoubleNumbersParameterCausesPrimitiveNumbersToBecomeDoubles() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/numberAsDouble.json", "com.example",
-                config("useDoubleNumbers", true, "usePrimitives", true));
-        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsDouble");
+    public void useDoubleNumbersFalseCausesPrimitiveNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/numberAsFloat.json", "com.example",
+                config("useDoubleNumbers", false, "usePrimitives", true));
+        Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsFloat");
 
-        Method getterMethod = classWithDoubleProperty.getMethod("getDoubleProperty");
+        Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
 
-        assertThat(getterMethod.getReturnType().getName(), is("double"));
+        assertThat(getterMethod.getReturnType().getName(), is("float"));
     }
 
     @Test
