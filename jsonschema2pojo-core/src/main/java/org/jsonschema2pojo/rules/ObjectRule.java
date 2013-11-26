@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
