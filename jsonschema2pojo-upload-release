@@ -5,7 +5,7 @@
 # To create a new release:
 #
 # 1. Maven release command:
-#     mvn clean release:clean release:prepare release:perform -DignoreSnapshots -DautoVersionSubmodules
+#     mvn clean release:clean release:prepare release:perform -DautoVersionSubmodules
 #
 # 2. Close and Release snapshots repo at oss.sonatype.org
 #
