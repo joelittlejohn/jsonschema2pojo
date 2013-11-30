@@ -120,7 +120,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     }
 
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
-        JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperties");
+        JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperty");
 
         ruleFactory.getAnnotator().anySetter(setter);
 

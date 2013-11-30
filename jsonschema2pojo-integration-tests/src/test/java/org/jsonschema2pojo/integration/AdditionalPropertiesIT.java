@@ -64,16 +64,11 @@ public class AdditionalPropertiesIT {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
 
         Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
+        String jsonWithAdditionalProperties = "{\"a\":1, \"b\":2};";
+        Object instanceWithAdditionalProperties = mapper.readValue(jsonWithAdditionalProperties, classWithAdditionalProperties);
 
-        Object deserialized = classWithAdditionalProperties.newInstance();
-
-        Method setter = classWithAdditionalProperties.getMethod("setAdditionalProperties", String.class, Object.class);
-        setter.invoke(deserialized, "a", "1");
-        setter.invoke(deserialized, "b", "2");
-
-        String jsonString = mapper.writeValueAsString(deserialized);
-        JsonNode jsonNode = mapper.readTree(jsonString);
-
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(instanceWithAdditionalProperties));
+        
         assertThat(jsonNode.path("a").asText(), is("1"));
         assertThat(jsonNode.path("b").asInt(), is(2));
     }
@@ -100,7 +95,7 @@ public class AdditionalPropertiesIT {
         assertThat(((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[1], is(equalTo((Type) String.class)));
 
         // setter with these types should exist:
-        classWithNoAdditionalProperties.getMethod("setAdditionalProperties", String.class, String.class);
+        classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, String.class);
 
     }
 
@@ -116,7 +111,7 @@ public class AdditionalPropertiesIT {
         assertThat(((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[1], is(equalTo((Type) propertyValueType)));
 
         // setter with these types should exist:
-        classWithNoAdditionalProperties.getMethod("setAdditionalProperties", String.class, propertyValueType);
+        classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, propertyValueType);
 
     }
 
@@ -132,7 +127,7 @@ public class AdditionalPropertiesIT {
         assertThat(listType.getActualTypeArguments()[0], is(equalTo((Type) String.class)));
 
         // setter with these types should exist:
-        classWithNoAdditionalProperties.getMethod("setAdditionalProperties", String.class, List.class);
+        classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, List.class);
 
     }
 
@@ -148,7 +143,7 @@ public class AdditionalPropertiesIT {
         assertThat(((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[1], is(equalTo((Type) Boolean.class)));
 
         // setter with these types should exist:
-        classWithNoAdditionalProperties.getMethod("setAdditionalProperties", String.class, boolean.class);
+        classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, boolean.class);
 
     }
 
