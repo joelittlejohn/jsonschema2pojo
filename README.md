@@ -9,7 +9,7 @@ You can also use jsonschema2pojo as a Maven plugin, an Ant task, a command line 
 A very simple Maven example:
 ```xml
 <plugin>
-    <groupId>com.googlecode.jsonschema2pojo</groupId>
+    <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>
     <version>0.3.7</version>
     <configuration>
@@ -40,7 +40,3 @@ Project resources:
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/139c0571887dac6cc92b0dfba6780b46 "githalytics.com")](http://githalytics.com/joelittlejohn/jsonschema2pojo)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joelittlejohn/jsonschema2pojo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
