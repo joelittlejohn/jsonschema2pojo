@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0
+* Rename setAdditionalProperties to avoid confusing naive introspectors ([#136](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/136))
+* ExtendedCharacters tests fail on command line, but pass in Eclipse (Windows) ([#131](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/131))
+* Long integers become java.lang.Double when using JSON source type ([#130](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/130))
+* Integration tests in GsonIT suite fail on Windows ([#129](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/129))
+* JSON schema with enum member with a name starting with a capital letter, causes a generation of a code that doesn't compile ([#126](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/126))
+* Contribute Gradle plugin ([#123](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/123))
+* Corrected default annotationStyle to be jackson2 ([#122](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/122))
+* Enable maven plugin to recurse subdirectories for schema to code generation ([#117](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/117))
+* Migrate groupId to org.jsonschema2pojo ([#116](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/116))
+* Migrate package structure to org.jsonschema2pojo ([#115](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/115))
+* Allow system default charset to be overriden ([#113](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/113))
+* Configuration option to use Joda types ([#110](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/110))
+* Default propertyWordDelimiters to commonly used characters ([#109](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/109))
+
 ## 0.3.7
 * Standalone enums have wrong package name ([#103](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/103))
 * Type names are printed to stdout during code generation ([#101](https://api.github.com/repos/joelittlejohn/jsonschema2pojo/issues/101))

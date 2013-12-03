@@ -11,7 +11,7 @@ A very simple Maven example:
 <plugin>
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-    <version>0.3.7</version>
+    <version>0.4.0</version>
     <configuration>
         <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
         <targetPackage>com.example.types</targetPackage>
@@ -29,9 +29,9 @@ A very simple Maven example:
 Useful pages:
   * **[Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
   * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
-  * [Latest Javadocs](http://wiki.jsonschema2pojo.googlecode.com/git/javadocs/0.3.7/index.html)
-  * [Documentation for the Maven plugin](http://wiki.jsonschema2pojo.googlecode.com/git/site/0.3.7/generate-mojo.html)
-  * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.7/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
+  * [Latest Javadocs](http://wiki.jsonschema2pojo.googlecode.com/git/javadocs/0.4.0/index.html)
+  * [Documentation for the Maven plugin](http://wiki.jsonschema2pojo.googlecode.com/git/site/0.4.0/generate-mojo.html)
+  * [Documentation for the Ant task](http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.4.0/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html)
 
 Project resources:
   * [Downloads](https://github.com/joelittlejohn/jsonschema2pojo/releases)
