@@ -30,7 +30,7 @@ Useful pages:
   * **[Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
   * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
   * [Latest Javadocs](http://wiki.jsonschema2pojo.googlecode.com/git/javadocs/0.4.0/index.html)
-  * [Documentation for the Maven plugin](http://wiki.jsonschema2pojo.googlecode.com/git/site/0.4.0/generate-mojo.html)
+  * [Documentation for the Maven plugin](http://joelittlejohn.github.io/jsonschema2pojo/site/0.4.0/generate-mojo.html)
   * [Documentation for the Ant task](http://joelittlejohn.github.io/jsonschema2pojo/site/0.4.0/Jsonschema2PojoTask.html)
 
 Project resources:
