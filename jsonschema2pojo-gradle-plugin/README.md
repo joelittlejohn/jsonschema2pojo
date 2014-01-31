@@ -68,6 +68,10 @@ jsonSchema2Pojo {
   // JSON Schema type 'integer'.
   useLongIntegers = false
 
+  // Whether to use the java type double (or Double) instead of float (or Float) when representing
+  // the JSON Schema type 'number'.
+  useDoubleNumbers = false
+
   // Whether to include hashCode and equals methods in generated Java types.
   includeHashcodeAndEquals = true
 
