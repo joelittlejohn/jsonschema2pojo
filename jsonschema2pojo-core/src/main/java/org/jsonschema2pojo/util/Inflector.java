@@ -92,8 +92,10 @@ public class Inflector {
         singular("(matr)ices$", "$1ix");
         singular("(quiz)zes$", "$1");
 
+        singular("men$", "man");
+        plural("man$", "men");
+
         irregular("person", "people");
-        irregular("man", "men");
         irregular("child", "children");
         irregular("sex", "sexes");
         irregular("move", "moves");
