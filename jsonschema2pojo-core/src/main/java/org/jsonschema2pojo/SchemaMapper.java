@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 /**
  * Generates Java types from a JSON schema. Can accept a factory which will be
@@ -75,13 +76,13 @@ public class SchemaMapper {
      * @throws IOException
      *             if the schema content cannot be read
      */
-    public void generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
+    public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
 
         JPackage jpackage = codeModel._package(packageName);
 
         ObjectNode schemaNode = readSchema(schemaUrl);
 
-        ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
 
     }
 
