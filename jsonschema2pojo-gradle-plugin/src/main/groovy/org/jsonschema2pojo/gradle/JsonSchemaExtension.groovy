@@ -54,6 +54,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     targetPackage = ''
     propertyWordDelimiters = [] as char[]
     useLongIntegers = false
+    useDoubleNumbers = true
     includeHashcodeAndEquals = true
     includeToString = true
     annotationStyle = AnnotationStyle.JACKSON
