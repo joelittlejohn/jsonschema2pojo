@@ -87,7 +87,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   public void setSourceType(String sourceType) {
-    SourceType.JSONSCHEMA.valueOf(sourceType.toUpperCase())
+    sourceType = SourceType.valueOf(sourceType.toUpperCase())
   }
 
   @Override
