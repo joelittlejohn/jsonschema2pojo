@@ -298,6 +298,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useJodaDates = false;
 
     /**
+     * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
+     * imports when adding equals, hashCode and toString methods.
+     * 
+     * @parameter expression="${jsonschema2pojo.useCommonsLang3}" default="false"
+     * @since 0.4.1
+     */
+    private boolean useCommonsLang3 = false;
+    
+    /**
      * The project being built.
      * 
      * @parameter expression="${project}"
@@ -462,6 +471,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJodaDates() {
         return useJodaDates;
+    }
+    
+    @Override
+    public boolean isUseCommonsLang3() {
+        return useCommonsLang3;
     }
 
 }

@@ -121,6 +121,10 @@ jsonSchema2Pojo {
   // Whether to use {@link org.joda.time.DateTime} instead of {@link java.util.Date} when adding
   // date type fields to generated Java types.
   boolean useJodaDates = false
+
+  // Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, 
+  // hashCode and toString methods.
+  boolean useCommonsLang3 = false
 }
 ```
 

@@ -198,4 +198,12 @@ public interface GenerationConfig {
      */
     boolean isUseJodaDates();
 
+    /**
+     * Gets the 'useCommonsLang3' configuration option.
+     * 
+     * @return Whether to use commons-lang 3.x imports instead of commons-lang
+     *         2.x imports when adding equals, hashCode and toString methods.
+     */
+    boolean isUseCommonsLang3();
+    
 }

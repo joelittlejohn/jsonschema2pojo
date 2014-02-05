@@ -23,14 +23,12 @@ import java.lang.reflect.Modifier;
 
 import javax.annotation.Generated;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import com.fasterxml.jackson.databind.JsonNode;
+
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -198,8 +196,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addToString(JDefinedClass jclass) {
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
 
+        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
+                org.apache.commons.lang3.builder.ToStringBuilder.class : 
+                    org.apache.commons.lang.builder.ToStringBuilder.class;
+        
         JBlock body = toString.body();
-        JInvocation reflectionToString = jclass.owner().ref(ToStringBuilder.class).staticInvoke("reflectionToString");
+        JInvocation reflectionToString = jclass.owner().ref(toStringBuilder).staticInvoke("reflectionToString");
         reflectionToString.arg(JExpr._this());
         body._return(reflectionToString);
 
@@ -209,8 +211,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addHashCode(JDefinedClass jclass) {
         JMethod hashCode = jclass.method(JMod.PUBLIC, int.class, "hashCode");
 
+        Class<?> hashcodeBuiler = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
+                org.apache.commons.lang3.builder.HashCodeBuilder.class : 
+                    org.apache.commons.lang.builder.HashCodeBuilder.class;
+        
         JBlock body = hashCode.body();
-        JInvocation reflectionHashCode = jclass.owner().ref(HashCodeBuilder.class).staticInvoke("reflectionHashCode");
+        JInvocation reflectionHashCode = jclass.owner().ref(hashcodeBuiler).staticInvoke("reflectionHashCode");
         reflectionHashCode.arg(JExpr._this());
         body._return(reflectionHashCode);
 
@@ -221,8 +227,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JMethod equals = jclass.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
 
+        Class<?> equalsBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
+                org.apache.commons.lang3.builder.EqualsBuilder.class : 
+                    org.apache.commons.lang.builder.EqualsBuilder.class;
+
         JBlock body = equals.body();
-        JInvocation reflectionEquals = jclass.owner().ref(EqualsBuilder.class).staticInvoke("reflectionEquals");
+        JInvocation reflectionEquals = jclass.owner().ref(equalsBuilder).staticInvoke("reflectionEquals");
         reflectionEquals.arg(JExpr._this());
         reflectionEquals.arg(otherObject);
         body._return(reflectionEquals);

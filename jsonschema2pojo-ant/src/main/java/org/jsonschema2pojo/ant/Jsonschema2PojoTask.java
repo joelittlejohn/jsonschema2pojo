@@ -86,11 +86,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Path classpath;
 
-    private boolean removeOldOutput;
+    private boolean removeOldOutput = false;
 
     private String outputEncoding = "UTF-8";
 
-    private boolean useJodaDates;
+    private boolean useJodaDates = false;
+    
+    private boolean useCommonsLang3 = false;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -390,6 +392,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.useJodaDates = useJodaDates;
     }
 
+    /**
+     * Sets the 'useCommonsLang3' property of this class
+     * 
+     * @param useCommonsLang3
+     *            Whether to use commons-lang 3.x imports instead of
+     *            commons-lang 2.x imports when adding equals, hashCode and
+     *            toString methods.
+     */
+    public void setUseCommonsLang3(boolean useCommonsLang3) {
+        this.useCommonsLang3 = useCommonsLang3;
+    }
+    
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -505,6 +519,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJodaDates() {
         return useJodaDates;
+    }
+    
+    @Override
+    public boolean isUseCommonsLang3() {
+        return useCommonsLang3;
     }
 
 }

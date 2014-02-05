@@ -89,11 +89,14 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-R", "--remove-old-output" }, description = "Whether to empty the target directory before generation occurs, to clear out all source files that have been generated previously (indiscriminately deletes all files and folders).")
     private boolean removeOldOutput = false;
 
-    @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files")
+    @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files.")
     private String outputEncoding = "UTF-8";
 
     @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java.util.Date when adding date type fields to generated Java types.")
     private boolean useJodaDates = false;
+
+    @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
+    private boolean useCommonsLang3 = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -215,6 +218,11 @@ public class Arguments implements GenerationConfig {
         return useJodaDates;
     }
 
+    @Override
+    public boolean isUseCommonsLang3() {
+        return useCommonsLang3;
+    }
+    
     protected void exit(int status) {
         System.exit(status);
     }

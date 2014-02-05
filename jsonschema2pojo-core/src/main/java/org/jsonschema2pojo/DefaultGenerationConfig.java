@@ -156,4 +156,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isUseJodaDates() {
         return false;
     }
+    
+    @Override
+    public boolean isUseCommonsLang3() {
+        return false;
+    }
 }

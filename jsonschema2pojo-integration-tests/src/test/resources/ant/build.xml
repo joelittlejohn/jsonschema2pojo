@@ -36,7 +36,9 @@
                          annotationStyle="NONE"
         	             customAnnotator="org.jsonschema2pojo.NoopAnnotator"
                          includeJsr303Annotations="true"
-        	             classpathRef="custom.libs">
+                         classpathRef="custom.libs"
+                         useJodaDates="true"
+                         useCommonsLang3="true">
         	<classpath>
                 <fileset dir="${project.build.directory}/custom-libs">
                     <include name="**/*.jar" />

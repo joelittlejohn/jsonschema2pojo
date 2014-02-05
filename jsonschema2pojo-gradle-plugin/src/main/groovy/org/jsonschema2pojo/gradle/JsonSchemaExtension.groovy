@@ -45,6 +45,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean removeOldOutput
   String outputEncoding
   boolean useJodaDates
+  boolean useCommonsLang3
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -62,6 +63,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeJsr303Annotations = false
     sourceType = SourceType.JSONSCHEMA
     outputEncoding = 'UTF-8'
+    useJodaDates = false
+    useCommonsLang3 = false
   }
 
   @Override
@@ -106,6 +109,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |removeOldOutput = ${removeOldOutput}
        |outputEncoding = ${outputEncoding}
        |useJodaDates = ${useJodaDates}
+       |useCommonsLang3 = ${useCommonsLang3}
      """.stripMargin()
   }
 }
