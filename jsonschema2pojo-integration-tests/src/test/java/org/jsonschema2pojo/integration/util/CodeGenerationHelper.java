@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

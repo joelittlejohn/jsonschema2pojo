@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;

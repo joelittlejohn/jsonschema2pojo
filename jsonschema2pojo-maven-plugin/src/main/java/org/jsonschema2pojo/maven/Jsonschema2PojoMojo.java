@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.maven;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.IOException;

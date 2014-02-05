@@ -18,7 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static java.util.Arrays.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

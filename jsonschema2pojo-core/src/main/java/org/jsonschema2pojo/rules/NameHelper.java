@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.rules;
 
 import static java.lang.Character.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import org.jsonschema2pojo.GenerationConfig;
 

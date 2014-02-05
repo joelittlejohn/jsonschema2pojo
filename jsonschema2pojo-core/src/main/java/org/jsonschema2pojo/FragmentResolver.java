@@ -17,7 +17,7 @@
 package org.jsonschema2pojo;
 
 import static java.util.Arrays.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;

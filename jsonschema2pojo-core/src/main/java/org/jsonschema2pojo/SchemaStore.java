@@ -16,9 +16,7 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang.StringUtils.stripEnd;
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBefore;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.net.URI;
 import java.util.HashMap;

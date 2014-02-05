@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
