@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "properties" : {
+        "a" : {
+            "type" : "object",
+            "javaType" : "java.util.Map<String,Integer>"
+        }
+    }
+}

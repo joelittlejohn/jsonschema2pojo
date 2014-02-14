@@ -23,7 +23,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -233,6 +236,19 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getInterfaces().length, is(2));
         assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Cloneable.class));
         assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Serializable.class));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Test
+    public void genericTypeCanBeIncludedInJavaType() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        Class<?> classWithNameConflict = generateAndCompile("/schema/type/genericJavaType.json", "com.example").loadClass("com.example.GenericJavaType");
+
+        Method getterMethod = classWithNameConflict.getMethod("getA");
+
+        assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType)getterMethod.getGenericReturnType()).getActualTypeArguments()[0], is(equalTo((Type)String.class)));
+        assertThat(((ParameterizedType)getterMethod.getGenericReturnType()).getActualTypeArguments()[1], is(equalTo((Type)Integer.class)));
     }
 
 }

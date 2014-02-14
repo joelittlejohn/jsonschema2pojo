@@ -21,6 +21,9 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.ArrayUtils.*;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -146,15 +149,21 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         try {
             if (node.has("javaType")) {
-                String fqn = node.get("javaType").asText();
+                String fqn = substringBefore(node.get("javaType").asText(), "<");
+                String[] genericArguments = split(substringBetween(node.get("javaType").asText(), "<", ">"), ",");
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
 
                 try {
-                    Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
-                    throw new ClassAlreadyExistsException(_package.owner().ref(existingClass));
+                    JClass existingClass = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
+                    
+                    if (isNotEmpty(genericArguments)) {
+                        existingClass = addGenericArguments(_package, existingClass, genericArguments);
+                    }
+                            
+                    throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
                     newType = _package.owner()._class(fqn);
                 }
@@ -169,6 +178,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         return newType;
 
+    }
+
+    private JClass addGenericArguments(JPackage _package, JClass existingClass, String[] genericArgumentClassNames) {
+        JClass[] genericArgumentClasses = new JClass[genericArgumentClassNames.length];
+        for (int i=0; i<genericArgumentClasses.length; i++) {
+            genericArgumentClasses[i] = _package.owner().ref(genericArgumentClassNames[i]);
+        }
+        
+        return existingClass.narrow(genericArgumentClasses);
     }
 
     private boolean isFinal(JType superType) {
