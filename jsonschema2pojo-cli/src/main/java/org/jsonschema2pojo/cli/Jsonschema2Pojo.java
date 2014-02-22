@@ -100,8 +100,8 @@ public final class Jsonschema2Pojo {
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
-            CodeWriter sourcesWriter = new FileCodeWriter(config.getTargetDirectory(), config.getOutputEncoding());
-            CodeWriter resourcesWriter = new FileCodeWriter(config.getTargetDirectory(), config.getOutputEncoding());
+            CodeWriter sourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
+            CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
             codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());

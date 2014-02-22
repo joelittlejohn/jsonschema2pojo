@@ -31,9 +31,9 @@ import com.sun.codemodel.util.UnicodeEscapeWriter;
  * with {@link com.sun.codemodel.util.EncoderFactory#createEncoder(String)} that
  * causes the given encoding to be ignored).
  */
-public class FileCodeWriter extends com.sun.codemodel.writer.FileCodeWriter {
+public class FileCodeWriterWithEncoding extends com.sun.codemodel.writer.FileCodeWriter {
 
-    public FileCodeWriter(File target, String encoding) throws IOException {
+    public FileCodeWriterWithEncoding(File target, String encoding) throws IOException {
         super(target, encoding);
     }
 
