@@ -128,6 +128,7 @@ public final class Jsonschema2Pojo {
         }
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
     private static void delete(File f) {
         if (f.isDirectory()) {
             for (File child : f.listFiles()) {
