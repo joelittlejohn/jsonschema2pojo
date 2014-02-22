@@ -491,7 +491,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     public void setClasspath(Path classpath) {
-        if (classpath == null) {
+        if (this.classpath == null) {
             this.classpath = classpath;
         } else {
             this.classpath.append(classpath);
