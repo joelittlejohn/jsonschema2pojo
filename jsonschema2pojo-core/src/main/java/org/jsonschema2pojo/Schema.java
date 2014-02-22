@@ -58,7 +58,7 @@ public class Schema {
     }
 
     public boolean isGenerated() {
-        return (javaType != null);
+        return javaType != null;
     }
 
 }

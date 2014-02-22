@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static java.util.Arrays.*;
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +28,12 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -109,7 +110,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JFieldVar valueField = addValueField(_enum);
         addToString(_enum, valueField);
         addEnumConstants(node.path("enum"), _enum);
-        addFactoryMethod(node.path("enum"), _enum);
+        addFactoryMethod(_enum);
 
         return _enum;
     }
@@ -144,7 +145,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    private void addFactoryMethod(JsonNode node, JDefinedClass _enum) {
+    private void addFactoryMethod(JDefinedClass _enum) {
         JFieldVar quickLookupMap = addQuickLookupMap(_enum);
 
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");

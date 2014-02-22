@@ -74,6 +74,7 @@ public class SchemaStore {
      *            schema's id)
      * @return a schema object containing the contents of the given path
      */
+    @SuppressWarnings("PMD.UselessParentheses")
     public Schema create(Schema parent, String path) {
 
         if (path.equals("#")) {

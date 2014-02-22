@@ -19,8 +19,9 @@ package org.jsonschema2pojo.rules;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -207,7 +208,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private String getGetterName(String propertyName, JType type) {
-        String prefix = (type.equals(type.owner()._ref(boolean.class))) ? "is" : "get";
+        String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
         propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
         String getterName = prefix + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
 
