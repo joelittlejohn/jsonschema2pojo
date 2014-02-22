@@ -95,6 +95,9 @@ public class Inflector {
         singular("men$", "man");
         plural("man$", "men");
 
+        irregular("curve", "curves");
+        irregular("leaf", "leaves");
+        irregular("roof", "rooves");
         irregular("person", "people");
         irregular("child", "children");
         irregular("sex", "sexes");
