@@ -64,6 +64,13 @@
             "type" : "integer",
             "default" : null
         },
+        "arrayPropertyWithNullDefault" : {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            },
+            "default" : null
+        },
         "uniqueArrayWithDefault" : {
             "type" : "array",
             "uniqueItems" : true,

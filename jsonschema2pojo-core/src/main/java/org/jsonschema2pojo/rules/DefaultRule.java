@@ -82,7 +82,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         String fieldType = field.type().fullName();
 
-        if (fieldType.startsWith(List.class.getName())) {
+        if (defaultPresent && !field.type().isPrimitive() && node.isNull()) {
+            field.init(JExpr._null());
+            
+        } else if (fieldType.startsWith(List.class.getName())) {
             field.init(getDefaultList(field.type(), node));
 
         } else if (fieldType.startsWith(Set.class.getName())) {
@@ -97,10 +100,6 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     }
 
     private JExpression getDefaultValue(JType fieldType, JsonNode node) {
-
-        if (!fieldType.isPrimitive() && node.isNull()) {
-            return JExpr._null();
-        }
 
         fieldType = fieldType.unboxify();
 

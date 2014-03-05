@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -151,6 +151,17 @@ public class DefaultIT {
         Object instance = classWithDefaults.newInstance();
 
         Method getter = classWithDefaults.getMethod("getSimplePropertyWithNullDefault");
+
+        assertThat(getter.invoke(instance), is(nullValue()));
+
+    }
+    
+    @Test
+    public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getArrayPropertyWithNullDefault");
 
         assertThat(getter.invoke(instance), is(nullValue()));
 
