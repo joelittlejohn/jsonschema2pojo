@@ -5,7 +5,7 @@
                            [org.clojure/tools.logging "0.2.6"]
                            [compojure "1.1.5"]
                            [ring/ring-jetty-adapter "1.2.0"]
-                           [com.googlecode.jsonschema2pojo/jsonschema2pojo-core "0.3.7"]]
+                           [org.jsonschema2pojo/jsonschema2pojo-core "0.4.0"]]
             :plugins [[lein-ring "0.8.7"]]
             :ring {:handler jsonschema2pojo.server/app}
             :main jsonschema2pojo.server

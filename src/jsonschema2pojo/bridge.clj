@@ -2,11 +2,11 @@
   (:use [clojure.java.io]
         [clojure.string :only [upper-case]])
   (:import [java.io ByteArrayOutputStream]
-           [com.googlecode.jsonschema2pojo
+           [org.jsonschema2pojo
             Schema SchemaGenerator SchemaStore
             GenerationConfig DefaultGenerationConfig
             AnnotatorFactory AnnotationStyle SourceType ]
-           [com.googlecode.jsonschema2pojo.rules RuleFactory]
+           [org.jsonschema2pojo.rules RuleFactory]
            [com.sun.codemodel JCodeModel]
            [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]))
 
@@ -54,6 +54,10 @@
       (boolean (Boolean/valueOf (params "includetostring"))))
     (isIncludeJsr303Annotations []
       (boolean (Boolean/valueOf (params "includejsr303annotations"))))
+    (isUseJodaDates []
+      (boolean (Boolean/valueOf (params "usejodadates"))))
+    (isUseDoubleNumbers []
+      (boolean (Boolean/valueOf (params "usedoublenumbers"))))
     (getPropertyWordDelimiters []
       (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []

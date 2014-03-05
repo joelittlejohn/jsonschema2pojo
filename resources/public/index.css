@@ -1,7 +1,7 @@
 /* CodeMirror overrides */
 
 .CodeMirror-scroll {
-  height: 25em;
+  height: 35em;
 }
 .CodeMirror {
   border: 1px solid #aaa
