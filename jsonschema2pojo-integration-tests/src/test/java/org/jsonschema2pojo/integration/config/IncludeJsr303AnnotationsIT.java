@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
@@ -32,9 +32,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.hamcrest.Matcher;
-import org.junit.Test;
-
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
+import org.junit.Test;
 
 @SuppressWarnings("rawtypes")
 public class IncludeJsr303AnnotationsIT {
@@ -218,7 +217,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationIsAddedForSchemaRuleValidOnObject() throws ClassNotFoundException {
+    public void jsr303ValidAnnotationIsAddedForObject() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/validObject.json", "com.example",
                 config("includeJsr303Annotations", true));
 
@@ -237,7 +236,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationIsAddedForSchemaRuleValidOnArrayOfObjects() throws ClassNotFoundException, NoSuchFieldException {
+    public void jsr303ValidAnnotationIsAddedForArray() throws ClassNotFoundException, NoSuchFieldException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/validArray.json", "com.example",
                 config("includeJsr303Annotations", true));
 

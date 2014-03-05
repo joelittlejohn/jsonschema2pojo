@@ -116,7 +116,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, field, schema);
 
-        if (isObject(node) || isArrayOfObjects(node, schema)) {
+        if (isObject(node) || isArray(node)) {
             ruleFactory.getValidRule().apply(nodeName, node, field, schema);
         }
 
@@ -134,12 +134,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private boolean isObject(JsonNode node) {
-        return node.has("type") && node.get("type").asText().equals("object");
+        return node.path("type").asText().equals("object");
     }
-
-    private boolean isArrayOfObjects(JsonNode node, Schema parent) {
-        node = resolveRefs(node.path("items"), parent);
-        return node.path("type").asText().equals("object") || node.path("type").asText().equals("array");
+    private boolean isArray(JsonNode node) {
+        return node.path("type").asText().equals("array");
     }
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
