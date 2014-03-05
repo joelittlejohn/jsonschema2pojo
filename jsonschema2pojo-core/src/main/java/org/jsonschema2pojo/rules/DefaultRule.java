@@ -16,19 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.jsonschema2pojo.Schema;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
@@ -40,10 +27,20 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import static org.apache.commons.lang3.StringUtils.*;
+import org.joda.time.DateTime;
+import org.jsonschema2pojo.Schema;
 
 /**
  * Applies the "enum" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
  */
@@ -64,7 +61,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * <p>
      * Collections (Lists and Sets) are initialized to an empty collection, even
      * when no default value is present in the schema (node is null).
-     * 
+     *
      * @param nodeName
      *            the name of the property which has (or may have) a default
      * @param node
@@ -84,7 +81,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         if (defaultPresent && !field.type().isPrimitive() && node.isNull()) {
             field.init(JExpr._null());
-            
+
         } else if (fieldType.startsWith(List.class.getName())) {
             field.init(getDefaultList(field.type(), node));
 
@@ -151,7 +148,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * <li>Using {@link Arrays#asList(Object...)} to initialize the list with
      * the correct default values
      * </ol>
-     * 
+     *
      * @param fieldType
      *            the java type that applies for this field ({@link List} with
      *            some generic type argument)
@@ -184,11 +181,11 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     /**
      * Creates a default value for a set property by:
      * <ol>
-     * <li>Creating a new {@link HashSet} with the correct generic type
+     * <li>Creating a new {@link LinkedHashSet} with the correct generic type
      * <li>Using {@link Arrays#asList(Object...)} to initialize the set with the
      * correct default values
      * </ol>
-     * 
+     *
      * @param fieldType
      *            the java type that applies for this field ({@link Set} with
      *            some generic type argument)
@@ -201,7 +198,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         JClass setGenericType = ((JClass) fieldType).getTypeParameters().get(0);
 
-        JClass setImplClass = fieldType.owner().ref(HashSet.class);
+        JClass setImplClass = fieldType.owner().ref(LinkedHashSet.class);
         setImplClass = setImplClass.narrow(setGenericType);
 
         JInvocation newSetImpl = JExpr._new(setImplClass);
