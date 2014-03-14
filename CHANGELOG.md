@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.1
+* Switch from HashSet to LinkedHashSet for uniqueItems arrays to preserve order ([#159](https://github.com/joelittlejohn/jsonschema2pojo/issues/159))
+* Add @Valid on all collections, not just those with items type "object" ([#158](https://github.com/joelittlejohn/jsonschema2pojo/issues/158))
+* Allow collections to be null by default ([#156](https://github.com/joelittlejohn/jsonschema2pojo/issues/156))
+* Add support for generic type arguments to javaType ([#151](https://github.com/joelittlejohn/jsonschema2pojo/issues/151))
+* sourceType config option is ignored by the gradle plugin ([#144](https://github.com/joelittlejohn/jsonschema2pojo/issues/144))
+* Array properties that include the word "men" in the name result in incorrectly named item class ([#142](https://github.com/joelittlejohn/jsonschema2pojo/issues/142))
+* Type "Number" is generating Floats instead of Double ([#141](https://github.com/joelittlejohn/jsonschema2pojo/issues/141))
+* Add config option to choose commons-lang3 for hashCode/toString implementation ([#140](https://github.com/joelittlejohn/jsonschema2pojo/issues/140))
+* Return JType from SchemaMapper.generate(...) ([#137](https://github.com/joelittlejohn/jsonschema2pojo/issues/137))
+
 ## 0.4.0
 * Rename setAdditionalProperties to avoid confusing naive introspectors ([#136](https://github.com/joelittlejohn/jsonschema2pojo/issues/136))
 * ExtendedCharacters tests fail on command line, but pass in Eclipse (Windows) ([#131](https://github.com/joelittlejohn/jsonschema2pojo/issues/131))

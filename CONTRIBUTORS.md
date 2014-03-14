@@ -11,3 +11,4 @@
 * Ben Manes <ben.manes@gmail.com>
 * Anton Khitrenovich <anton@khitrenovich.com>
 * Ángel Serrano <angelserranolaguna@gmail.com>
+* Chad Maron <chad.maron@warbyparker.com>
