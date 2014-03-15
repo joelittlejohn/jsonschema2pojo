@@ -11,24 +11,30 @@
 #
 # 3. Wait at least 2hrs for synchronization to central
 #
-# 4. Run this script to publish new release to googlecode
+# 4. Run this script to publish new release to github
 #
 set -e
 
-if [[ ! ("$#" == 3 ) ]]; then 
-    echo 'Usage: upload-release <old version> <new version> <googlecode password>'
+if [[ ! ("$#" == 4 ) ]]; then 
+    echo 'Usage: upload-release <old version> <new version> <github username> <github password>'
     exit 1
 fi
 
-if [[ "`which googlecode_upload`" == "" ]]; then
-    echo "Missing required command 'googlecode_upload'"
+if [[ "`which curl`" == "" ]]; then
+    echo "Missing required command 'curl'"
+    exit 1
+fi
+
+if [[ "`which jq`" == "" ]]; then
+    echo "Missing required command 'jq'"
     exit 1
 fi
 
 OLD_VERSION=$1
 VERSION=$2
-PASSWORD=$3
 WORKING_DIR=/tmp/jsonschema2pojo-$VERSION
+GITHUB_USERNAME=$3
+GITHUB_PASSWORD=$4
 
 # recreate release dir
 rm -rf $WORKING_DIR
@@ -57,68 +63,84 @@ pushd $WORKING_DIR
     # create the release archives
     pushd ..
         tar czf jsonschema2pojo-$VERSION.tar.gz jsonschema2pojo-$VERSION
-        zip --recurse-paths jsonschema2pojo-$VERSION.zip jsonschema2pojo-$VERSION
     popd
 
-    # checkout wiki to update & add docs
-    git clone https://code.google.com/p/jsonschema2pojo.wiki/ wiki
+    # clone gh-pages to update & add docs
+    git clone git@github.com:joelittlejohn/jsonschema2pojo.git -b gh-pages gh-pages
+    pushd gh-pages
 
-    pushd wiki
-
-        # extract javadocs to wiki
+        # extract javadocs to gh-pages
         mkdir -p javadocs/$VERSION
         unzip $WORKING_DIR/jsonschema2pojo-$VERSION-javadoc.jar -d javadocs/$VERSION/
 
-        # commit javadocs and push to main repo
+        # commit javadocs and push
         git add .
         git commit -m "[release] adding $VERSION javadocs"
-        git push
+        git push origin gh-pages
 
     popd
-        
+
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
-    pushd wiki
+    wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html
+    pushd gh-pages
     
         # extract plugin docs
         mkdir -p site/$VERSION
         unzip $WORKING_DIR/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
+        mv $WORKING_DIR/Jsonschema2PojoTask.html site/$VERSION/
 
-        # commit plugin docs and push to main repo
+        # commit plugin docs and push
         git add .
         git commit -m "[release] adding $VERSION plugin docs"
-        git push  
+        git push origin gh-pages
     popd
 
+    # clone wiki to update version references 
+    git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
     pushd wiki
             
         # replace any references to old version with new version
-        sed -i "s/$OLD_VERSION/$VERSION/g" *.wiki
+        sed -i "s/$OLD_VERSION/$VERSION/g" *.md
         
         # commit wiki updates and push to main repo
         git add .
         git commit -m "[release] updating wiki links and examples to $VERSION"
-        git push
+        git push origin master
 
         # update example 
-        wget http://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/org/jsonschema2pojo/example/Example.java
-        sed '/BEGIN EXAMPLE/q' GettingStarted.wiki > GettingStarted.wiki.new
-        echo '{{{' >> GettingStarted.wiki.new
-        sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> GettingStarted.wiki.new
-        echo '}}}' >> GettingStarted.wiki.new
-        sed -n '/END EXAMPLE/,$p' GettingStarted.wiki >> GettingStarted.wiki.new
-        mv GettingStarted.wiki.new GettingStarted.wiki
+        wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/org/jsonschema2pojo/example/Example.java
+        sed '/BEGIN EXAMPLE/q' Getting-Started.md > Getting-Started.md.new
+        echo '```java' >> Getting-Started.md.new
+        sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> Getting-Started.md.new
+        echo '```' >> Getting-Started.md.new
+        sed -n '/END EXAMPLE/,$p' Getting-Started.md >> Getting-Started.md.new
+        mv Getting-Started.md.new Getting-Started.md
         rm Example.java
 
-        # commit wiki updates and push to main repo
+        # commit wiki updates and push
         git add .
         git commit -m "[release] updating example code to $VERSION" || true
-        git push || true
+        git push origin master || true
     
     popd
 
-    # upload to google code
-    googlecode_upload -s "$VERSION binaries, sources, javadocs, dependencies" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $PASSWORD -l Featured ../jsonschema2pojo-$VERSION.tar.gz 
-    googlecode_upload -s "$VERSION binaries, sources, javadocs, dependencies" -p jsonschema2pojo -u joelittlejohn@gmail.com -w $PASSWORD -l Featured ../jsonschema2pojo-$VERSION.zip
+    # clone main repo to update version references in the README.md
+    git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
+    pushd main
+        sed -i "s/$OLD_VERSION/$VERSION/g" README.md
+
+        git add .
+        git commit -m "[release] updating README.md for $VERSION" || true
+        git push origin master || true
+    popd
+    
+    # upload to github
+    RELEASE=$(curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -sX POST \
+                  -d "{\"tag_name\":\"jsonschema2pojo-$VERSION\", \"name\":\"$VERSION\"}" \
+                  "https://api.github.com/repos/joelittlejohn/jsonschema2pojo/releases")
+    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?name}/?name=jsonschema2pojo-$VERSION.tar.gz/")
+    curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -X POST \
+        -H"Content-Type: application/x-tar" --data-binary @../jsonschema2pojo-$VERSION.tar.gz "$UPLOAD_URL"
 
 popd
 
