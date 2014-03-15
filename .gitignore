@@ -17,3 +17,7 @@ build/
 # IntelliJ files #
 .idea
 *.iml
+
+# Scratch files
+.#*
+.*.swp
