@@ -58,6 +58,8 @@
       (boolean (Boolean/valueOf (params "usejodadates"))))
     (isUseDoubleNumbers []
       (boolean (Boolean/valueOf (params "usedoublenumbers"))))
+    (isUseCommonsLang3 []
+      (boolean (Boolean/valueOf (params "usecommonslang3"))))
     (getPropertyWordDelimiters []
       (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []
