@@ -1,7 +1,7 @@
 # Gradle jsonschema2pojo plugin
 
 [jsonschema2pojo](http://www.jsonschema2pojo.org) generates a Java representation of your
-json schema. The [schema reference](https://code.google.com/p/jsonschema2pojo/wiki/Reference)
+json schema. The [schema reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
 describes the rules and their effect on generated Java types.
 
 ## Usage
