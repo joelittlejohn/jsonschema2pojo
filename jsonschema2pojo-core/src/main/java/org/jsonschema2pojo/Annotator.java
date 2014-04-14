@@ -148,4 +148,6 @@ public interface Annotator {
      *         properties'.
      */
     boolean isAdditionalPropertiesSupported();
+
+	void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 }

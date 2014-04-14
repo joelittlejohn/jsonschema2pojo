@@ -68,5 +68,9 @@ public abstract class AbstractAnnotator implements Annotator {
     public boolean isAdditionalPropertiesSupported() {
         return true;
     }
+    
+    @Override
+    public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    }
 
 }

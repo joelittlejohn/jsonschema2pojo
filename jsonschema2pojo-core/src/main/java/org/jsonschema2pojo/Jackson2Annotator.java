@@ -21,6 +21,7 @@ import java.util.Iterator;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -93,4 +94,8 @@ public class Jackson2Annotator implements Annotator {
         return true;
     }
 
+    @Override
+    public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    	field.annotate(JsonIgnore.class);
+    }
 }
