@@ -11,13 +11,13 @@
     </taskdef>
 
     <target name="generate">
-    	
+        
         <path id="custom.libs">
             <fileset dir="${project.build.directory}/custom-libs">
                 <include name="**/*.jar" />
             </fileset>
         </path>
-    	
+        
         <!-- use default config -->
         <jsonschema2pojo source="${project.build.directory}/test-classes/ant/example.json" 
                          targetDirectory="${targetDirectory}" 
@@ -34,17 +34,17 @@
                          includeHashcodeAndEquals="false"
                          includeToString="false"
                          annotationStyle="NONE"
-        	             customAnnotator="org.jsonschema2pojo.NoopAnnotator"
+                         customAnnotator="org.jsonschema2pojo.NoopAnnotator"
                          includeJsr303Annotations="true"
                          classpathRef="custom.libs"
                          useJodaDates="true"
                          useCommonsLang3="true">
-        	<classpath>
+            <classpath>
                 <fileset dir="${project.build.directory}/custom-libs">
                     <include name="**/*.jar" />
                 </fileset>
-    		</classpath>
-    	</jsonschema2pojo>
+        	</classpath>
+        </jsonschema2pojo>
 
         <!-- use json input -->
         <jsonschema2pojo source="${project.build.directory}/test-classes/json/example/torrent.json" 

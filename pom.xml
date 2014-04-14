@@ -191,11 +191,11 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>2.2.0</version>
             </dependency>
-			<dependency>
-	            <groupId>com.google.code.gson</groupId>
-	            <artifactId>gson</artifactId>
-	            <version>${gson.version}</version>
-	        </dependency>
+    		<dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.sun.codemodel</groupId>
                 <artifactId>codemodel</artifactId>

@@ -36,75 +36,75 @@ public class ContentResolverTest {
     @Test(expected=IllegalArgumentException.class)
     public void wrongProtocolCausesIllegalArgumentException() {
 
-    	URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json"); 
-    	resolver.resolve(uriWithUnrecognisedProtocol);
+        URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json"); 
+        resolver.resolve(uriWithUnrecognisedProtocol);
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void brokenLinkCausesIllegalArgumentException() {
 
-    	URI brokenHttpUri = URI.create("http://json-schema.org/address123123213"); 
-    	resolver.resolve(brokenHttpUri);
+        URI brokenHttpUri = URI.create("http://json-schema.org/address123123213"); 
+        resolver.resolve(brokenHttpUri);
     }
     
     @Test
     public void httpLinkIsResolvedToContent() {
 
-    	URI httpUri = URI.create("http://json-schema.org/address");
-    	JsonNode uriContent = resolver.resolve(httpUri);
-    	
-    	assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
+        URI httpUri = URI.create("http://json-schema.org/address");
+        JsonNode uriContent = resolver.resolve(httpUri);
+        
+        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
     }
 
     @Test
     public void fileLinkIsResolvedToContent() throws IOException {
-    	
-    	URI schemaFile = createSchemaFile();
-    	
-    	JsonNode uriContent = resolver.resolve(schemaFile);
-    	
-    	assertThat(uriContent.path("type").asText(), is(equalTo("string")));
+        
+        URI schemaFile = createSchemaFile();
+        
+        JsonNode uriContent = resolver.resolve(schemaFile);
+        
+        assertThat(uriContent.path("type").asText(), is(equalTo("string")));
     }
 
     @Test
     public void classpathLinkIsResolvedToContent() throws IOException {
-    	
-    	URI schemaFile;
-    	JsonNode uriContent;
-    	
-    	schemaFile = URI.create("classpath:schema/address.json");
-    	uriContent = resolver.resolve(schemaFile);
-    	assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
+        
+        URI schemaFile;
+        JsonNode uriContent;
+        
+        schemaFile = URI.create("classpath:schema/address.json");
+        uriContent = resolver.resolve(schemaFile);
+        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
 
-    	schemaFile = URI.create("classpath:/schema/address.json");
-    	uriContent = resolver.resolve(schemaFile);
-    	assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
+        schemaFile = URI.create("classpath:/schema/address.json");
+        uriContent = resolver.resolve(schemaFile);
+        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
 
-    	schemaFile = URI.create("resource:schema/address.json");
-    	uriContent = resolver.resolve(schemaFile);
-    	assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
+        schemaFile = URI.create("resource:schema/address.json");
+        uriContent = resolver.resolve(schemaFile);
+        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
 
-    	schemaFile = URI.create("java:schema/address.json");
-    	uriContent = resolver.resolve(schemaFile);
-    	assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
+        schemaFile = URI.create("java:schema/address.json");
+        uriContent = resolver.resolve(schemaFile);
+        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
 
     }
 
     private URI createSchemaFile() throws IOException {
-    	File tempFile = File.createTempFile("jsonschema2pojotest", "json");
-    	tempFile.deleteOnExit();
-    	
-    	OutputStream outputStream = null;
-    	try {
-    		outputStream = new FileOutputStream(tempFile);
-    		outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
-    	} finally {
-    		if (outputStream != null) {
-    			outputStream.close();
-    		}
-    	}
-    	
-    	return tempFile.toURI();
+        File tempFile = File.createTempFile("jsonschema2pojotest", "json");
+        tempFile.deleteOnExit();
+        
+        OutputStream outputStream = null;
+        try {
+        	outputStream = new FileOutputStream(tempFile);
+        	outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
+        } finally {
+        	if (outputStream != null) {
+        		outputStream.close();
+        	}
+        }
+        
+        return tempFile.toURI();
     }
     
 }

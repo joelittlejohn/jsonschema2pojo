@@ -96,7 +96,7 @@ public class Jackson1Annotator implements Annotator {
 
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
-    	field.annotate(JsonIgnore.class);
+        field.annotate(JsonIgnore.class);
     }
 
 }

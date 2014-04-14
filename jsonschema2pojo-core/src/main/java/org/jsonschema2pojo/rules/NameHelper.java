@@ -47,8 +47,8 @@ public class NameHelper {
         // Class names should start with uppercase letters,
         // while property names should start with lovercase (see issue #129)
         name = 
-        		(isClass ? toUpperCase(name.charAt(0)) : toLowerCase(name.charAt(0))) 
-        		+ (name.length() > 1 ? name.substring(1) : "");
+            	(isClass ? toUpperCase(name.charAt(0)) : toLowerCase(name.charAt(0))) 
+            	+ (name.length() > 1 ? name.substring(1) : "");
 
         return name;
     }

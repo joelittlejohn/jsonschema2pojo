@@ -153,10 +153,10 @@ public class AdditionalPropertiesIT {
     
     @Test
     public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, NoSuchMethodException, JsonProcessingException, IOException {
-    	mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
-    	mapper.configure(MapperFeature.AUTO_DETECT_SETTERS, false);
-    	mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(Visibility.ANY));
-    	
+        mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
+        mapper.configure(MapperFeature.AUTO_DETECT_SETTERS, false);
+        mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(Visibility.ANY));
+        
         ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
 
         Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");

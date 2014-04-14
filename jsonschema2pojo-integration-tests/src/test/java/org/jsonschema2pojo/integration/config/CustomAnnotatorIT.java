@@ -157,12 +157,12 @@ public class CustomAnnotatorIT {
             return true;
         }
 
-		@Override
-		public void additionalPropertiesField(JFieldVar field,
-				JDefinedClass clazz, String propertyName) {
-			field.annotate(Deprecated.class);
-			
-		}
+    	@Override
+    	public void additionalPropertiesField(JFieldVar field,
+    			JDefinedClass clazz, String propertyName) {
+    		field.annotate(Deprecated.class);
+    		
+    	}
 
     }
 

@@ -27,16 +27,16 @@ public class ValidRule implements Rule<JFieldVar, JFieldVar> {
     private final RuleFactory ruleFactory;
     
     public ValidRule(RuleFactory ruleFactory) {
-    	this.ruleFactory = ruleFactory;
+        this.ruleFactory = ruleFactory;
     }
 
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
-    	
-    	if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+        
+        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
             field.annotate(Valid.class);
         }
-    	
+        
         return field;
     }
     
