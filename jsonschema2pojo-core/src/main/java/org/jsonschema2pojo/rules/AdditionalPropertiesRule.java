@@ -114,6 +114,9 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
+        
+        ruleFactory.getAnnotator().additionalPropertiesField(field, jclass, "additionalProperties");
+        
         field.init(JExpr._new(propertiesMapImplType));
 
         return field;

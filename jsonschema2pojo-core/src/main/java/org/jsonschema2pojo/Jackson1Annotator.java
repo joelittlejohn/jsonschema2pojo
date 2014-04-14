@@ -21,6 +21,7 @@ import java.util.Iterator;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonValue;
@@ -91,6 +92,11 @@ public class Jackson1Annotator implements Annotator {
     @Override
     public boolean isAdditionalPropertiesSupported() {
         return true;
+    }
+
+    @Override
+    public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    	field.annotate(JsonIgnore.class);
     }
 
 }

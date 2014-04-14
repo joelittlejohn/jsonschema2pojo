@@ -29,7 +29,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import org.jsonschema2pojo.Annotator;
+
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
@@ -154,6 +156,13 @@ public class CustomAnnotatorIT {
         public boolean isAdditionalPropertiesSupported() {
             return true;
         }
+
+		@Override
+		public void additionalPropertiesField(JFieldVar field,
+				JDefinedClass clazz, String propertyName) {
+			field.annotate(Deprecated.class);
+			
+		}
 
     }
 

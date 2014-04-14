@@ -114,5 +114,12 @@ public class CompositeAnnotator implements Annotator {
         }
         return true;
     }
+    
+    @Override
+    public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+        for (Annotator annotator : annotators) {
+            annotator.additionalPropertiesField(field, clazz, propertyName);
+        }
+    }
 
 }

@@ -30,7 +30,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
@@ -145,6 +148,26 @@ public class AdditionalPropertiesIT {
         // setter with these types should exist:
         classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, boolean.class);
 
+    }
+    
+    
+    @Test
+    public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, NoSuchMethodException, JsonProcessingException, IOException {
+    	mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
+    	mapper.configure(MapperFeature.AUTO_DETECT_SETTERS, false);
+    	mapper.setVisibilityChecker(mapper.getVisibilityChecker().with(Visibility.ANY));
+    	
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
+
+        Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
+        String jsonWithAdditionalProperties = "{\"a\":1, \"b\":2};";
+        Object instanceWithAdditionalProperties = mapper.readValue(jsonWithAdditionalProperties, classWithAdditionalProperties);
+
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(instanceWithAdditionalProperties));
+        
+        assertThat(jsonNode.path("a").asText(), is("1"));
+        assertThat(jsonNode.path("b").asInt(), is(2));
+        assertThat(jsonNode.has("additionalProperties"), is(false));
     }
 
 }
