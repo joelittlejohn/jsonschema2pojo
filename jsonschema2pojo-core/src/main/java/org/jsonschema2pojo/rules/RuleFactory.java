@@ -303,4 +303,14 @@ public class RuleFactory {
         return nameHelper;
     }
 
+    /**
+     * Provides a rule instance that should be applied when a "media"
+     * declaration is found in the schema.
+     * 
+     * @return a schema rule that can handle the "media" declaration.
+     */
+    public Rule<JType, JType> getMediaRule() {
+        return new MediaRule(this);
+    }
+
 }
