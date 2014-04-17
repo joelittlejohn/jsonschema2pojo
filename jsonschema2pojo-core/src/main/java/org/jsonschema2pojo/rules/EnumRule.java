@@ -105,6 +105,9 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         schema.setJavaTypeIfEmpty(_enum);
 
+        if (node.has("javaInterfaces")) {
+            addInterfaces(_enum, node.get("javaInterfaces"));
+        }
         addGeneratedAnnotation(_enum);
 
         JFieldVar valueField = addValueField(_enum);
@@ -242,6 +245,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
 
         return enumName;
+    }
+    
+    private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
+        for (JsonNode i : javaInterfaces) {
+            jclass._implements(jclass.owner().ref(i.asText()));
+        }
     }
 
 }
