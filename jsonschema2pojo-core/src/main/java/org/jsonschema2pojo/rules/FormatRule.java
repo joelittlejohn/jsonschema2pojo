@@ -46,20 +46,20 @@ public class FormatRule implements Rule<JType, JType> {
      * <p>
      * This rule maps format values to Java types:
      * <ul>
-     * <li>"format":"date-time" => {@link java.util.Date}
-     * <li>"format":"date" => {@link String}
-     * <li>"format":"time" => {@link String}
-     * <li>"format":"utc-millisec" => <code>long</code>
-     * <li>"format":"regex" => {@link java.util.regex.Pattern}
-     * <li>"format":"color" => {@link String}
-     * <li>"format":"style" => {@link String}
-     * <li>"format":"phone" => {@link String}
-     * <li>"format":"uri" => {@link java.net.URI}
-     * <li>"format":"email" => {@link String}
-     * <li>"format":"ip-address" => {@link String}
-     * <li>"format":"ipv6" => {@link String}
-     * <li>"format":"host-name" => {@link String}
-     * <li>other (unrecognised format) => baseType
+     * <li>"format":"date-time" =&gt; {@link java.util.Date}
+     * <li>"format":"date" =&gt; {@link String}
+     * <li>"format":"time" =&gt; {@link String}
+     * <li>"format":"utc-millisec" =&gt; <code>long</code>
+     * <li>"format":"regex" =&gt; {@link java.util.regex.Pattern}
+     * <li>"format":"color" =&gt; {@link String}
+     * <li>"format":"style" =&gt; {@link String}
+     * <li>"format":"phone" =&gt; {@link String}
+     * <li>"format":"uri" =&gt; {@link java.net.URI}
+     * <li>"format":"email" =&gt; {@link String}
+     * <li>"format":"ip-address" =&gt; {@link String}
+     * <li>"format":"ipv6" =&gt; {@link String}
+     * <li>"format":"host-name" =&gt; {@link String}
+     * <li>other (unrecognised format) =&gt; baseType
      * </ul>
      * 
      * @param nodeName

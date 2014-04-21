@@ -44,7 +44,7 @@ public interface Annotator {
      * 
      * @param clazz
      *            a generated pojo class, that is serialized to JSON
-     * @param schemaNode
+     * @param schema
      *            the object schema associated with this clazz
      */
     void propertyInclusion(JDefinedClass clazz, JsonNode schema);

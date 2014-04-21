@@ -38,6 +38,8 @@ public class ProjectClasspath {
      * Provides a class loader that can be used to load classes from this
      * project classpath.
      * 
+     * @param project
+     *            the maven project currently being built
      * @param parent
      *            a classloader which should be used as the parent of the newly
      *            created classloader.

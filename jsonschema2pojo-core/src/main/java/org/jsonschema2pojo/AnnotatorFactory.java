@@ -29,6 +29,7 @@ public class AnnotatorFactory {
      * @param style
      *            the annotation style that dictates what kind of annotations
      *            are required.
+     * @return an annotator matching to given style
      */
     public Annotator getAnnotator(AnnotationStyle style) {
 
@@ -53,6 +54,7 @@ public class AnnotatorFactory {
      * 
      * @param clazz
      *            A class implementing {@link Annotator}.
+     * @return an instance of the given annotator type
      */
     public Annotator getAnnotator(Class<? extends Annotator> clazz) {
 

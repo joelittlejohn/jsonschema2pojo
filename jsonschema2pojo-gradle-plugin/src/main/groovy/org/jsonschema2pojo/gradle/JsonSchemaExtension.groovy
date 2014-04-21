@@ -15,6 +15,7 @@
  */
 package org.jsonschema2pojo.gradle
 
+import java.util.Map
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.GenerationConfig

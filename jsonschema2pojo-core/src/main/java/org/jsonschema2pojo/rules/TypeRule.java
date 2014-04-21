@@ -49,15 +49,15 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      * <p>
      * JSON schema types and their Java type equivalent:
      * <ul>
-     * <li>"type":"any" => {@link java.lang.Object}
-     * <li>"type":"array" => Either {@link java.util.Set} or
-     * <li>"type":"boolean" => <code>boolean</code>
-     * <li>"type":"integer" => <code>int</code>
-     * <li>"type":"null" => {@link java.lang.Object}
-     * <li>"type":"number" => <code>double</code>
-     * <li>"type":"object" => Generated type (see {@link ObjectRule})
+     * <li>"type":"any" =&gt; {@link java.lang.Object}
+     * <li>"type":"array" =&gt; Either {@link java.util.Set} or
+     * <li>"type":"boolean" =&gt; <code>boolean</code>
+     * <li>"type":"integer" =&gt; <code>int</code>
+     * <li>"type":"null" =&gt; {@link java.lang.Object}
+     * <li>"type":"number" =&gt; <code>double</code>
+     * <li>"type":"object" =&gt; Generated type (see {@link ObjectRule})
      * {@link java.util.List}, see {@link ArrayRule}
-     * <li>"type":"string" => {@link java.lang.String} (or alternative based on
+     * <li>"type":"string" =&gt; {@link java.lang.String} (or alternative based on
      * presence of "format", see {@link FormatRule})
      * </ul>
      * 

@@ -43,25 +43,24 @@ public class ArrayRule implements Rule<JPackage, JClass> {
     }
 
     /**
-     * Applies this schema rule to take the required code generation steps.
-     * <p>
-     * When constructs of type "array" appear in the schema, these are mapped to
+     * <p>Applies this schema rule to take the required code generation steps.</p>
+     *
+     * <p>When constructs of type "array" appear in the schema, these are mapped to
      * Java collections in the generated POJO. If the array is marked as having
      * "uniqueItems" then the resulting Java type is {@link Set}, if not, then
      * the resulting Java type is {@link List}. The schema given by "items" will
-     * decide the generic type of the collection.
-     * <p>
-     * If the "items" property requires newly generated types, then the type
+     * decide the generic type of the collection.</p>
+     *
+     * <p>If the "items" property requires newly generated types, then the type
      * name will be the singular version of the nodeName (unless overridden by
-     * the javaType property) e.g.
-     * <p>
-     * 
+     * the javaType property) e.g. 
      * <pre>
      *  "fooBars" : {"type":"array", "uniqueItems":"true", "items":{type:"object"}}
-     *  ==>
+     *  ==&gt;
      *  {@code Set<FooBar> getFooBars(); }
      * </pre>
-     * 
+     * </p>
+     *
      * @param nodeName
      *            the name of the property which has type "array"
      * @param node
