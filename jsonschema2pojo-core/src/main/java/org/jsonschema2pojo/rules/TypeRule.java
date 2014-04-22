@@ -104,6 +104,8 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
         if (node.has("format")) {
             type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), type, schema);
+        } else if(propertyTypeName.equals("string") && node.has("media")) {
+            type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), type, schema);
         }
 
         return type;
