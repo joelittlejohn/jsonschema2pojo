@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -103,6 +104,10 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         addSetter(jclass, propertyType, field);
 
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
+            addBuilder(jclass, propertyType, field);
+        }
+
         return jclass;
     }
 
@@ -142,6 +147,19 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         getter.body()._return(JExpr._this().ref(field));
         return getter;
+    }
+
+    private void addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+        JMethod builder = jclass.method(JMod.PUBLIC, jclass, "withAdditionalProperty");
+        
+        JVar nameParam = builder.param(String.class, "name");
+        JVar valueParam = builder.param(propertyType, "value");
+        
+        JBlock body = builder.body();
+        JInvocation mapInvocation = body.invoke(JExpr._this().ref(field), "put");
+        mapInvocation.arg(nameParam);
+        mapInvocation.arg(valueParam);
+        body._return(JExpr._this());
     }
 
 }
