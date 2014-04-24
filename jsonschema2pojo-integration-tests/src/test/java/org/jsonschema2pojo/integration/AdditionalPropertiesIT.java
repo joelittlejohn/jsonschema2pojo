@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -90,7 +91,7 @@ public class AdditionalPropertiesIT {
     @Test
     public void additionalPropertiesOfStringTypeOnly() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesString.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesString.json", "com.example", config("generateBuilders", true));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesString");
         Method getter = classWithNoAdditionalProperties.getMethod("getAdditionalProperties");
@@ -99,12 +100,17 @@ public class AdditionalPropertiesIT {
 
         // setter with these types should exist:
         classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, String.class);
+        
+        // builder with these types should exist:
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, String.class);
+        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
 
     }
 
+    @Test
     public void additionalPropertiesOfObjectTypeCreatesNewClassForPropertyValues() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesObject.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesObject.json", "com.example", config("generateBuilders", true));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObject");
         Class<?> propertyValueType = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObjectProperty");
@@ -116,12 +122,31 @@ public class AdditionalPropertiesIT {
         // setter with these types should exist:
         classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, propertyValueType);
 
+        // builder with these types should exist:
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType);
+        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
+
+    }
+
+    @Test(expected=NoSuchMethodException.class)
+    public void additionalPropertiesBuilderAbsentIfNotConfigured() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesObject.json", "com.example");
+
+        Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObject");
+        Class<?> propertyValueType = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObjectProperty");
+
+        // builder with these types should not exist:
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType);
+        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
+
+        fail("additional properties builder found when not requested");
     }
 
     @Test
     public void additionalPropertiesOfStringArrayTypeOnly() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesArraysOfStrings.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesArraysOfStrings.json", "com.example", config("generateBuilders", true));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesArraysOfStrings");
         Method getter = classWithNoAdditionalProperties.getMethod("getAdditionalProperties");
@@ -132,13 +157,17 @@ public class AdditionalPropertiesIT {
         // setter with these types should exist:
         classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, List.class);
 
+        // builder with these types should exist:
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, List.class);
+        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
+
     }
 
     @Test
     public void additionalPropertiesOfBooleanTypeOnly() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesPrimitiveBoolean.json", "com.example",
-                config("usePrimitives", true));
+                config("usePrimitives", true, "generateBuilders", true));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesPrimitiveBoolean");
         Method getter = classWithNoAdditionalProperties.getMethod("getAdditionalProperties");
@@ -148,9 +177,30 @@ public class AdditionalPropertiesIT {
         // setter with these types should exist:
         classWithNoAdditionalProperties.getMethod("setAdditionalProperty", String.class, boolean.class);
 
+        // builder with these types should exist:
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, boolean.class);
+        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
+
     }
-    
-    
+
+    @Test
+    public void withAdditionalPropertyStoresValue() throws Exception {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/additionalPropertiesString.json", "com.example", config("generateBuilders", true));
+
+        Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.AdditionalPropertiesString");
+        Method getter = classWithNoAdditionalProperties.getMethod("getAdditionalProperties");
+        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, String.class);
+
+        Object value = "value";
+        Object instance = classWithNoAdditionalProperties.newInstance();
+        Object result = builderMethod.invoke(instance, "prop", value);
+        Object stored = ((Map<?, ?>)getter.invoke(instance)).get("prop");
+
+        assertThat("the builder returned the instance", result, sameInstance(instance));
+        assertThat("the getter returned the value", stored, sameInstance(value));
+
+    }
+
     @Test
     public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, NoSuchMethodException, JsonProcessingException, IOException {
         mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
@@ -168,6 +218,11 @@ public class AdditionalPropertiesIT {
         assertThat(jsonNode.path("a").asText(), is("1"));
         assertThat(jsonNode.path("b").asInt(), is(2));
         assertThat(jsonNode.has("additionalProperties"), is(false));
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static Matcher<Class> typeEqualTo( Class<?> type ) {
+        return equalTo((Class)type);
     }
 
 }
