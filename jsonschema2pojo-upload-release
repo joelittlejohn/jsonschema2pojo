@@ -15,7 +15,7 @@
 #
 set -e
 
-if [[ ! ("$#" == 4 ) ]]; then 
+if [[ ! ("$#" == 4 ) ]]; then
     echo 'Usage: upload-release <old version> <new version> <github username> <github password>'
     exit 1
 fi
@@ -83,7 +83,7 @@ pushd $WORKING_DIR
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
     wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html
     pushd gh-pages
-    
+
         # extract plugin docs
         mkdir -p site/$VERSION
         unzip $WORKING_DIR/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
@@ -95,19 +95,19 @@ pushd $WORKING_DIR
         git push origin gh-pages
     popd
 
-    # clone wiki to update version references 
+    # clone wiki to update version references
     git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
     pushd wiki
-            
+
         # replace any references to old version with new version
         sed -i "s/$OLD_VERSION/$VERSION/g" *.md
-        
+
         # commit wiki updates and push to main repo
         git add .
         git commit -m "[release] updating wiki links and examples to $VERSION"
         git push origin master
 
-        # update example 
+        # update example
         wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/org/jsonschema2pojo/example/Example.java
         sed '/BEGIN EXAMPLE/q' Getting-Started.md > Getting-Started.md.new
         echo '```java' >> Getting-Started.md.new
@@ -121,7 +121,7 @@ pushd $WORKING_DIR
         git add .
         git commit -m "[release] updating example code to $VERSION" || true
         git push origin master || true
-    
+
     popd
 
     # clone main repo to update version references in the README.md
@@ -130,10 +130,10 @@ pushd $WORKING_DIR
         sed -i "s/$OLD_VERSION/$VERSION/g" README.md
 
         git add .
-        git commit -m "[release] updating README.md for $VERSION" || true
-        git push origin master || true
+        git commit -m "[release] updating README.md for $VERSION"
+        git push origin master
     popd
-    
+
     # upload to github
     RELEASE=$(curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -sX POST \
                   -d "{\"tag_name\":\"jsonschema2pojo-$VERSION\", \"name\":\"$VERSION\"}" \
@@ -147,5 +147,5 @@ popd
 rm -rf $WORKING_DIR
 
 echo Release complete. Next steps:
-echo    - Remove \'Featured\' label from older downloads
-echo    - Replace $OLD_VERSION with $VERSION in all text and links on project homepage
+echo    - Update release notes for $UPLOAD_URL
+echo    - Update CHANGELOG.md
