@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+* Builder Method for Additional Properties ([#175](https://github.com/joelittlejohn/jsonschema2pojo/pull/175))
+* javaInterfaces extension property is ignored for Enum types ([#172](https://github.com/joelittlejohn/jsonschema2pojo/issues/172))
+* Binary property support ([#171](https://github.com/joelittlejohn/jsonschema2pojo/pull/171))
+* Support annotating additionalProperties field. ([#170](https://github.com/joelittlejohn/jsonschema2pojo/pull/170))
+
 ## 0.4.1
 * Switch from HashSet to LinkedHashSet for uniqueItems arrays to preserve order ([#159](https://github.com/joelittlejohn/jsonschema2pojo/issues/159))
 * Add @Valid on all collections, not just those with items type "object" ([#158](https://github.com/joelittlejohn/jsonschema2pojo/issues/158))

@@ -12,3 +12,5 @@
 * Anton Khitrenovich <anton@khitrenovich.com>
 * Ángel Serrano <angelserranolaguna@gmail.com>
 * Chad Maron <chad.maron@warbyparker.com>
+* Christian Trimble <christian.trimble@meltmedia.com>
+* Michael Wengle <michael.wengle@bbp.ch>
