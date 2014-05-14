@@ -27,7 +27,7 @@ import com.sun.codemodel.JMethod;
  */
 public class CompositeAnnotator implements Annotator {
 
-    private final Annotator[] annotators;
+    final Annotator[] annotators;
 
     /**
      * Create a new composite annotator, made up of a given set of child

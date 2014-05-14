@@ -71,5 +71,9 @@ public class AnnotatorFactory {
         }
 
     }
+    
+    public CompositeAnnotator getAnnotator( Annotator... annotators ) {
+        return new CompositeAnnotator(annotators);
+    }
 
 }

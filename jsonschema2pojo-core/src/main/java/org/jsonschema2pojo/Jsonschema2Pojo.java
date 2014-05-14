@@ -107,9 +107,10 @@ public class Jsonschema2Pojo {
     }
 
     private static Annotator getAnnotator(GenerationConfig config) {
-        Annotator coreAnnotator = new AnnotatorFactory().getAnnotator(config.getAnnotationStyle());
-        Annotator customAnnotator = new AnnotatorFactory().getAnnotator(config.getCustomAnnotator());
-        return new CompositeAnnotator(coreAnnotator, customAnnotator);
+        AnnotatorFactory factory = new AnnotatorFactory();
+        return factory.getAnnotator(
+                factory.getAnnotator(config.getAnnotationStyle()),
+                factory.getAnnotator(config.getCustomAnnotator()));
     }
 
     private static String getNodeName(File file) {

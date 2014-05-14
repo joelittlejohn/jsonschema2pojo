@@ -19,6 +19,7 @@ package org.jsonschema2pojo;
 import static org.jsonschema2pojo.AnnotationStyle.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,6 +45,20 @@ public class AnnotatorFactoryTest {
     public void canCreateCorrectAnnotatorFromClass() {
 
         assertThat(factory.getAnnotator(Jackson1Annotator.class), is(instanceOf(Jackson1Annotator.class)));
+
+    }
+    
+    @Test
+    public void canCreateCompositeAnnotator() {
+        
+        Annotator annotator1 = mock(Annotator.class);
+        Annotator annotator2 = mock(Annotator.class);
+        
+        CompositeAnnotator composite = factory.getAnnotator(annotator1, annotator2);
+        
+        assertThat(composite.annotators.length, equalTo(2));
+        assertThat(composite.annotators[0], is(equalTo(annotator1)));
+        assertThat(composite.annotators[1], is(equalTo(annotator2)));
 
     }
 
