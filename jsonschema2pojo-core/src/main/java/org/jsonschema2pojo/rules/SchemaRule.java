@@ -16,8 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.fasterxml.jackson.databind.JsonNode;
+
 import org.jsonschema2pojo.Schema;
+
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 
@@ -51,6 +57,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
      * 
      * @param schema
      *            the schema within which this schema rule is being applied
+     * @throws MalformedURLException 
      */
     @Override
     public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
@@ -62,8 +69,17 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             if (schema.isGenerated()) {
                 return schema.getJavaType();
             }
+            
+            try {
+              String packageName = ruleFactory.getPackageMapper().map(schema.getId());
+              
+              JClassContainer schemaPackage = generatableType.owner().rootPackage().subPackage(packageName);
 
-            return apply(nodeName, schemaNode, generatableType, schema);
+              return apply(nodeName, schemaNode, schemaPackage, schema);
+            }
+            catch( IOException ioe ) {
+                throw new RuntimeException("Could not map package.", ioe);
+            }
         }
 
         JType javaType;

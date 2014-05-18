@@ -21,10 +21,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Test;
-
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.SchemaStore;
 
 public class RuleFactoryImplTest {
@@ -75,7 +75,7 @@ public class RuleFactoryImplTest {
 
         GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
 
-        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator(), new SchemaStore());
+        RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator(), new SchemaStore(), new PackageMapper());
 
         assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
 
@@ -86,7 +86,7 @@ public class RuleFactoryImplTest {
 
         SchemaStore mockSchemaStore = mock(SchemaStore.class);
 
-        RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), mockSchemaStore);
+        RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), mockSchemaStore, new PackageMapper());
 
         assertThat(ruleFactory.getSchemaStore(), is(sameInstance(mockSchemaStore)));
 

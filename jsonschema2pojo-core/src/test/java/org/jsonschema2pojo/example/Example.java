@@ -16,11 +16,15 @@
 
 package org.jsonschema2pojo.example;
 
+import org.jsonschema2pojo.SchemaGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.sun.codemodel.JCodeModel;
 
 public class Example {
@@ -33,7 +37,10 @@ public class Example {
         
         URL source = new URL("file:///path/to/my/schema.json");
         
-        new SchemaMapper().generate(codeModel, "ClassName", "com.example", source);
+        RuleFactory factory = new RuleFactory();
+        factory.getPackageMapper().withPackageMapping(FileUtils.toFile(source),  "com.example");
+        
+        new SchemaMapper(factory, new SchemaGenerator()).generate(codeModel, "ClassName", source);
         
         codeModel.build(new File("output"));
         

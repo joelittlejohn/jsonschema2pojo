@@ -20,6 +20,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.SchemaStore;
 
 import com.sun.codemodel.JClass;
@@ -40,6 +41,7 @@ public class RuleFactory {
     private final Annotator annotator;
     private final SchemaStore schemaStore;
     private final NameHelper nameHelper;
+    private final PackageMapper packageMapper;
 
     /**
      * Create a new rule factory with the given generation config options.
@@ -54,10 +56,11 @@ public class RuleFactory {
      * @param schemaStore
      *            the object used by this factory to get and store schemas
      */
-    public RuleFactory(GenerationConfig generationConfig, Annotator annotator, SchemaStore schemaStore) {
+    public RuleFactory(GenerationConfig generationConfig, Annotator annotator, SchemaStore schemaStore, PackageMapper packageMapper) {
         this.generationConfig = generationConfig;
         this.annotator = annotator;
         this.schemaStore = schemaStore;
+        this.packageMapper = packageMapper;
         this.nameHelper = new NameHelper(generationConfig);
     }
 
@@ -67,7 +70,7 @@ public class RuleFactory {
      * @see DefaultGenerationConfig
      */
     public RuleFactory() {
-        this(new DefaultGenerationConfig(), new Jackson2Annotator(), new SchemaStore());
+        this(new DefaultGenerationConfig(), new Jackson2Annotator(), new SchemaStore(), new PackageMapper());
     }
 
     /**
@@ -313,4 +316,7 @@ public class RuleFactory {
         return new MediaRule(this);
     }
 
+    public PackageMapper getPackageMapper() {
+        return this.packageMapper;
+    }
 }

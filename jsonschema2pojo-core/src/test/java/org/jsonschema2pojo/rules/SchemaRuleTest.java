@@ -30,8 +30,11 @@ import org.mockito.ArgumentCaptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
+
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -58,13 +61,14 @@ public class SchemaRuleTest {
         TypeRule mockTypeRule = mock(TypeRule.class);
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
         when(mockRuleFactory.getSchemaStore()).thenReturn(new SchemaStore());
+        when(mockRuleFactory.getPackageMapper()).thenReturn(new PackageMapper());
 
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
 
         rule.apply(NODE_NAME, schemaWithRef, jclass, null);
 
-        verify(mockTypeRule).apply(eq(NODE_NAME), captureJsonNode.capture(), eq(jclass.getPackage()), captureSchema.capture());
+        verify(mockTypeRule).apply(eq(NODE_NAME), captureJsonNode.capture(), eq(jclass.owner().rootPackage()), captureSchema.capture());
 
         assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
         assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));

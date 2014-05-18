@@ -1,0 +1,14 @@
+{
+    "type" : "object",
+    "properties" : {
+        "refToSingle" : {
+            "$ref" : "../dir1/single-ref.json"
+        },
+        "refToShared" : {
+            "$ref" : "../common/common-type.json"
+        },
+        "refToTopLevel" : {
+            "$ref" : "../top-level.json"
+        } 
+    }
+}

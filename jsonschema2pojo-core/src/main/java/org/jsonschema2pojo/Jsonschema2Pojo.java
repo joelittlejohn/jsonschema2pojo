@@ -16,17 +16,16 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.jsonschema2pojo.FileCodeWriterWithEncoding;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -35,6 +34,32 @@ import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
+    
+    public static class PackageBuilder {
+        List<File> sourceDirs = new ArrayList<File>();
+        String packageName;
+        
+        public PackageBuilder addSourceDir( File sourceDir ) {
+            this.sourceDirs.add(sourceDir);
+            return this;
+        }
+        
+        public PackageBuilder withPackageName( String packageName ) {
+            this.packageName = packageName;
+            return this;
+        }
+    }
+    
+    static String[] sortPaths( String[] paths ) {
+        Arrays.sort(paths);
+        return paths;
+    }
+
+    
+    //
+    // Start of legacy implementation.
+    //
+    
     /**
      * Reads the contents of the given source and initiates schema generation.
      * 
@@ -48,8 +73,7 @@ public class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
-        Annotator annotator = getAnnotator(config);
-        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()), new SchemaGenerator());
+        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, getAnnotator(config), new SchemaStore(), createPackageMapper(config)), new SchemaGenerator());
 
         JCodeModel codeModel = new JCodeModel();
 
@@ -61,9 +85,9 @@ public class Jsonschema2Pojo {
             File source = sources.next();
 
             if (source.isDirectory()) {
-                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(source.listFiles(config.getFileFilter())));
+                generateRecursive(config, mapper, codeModel, Arrays.asList(source.listFiles(config.getFileFilter())));
             } else {
-                mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source.toURI().toURL());
+                mapper.generate(codeModel, getNodeName(source), source.toURI().toURL());
             }
         }
 
@@ -76,14 +100,15 @@ public class Jsonschema2Pojo {
         }
     }
 
-    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws FileNotFoundException, IOException {
+
+    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, List<File> schemaFiles) throws FileNotFoundException, IOException {
         Collections.sort(schemaFiles);
 
         for (File child : schemaFiles) {
             if (child.isFile()) {
-                mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
+                mapper.generate(codeModel, getNodeName(child), child.toURI().toURL());
             } else {
-                generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles(config.getFileFilter())));
+                generateRecursive(config, mapper, codeModel, Arrays.asList(child.listFiles(config.getFileFilter())));
             }
         }
     }
@@ -115,5 +140,16 @@ public class Jsonschema2Pojo {
 
     private static String getNodeName(File file) {
         return substringBeforeLast(file.getName(), ".");
+    }
+    
+    private static PackageMapper createPackageMapper(GenerationConfig config) throws IOException {
+        PackageMapper mapper = new PackageMapper();
+        
+        for( Iterator<File> i = config.getSource(); i.hasNext(); ) {
+            File source = i.next();
+            mapper.withPackageMapping(source, config.getTargetPackage());
+        }
+        
+        return mapper;
     }
 }

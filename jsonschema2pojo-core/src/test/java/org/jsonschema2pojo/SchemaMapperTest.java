@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -31,8 +32,10 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.rules.SchemaRule;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
@@ -41,15 +44,16 @@ public class SchemaMapperTest {
     @Test
     public void generateReadsSchemaAsObject() throws IOException {
 
+        URL schemaContent = this.getClass().getResource("/schema/address.json");
+
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
         final RuleFactory mockRuleFactory = mock(RuleFactory.class);
         when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
         when(mockRuleFactory.getGenerationConfig()).thenReturn(new DefaultGenerationConfig());
+        when(mockRuleFactory.getPackageMapper()).thenReturn(new PackageMapper().withPackageMapping(FileUtils.toFile(schemaContent).getParentFile(), "com.example.package"));
 
-        URL schemaContent = this.getClass().getResource("/schema/address.json");
-
-        new SchemaMapper(mockRuleFactory, new SchemaGenerator()).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
+        new SchemaMapper(mockRuleFactory, new SchemaGenerator()).generate(new JCodeModel(), "Address", schemaContent);
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
         ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
@@ -79,8 +83,9 @@ public class SchemaMapperTest {
         final RuleFactory mockRuleFactory = mock(RuleFactory.class);
         when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
         when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
+        when(mockRuleFactory.getPackageMapper()).thenReturn(new PackageMapper().withPackageMapping(FileUtils.toFile(schemaContent).getParentFile(), "com.example.package"));
 
-        new SchemaMapper(mockRuleFactory, mockSchemaGenerator).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
+        new SchemaMapper(mockRuleFactory, mockSchemaGenerator).generate(new JCodeModel(), "Address", schemaContent);
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
 
