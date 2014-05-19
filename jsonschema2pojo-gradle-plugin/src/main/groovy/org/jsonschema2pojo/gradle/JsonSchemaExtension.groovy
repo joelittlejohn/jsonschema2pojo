@@ -87,8 +87,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     customAnnotator = Class.forName(clazz)
   }
 
-  public void setSourceType(String sourceType) {
-    sourceType = SourceType.valueOf(sourceType.toUpperCase())
+  public void setSourceType(String s) {
+    sourceType = SourceType.valueOf(s.toUpperCase())
   }
 
   @Override
