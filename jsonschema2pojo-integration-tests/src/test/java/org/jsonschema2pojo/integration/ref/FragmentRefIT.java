@@ -16,12 +16,21 @@
 
 package org.jsonschema2pojo.integration.ref;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
 
 public class FragmentRefIT {
 
@@ -52,6 +61,15 @@ public class FragmentRefIT {
 
         assertThat(aClass.getName(), is("com.example.AdditionalPropertyValue"));
 
+    }
+    
+    @Test
+    public void selfRefWithoutParentFile() throws IOException {
+        JCodeModel codeModel = new JCodeModel();
+        JsonNode schema = new ObjectMapper().readTree("{\"type\":\"object\", \"properties\":{\"a\":{\"$ref\":\"#/b\"}}, \"b\":\"string\"}");
+        
+        JPackage p = codeModel._package("com.example");
+        new RuleFactory().getSchemaRule().apply("Example", schema, p, new Schema(null, schema));
     }
 
 }

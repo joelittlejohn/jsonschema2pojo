@@ -30,7 +30,7 @@ public class Schema {
     private JsonNode content;
     private JType javaType;
 
-    protected Schema(URI id, JsonNode content) {
+    public Schema(URI id, JsonNode content) {
         this.id = id;
         this.content = content;
     }
