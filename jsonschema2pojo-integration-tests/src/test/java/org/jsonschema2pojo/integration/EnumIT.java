@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static java.lang.reflect.Modifier.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class EnumIT {
 
     private static Class parentClass;
-
     private static Class<Enum> enumClass;
 
     @BeforeClass
@@ -133,6 +132,7 @@ public class EnumIT {
 
         Class<Enum> emptyEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithEmptyString");
 
+        assertThat(emptyEnumClass.isEnum(), is(true));
         assertThat(emptyEnumClass.getEnumConstants()[0].name(), is("__EMPTY__"));
 
     }
@@ -143,9 +143,10 @@ public class EnumIT {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
 
-        Class<Enum> emptyEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNullValue");
+        Class<Enum> nullEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNullValue");
 
-        assertThat(emptyEnumClass.getEnumConstants().length, is(1));
+        assertThat(nullEnumClass.isEnum(), is(true));
+        assertThat(nullEnumClass.getEnumConstants().length, is(1));
 
     }
 
@@ -156,6 +157,14 @@ public class EnumIT {
 
         resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty");
         resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty$TimeFormat");
+    }
+
+    @Test
+    public void enumWithExtendedCharacters() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithExtendedCharacters.json", "com.example");
+
+        resultsClassLoader.loadClass("com.example.EnumWithExtendedCharacters");
     }
 
     @Test
