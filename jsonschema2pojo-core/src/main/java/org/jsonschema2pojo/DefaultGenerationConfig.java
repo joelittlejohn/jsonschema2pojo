@@ -17,6 +17,7 @@
 package org.jsonschema2pojo;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Iterator;
 
 /**
@@ -160,5 +161,10 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public boolean isUseCommonsLang3() {
         return false;
+    }
+
+    @Override
+    public FileFilter getFileFilter() {
+        return new AllFileFilter();
     }
 }

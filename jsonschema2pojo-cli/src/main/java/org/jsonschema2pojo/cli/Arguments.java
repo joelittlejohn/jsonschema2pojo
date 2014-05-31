@@ -19,9 +19,11 @@ package org.jsonschema2pojo.cli;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
@@ -225,6 +227,11 @@ public class Arguments implements GenerationConfig {
     
     protected void exit(int status) {
         System.exit(status);
+    }
+
+    @Override
+    public FileFilter getFileFilter() {
+        return new AllFileFilter();
     }
 
 }

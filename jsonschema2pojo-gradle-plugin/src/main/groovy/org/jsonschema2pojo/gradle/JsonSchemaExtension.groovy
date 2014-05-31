@@ -18,6 +18,7 @@ package org.jsonschema2pojo.gradle
 import java.util.Map
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
+import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceType
@@ -47,6 +48,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String outputEncoding
   boolean useJodaDates
   boolean useCommonsLang3
+  FileFilter fileFilter
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -66,6 +68,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     outputEncoding = 'UTF-8'
     useJodaDates = false
     useCommonsLang3 = false
+    fileFilter = new AllFileFilter()
   }
 
   @Override

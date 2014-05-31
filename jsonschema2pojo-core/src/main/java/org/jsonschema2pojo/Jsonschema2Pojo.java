@@ -61,7 +61,7 @@ public class Jsonschema2Pojo {
             File source = sources.next();
 
             if (source.isDirectory()) {
-                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(source.listFiles()));
+                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(source.listFiles(config.getFileFilter())));
             } else {
                 mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source.toURI().toURL());
             }
@@ -83,7 +83,7 @@ public class Jsonschema2Pojo {
             if (child.isFile()) {
                 mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
             } else {
-                generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles()));
+                generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles(config.getFileFilter())));
             }
         }
     }

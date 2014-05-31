@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "a location on s3",
+    "type": "object",
+    "properties": {
+        "prop": {
+            "type": "string"
+        }
+    }
+}

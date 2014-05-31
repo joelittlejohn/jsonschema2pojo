@@ -19,6 +19,7 @@ package org.jsonschema2pojo.maven;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.AnnotatorFactory;
@@ -301,11 +303,28 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
      * imports when adding equals, hashCode and toString methods.
      * 
-     * @parameter expression="${jsonschema2pojo.useCommonsLang3}" default="false"
+     * @parameter expression="${jsonschema2pojo.useCommonsLang3}"
+     *            default="false"
      * @since 0.4.1
      */
     private boolean useCommonsLang3 = false;
-    
+
+    /**
+     * List of file patterns to include.
+     * 
+     * @parameter
+     * @since 0.4.3
+     */
+    private String[] includes;
+
+    /**
+     * List of file patterns to exclude.
+     * 
+     * @parameter
+     * @since 0.4.3
+     */
+    private String[] excludes;
+
     /**
      * The project being built.
      * 
@@ -314,6 +333,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @readonly
      */
     private MavenProject project;
+
+    private FileFilter fileFilter = new AllFileFilter();
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -343,6 +364,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
         if (null == sourceDirectory && null == sourcePaths) {
             throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
+        }
+
+        if (filteringEnabled()) {
+
+            if (sourceDirectory == null) {
+                throw new MojoExecutionException("Source includes and excludes require the sourceDirectory property");
+            }
+
+            fileFilter = createFileFilter();
         }
 
         if (addCompileSourceRoot) {
@@ -472,10 +502,32 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isUseJodaDates() {
         return useJodaDates;
     }
-    
+
     @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }
 
+    @Override
+    public FileFilter getFileFilter() {
+        return fileFilter;
+    }
+
+    boolean filteringEnabled() {
+        return !((includes == null || includes.length == 0) && (excludes == null || excludes.length == 0));
+    }
+
+    FileFilter createFileFilter() throws MojoExecutionException {
+        try {
+            return new MatchPatternsFileFilter.Builder()
+                    .addIncludes(includes)
+                    .addExcludes(excludes)
+                    .addDefaultExcludes()
+                    .withSourceDirectory(sourceDirectory.getCanonicalPath())
+                    .withCaseSensitive(false)
+                    .build();
+        } catch (IOException e) {
+            throw new MojoExecutionException("could not create file filter", e);
+        }
+    }
 }
