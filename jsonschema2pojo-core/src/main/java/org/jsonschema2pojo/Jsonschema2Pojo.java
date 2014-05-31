@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.jsonschema2pojo.cli;
+package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,47 +27,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.AnnotatorFactory;
-import org.jsonschema2pojo.CompositeAnnotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.FileCodeWriterWithEncoding;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 
-/**
- * Main class, providing a command line interface for jsonschema2pojo.
- */
-public final class Jsonschema2Pojo {
-
-    private Jsonschema2Pojo() {
-    }
-
-    /**
-     * Main method, entry point for the application when invoked via the command
-     * line. Arguments are expected in POSIX format, invoke with --help for
-     * details.
-     * 
-     * @param args
-     *            Incoming arguments from the command line
-     * @throws FileNotFoundException
-     *             if the paths specified on the command line are not found
-     * @throws IOException
-     *             if the application is unable to read data from the paths
-     *             specified
-     */
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-
-        Arguments arguments = new Arguments().parse(args);
-
-        generate(arguments);
-    }
-
+public class Jsonschema2Pojo {
     /**
      * Reads the contents of the given source and initiates schema generation.
      * 
@@ -147,5 +115,4 @@ public final class Jsonschema2Pojo {
     private static String getNodeName(File file) {
         return substringBeforeLast(file.getName(), ".");
     }
-
 }

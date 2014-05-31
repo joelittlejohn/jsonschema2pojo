@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsonschema2pojo.cli;
+package org.jsonschema2pojo;
 
 import java.io.File;
 import java.io.IOException;

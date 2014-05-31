@@ -15,7 +15,7 @@
  */
 package org.jsonschema2pojo.gradle
 
-import org.jsonschema2pojo.cli.Jsonschema2Pojo
+import org.jsonschema2pojo.Jsonschema2Pojo
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

@@ -37,9 +37,9 @@ import org.apache.tools.ant.types.Reference;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.cli.Jsonschema2Pojo;
 
 /**
  * When invoked, this task reads one or more <a
