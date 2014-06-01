@@ -32,6 +32,13 @@
         },
         "defaultProperty" : {
         },
+        "impliedObjectProperty" : {
+            "properties" : {
+                "property" : {
+                    "type" : "string"
+                }
+            }
+        },
         "unknownProperty" : {
             "type" : "some-unknown-type"
         },

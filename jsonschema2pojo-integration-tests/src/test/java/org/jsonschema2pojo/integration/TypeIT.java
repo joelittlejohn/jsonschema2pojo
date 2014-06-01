@@ -106,6 +106,15 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getName(), is("java.lang.Object"));
 
     }
+    
+    @Test
+    public void presenceOfPropertiesImpliesTypeObject() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getImpliedObjectProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.ImpliedObjectProperty"));
+
+    }
 
     @Test
     public void objectTypeProducesNewType() throws NoSuchMethodException {
