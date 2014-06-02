@@ -19,6 +19,7 @@ package org.jsonschema2pojo.ant;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +35,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
@@ -524,6 +526,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
+    }
+
+    @Override
+    public FileFilter getFileFilter() {
+        return new AllFileFilter();
     }
 
 }

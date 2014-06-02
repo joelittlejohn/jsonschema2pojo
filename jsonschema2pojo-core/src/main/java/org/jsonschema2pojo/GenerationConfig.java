@@ -17,6 +17,7 @@
 package org.jsonschema2pojo;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Iterator;
 
 /**
@@ -205,5 +206,12 @@ public interface GenerationConfig {
      *         2.x imports when adding equals, hashCode and toString methods.
      */
     boolean isUseCommonsLang3();
+    
+    /**
+     * Gets the file filter used to isolate the schema mapping files in the source directories.
+     * 
+     * @return the file filter use when scanning for schema files.
+     */
+    FileFilter getFileFilter();
     
 }
