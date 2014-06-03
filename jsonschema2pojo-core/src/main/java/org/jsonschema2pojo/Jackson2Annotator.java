@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
@@ -52,6 +53,11 @@ public class Jackson2Annotator implements Annotator {
     @Override
     public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
         clazz.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
+    }
+
+    @Override
+    public void objectBuilder(JDefinedClass clazz, JDefinedClass builder) {
+        clazz.annotate(JsonDeserialize.class).param("builder", builder);
     }
 
     @Override

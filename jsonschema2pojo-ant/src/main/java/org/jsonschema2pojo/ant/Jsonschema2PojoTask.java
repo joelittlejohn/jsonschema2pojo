@@ -58,6 +58,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean generateBuilderClasses;
+
+    private boolean immutable;
+
+    private boolean usePublicFields;
+
     private boolean usePrimitives;
 
     private File source;
@@ -177,6 +183,44 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setGenerateBuilders(boolean generateBuilders) {
         this.generateBuilders = generateBuilders;
+    }
+
+    /**
+     * Sets the 'generateBuilderClasses' property of this class.
+     *
+     * @param generateBuilderClasses
+     *            Whether to generate a static inner Builder class for each
+     *            generated Java type.
+     *            <p>
+     *            Default: <code>false</code>.
+     */
+    public void setGenerateBuilderClasses(boolean generateBuilderClasses) {
+        this.generateBuilderClasses = generateBuilderClasses;
+    }
+
+    /**
+     * Sets the 'immutable' property of this class.
+     *
+     * @param immutable
+     *            Whether to generate Java types that are immutable.
+     *            <p>
+     *            Default: <code>false</code>.
+     */
+    public void setImmutable(boolean immutable) {
+        this.immutable = immutable;
+    }
+
+    /**
+     * Sets the 'usePublicFields' property of this class.
+     *
+     * @param usePublicFields
+     *            Whether to generate public fields for properties instead of
+     *            getters and setters.
+     *            <p>
+     *            Default: <code>false</code>.
+     */
+    public void setUsePublicFields(boolean usePublicFields) {
+        this.usePublicFields = usePublicFields;
     }
 
     /**
@@ -409,6 +453,21 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
+    }
+
+    @Override
+    public boolean isGenerateBuilderClasses() {
+        return generateBuilderClasses;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    @Override
+    public boolean isUsePublicFields() {
+        return usePublicFields;
     }
 
     @Override

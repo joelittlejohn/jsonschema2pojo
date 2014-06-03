@@ -17,9 +17,11 @@
 package org.jsonschema2pojo.rules;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -98,33 +100,58 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
             propertyType = jclass.owner().ref(Object.class);
         }
 
-        JFieldVar field = addAdditionalPropertiesField(jclass, propertyType);
+        GenerationConfig config = ruleFactory.getGenerationConfig();
+        int mods = config.isUsePublicFields() ? JMod.PUBLIC : JMod.PRIVATE;
+        if (config.isImmutable()) {
+            mods |= JMod.FINAL;
+        }
+        JClass propertiesMapType = jclass.owner().ref(Map.class);
+        propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
+        JFieldVar field = jclass.field(mods, propertiesMapType, "additionalProperties");
+        if (!config.isGenerateBuilderClasses() && !config.isImmutable()) {
+            addInitialAdditionalPropertiesValue(jclass, field, propertyType);
+        }
+        ruleFactory.getAnnotator().additionalPropertiesField(field, jclass, "additionalProperties");
 
+        // NOTE: Currently, Jackson requires a getter to serialize additional properties.
         addGetter(jclass, field);
+        if (!config.isUsePublicFields() && !config.isImmutable()) {
+            addSetter(jclass, propertyType, field);
+        }
 
-        addSetter(jclass, propertyType, field);
+        if (config.isGenerateBuilders()) {
+            addBuilderMethod(jclass, propertyType, field);
+        }
 
-        if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilder(jclass, propertyType, field);
+        if (config.isGenerateBuilderClasses()) {
+            addAdditionalPropertiesToBuilderClass(jclass, propertyType, propertiesMapType);
         }
 
         return jclass;
     }
 
-    private JFieldVar addAdditionalPropertiesField(JDefinedClass jclass, JType propertyType) {
-        JClass propertiesMapType = jclass.owner().ref(Map.class);
-        propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
+    private void addAdditionalPropertiesToBuilderClass(
+            JDefinedClass jclass, JType propertyType, JType propertiesMapType) {
 
+        JDefinedClass builderClass = getBuilderClass(jclass);
+        JFieldVar builderField = builderClass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
+        addInitialAdditionalPropertiesValue(builderClass, builderField, propertyType);
+
+        JMethod withAdditionalProperties =
+                builderClass.method(JMod.PUBLIC, builderClass, "withAdditionalProperties");
+        JVar param = withAdditionalProperties.param(propertiesMapType, "additionalProperties");
+        JBlock body = withAdditionalProperties.body();
+        body.assign(JExpr._this().ref(builderField), param);
+        body._return(JExpr._this());
+
+        JMethod withAdditionalProperty = addBuilderMethod(builderClass, propertyType, builderField);
+        ruleFactory.getAnnotator().anySetter(withAdditionalProperty);
+    }
+
+    private void addInitialAdditionalPropertiesValue(JDefinedClass jclass, JFieldVar field, JType propertyType) {
         JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
-
-        JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
-        
-        ruleFactory.getAnnotator().additionalPropertiesField(field, jclass, "additionalProperties");
-        
         field.init(JExpr._new(propertiesMapImplType));
-
-        return field;
     }
 
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
@@ -149,9 +176,9 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return getter;
     }
 
-    private void addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private JMethod addBuilderMethod(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod builder = jclass.method(JMod.PUBLIC, jclass, "withAdditionalProperty");
-        
+
         JVar nameParam = builder.param(String.class, "name");
         JVar valueParam = builder.param(propertyType, "value");
         
@@ -160,6 +187,18 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         mapInvocation.arg(nameParam);
         mapInvocation.arg(valueParam);
         body._return(JExpr._this());
+
+        return builder;
     }
 
+    private JDefinedClass getBuilderClass(JDefinedClass jclass) {
+        Iterator<JDefinedClass> it = jclass.classes();
+        while (it.hasNext()) {
+            JDefinedClass innerClass = it.next();
+            if (innerClass.name().equals("Builder")) {
+                return innerClass;
+            }
+        }
+        throw new IllegalStateException("Generated " + jclass.fullName() + " has no inner Builder class");
+    }
 }

@@ -50,6 +50,16 @@ public interface Annotator {
     void propertyInclusion(JDefinedClass clazz, JsonNode schema);
 
     /**
+     * Add the necessary annotation to cause deserialization of "clazz" objects should use the given builder.
+     *
+     * @param clazz
+     *            a generated pojo class, that is serialized to JSON
+     * @param builder
+     *            the generated Builder class to use
+     */
+    void objectBuilder(JDefinedClass clazz, JDefinedClass builder);
+
+    /**
      * Add the necessary annotation to mark a Java field as a JSON property
      * 
      * @param field

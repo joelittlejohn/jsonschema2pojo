@@ -25,6 +25,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,6 +53,11 @@ public class Jackson1Annotator implements Annotator {
     @Override
     public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
         clazz.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
+    }
+
+    @Override
+    public void objectBuilder(JDefinedClass clazz, JDefinedClass builder) {
+        clazz.annotate(JsonDeserialize.class).param("builder", builder);
     }
 
     @Override

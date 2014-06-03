@@ -39,6 +39,27 @@ public interface GenerationConfig {
     boolean isGenerateBuilders();
 
     /**
+     * Gets the 'generateBuilderClasses' configuration option.
+     *
+     * @return Whether to generate a static inner Builder class for each generated Java type.
+     */
+    boolean isGenerateBuilderClasses();
+
+    /**
+     * Gets the 'immutable' configuration option.
+     *
+     * @return Whether to generate Java types that are immutable.
+     */
+    boolean isImmutable();
+
+    /**
+     * Gets the 'usePublicFields' configuration option.
+     *
+     * @return Whether to generate public fields for properties instead of getters and setters.
+     */
+    boolean isUsePublicFields();
+
+    /**
      * Gets the 'usePrimitives' configuration option.
      * 
      * @return whether to use primitives (<code>long</code>, <code>double</code>

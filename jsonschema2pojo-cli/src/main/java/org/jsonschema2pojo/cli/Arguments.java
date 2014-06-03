@@ -56,6 +56,15 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
 
+    @Parameter(names = { "-B", "--generate-builder-classes" }, description = "Generate inner Builder classes for generated Java types")
+    private boolean generateBuilderClasses = false;
+
+    @Parameter(names = { "-i", "--immutable" }, description = "Generate immutable Java types")
+    private boolean immutable = false;
+
+    @Parameter(names = { "-u", "--use-public-fields" }, description = "Use public fields for properties instead of getters and setters")
+    private boolean usePublicFields = false;
+
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
@@ -153,6 +162,21 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilderMethods;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    @Override
+    public boolean isGenerateBuilderClasses() {
+        return generateBuilderClasses;
+    }
+
+    @Override
+    public boolean isUsePublicFields() {
+        return usePublicFields;
     }
 
     @Override

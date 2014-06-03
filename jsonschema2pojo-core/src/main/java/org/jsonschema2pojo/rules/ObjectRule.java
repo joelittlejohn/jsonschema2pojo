@@ -20,6 +20,7 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.lang3.ArrayUtils.*;
@@ -28,6 +29,11 @@ import javax.annotation.Generated;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.sun.codemodel.JExpression;
+import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -39,6 +45,7 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
@@ -74,6 +81,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
+        GenerationConfig config = ruleFactory.getGenerationConfig();
 
         JType superType = getSuperType(nodeName, node, _package, schema);
 
@@ -101,15 +109,25 @@ public class ObjectRule implements Rule<JPackage, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
         }
 
+        JDefinedClass builderClass = null;
+        if (config.isGenerateBuilderClasses()) {
+            try {
+                builderClass = generateExternalBuilder(jclass);
+            } catch (JClassAlreadyExistsException e) {
+                builderClass = e.getExistingClass();
+            }
+            ruleFactory.getAnnotator().objectBuilder(jclass, builderClass);
+        }
+
         if (node.has("properties")) {
             ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
+        if (config.isIncludeToString()) {
             addToString(jclass);
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
+        if (config.isIncludeHashcodeAndEquals()) {
             addHashCode(jclass);
             addEquals(jclass);
         }
@@ -120,8 +138,64 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
 
+        if (config.isGenerateBuilderClasses()) {
+            addConstructor(jclass, builderClass);
+        }
+
         return jclass;
 
+    }
+
+    /**
+     * Creates a constructor for the given generated class.
+     *
+     * The constructor will have one argument for every property in the class.  Defensive immutable copies will be made
+     * of any {@link java.util.Collection} arguments.
+     */
+    private void addConstructor(JDefinedClass jclass, JDefinedClass builderClass) {
+        JMethod constructor = jclass.constructor(JMod.PRIVATE);
+        JVar builder = constructor.param(builderClass, "builder");
+        JBlock body = constructor.body();
+        for (Map.Entry<String, JFieldVar> e : jclass.fields().entrySet()) {
+            JExpression src = JExpr.ref(builder, e.getKey());
+            if (ruleFactory.getGenerationConfig().isImmutable()) {
+                body.assign(JExpr._this().ref(e.getKey()), immutableCopy(src, e.getValue().type()));
+            } else {
+                body.assign(JExpr._this().ref(e.getKey()), src);
+            }
+        }
+    }
+
+    private static JExpression immutableCopy(JExpression expr, JType type) {
+        JClass immutableClass;
+        String typeName = type.erasure().fullName();
+        if (typeName.equals("java.util.List")) {
+            immutableClass = type.owner().ref(ImmutableList.class);
+        } else if (typeName.equals("java.util.Set")) {
+            immutableClass = type.owner().ref(ImmutableSet.class);
+        } else if (typeName.equals("java.util.Map")) {
+            immutableClass = type.owner().ref(ImmutableMap.class);
+        } else {
+            return expr;
+        }
+        return immutableClass.staticInvoke("copyOf").arg(expr);
+    }
+
+    /**
+     * Creates a static inner Builder class for the given generated class.
+     */
+    private JDefinedClass generateExternalBuilder(JDefinedClass jclass) throws JClassAlreadyExistsException {
+        JDefinedClass builderClass = jclass._class(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, "Builder");
+
+        builderClass.constructor(JMod.PRIVATE);
+
+        JMethod buildMethod = builderClass.method(JMod.PUBLIC, jclass, "build");
+        buildMethod.body()._return(JExpr._new(jclass).arg(JExpr._this()));
+
+        JMethod newBuilderMethod = jclass.method(JMod.PUBLIC | JMod.STATIC, builderClass, "newBuilder");
+        newBuilderMethod.body()._return(JExpr._new(builderClass));
+
+        return builderClass;
     }
 
     /**

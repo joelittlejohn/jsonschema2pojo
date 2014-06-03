@@ -1,0 +1,21 @@
+{
+    "type" : "object",
+    "properties" : {
+        "foo" : {
+            "type" : "string",
+            "default" : "HELLO WORLD"
+        },
+        "bar" : {
+            "type" : "boolean"
+        },
+        "baz" : {
+            "type" : "object"
+        },
+        "qux" : {
+            "type" : "array",
+            "items" : {
+                "type" : "integer"
+            }
+        }
+    }
+}

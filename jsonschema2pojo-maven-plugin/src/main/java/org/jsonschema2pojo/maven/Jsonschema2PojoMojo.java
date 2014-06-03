@@ -102,6 +102,32 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean generateBuilders = false;
 
     /**
+     * Whether to generate a static inner Builder class for each generated
+     * Java type.
+     *
+     * @parameter expression="${jsonschema2pojo.generateBuilderClasses}"
+     *            default-value="false"
+     */
+    private boolean generateBuilderClasses = false;
+
+    /**
+     * Whether to generate Java types that are immutable.
+     *
+     * @parameter expression="${jsonschema2pojo.immutable}"
+     *            default-value="false"
+     */
+    private boolean immutable = false;
+
+    /**
+     * Whether to generate public fields for properties instead of getters
+     * and setters.
+     *
+     * @parameter expression="${jsonschema2pojo.usePublicFields}"
+     *            default-value="false"
+     */
+    private boolean usePublicFields = false;
+
+    /**
      * Whether to use primitives (<code>long</code>, <code>double</code>,
      * <code>boolean</code>) instead of wrapper types where possible when
      * generating bean properties (has the side-effect of making those
@@ -409,6 +435,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
+    }
+
+    @Override
+    public boolean isGenerateBuilderClasses() {
+        return generateBuilderClasses;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    @Override
+    public boolean isUsePublicFields() {
+        return usePublicFields;
     }
 
     @Override

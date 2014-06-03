@@ -74,8 +74,18 @@
         <td align="center" valign="top">No</td>
       </tr>
       <tr>
+        <td valign="top">generateBuilderClasses</td>
+        <td valign="top">Whether to generate a static inner Builder class for each generated Java type.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
         <td valign="top">generateBuilders</td>
         <td valign="top">Whether to generate builder-style methods of the form <code>withXxx(value)</code> (that return <code>this</code>), alongside the standard, void-return setters.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">immutable</td>
+        <td valign="top">Whether to generate Java types that are immutable.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
@@ -168,6 +178,11 @@
       <tr>
         <td valign="top">usePrimitives</td>
         <td valign="top">Whether to use primitives (<code>long</code>, <code>double</code>, <code>boolean</code>) instead of wrapper types where possible when generating bean properties (has the side-effect of making those.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">usePublicFields</td>
+        <td valign="top">Whether to generate public fields for properties instead of getters and setters.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
     </table>

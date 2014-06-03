@@ -37,6 +37,30 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
+    public boolean isGenerateBuilderClasses() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isImmutable() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isUsePublicFields() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
     public boolean isUsePrimitives() {
         return false;
     }

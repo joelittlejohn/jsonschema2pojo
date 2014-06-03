@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
+import com.sun.codemodel.JVar;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
 
@@ -115,6 +116,10 @@ public class CustomAnnotatorIT {
 
         @Override
         public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
+        }
+
+        @Override
+        public void objectBuilder(JDefinedClass clazz, JDefinedClass builder) {
         }
 
         @Override

@@ -36,6 +36,10 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
+    public void objectBuilder(JDefinedClass clazz, JDefinedClass builder) {
+    }
+
+    @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz,
             String propertyName, JsonNode propertyNode) {
     }
