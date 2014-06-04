@@ -20,6 +20,7 @@ import static java.lang.Character.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
+import java.net.URI;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -86,5 +87,9 @@ public class NameHelper {
             }
         }
         return sb.toString();
+    }
+
+    public String nodeNameForUri(URI id) {
+        return substringBeforeLast(id.getPath().replaceAll(".*?([^/]*)$", "$1"), ".");
     }
 }

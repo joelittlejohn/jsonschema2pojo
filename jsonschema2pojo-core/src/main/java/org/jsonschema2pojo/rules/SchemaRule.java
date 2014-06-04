@@ -72,6 +72,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             
             try {
               String packageName = ruleFactory.getPackageMapper().map(schema.getId());
+              nodeName = ruleFactory.getNameHelper().nodeNameForUri(schema.getId());
               
               JClassContainer schemaPackage = generatableType.owner().rootPackage().subPackage(packageName);
 

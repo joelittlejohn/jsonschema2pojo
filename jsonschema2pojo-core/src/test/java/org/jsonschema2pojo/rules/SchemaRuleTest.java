@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
@@ -62,13 +64,14 @@ public class SchemaRuleTest {
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
         when(mockRuleFactory.getSchemaStore()).thenReturn(new SchemaStore());
         when(mockRuleFactory.getPackageMapper()).thenReturn(new PackageMapper());
+        when(mockRuleFactory.getNameHelper()).thenReturn(new NameHelper(new DefaultGenerationConfig()));
 
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
 
         rule.apply(NODE_NAME, schemaWithRef, jclass, null);
 
-        verify(mockTypeRule).apply(eq(NODE_NAME), captureJsonNode.capture(), eq(jclass.owner().rootPackage()), captureSchema.capture());
+        verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), eq(jclass.owner().rootPackage()), captureSchema.capture());
 
         assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
         assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));
