@@ -265,8 +265,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private String getClassName(String nodeName, JPackage _package) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(nodeName);
-        String normalizedName = ruleFactory.getNameHelper().normalizeName(className, true);
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
+        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
         return makeUnique(normalizedName, _package);
     }
 

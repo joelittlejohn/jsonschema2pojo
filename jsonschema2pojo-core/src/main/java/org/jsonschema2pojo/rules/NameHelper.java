@@ -37,18 +37,12 @@ public class NameHelper {
         return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
     }
 
-    public String normalizeName(String name, boolean isClass) {
+    public String normalizeName(String name) {
         name = capitalizeTrailingWords(name);
 
         if (isDigit(name.charAt(0))) {
             name = "_" + name;
         }
-
-        // Class names should start with uppercase letters,
-        // while property names should start with lovercase (see issue #129)
-        name = 
-            	(isClass ? toUpperCase(name.charAt(0)) : toLowerCase(name.charAt(0))) 
-            	+ (name.length() > 1 ? name.substring(1) : "");
 
         return name;
     }
