@@ -100,6 +100,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
     private boolean useCommonsLang3 = false;
 
+    @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
+    private boolean omitInitializeEmptyCollections = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -232,6 +235,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public FileFilter getFileFilter() {
         return new AllFileFilter();
+    }
+
+    @Override
+    public boolean isInitializeEmptyCollections() {
+        return !omitInitializeEmptyCollections;
     }
 
 }
