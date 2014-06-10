@@ -213,5 +213,11 @@ public interface GenerationConfig {
      * @return the file filter use when scanning for schema files.
      */
     FileFilter getFileFilter();
-    
+
+    /**
+     * Gets the 'initializeEmptyCollections' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    boolean isInitializeEmptyCollections();
 }

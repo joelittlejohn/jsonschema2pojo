@@ -96,6 +96,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     
     private boolean useCommonsLang3 = false;
 
+    private boolean initializeEmptyCollections = true;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -405,7 +407,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setUseCommonsLang3(boolean useCommonsLang3) {
         this.useCommonsLang3 = useCommonsLang3;
     }
-    
+
+
+    /**
+     * Sets the 'initializeEmptyCollections' property of this class
+     *
+     * @param initializeEmptyCollections
+     *            Whether to initialize collections with empty instance or null.
+     */
+    public void setInitializeEmptyCollections(boolean initializeEmptyCollections) {
+        this.initializeEmptyCollections = initializeEmptyCollections;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -531,6 +544,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public FileFilter getFileFilter() {
         return new AllFileFilter();
+    }
+
+    @Override
+    public boolean isInitializeEmptyCollections() {
+        return initializeEmptyCollections;
     }
 
 }

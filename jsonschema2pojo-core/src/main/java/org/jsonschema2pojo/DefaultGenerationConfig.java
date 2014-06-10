@@ -157,7 +157,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isUseJodaDates() {
         return false;
     }
-    
+
     @Override
     public boolean isUseCommonsLang3() {
         return false;
@@ -166,5 +166,13 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public FileFilter getFileFilter() {
         return new AllFileFilter();
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isInitializeEmptyCollections() {
+        return true;
     }
 }
