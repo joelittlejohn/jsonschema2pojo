@@ -310,12 +310,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useCommonsLang3 = false;
 
     /**
-     * Whether to initialize collections with empty instance or null.
+     * Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.
      *
-     * @parameter expression="${jsonschema2pojo.initializeEmptyCollections}" default="true"
+     * @parameter expression="${jsonschema2pojo.initializeCollections}" default="true"
      * @since
      */
-    private boolean initializeEmptyCollections = true;
+    private boolean initializeCollections = true;
 
     /**
      * List of file patterns to include.
@@ -522,8 +522,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isInitializeEmptyCollections() {
-        return initializeEmptyCollections;
+    public boolean isInitializeCollections() {
+        return initializeCollections;
     }
 
     boolean filteringEnabled() {

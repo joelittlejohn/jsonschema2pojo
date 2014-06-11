@@ -1,0 +1,22 @@
+
+{
+    "type" : "object",
+    "properties" : {
+        "list" :{
+            "type" : "array"
+        },
+        "set" :{
+            "type" : "array",
+            "uniqueItems": true
+        },
+        "listWithValues": {
+            "type" : "array",
+            "default" : [100, 200, 300]
+        },
+        "setWithValues": {
+            "type" : "array",
+            "uniqueItems": true,
+            "default" : [100, 200, 300]
+        }
+    }
+}

@@ -49,7 +49,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useJodaDates
   boolean useCommonsLang3
   FileFilter fileFilter
-  boolean initializeEmptyCollections
+  boolean initializeCollections
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -70,7 +70,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     useJodaDates = false
     useCommonsLang3 = false
     fileFilter = new AllFileFilter()
-    initializeEmptyCollections = true
+    initializeCollections = true
   }
 
   @Override
@@ -116,6 +116,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |outputEncoding = ${outputEncoding}
        |useJodaDates = ${useJodaDates}
        |useCommonsLang3 = ${useCommonsLang3}
+       |initializeCollections = ${initializeCollections}
      """.stripMargin()
   }
 }

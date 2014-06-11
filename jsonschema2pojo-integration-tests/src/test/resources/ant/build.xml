@@ -38,7 +38,8 @@
                          includeJsr303Annotations="true"
                          classpathRef="custom.libs"
                          useJodaDates="true"
-                         useCommonsLang3="true">
+                         useCommonsLang3="true"
+                         initializeCollections="false">
             <classpath>
                 <fileset dir="${project.build.directory}/custom-libs">
                     <include name="**/*.jar" />

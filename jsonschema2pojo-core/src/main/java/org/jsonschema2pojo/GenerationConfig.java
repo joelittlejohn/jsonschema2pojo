@@ -215,9 +215,9 @@ public interface GenerationConfig {
     FileFilter getFileFilter();
 
     /**
-     * Gets the 'initializeEmptyCollections' configuration option.
+     * Gets the 'initializeCollections' configuration option.
      *
      * @return Whether to initialize collections with empty instance or null.
      */
-    boolean isInitializeEmptyCollections();
+    boolean isInitializeCollections();
 }

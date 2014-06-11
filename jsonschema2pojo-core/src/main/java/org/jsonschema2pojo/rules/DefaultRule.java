@@ -172,7 +172,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
                 invokeAsList.arg(getDefaultValue(listGenericType, defaultValue));
             }
             newListImpl.arg(invokeAsList);
-        } else if (!ruleFactory.getGenerationConfig().isInitializeEmptyCollections()) {
+        } else if (!ruleFactory.getGenerationConfig().isInitializeCollections()) {
             return JExpr._null();
         }
 
@@ -211,7 +211,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
                 invokeAsList.arg(getDefaultValue(setGenericType, defaultValue));
             }
             newSetImpl.arg(invokeAsList);
-        } else if (!ruleFactory.getGenerationConfig().isInitializeEmptyCollections()) {
+        } else if (!ruleFactory.getGenerationConfig().isInitializeCollections()) {
             return JExpr._null();
         }
 

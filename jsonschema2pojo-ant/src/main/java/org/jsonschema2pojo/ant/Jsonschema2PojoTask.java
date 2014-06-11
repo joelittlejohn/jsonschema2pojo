@@ -96,7 +96,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     
     private boolean useCommonsLang3 = false;
 
-    private boolean initializeEmptyCollections = true;
+    private boolean initializeCollections = true;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -410,13 +410,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
 
     /**
-     * Sets the 'initializeEmptyCollections' property of this class
+     * Sets the 'initializeCollections' property of this class
      *
-     * @param initializeEmptyCollections
+     * @param initializeCollections
      *            Whether to initialize collections with empty instance or null.
      */
-    public void setInitializeEmptyCollections(boolean initializeEmptyCollections) {
-        this.initializeEmptyCollections = initializeEmptyCollections;
+    public void setInitializeCollections(boolean initializeCollections) {
+        this.initializeCollections = initializeCollections;
     }
 
     @Override
@@ -547,8 +547,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isInitializeEmptyCollections() {
-        return initializeEmptyCollections;
+    public boolean isInitializeCollections() {
+        return initializeCollections;
     }
 
 }

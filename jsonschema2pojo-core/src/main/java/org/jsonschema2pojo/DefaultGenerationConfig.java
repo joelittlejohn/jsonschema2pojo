@@ -172,7 +172,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>true</code>
      */
     @Override
-    public boolean isInitializeEmptyCollections() {
+    public boolean isInitializeCollections() {
         return true;
     }
 }

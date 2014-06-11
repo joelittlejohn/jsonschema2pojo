@@ -101,7 +101,7 @@ public class Arguments implements GenerationConfig {
     private boolean useCommonsLang3 = false;
 
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
-    private boolean omitInitializeEmptyCollections = false;
+    private boolean nullCollections = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -238,8 +238,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isInitializeEmptyCollections() {
-        return !omitInitializeEmptyCollections;
+    public boolean isInitializeCollections() {
+        return !nullCollections;
     }
 
 }
