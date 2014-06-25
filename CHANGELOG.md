@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4
+* Added ')' to jdk unbounded range for Maven 2.X ([#205](https://github.com/joelittlejohn/jsonschema2pojo/pull/205))
+* Allow Sets and Lists to be initialized to null (instead of an empty collection) ([#203](https://github.com/joelittlejohn/jsonschema2pojo/pull/203))
+
 ## 0.4.3
 * Add includes & excludes Maven config options for source file filtering ([#200](https://github.com/joelittlejohn/jsonschema2pojo/pull/200))
 * Reorganise module dependencies, pull CLI out from under other plugins ([#198](https://github.com/joelittlejohn/jsonschema2pojo/pull/198))
