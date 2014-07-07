@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright © 2010-2013 Nokia
+# Copyright © 2010-2014 Nokia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
