@@ -31,3 +31,20 @@ div.span2 {
 .btn.submit {
   margin-right: 1em;
 }
+
+#preview-modal {
+    width: 60%;
+    height: 80%;
+    margin-left: -30%;
+    margin-top: -25%;
+}
+
+#preview {
+    position: absolute;
+    height: auto;
+    max-height: 95%;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
