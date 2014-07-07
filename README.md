@@ -38,5 +38,3 @@ Project resources:
   * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/139c0571887dac6cc92b0dfba6780b46 "githalytics.com")](http://githalytics.com/joelittlejohn/jsonschema2pojo)
