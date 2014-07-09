@@ -48,5 +48,8 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("sheep"), is("sheep"));
         assertThat(Inflector.getInstance().singularize("squid"), is("squid"));
         
+        assertThat(Inflector.getInstance().singularize("s"), is("s"));
+
     }
+    
 }

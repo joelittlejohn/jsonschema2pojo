@@ -103,7 +103,7 @@ public class Inflector {
         irregular("sex", "sexes");
         irregular("move", "moves");
 
-        uncountable(new String[] {"equipment", "information", "rice", "money", "species", "series", "fish", "sheep"});
+        uncountable(new String[] {"equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "s"});
     }
 
     public static Inflector getInstance() {
