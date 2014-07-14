@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "refToDir2" : {
+            "$ref" : "../dir2/multiple-refs.json"
+        } 
+    }
+}

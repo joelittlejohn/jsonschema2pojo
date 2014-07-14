@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "refToSub" : {
+            "$ref" : "common/common-type.json"
+        } 
+    }
+}

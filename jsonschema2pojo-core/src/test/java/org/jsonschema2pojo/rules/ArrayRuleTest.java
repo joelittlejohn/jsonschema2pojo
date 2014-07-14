@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JClass;
@@ -39,7 +40,7 @@ import com.sun.codemodel.JPackage;
 public class ArrayRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
-    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore(), new PackageMapper()));
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {

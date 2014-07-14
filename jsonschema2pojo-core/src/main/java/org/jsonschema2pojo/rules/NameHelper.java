@@ -19,8 +19,12 @@ package org.jsonschema2pojo.rules;
 import static java.lang.Character.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
-import org.apache.commons.lang3.text.WordUtils;
+import java.io.File;
+import java.net.URI;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
 public class NameHelper {
@@ -60,5 +64,26 @@ public class NameHelper {
         }
 
         return name;
+    }
+    
+    public String packageNameForSchemaPath( String basePackage, String path ) {
+        String[] segments = FilenameUtils
+          .getFullPathNoEndSeparator(FilenameUtils.normalize(path))
+          .split(Pattern.quote(File.separator));
+        
+        StringBuilder sb = new StringBuilder();
+        if( basePackage != null && !"".equals(basePackage) ) {
+            sb.append(basePackage);
+        }
+        for( String segment : segments ) {
+            if( !segment.equals("") ) {
+              sb.append(".").append(replaceIllegalCharacters(segment));
+            }
+        }
+        return sb.toString();
+    }
+
+    public String nodeNameForUri(URI id) {
+        return substringBeforeLast(id.getPath().replaceAll(".*?([^/]*)$", "$1"), ".");
     }
 }

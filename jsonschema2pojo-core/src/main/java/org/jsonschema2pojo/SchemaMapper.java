@@ -17,11 +17,14 @@
 package org.jsonschema2pojo;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
@@ -69,17 +72,20 @@ public class SchemaMapper {
      *            generated new types
      * @param className
      *            the name of the parent class the represented by this schema
-     * @param packageName
-     *            the target package that should be used for generated types
      * @param schemaUrl
      *            location of the schema to be used as input
      * @return The top-most type generated from the given file
      * @throws IOException
      *             if the schema content cannot be read
      */
-    public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
+    public JType generate(JCodeModel codeModel, String className, URL schemaUrl) throws IOException {
 
-        JPackage jpackage = codeModel._package(packageName);
+        JPackage jpackage;
+        try {
+            jpackage = codeModel._package(ruleFactory.getPackageMapper().map(schemaUrl.toURI()));
+        } catch (URISyntaxException e) {
+            throw new IOException("Cannot convert shema URI to URL", e);
+        }
 
         ObjectNode schemaNode = readSchema(schemaUrl);
 

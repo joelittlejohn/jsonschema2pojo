@@ -71,6 +71,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         String propertyName = getPropertyName(nodeName);
 
+        // if we had a rule for refs here, then two phase would not be
+        // required.
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
         node = resolveRefs(node, schema);

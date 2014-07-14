@@ -80,12 +80,34 @@ public class CodeGenerationHelper {
     }
 
     public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
+        try {
+            generate(new File(schema.toURI()), targetPackage, configValues, outputDirectory);
+          } catch (URISyntaxException e) {
+              throw new RuntimeException(e);
+          }
+      }
+      
+      public static File generate(final File sourceDirectory, final String targetPackage) {
+          Map<String, Object> configValues = Collections.emptyMap();
+
+          return generate(sourceDirectory, targetPackage, configValues);
+      }
+      
+      public static File generate(final File sourceDirectory, final String targetPackage, final Map<String, Object> configValues) {
+          final File outputDirectory = createTemporaryOutputFolder();
+
+          generate(sourceDirectory, targetPackage, configValues, outputDirectory);
+
+          return outputDirectory;
+      }
+      
+      public static void generate(final File sourceDirectory, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
 
         try {
             @SuppressWarnings("serial")
         Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
                 {
-                    put("sourceDirectory", new File(schema.toURI()));
+                    put("sourceDirectory", sourceDirectory);
                     put("outputDirectory", outputDirectory);
                     put("project", getMockProject());
                     put("targetPackage", targetPackage);
@@ -94,8 +116,6 @@ public class CodeGenerationHelper {
             });
 
             pluginMojo.execute();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         } catch (MojoExecutionException e) {
             throw new RuntimeException(e);
         } catch (DependencyResolutionRequiredException e) {
@@ -166,6 +186,22 @@ public class CodeGenerationHelper {
     public static ClassLoader generateAndCompile(String schema, String targetPackage) {
 
         File outputDirectory = generate(schema, targetPackage);
+
+        return compile(outputDirectory);
+
+    }
+
+    public static ClassLoader generateAndCompile(File sourceDirectory, String targetPackage) {
+
+        File outputDirectory = generate(sourceDirectory, targetPackage);
+
+        return compile(outputDirectory);
+
+    }
+    
+    public static ClassLoader generateAndCompile(File sourceDirectory, String targetPackage, Map<String, Object> configValues) {
+
+        File outputDirectory = generate(sourceDirectory, targetPackage, configValues);
 
         return compile(outputDirectory);
 

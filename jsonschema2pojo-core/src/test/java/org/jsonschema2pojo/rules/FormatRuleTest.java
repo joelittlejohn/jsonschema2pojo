@@ -32,9 +32,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.databind.node.TextNode;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PackageMapper;
 import org.jsonschema2pojo.SchemaStore;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
@@ -42,7 +45,7 @@ import com.sun.codemodel.JType;
 public class FormatRuleTest {
 
     private GenerationConfig config = mock(GenerationConfig.class);
-    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore(), new PackageMapper()));
 
     private final String formatValue;
     private final Class<?> expectedType;
