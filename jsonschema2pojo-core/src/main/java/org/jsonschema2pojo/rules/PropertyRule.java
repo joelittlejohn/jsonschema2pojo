@@ -143,6 +143,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type()));
 
+        // add @returns
+        getter.javadoc().addReturn().append("The " + getPropertyName(jsonPropertyName));
+
         JBlock body = getter.body();
         body._return(field);
 
@@ -153,6 +156,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName));
+
+        // add @param
+        setter.javadoc().addParam(getPropertyName(jsonPropertyName)).append("The " + jsonPropertyName);
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
