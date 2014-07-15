@@ -16,15 +16,16 @@
 
 package org.jsonschema2pojo;
 
-import java.io.IOException;
-import java.net.URL;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jsonschema2pojo.rules.RuleFactory;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import java.io.IOException;
+import java.net.URL;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Generates Java types from a JSON schema. Can accept a factory which will be
@@ -101,4 +102,16 @@ public class SchemaMapper {
         }
 
     }
+
+    public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
+
+        JPackage jpackage = codeModel._package(packageName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode schemaJsonNode = mapper.readTree(json);
+        ObjectNode schemaNode = schemaGenerator.schemaFromExample(schemaJsonNode);
+
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
+    }
+
 }
