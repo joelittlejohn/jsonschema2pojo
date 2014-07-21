@@ -24,6 +24,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -103,15 +104,16 @@ public class SchemaMapper {
 
     }
 
-    public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
+    public JType generate(JCodeModel codeModel, String className, String packageName, String json, 
+            URI schemaLocation) throws IOException {
 
         JPackage jpackage = codeModel._package(packageName);
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode schemaJsonNode = mapper.readTree(json);
-        ObjectNode schemaNode = schemaGenerator.schemaFromExample(schemaJsonNode);
+        JsonNode schemaNode = mapper.readTree(json);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, 
+                new Schema(schemaLocation, schemaNode));
     }
 
 }
