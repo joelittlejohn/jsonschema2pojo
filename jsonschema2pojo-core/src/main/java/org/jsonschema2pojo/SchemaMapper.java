@@ -116,4 +116,14 @@ public class SchemaMapper {
                 new Schema(schemaLocation, schemaNode));
     }
 
+    public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
+
+        JPackage jpackage = codeModel._package(packageName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode schemaNode = mapper.readTree(json);
+
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, 
+                new Schema(null, schemaNode));
+    }
 }
