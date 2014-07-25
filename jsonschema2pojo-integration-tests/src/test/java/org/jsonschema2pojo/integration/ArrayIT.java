@@ -16,18 +16,24 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ArrayIT {
 
@@ -169,4 +175,65 @@ public class ArrayIT {
         assertThat(array2GenericType.getName(), is("com.example.RootArrayItem"));
     }
 
+    @Test
+    public void uniqueArrayPreservesOrderJackson2() throws Exception {
+        new PreserveOrder("jackson2") {
+            @Override
+            protected Object roundTrip(Object original) throws Exception {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(mapper.writeValueAsString(original), original.getClass());
+            }
+        }.test();
+
+    }
+
+    @Test
+    public void uniqueArrayPreservesOrderJackson1() throws Exception {
+        new PreserveOrder("jackson1") {
+            @Override
+            protected Object roundTrip(Object original) throws Exception {
+                org.codehaus.jackson.map.ObjectMapper mapper = new org.codehaus.jackson.map.ObjectMapper();
+                return mapper.readValue(mapper.writeValueAsString(original), original.getClass());
+            }
+        }.test();
+
+    }
+
+    static abstract class PreserveOrder {
+        String annotationStyle;
+
+        public PreserveOrder(String annotationStyle) {
+            this.annotationStyle = annotationStyle;
+        }
+
+        public void test() throws Exception {
+            ClassLoader resultsClassLoader = generateAndCompile(
+                    "/schema/array/typeWithArrayProperties.json",
+                    "com.example",
+                    config("annotationStyle", annotationStyle));
+
+            Class<?> jackson1Class = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
+
+            Object original = jackson1Class.newInstance();
+
+            @SuppressWarnings("unchecked")
+            Set<Integer> expected = (Set<Integer>) jackson1Class.getMethod("getUniqueIntegerArray").invoke(original);
+            expected.addAll(java.util.Arrays.asList(1, 3, 5, 7, 9, 2, 4, 6, 8, 10));
+
+            Object roundTrip = roundTrip(original);
+            @SuppressWarnings("unchecked")
+            Set<Integer> actual = (Set<Integer>) jackson1Class.getMethod("getUniqueIntegerArray").invoke(roundTrip);
+
+            Iterator<Integer> expectedItr = expected.iterator();
+            Iterator<Integer> actualItr = actual.iterator();
+
+            while (expectedItr.hasNext()) {
+                assertThat("The collection order is stable", actualItr.next(), equalTo(expectedItr.next()));
+            }
+            assertThat("All of the values were examined", actualItr.hasNext(), equalTo(false));
+
+        }
+
+        protected abstract Object roundTrip(Object original) throws Exception;
+    }
 }
