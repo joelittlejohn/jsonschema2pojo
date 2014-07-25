@@ -15,6 +15,13 @@
                 "type" : "boolean"
             }
         },
+        "uniqueIntegerArray" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "type" : "integer"
+            }
+        },
         "nonUniqueArrayByDefault" : {
             "type" : "array",
             "items" : {

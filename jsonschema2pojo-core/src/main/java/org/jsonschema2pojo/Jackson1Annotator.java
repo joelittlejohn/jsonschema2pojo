@@ -17,6 +17,8 @@
 package org.jsonschema2pojo;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
@@ -25,6 +27,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,6 +60,9 @@ public class Jackson1Annotator implements Annotator {
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         field.annotate(JsonProperty.class).param("value", propertyName);
+        if (field.type().erasure().equals(field.type().owner().ref(Set.class))) {
+            field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
+        }
     }
 
     @Override
