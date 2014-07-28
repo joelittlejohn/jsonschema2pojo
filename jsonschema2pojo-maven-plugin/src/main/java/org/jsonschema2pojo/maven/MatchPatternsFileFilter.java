@@ -91,7 +91,7 @@ public class MatchPatternsFileFilter implements FileFilter {
 
         public MatchPatternsFileFilter build() {
             if (includes.isEmpty()) {
-                includes.add("**/*");
+                includes.add(processPattern("**/*"));
             }
             return new MatchPatternsFileFilter(
                     MatchPatterns.from(includes.toArray(new String[] {})),
@@ -133,13 +133,17 @@ public class MatchPatternsFileFilter implements FileFilter {
             return null;
         List<String> processed = new ArrayList<String>();
         for (String pattern : patterns) {
-            processed.add(pattern
-                    .trim()
-                    .replace('/', File.separatorChar)
-                    .replace('\\', File.separatorChar)
-                    .replaceAll(quote(File.separator) + "$", File.separator + "**"));
+            processed.add(processPattern(pattern));
         }
         return processed;
+    }
+    
+    static String processPattern(String pattern) {
+        return pattern
+                .trim()
+                .replace('/', File.separatorChar)
+                .replace('\\', File.separatorChar)
+                .replaceAll(quote(File.separator) + "$", File.separator + "**");
     }
 
 }
