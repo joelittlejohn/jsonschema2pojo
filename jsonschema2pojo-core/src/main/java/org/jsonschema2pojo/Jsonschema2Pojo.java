@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
-
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JCodeModel;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,13 +26,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 import org.jsonschema2pojo.FileCodeWriterWithEncoding;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
     /**
