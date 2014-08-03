@@ -73,6 +73,14 @@
         </td>
         <td align="center" valign="top">No</td>
       </tr>
+        <tr>
+            <td valign="top">customRuleFactory</td>
+            <td valign="top">
+                <p>A fully qualified class name, referring to a custom rule factory class that extends <code>org.jsonschema2pojo.rules.RuleFactory</code>.</p>
+                <p>By specifying a custom implementation you can customize most aspects of code generation by returning custom instances of rules.</p>
+            </td>
+            <td align="center" valign="top">No</td>
+        </tr>
       <tr>
         <td valign="top">generateBuilders</td>
         <td valign="top">Whether to generate builder-style methods of the form <code>withXxx(value)</code> (that return <code>this</code>), alongside the standard, void-return setters.</td>

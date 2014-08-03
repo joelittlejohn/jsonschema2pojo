@@ -22,6 +22,7 @@ import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceType
+import org.jsonschema2pojo.rules.RuleFactory
 
 /**
  * The configuration properties.
@@ -42,6 +43,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeToString
   AnnotationStyle annotationStyle
   Class<? extends Annotator> customAnnotator
+  Class<? extends RuleFactory> customRuleFactory
   boolean includeJsr303Annotations
   SourceType sourceType
   boolean removeOldOutput
@@ -64,6 +66,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeToString = true
     annotationStyle = AnnotationStyle.JACKSON
     customAnnotator = NoopAnnotator.class
+    customRuleFactory = RuleFactory.class
     includeJsr303Annotations = false
     sourceType = SourceType.JSONSCHEMA
     outputEncoding = 'UTF-8'
@@ -92,6 +95,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     customAnnotator = Class.forName(clazz)
   }
 
+  public void setCustomRuleFactory(String clazz) {
+    customRuleFactory = Class.forName(clazz)
+  }
+
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
   }
@@ -110,6 +117,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeToString = ${includeToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
        |customAnnotator = ${customAnnotator.getName()}
+       |customRuleFactory = ${customRuleFactory.getName()}
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |sourceType = ${sourceType.toString().toLowerCase()}
        |removeOldOutput = ${removeOldOutput}

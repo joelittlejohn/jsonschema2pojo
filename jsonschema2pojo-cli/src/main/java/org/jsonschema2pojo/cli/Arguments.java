@@ -34,6 +34,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Describes and parses the command line arguments supported by the
@@ -81,6 +82,11 @@ public class Arguments implements GenerationConfig {
             "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none",
             converter = ClassConverter.class)
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
+
+    @Parameter(names = { "-F", "--custom-rule-factory" }, description = "The fully qualified class name of referring to a custom rule factory class that extends org.jsonschema2pojo.rules.RuleFactory " +
+            "to create custom rules for code generation.",
+            converter = ClassConverter.class)
+    private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
@@ -197,6 +203,9 @@ public class Arguments implements GenerationConfig {
     public Class<? extends Annotator> getCustomAnnotator() {
         return customAnnotator;
     }
+
+    @Override
+    public Class<? extends RuleFactory> getCustomRuleFactory() { return customRuleFactory; }
 
     @Override
     public boolean isIncludeJsr303Annotations() {

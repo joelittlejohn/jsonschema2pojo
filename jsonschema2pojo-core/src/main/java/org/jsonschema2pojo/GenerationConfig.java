@@ -19,6 +19,7 @@ package org.jsonschema2pojo;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Iterator;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Defines the configuration options for Java type generation, including source
@@ -146,6 +147,13 @@ public interface GenerationConfig {
      *         {@link #getAnnotationStyle()}
      */
     Class<? extends Annotator> getCustomAnnotator();
+
+    /**
+     * Gets the 'customRuleFactory' configuration option.
+     *
+     * @return An Rule Factory that will be used for the creation of generation rules.
+     */
+    Class<? extends RuleFactory> getCustomRuleFactory();
 
     /**
      * Gets the 'includeJsr303Annotations' configuration option.

@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Iterator;
@@ -116,6 +118,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public Class<? extends Annotator> getCustomAnnotator() {
         return NoopAnnotator.class;
+    }
+
+    @Override
+    public Class<? extends RuleFactory> getCustomRuleFactory() {
+        return RuleFactory.class;
     }
 
     /**

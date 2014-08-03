@@ -48,7 +48,12 @@ public class Jsonschema2Pojo {
      */
     public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
         Annotator annotator = getAnnotator(config);
-        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()), new SchemaGenerator());
+        RuleFactory ruleFactory = createRuleFactory(config);
+
+        ruleFactory.setAnnotator(annotator);
+        ruleFactory.setGenerationConfig(config);
+
+        SchemaMapper mapper = new SchemaMapper(ruleFactory, new SchemaGenerator());
 
         JCodeModel codeModel = new JCodeModel();
 
@@ -72,6 +77,22 @@ public class Jsonschema2Pojo {
             codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
+        }
+    }
+
+    private static RuleFactory createRuleFactory(GenerationConfig config) {
+        Class<? extends RuleFactory> clazz = config.getCustomRuleFactory();
+
+        if (!RuleFactory.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException("The class name given as a rule factory  (" + clazz.getName() + ") does not refer to a class that implements " + RuleFactory.class.getName());
+        }
+
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("Failed to create a rule factory from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("Failed to create a rule factory from the given class. It appears that we do not have access to this class - is both the class and its no-arg constructor marked public?", e);
         }
     }
 
