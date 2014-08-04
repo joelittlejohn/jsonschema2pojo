@@ -205,7 +205,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         JInvocation newSetImpl = JExpr._new(setImplClass);
 
-        if (node instanceof ArrayNode) {
+        if (node instanceof ArrayNode && node.size() > 0) {
             JInvocation invokeAsList = fieldType.owner().ref(Arrays.class).staticInvoke("asList");
             for (JsonNode defaultValue : node) {
                 invokeAsList.arg(getDefaultValue(setGenericType, defaultValue));
