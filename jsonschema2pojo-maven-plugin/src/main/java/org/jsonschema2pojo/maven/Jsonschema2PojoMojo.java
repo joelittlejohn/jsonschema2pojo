@@ -37,6 +37,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -224,6 +225,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.3.6
      */
     private String customAnnotator = NoopAnnotator.class.getName();
+
+    /**
+     * A fully qualified class name, referring to an class that extends
+     * <code>org.jsonschema2pojo.rules.RuleFactory</code> and will be used to
+     * create instances of Rules used for code generation.
+     *
+     * @parameter expression="${jsonschema2pojo.customRuleFactory}"
+     *            default-value="org.jsonschema2pojo.rules.RuleFactory"
+     * @since 0.4.5
+     */
+    private String customRuleFactory = RuleFactory.class.getName();
 
     /**
      * Whether to include <a
@@ -483,6 +495,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             }
         } else {
             return NoopAnnotator.class;
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<? extends RuleFactory> getCustomRuleFactory() {
+        if (isNotBlank(customRuleFactory)) {
+            try {
+                return (Class<? extends RuleFactory>) Class.forName(customRuleFactory);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            return RuleFactory.class;
         }
     }
 

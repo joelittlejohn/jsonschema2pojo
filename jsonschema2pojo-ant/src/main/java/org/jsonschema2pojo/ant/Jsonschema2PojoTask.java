@@ -42,6 +42,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * When invoked, this task reads one or more <a
@@ -81,6 +82,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
+
+    private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
     private boolean includeJsr303Annotations = false;
 
@@ -329,6 +332,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         }
     }
 
+    public void setCustomRuleFactory(String customRuleFactory) {
+        if (isNotBlank(customRuleFactory)) {
+            try {
+                this.customRuleFactory = (Class<? extends RuleFactory>) Class.forName(customRuleFactory);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            this.customRuleFactory = RuleFactory.class;
+        }
+    }
+
     /**
      * Sets the 'includeJsr303Annotations' property of this class
      * 
@@ -486,6 +501,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public Class<? extends Annotator> getCustomAnnotator() {
         return customAnnotator;
+    }
+
+    @Override
+    public Class<? extends RuleFactory> getCustomRuleFactory() {
+        return customRuleFactory;
     }
 
     @Override
