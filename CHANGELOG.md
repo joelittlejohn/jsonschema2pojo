@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.5
+* Allow sets to have an \[ \] \(empty\) default value ([#232](https://github.com/joelittlejohn/jsonschema2pojo/pull/232))
+* Use LinkedHashSet when deserializing Set to preserve order ([#227](https://github.com/joelittlejohn/jsonschema2pojo/pull/227))
+* Allow SchemaMapper to generate from String and not only URL ([#221](https://github.com/joelittlejohn/jsonschema2pojo/pull/221))
+* Generate @Param and @Returns javadoc ([#219](https://github.com/joelittlejohn/jsonschema2pojo/pull/219))
+* Creating a list of objects with class name as “S” ([#213](https://github.com/joelittlejohn/jsonschema2pojo/issues/213))
+* Add 'customRuleFactory' config option for pluggable RuleFactory ([#211](https://github.com/joelittlejohn/jsonschema2pojo/pull/211))
+
 ## 0.4.4
 * Added ')' to jdk unbounded range for Maven 2.X ([#205](https://github.com/joelittlejohn/jsonschema2pojo/pull/205))
 * Allow Sets and Lists to be initialized to null (instead of an empty collection) ([#203](https://github.com/joelittlejohn/jsonschema2pojo/pull/203))

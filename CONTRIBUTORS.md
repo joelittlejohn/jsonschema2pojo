@@ -16,3 +16,7 @@
 * Michael Wengle
 * Sergey Krasilnikov
 * Gaurav Jain
+* Joost den Boer
+* James Ashe
+* Kevin OBrien
+* David Padbury
