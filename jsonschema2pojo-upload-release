@@ -16,7 +16,7 @@
 set -e
 
 if [[ ! ("$#" == 4 ) ]]; then
-    echo 'Usage: upload-release <old version> <new version> <github username> <github password>'
+    echo 'Usage: jsonschema2pojo-upload-release <old version> <new version> <github username> <github password>'
     exit 1
 fi
 
