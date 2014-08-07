@@ -1,37 +1,20 @@
 /**
  * Copyright © 2010-2014 Nokia
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
-
 package org.jsonschema2pojo.rules;
 
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.ArrayUtils.*;
-
-import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
-
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-
+import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -45,12 +28,22 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import javax.annotation.Generated;
+import static org.apache.commons.lang3.ArrayUtils.*;
+
+import static org.apache.commons.lang3.StringUtils.*;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
 /**
  * Applies the generation steps required for schemas of type "object".
- * 
+ *
  * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
+ * href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class ObjectRule implements Rule<JPackage, JType> {
 
@@ -63,14 +56,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * When this rule is applied for schemas of type object, the properties of
-     * the schema are used to generate a new Java class and determine its
-     * characteristics. See other implementers of {@link Rule} for details.
+     * When this rule is applied for schemas of type object, the properties of the schema are used to generate a new
+     * Java class and determine its characteristics. See other implementers of {@link Rule} for details.
      * <p>
-     * A new Java type will be created when this rule is applied, it is
-     * annotated as {@link Generated}, it is given <code>equals</code>,
-     * <code>hashCode</code> and <code>toString</code> methods and implements
-     * {@link Serializable}.
+     * A new Java type will be created when this rule is applied, it is annotated as {@link Generated}, it is given
+     * <code>equals</code>, <code>hashCode</code> and <code>toString</code> methods and implements {@link Serializable}.
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
@@ -93,6 +83,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
 
+        if (node.has("javaTypeIsAbstract")) {
+            addJsonTypeInfoAnnotation(jclass);
+        }
+        
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
         }
@@ -126,28 +120,21 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     /**
      * Creates a new Java class that will be generated.
-     * 
-     * @param nodeName
-     *            the node name which may be used to dictate the new class name
-     * @param node
-     *            the node representing the schema that caused the need for a
-     *            new class. This node may include a 'javaType' property which
-     *            if present will override the fully qualified name of the newly
-     *            generated class.
-     * @param _package
-     *            the package which may contain a new class after this method
-     *            call
+     *
+     * @param nodeName the node name which may be used to dictate the new class name
+     * @param node the node representing the schema that caused the need for a new class. This node may include a
+     * 'javaType' property which if present will override the fully qualified name of the newly generated class.
+     * @param _package the package which may contain a new class after this method call
      * @return a reference to a newly created class
-     * @throws ClassAlreadyExistsException
-     *             if the given arguments cause an attempt to create a class
-     *             that already exists, either on the classpath or in the
-     *             current map of classes to be generated.
+     * @throws ClassAlreadyExistsException if the given arguments cause an attempt to create a class that already
+     * exists, either on the classpath or in the current map of classes to be generated.
      */
     private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
 
         JDefinedClass newType;
 
         try {
+            boolean makeAbstract = isAbstract(node);
             if (node.has("javaType")) {
                 String fqn = substringBefore(node.get("javaType").asText(), "<");
                 String[] genericArguments = split(substringBetween(node.get("javaType").asText(), "<", ">"), ",");
@@ -158,17 +145,26 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
                 try {
                     JClass existingClass = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    
+
                     if (isNotEmpty(genericArguments)) {
                         existingClass = addGenericArguments(_package, existingClass, genericArguments);
                     }
-                            
+
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
-                    newType = _package.owner()._class(fqn);
+                    if (makeAbstract) {
+                        newType = _package.owner()._class(JMod.ABSTRACT + JMod.PUBLIC, fqn, ClassType.CLASS);
+                    } else {
+                        newType = _package.owner()._class(fqn);
+                    }
                 }
             } else {
-                newType = _package._class(getClassName(nodeName, _package));
+                if (makeAbstract) {
+                    newType = _package._class(JMod.ABSTRACT + JMod.PUBLIC, getClassName(nodeName, _package), 
+                            ClassType.CLASS);
+                } else {
+                    newType = _package._class(getClassName(nodeName, _package));
+                }
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
@@ -182,10 +178,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private JClass addGenericArguments(JPackage _package, JClass existingClass, String[] genericArgumentClassNames) {
         JClass[] genericArgumentClasses = new JClass[genericArgumentClassNames.length];
-        for (int i=0; i<genericArgumentClasses.length; i++) {
+        for (int i = 0; i < genericArgumentClasses.length; i++) {
             genericArgumentClasses[i] = _package.owner().ref(genericArgumentClassNames[i]);
         }
-        
+
         return existingClass.narrow(genericArgumentClasses);
     }
 
@@ -211,13 +207,20 @@ public class ObjectRule implements Rule<JPackage, JType> {
         generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
+    private void addJsonTypeInfoAnnotation(JDefinedClass jclass) {
+        JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+        jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
+        jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
+        jsonTypeInfo.param("property", "@class");
+    }
+    
     private void addToString(JDefinedClass jclass) {
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
 
-        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
-                org.apache.commons.lang3.builder.ToStringBuilder.class : 
-                    org.apache.commons.lang.builder.ToStringBuilder.class;
-        
+        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3()
+                ? org.apache.commons.lang3.builder.ToStringBuilder.class
+                : org.apache.commons.lang.builder.ToStringBuilder.class;
+
         JBlock body = toString.body();
         JInvocation reflectionToString = jclass.owner().ref(toStringBuilder).staticInvoke("reflectionToString");
         reflectionToString.arg(JExpr._this());
@@ -229,10 +232,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addHashCode(JDefinedClass jclass) {
         JMethod hashCode = jclass.method(JMod.PUBLIC, int.class, "hashCode");
 
-        Class<?> hashcodeBuiler = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
-                org.apache.commons.lang3.builder.HashCodeBuilder.class : 
-                    org.apache.commons.lang.builder.HashCodeBuilder.class;
-        
+        Class<?> hashcodeBuiler = ruleFactory.getGenerationConfig().isUseCommonsLang3()
+                ? org.apache.commons.lang3.builder.HashCodeBuilder.class
+                : org.apache.commons.lang.builder.HashCodeBuilder.class;
+
         JBlock body = hashCode.body();
         JInvocation reflectionHashCode = jclass.owner().ref(hashcodeBuiler).staticInvoke("reflectionHashCode");
         reflectionHashCode.arg(JExpr._this());
@@ -245,9 +248,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JMethod equals = jclass.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
 
-        Class<?> equalsBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ?
-                org.apache.commons.lang3.builder.EqualsBuilder.class : 
-                    org.apache.commons.lang.builder.EqualsBuilder.class;
+        Class<?> equalsBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3()
+                ? org.apache.commons.lang3.builder.EqualsBuilder.class
+                : org.apache.commons.lang.builder.EqualsBuilder.class;
 
         JBlock body = equals.body();
         JInvocation reflectionEquals = jclass.owner().ref(equalsBuilder).staticInvoke("reflectionEquals");
@@ -278,6 +281,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } catch (JClassAlreadyExistsException e) {
             return makeUnique(className + "_", _package);
         }
+    }
+
+    private boolean isAbstract(JsonNode node) {
+        if (node.has("javaTypeIsAbstract")) {
+            return node.get("javaTypeIsAbstract").asBoolean();
+        }
+        return false;
     }
 
 }
