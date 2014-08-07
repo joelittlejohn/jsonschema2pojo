@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "propertyOfChild" : {
+            "type" : "string"
+        }
+    },
+    "extends" : {
+        "$ref" : "parentWithPolymorphism.json"
+    }
+}

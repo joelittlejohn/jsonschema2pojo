@@ -27,10 +27,12 @@ import static org.apache.commons.lang3.ArrayUtils.*;
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.AnnotationStyle;
 
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -45,6 +47,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.ClassType;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -93,6 +96,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
 
+        if (node.has("deserializationClassProperty")) {
+            addJsonTypeInfoAnnotation(jclass, node);
+        }
+        
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
         }
@@ -148,6 +155,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JDefinedClass newType;
 
         try {
+            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
             if (node.has("javaType")) {
                 String fqn = substringBefore(node.get("javaType").asText(), "<");
                 String[] genericArguments = split(substringBetween(node.get("javaType").asText(), "<", ">"), ",");
@@ -165,10 +173,19 @@ public class ObjectRule implements Rule<JPackage, JType> {
                             
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
-                    newType = _package.owner()._class(fqn);
+                    if (usePolymorphicDeserialization) {
+                        newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
+                    } else {
+                        newType = _package.owner()._class(fqn);
+                    }
                 }
             } else {
-                newType = _package._class(getClassName(nodeName, _package));
+                if (usePolymorphicDeserialization) {
+                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, _package), 
+                            ClassType.CLASS);
+                } else {
+                    newType = _package._class(getClassName(nodeName, _package));
+                }
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
@@ -211,6 +228,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
         generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
+    private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
+        if (this.ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
+            String annotationName = node.get("deserializationClassProperty").asText();
+            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+            jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
+            jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
+            jsonTypeInfo.param("property", annotationName);
+        }
+    }
+    
     private void addToString(JDefinedClass jclass) {
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
 
@@ -278,6 +305,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } catch (JClassAlreadyExistsException e) {
             return makeUnique(className + "_", _package);
         }
+    }
+
+    private boolean usesPolymorphicDeserialization(JsonNode node) {
+        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
+            return node.has("deserializationClassProperty");
+        }
+        return false;
     }
 
 }

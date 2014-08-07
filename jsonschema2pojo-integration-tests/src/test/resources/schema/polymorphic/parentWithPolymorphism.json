@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "deserializationClassProperty" : "deserializationClassName",
+    "properties" : {
+        "propertyOfParent" : {
+            "type" : "string"
+        }
+    }
+}
