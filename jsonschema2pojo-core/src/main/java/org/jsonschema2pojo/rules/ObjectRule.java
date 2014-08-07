@@ -123,6 +123,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
         }
 
+        if (config.isGenerateBuilderClasses()) {
+            addNewBuilderMethods(jclass, builderClass);
+        }
+
         if (config.isIncludeToString()) {
             addToString(jclass);
         }
@@ -192,10 +196,25 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JMethod buildMethod = builderClass.method(JMod.PUBLIC, jclass, "build");
         buildMethod.body()._return(JExpr._new(jclass).arg(JExpr._this()));
 
+        return builderClass;
+    }
+
+    /**
+     * Adds the newBuilder methods onto the class.
+     */
+    private void addNewBuilderMethods(JDefinedClass jclass, JDefinedClass builderClass) {
         JMethod newBuilderMethod = jclass.method(JMod.PUBLIC | JMod.STATIC, builderClass, "newBuilder");
         newBuilderMethod.body()._return(JExpr._new(builderClass));
 
-        return builderClass;
+        JMethod newBuilderFromOldMethod = jclass.method(JMod.PUBLIC | JMod.STATIC, builderClass, "newBuilder");
+        newBuilderFromOldMethod.param(jclass, "from");
+        JBlock body = newBuilderFromOldMethod.body();
+        JVar builderVar = body.decl(builderClass, "builder", JExpr._new(builderClass));
+        for (Map.Entry<String, JFieldVar> e : jclass.fields().entrySet()) {
+            body.add(builderVar.invoke("with" + capitalize(e.getKey())).arg(
+                    immutableCopy(JExpr.ref("from").ref(e.getKey()), e.getValue().type())));
+        }
+        body._return(builderVar);
     }
 
     /**
