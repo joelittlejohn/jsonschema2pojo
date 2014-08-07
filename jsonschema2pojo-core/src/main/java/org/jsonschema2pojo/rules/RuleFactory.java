@@ -339,5 +339,5 @@ public class RuleFactory {
     public Rule<JType, JType> getMediaRule() {
         return new MediaRule(this);
     }
-
+    
 }
