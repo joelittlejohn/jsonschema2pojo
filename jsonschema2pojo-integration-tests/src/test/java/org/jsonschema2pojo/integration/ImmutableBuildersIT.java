@@ -92,6 +92,15 @@ public class ImmutableBuildersIT {
         assertEquals(ImmutableMap.of("hello", "world"),
                 generatedType.getMethod("getAdditionalProperties").invoke(instance));
 
+        // Check that we can copy construct a builder
+        Method newCopyBuilder = generatedType.getMethod("newBuilder", generatedType);
+        Object builder2 = newCopyBuilder.invoke(generatedType, instance);
+        Object instance2 = builder2.getClass().getMethod("build").invoke(builder2);
+        assertEquals("HELLO WORLD", generatedType.getMethod("getFoo").invoke(instance2));
+        assertEquals(true, generatedType.getMethod("getBar").invoke(instance2));
+        assertNull(generatedType.getMethod("getBaz").invoke(instance2));
+        assertEquals(Lists.newArrayList(1, 2, 3), generatedType.getMethod("getQux").invoke(instance2));
+
         // Check that the instance has the expected values when serialized.
         JsonNode jsonified = mapper.valueToTree(instance);
         assertEquals("HELLO WORLD", jsonified.get("foo").asText());
