@@ -16,19 +16,19 @@
 
 package org.jsonschema2pojo.integration.util;
 
-import static java.util.Arrays.*;
-import static org.apache.commons.io.FileUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import static java.util.Arrays.*;
 import java.util.Collection;
-
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 
 /**
  * Compiles all the Java source files found in a given directory using the
@@ -43,8 +43,13 @@ public class Compiler {
 
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(directory));
 
+        ArrayList<String> options = new ArrayList<String>();
+        options.add("-classpath");
+        options.add(classpath);
+        options.add("-encoding");
+        options.add("UTF8");
         if (compilationUnits.iterator().hasNext()) {
-            Boolean success = javaCompiler.getTask(null, fileManager, null, asList("-classpath", classpath), null, compilationUnits).call();
+            Boolean success = javaCompiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
             assertThat("Compilation was not successful, check stdout for errors", success, is(true));
         }
 
