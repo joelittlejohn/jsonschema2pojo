@@ -103,16 +103,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addToString(jclass);
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
-            addHashCode(jclass);
-            addEquals(jclass);
-        }
-
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
+
+        if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
+            addHashCode(jclass);
+            addEquals(jclass);
+        }
 
         return jclass;
 
@@ -260,7 +260,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
         }
 
-        body._return(hashCodeBuilderInvocation.invoke("hashCode"));
+        body._return(hashCodeBuilderInvocation.invoke("toHashCode"));
 
         hashCode.annotate(Override.class);
     }
@@ -280,15 +280,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JBlock body = equals.body();
 
-        body._if(otherObject.eq(JExpr._null()))._then()._return(JExpr.FALSE);
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
-        body._if(otherObject.invoke("getClass").ne(JExpr._this().invoke("getClass")))._then()._return(JExpr.FALSE);
+        body._if(otherObject._instanceof(jclass).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
 
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
         JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
         JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
-        equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper")
-                .arg(JExpr._super().invoke("equals").arg(otherObject));
 
         for (JFieldVar fieldVar : fields.values()) {
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
