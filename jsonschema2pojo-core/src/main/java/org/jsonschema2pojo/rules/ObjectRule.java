@@ -49,6 +49,7 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
@@ -182,7 +183,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } else {
             return expr;
         }
-        return immutableClass.staticInvoke("copyOf").arg(expr);
+
+        // make sure we don't try to copy null
+        return JOp.cond(
+                expr.eq(JExpr._null()),
+                JExpr._null(),
+                immutableClass.staticInvoke("copyOf").arg(expr));
     }
 
     /**
