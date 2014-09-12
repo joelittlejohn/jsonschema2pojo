@@ -16,6 +16,10 @@
             "items" : {
                 "type" : "integer"
             }
+        },
+        "java_map": {
+            "type": "object",
+            "javaType": "java.util.Map<String, String>"
         }
     }
 }
