@@ -101,6 +101,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean initializeCollections = true;
 
+    private String classNamePrefix = "";
+
+    private boolean generateAbstractClasses = false;
+
+    private boolean useExtendedClassInArray = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -569,6 +575,21 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isInitializeCollections() {
         return initializeCollections;
+    }
+
+    @Override
+    public String getClassNamePrefix() {
+        return classNamePrefix;
+    }
+
+    @Override
+    public boolean isGenerateAbstractClasses() {
+        return generateAbstractClasses;
+    }
+
+    @Override
+    public boolean isUseExtendedClassInArray() {
+        return useExtendedClassInArray;
     }
 
 }

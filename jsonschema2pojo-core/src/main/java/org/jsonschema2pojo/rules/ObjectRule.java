@@ -163,6 +163,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
+                
+                
+                int index = fqn.lastIndexOf(".") + 1;
+                if(index >= 0 && index<fqn.length()) {
+                    fqn = fqn.substring(0, index) + ruleFactory.getGenerationConfig().getClassNamePrefix() + fqn.substring(index);
+                }
 
                 try {
                     JClass existingClass = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));

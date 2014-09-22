@@ -182,4 +182,19 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isInitializeCollections() {
         return true;
     }
+
+    @Override
+    public String getClassNamePrefix() {
+        return "";
+    }
+
+    @Override
+    public boolean isGenerateAbstractClasses() {
+        return false;
+    }
+
+    @Override
+    public boolean isUseExtendedClassInArray() {
+        return false;
+    }
 }

@@ -18,11 +18,16 @@ package org.jsonschema2pojo.rules;
 
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.Inflector;
+
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
@@ -83,18 +88,41 @@ public class ArrayRule implements Rule<JPackage, JClass> {
             itemType = jpackage.owner().ref(Object.class);
         }
 
-        JClass arrayType;
+        JClass arrayType = null;
         if (uniqueItems) {
             arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
         } else {
-            arrayType = jpackage.owner().ref(List.class).narrow(itemType);
+            arrayType = getArrayType(jpackage, itemType, arrayType);
         }
 
         if (rootSchemaIsArray) {
-            schema.setJavaType(arrayType);
+        	schema.setJavaType(arrayType);
         }
-
+        System.out.println(arrayType.fullName());
         return arrayType;
+    }
+
+    private JClass getArrayType(JPackage jpackage, JType itemType, JClass arrayType) {
+        if (ruleFactory.getGenerationConfig().isUseExtendedClassInArray()) {
+            if (itemType.name()
+                    .contains(ruleFactory.getGenerationConfig().getClassNamePrefix())) {
+                JType type;
+                try {
+                    type =
+                            itemType.owner()._class(
+                                    itemType.fullName().replace(
+                                            ruleFactory.getGenerationConfig()
+                                                    .getClassNamePrefix(), ""));
+                    arrayType = jpackage.owner().ref(List.class).narrow(type);
+                    jpackage.remove(type.owner().ref(type.fullName()));
+                    
+                    return arrayType;
+                } catch (JClassAlreadyExistsException e) {
+                    return jpackage.owner().ref(List.class).narrow(arrayType);
+                }
+            }
+        }
+        return jpackage.owner().ref(List.class).narrow(itemType);
     }
 
     private String makeSingular(String nodeName) {
