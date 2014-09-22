@@ -103,7 +103,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
     }
 
     private JClass getArrayType(JPackage jpackage, JType itemType, JClass arrayType) {
-        if (ruleFactory.getGenerationConfig().isUseExtendedClassInArray()) {
+        if (ruleFactory.getGenerationConfig().isRemovePrefixFromArrayReferences()) {
             if (itemType.name()
                     .contains(ruleFactory.getGenerationConfig().getClassNamePrefix())) {
                 JType type;

@@ -105,7 +105,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateAbstractClasses = false;
 
-    private boolean useExtendedClassInArray = false;
+    private boolean removePrefixFromArrayReferences = false;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -588,8 +588,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isUseExtendedClassInArray() {
-        return useExtendedClassInArray;
+    public boolean isRemovePrefixFromArrayReferences() {
+        return removePrefixFromArrayReferences;
     }
 
 }

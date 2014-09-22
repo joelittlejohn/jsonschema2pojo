@@ -376,11 +376,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 	/**
      * Whether to remove the prefix from the reference when an array is defined.
      * 
-     * @parameter expression="${jsonschema2pojo.useExtendedClassInArray}"
+     * @parameter expression="${jsonschema2pojo.removePrefixFromReferences}"
      *            default-value="false"
      * @since 0.4.6
      */
-    private boolean useExtendedClassInArray = false;
+    private boolean removePrefixFromArrayReferences = false;
     
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -608,7 +608,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isUseExtendedClassInArray() {
-        return useExtendedClassInArray ;
+    public boolean isRemovePrefixFromArrayReferences() {
+        return removePrefixFromArrayReferences ;
     }
 }

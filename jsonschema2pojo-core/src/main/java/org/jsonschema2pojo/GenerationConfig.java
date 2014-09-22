@@ -248,5 +248,5 @@ public interface GenerationConfig {
      *
      * @return Whether to initialize collections with empty instance or null.
      */
-    boolean isUseExtendedClassInArray();
+    boolean isRemovePrefixFromArrayReferences();
 }

@@ -54,7 +54,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean initializeCollections
   String classNamePrefix
   boolean generateAbstractClasses
-  boolean useExtendedClassInArray
+  boolean removePrefixFromArrayReferences
   
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -79,7 +79,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     initializeCollections = true
     classNamePrefix = ''
   	generateAbstractClasses = false
-    useExtendedClassInArray = false
+    removePrefixFromArrayReferences = false
   }
 
   @Override
@@ -125,12 +125,12 @@ public class JsonSchemaExtension implements GenerationConfig {
     generateAbstractClasses
   }
   
-  public void setUseExtendedClassInArray(boolean b) {
-    useExtendedClassInArray = b
+  public void setRemovePrefixFromArrayReferences(boolean b) {
+    removePrefixFromArrayReferences = b
   }
   
-  public boolean isUseExtendedClassInArray() {
-    useExtendedClassInArray
+  public boolean isRemovePrefixFromArrayReferences() {
+    removePrefixFromArrayReferences
   }
 
   @Override
@@ -155,7 +155,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaDates = ${useJodaDates}
        |useCommonsLang3 = ${useCommonsLang3}
        |initializeCollections = ${initializeCollections}
-       |useExtendedClassInArray = ${useExtendedClassInArray}
+       |removePrefixFromArrayReferences = ${removePrefixFromArrayReferences}
        |generateAbstractClasses = ${generateAbstractClasses}
        |classNamePrefix = ${classNamePrefix}
      """.stripMargin()

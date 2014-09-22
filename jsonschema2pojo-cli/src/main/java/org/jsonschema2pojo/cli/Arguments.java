@@ -110,11 +110,14 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
 
+    @Parameter(names = { "-C", "--class-prefix" }, description = "Adds  prefix to the generated class names.")
     private String classNamePrefix = "";
-
+    
+    @Parameter(names = { "-M", "--abstract-modifiier" }, description = "Adds  abstract modifier to the generated classes.")
     private boolean generateAbstractClasses = false;
-
-    private boolean useExtendedClassInArray = false;
+    
+    @Parameter(names = { "-r", "--remove-prefix-array-reference" }, description = "Removes the prefix from the reference class in array properties.")
+    private boolean removePrefixFromArrayReferences = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -269,8 +272,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isUseExtendedClassInArray() {
-        return useExtendedClassInArray;
+    public boolean isRemovePrefixFromArrayReferences() {
+        return removePrefixFromArrayReferences;
     }
 
 }
