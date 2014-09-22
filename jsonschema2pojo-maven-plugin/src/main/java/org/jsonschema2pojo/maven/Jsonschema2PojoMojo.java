@@ -96,7 +96,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <code>withXxx(value)</code> (that return <code>this</code>), alongside
      * the standard, void-return setters.
      * 
-     * @parameter expression="${jsonschema2pojo.generateBuilders}"
+     * @parameter expression="${jsonschema2pojo.generateBuilders2}"
      *            default-value="false"
      * @since 0.1.2
      */
@@ -355,7 +355,33 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private MavenProject project;
 
     private FileFilter fileFilter = new AllFileFilter();
-
+    
+    /**
+     * Whether to add a prefix to generated classes.
+     * 
+     * @parameter expression="${jsonschema2pojo.classNamePrefix}"
+     * @since 0.4.6
+     */
+    private String classNamePrefix = "";
+	
+	/**
+     * Whether to generate classes with the modifier Abstract.
+     * 
+     * @parameter expression="${jsonschema2pojo.generateAbstractClasses}"
+     *            default-value="false"
+     * @since 0.4.6
+     */
+    private boolean generateAbstractClasses = false;
+	
+	/**
+     * Whether to remove the prefix from the reference when an array is defined.
+     * 
+     * @parameter expression="${jsonschema2pojo.removePrefixFromReferences}"
+     *            default-value="false"
+     * @since 0.4.6
+     */
+    private boolean removePrefixFromArrayReferences = false;
+    
     /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
@@ -555,6 +581,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     boolean filteringEnabled() {
         return !((includes == null || includes.length == 0) && (excludes == null || excludes.length == 0));
     }
+    
+    @Override
+    public String getClassNamePrefix() {
+        return classNamePrefix;
+    }
 
     FileFilter createFileFilter() throws MojoExecutionException {
         try {
@@ -568,5 +599,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } catch (IOException e) {
             throw new MojoExecutionException("could not create file filter", e);
         }
+    }
+
+    @Override
+    public boolean isGenerateAbstractClasses() {
+        return generateAbstractClasses ;
+    }
+
+    @Override
+    public boolean isRemovePrefixFromArrayReferences() {
+        return removePrefixFromArrayReferences ;
     }
 }

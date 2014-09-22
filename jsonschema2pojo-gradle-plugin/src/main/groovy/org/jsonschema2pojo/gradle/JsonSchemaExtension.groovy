@@ -52,7 +52,10 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useCommonsLang3
   FileFilter fileFilter
   boolean initializeCollections
-
+  String classNamePrefix
+  boolean generateAbstractClasses
+  boolean removePrefixFromArrayReferences
+  
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
     generateBuilders = false
@@ -74,6 +77,9 @@ public class JsonSchemaExtension implements GenerationConfig {
     useCommonsLang3 = false
     fileFilter = new AllFileFilter()
     initializeCollections = true
+    classNamePrefix = ''
+  	generateAbstractClasses = false
+    removePrefixFromArrayReferences = false
   }
 
   @Override
@@ -102,6 +108,30 @@ public class JsonSchemaExtension implements GenerationConfig {
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
   }
+  
+  public void setClassNamePrefix(String s) {
+    classNamePrefix = s
+  }
+  
+  public String getClassNamePrefix() {
+    classNamePrefix
+  }
+  
+  public void setGenerateAbstractClasses(boolean b) {
+    generateAbstractClasses = b
+  }
+  
+  public boolean isGenerateAbstractClasses() {
+    generateAbstractClasses
+  }
+  
+  public void setRemovePrefixFromArrayReferences(boolean b) {
+    removePrefixFromArrayReferences = b
+  }
+  
+  public boolean isRemovePrefixFromArrayReferences() {
+    removePrefixFromArrayReferences
+  }
 
   @Override
   public String toString() {
@@ -125,6 +155,9 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaDates = ${useJodaDates}
        |useCommonsLang3 = ${useCommonsLang3}
        |initializeCollections = ${initializeCollections}
+       |removePrefixFromArrayReferences = ${removePrefixFromArrayReferences}
+       |generateAbstractClasses = ${generateAbstractClasses}
+       |classNamePrefix = ${classNamePrefix}
      """.stripMargin()
   }
 }

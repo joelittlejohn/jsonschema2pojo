@@ -228,4 +228,25 @@ public interface GenerationConfig {
      * @return Whether to initialize collections with empty instance or null.
      */
     boolean isInitializeCollections();
+    
+    /**
+     * Gets the 'getClassNamePrefix' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    String getClassNamePrefix();
+    
+    /**
+     * Gets the 'isGenerateAbstractClasses' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    boolean isGenerateAbstractClasses();
+    
+    /**
+     * Gets the 'isUseExtendedClassInArray' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    boolean isRemovePrefixFromArrayReferences();
 }
