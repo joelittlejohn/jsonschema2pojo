@@ -98,7 +98,6 @@ public class ArrayRule implements Rule<JPackage, JClass> {
         if (rootSchemaIsArray) {
         	schema.setJavaType(arrayType);
         }
-        System.out.println(arrayType.fullName());
         return arrayType;
     }
 

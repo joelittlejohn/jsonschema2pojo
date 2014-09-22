@@ -603,7 +603,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     @Override
     public boolean isGenerateAbstractClasses() {
-        System.out.println("generateAbstractClasses:"  +generateAbstractClasses);
         return generateAbstractClasses ;
     }
 
