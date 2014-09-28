@@ -42,4 +42,16 @@ public class RegressionIT {
 
     }
 
+    @Test
+    public void underscoresInPropertyNamesRemainIntact() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/underscores.json", "com.example",
+                config("sourceType", "json",
+                        "propertyWordDelimiters", ""));
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Underscores");
+        generatedType.getMethod("getName");
+        generatedType.getMethod("get_name");
+    }
+
 }
