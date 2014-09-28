@@ -25,7 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Transforms words (from singular to plural, from camelCase to under_score, etc.). I got bored of doing Real Work...
+ * Transforms words (from singular to plural, from camelCase to under_score,
+ * etc.). I got bored of doing Real Work...
  * 
  * @author chuyeow
  */
@@ -43,10 +44,10 @@ public class Inflector {
 
     private Inflector() {
         // Woo, you can't touch me.
-        
+
         initialize();
     }
-    
+
     private void initialize() {
         plural("$", "s");
         plural("s$", "s");
@@ -91,6 +92,7 @@ public class Inflector {
         singular("(vert|ind)ices$", "$1ex");
         singular("(matr)ices$", "$1ix");
         singular("(quiz)zes$", "$1");
+        singular("(ess)$", "$1");
 
         singular("men$", "man");
         plural("man$", "men");
@@ -103,7 +105,7 @@ public class Inflector {
         irregular("sex", "sexes");
         irregular("move", "moves");
 
-        uncountable(new String[] {"equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "s"});
+        uncountable(new String[] { "equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "s" });
     }
 
     public static Inflector getInstance() {
@@ -155,10 +157,10 @@ public class Inflector {
     public String tableize(String className) {
         return pluralize(underscore(className));
     }
-    
+
     public String tableize(Class<?> klass) {
         // Strip away package name - we only want the 'base' class name.
-        String className = klass.getName().replace(klass.getPackage().getName()+".", "");
+        String className = klass.getName().replace(klass.getPackage().getName() + ".", "");
         return tableize(className);
     }
 
@@ -182,24 +184,28 @@ public class Inflector {
     }
 }
 
-
 // Ugh, no open structs in Java (not-natively at least).
 class RuleAndReplacement {
     private String rule;
     private String replacement;
+
     public RuleAndReplacement(String rule, String replacement) {
         this.rule = rule;
         this.replacement = replacement;
     }
+
     public String getReplacement() {
         return replacement;
     }
+
     public void setReplacement(String replacement) {
         this.replacement = replacement;
     }
+
     public String getRule() {
         return rule;
     }
+
     public void setRule(String rule) {
         this.rule = rule;
     }
