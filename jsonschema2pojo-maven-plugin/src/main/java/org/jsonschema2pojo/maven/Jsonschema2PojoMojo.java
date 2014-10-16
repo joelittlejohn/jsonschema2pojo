@@ -366,6 +366,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
     public void execute() throws MojoExecutionException {
 
+        addProjectDependenciesToClasspath();
+
         try {
             getAnnotationStyle();
         } catch (IllegalArgumentException e) {
@@ -398,8 +400,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         if (addCompileSourceRoot) {
             project.addCompileSourceRoot(outputDirectory.getPath());
         }
-
-        addProjectDependenciesToClasspath();
 
         try {
             Jsonschema2Pojo.generate(this);
