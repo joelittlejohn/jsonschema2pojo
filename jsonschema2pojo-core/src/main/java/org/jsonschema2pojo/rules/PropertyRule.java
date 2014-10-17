@@ -19,6 +19,7 @@ package org.jsonschema2pojo.rules;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
@@ -211,7 +212,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private JMethod addBuilder(JDefinedClass c, JFieldVar field) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(field.name()));
+        JMethod builder = c.method(JMod.PUBLIC,
+                (ArrayUtils.isEmpty(c.typeParams()) ? c : c.narrow(c.typeParams())),
+                getBuilderName(field.name()));
 
         JVar param = builder.param(field.type(), field.name());
         JBlock body = builder.body();
