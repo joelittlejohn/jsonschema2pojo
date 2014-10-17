@@ -34,6 +34,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
+
 import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
@@ -108,6 +109,12 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
+    
+    @Parameter(names = { "-cp", "--class-prefix" }, description = "Adds prefix to the generated class names.")
+    private String classNamePrefix = "";
+
+    @Parameter(names = { "-cs", "--class-Suffix" }, description = "Adds Suffix to the generated class names.")
+    private String classNameSuffix = "";
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -249,6 +256,16 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isInitializeCollections() {
         return !nullCollections;
+    }
+
+    @Override
+    public String getClassNamePrefix() {
+        return classNamePrefix;
+    }
+
+    @Override
+    public String getClassNameSuffix() {
+        return classNameSuffix;
     }
 
 }

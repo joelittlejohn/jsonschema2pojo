@@ -52,6 +52,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useCommonsLang3
   FileFilter fileFilter
   boolean initializeCollections
+  String classNamePrefix
+  String classNameSuffix
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -74,6 +76,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     useCommonsLang3 = false
     fileFilter = new AllFileFilter()
     initializeCollections = true
+    classNamePrefix = ''
+    classNameSuffix = ''
   }
 
   @Override
@@ -102,6 +106,22 @@ public class JsonSchemaExtension implements GenerationConfig {
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
   }
+  
+  public void setClassNamePrefix(String s) {
+    classNamePrefix = s
+  }
+  
+  public String getClassNamePrefix() {
+    classNamePrefix
+  }
+  
+  public void setClassNameSuffix(String s) {
+    classNameSuffix = s
+  }
+  
+  public String getClassNameSuffix() {
+    classNameSuffix
+  }
 
   @Override
   public String toString() {
@@ -125,6 +145,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaDates = ${useJodaDates}
        |useCommonsLang3 = ${useCommonsLang3}
        |initializeCollections = ${initializeCollections}
+       |classNamePrefix = ${classNamePrefix}
+       |classNameSuffix = ${classNameSuffix}
      """.stripMargin()
   }
 }
