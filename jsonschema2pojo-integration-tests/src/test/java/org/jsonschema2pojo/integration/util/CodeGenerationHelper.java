@@ -181,7 +181,7 @@ public class CodeGenerationHelper {
         try {
             outputDirectory.mkdir();
         } finally {
-            deleteOnExit(outputDirectory);
+            // deleteOnExit(outputDirectory);
         }
 
         return outputDirectory;
