@@ -41,28 +41,28 @@ public class PrefixSuffixIT {
     @Test
     public void defaultClassPrefix() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
         resultsClassLoader.loadClass("com.example.PrimitiveProperties");
     }
     
     @Test
     public void customClassPrefix() throws ClassNotFoundException{
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
         resultsClassLoader.loadClass("com.example.AbstractPrimitiveProperties");
     }
     
     @Test
     public void defaultClassSufix() throws ClassNotFoundException{
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
         resultsClassLoader.loadClass("com.example.PrimitiveProperties");
     }
     
     @Test
     public void customClassSuffix() throws ClassNotFoundException{
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
         resultsClassLoader.loadClass("com.example.PrimitivePropertiesDao");
     }
     
@@ -76,7 +76,7 @@ public class PrefixSuffixIT {
     @Test(expected = ClassNotFoundException.class)
     public void NotExitstingClassSufix() throws ClassNotFoundException{
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
     
