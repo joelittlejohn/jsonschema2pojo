@@ -69,7 +69,7 @@ public class PrefixSuffixIT {
     @Test(expected = ClassNotFoundException.class)
     public void NotExitstingClassPrefix() throws ClassNotFoundException{
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/PrimitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
     
