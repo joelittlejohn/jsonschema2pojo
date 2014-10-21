@@ -16,6 +16,7 @@
 
 package org.jsonschema2pojo.integration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;

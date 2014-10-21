@@ -175,7 +175,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private static JExpression immutableCopy(JExpression expr, JType type) {
+    public static JExpression immutableCopy(JExpression expr, JType type) {
         JClass immutableClass;
         String typeName = type.erasure().fullName();
         if (typeName.equals("java.util.List")) {

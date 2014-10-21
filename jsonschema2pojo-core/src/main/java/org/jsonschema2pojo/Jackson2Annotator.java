@@ -42,6 +42,8 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.JVar;
 
+import static org.jsonschema2pojo.rules.ObjectRule.immutableCopy;
+
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
  * 
@@ -87,7 +89,9 @@ public class Jackson2Annotator implements Annotator {
                         constructor.param(field.type(), field.name())
                                 .annotate(annotation.getAnnotationClass())
                                 .param("value", str);
-                        body.assign(JExpr._this().ref(field.name()), JExpr.ref(field.name()));
+                        body.assign(JExpr._this().ref(field.name()),
+                                // TODO(micah): this should respect immutability config
+                                immutableCopy(JExpr.ref(field.name()), field.type()));
                     }
                 }
             }
