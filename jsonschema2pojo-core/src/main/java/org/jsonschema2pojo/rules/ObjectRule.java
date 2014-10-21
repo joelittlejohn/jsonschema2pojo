@@ -52,6 +52,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 /**
@@ -92,7 +93,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JDefinedClass jclass;
         try {
-            jclass = createClass(nodeName, node, _package);
+            jclass = createClass(nodeName, node, _package, schema);
         } catch (ClassAlreadyExistsException e) {
             return e.getExistingClass();
         }
@@ -117,7 +118,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
             } catch (JClassAlreadyExistsException e) {
                 builderClass = e.getExistingClass();
             }
-            ruleFactory.getAnnotator().objectBuilder(jclass, builderClass);
         }
 
         if (node.has("properties")) {
@@ -145,6 +145,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         if (config.isGenerateBuilderClasses()) {
             addConstructor(jclass, builderClass);
+            ruleFactory.getAnnotator().objectBuilder(jclass, builderClass);
         }
 
         return jclass;
@@ -159,7 +160,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
      */
     private void addConstructor(JDefinedClass jclass, JDefinedClass builderClass) {
         JMethod constructor = jclass.constructor(JMod.PRIVATE);
-        JVar builder = constructor.param(builderClass, "builder");
+
+        JVar builder = constructor.param(safeNarrow(builderClass, builderClass.typeParams()),
+                "builder");
+
         JBlock body = constructor.body();
         for (Map.Entry<String, JFieldVar> e : jclass.fields().entrySet()) {
             JExpression src = JExpr.ref(builder, e.getKey());
@@ -171,7 +175,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private static JExpression immutableCopy(JExpression expr, JType type) {
+    public static JExpression immutableCopy(JExpression expr, JType type) {
         JClass immutableClass;
         String typeName = type.erasure().fullName();
         if (typeName.equals("java.util.List")) {
@@ -199,8 +203,18 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         builderClass.constructor(JMod.PRIVATE);
 
-        JMethod buildMethod = builderClass.method(JMod.PUBLIC, jclass, "build");
-        buildMethod.body()._return(JExpr._new(jclass).arg(JExpr._this()));
+        // add type parameters if we have them
+        if (!isEmpty(jclass.typeParams())) {
+            for (JTypeVar param : jclass.typeParams()) {
+                builderClass.generify(param.name());
+            }
+        }
+
+        JMethod buildMethod = builderClass.method(JMod.PUBLIC,
+                safeNarrow(jclass, builderClass.typeParams()), "build");
+        buildMethod.body()._return(JExpr._new(
+                safeNarrow(jclass, builderClass.typeParams()))
+                .arg(JExpr._this()));
 
         return builderClass;
     }
@@ -209,17 +223,29 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * Adds the newBuilder methods onto the class.
      */
     private void addNewBuilderMethods(JDefinedClass jclass, JDefinedClass builderClass) {
-        JMethod newBuilderMethod = jclass.method(JMod.PUBLIC | JMod.STATIC, builderClass, "newBuilder");
-        newBuilderMethod.body()._return(JExpr._new(builderClass));
+        JMethod newBuilderMethod =
+                jclass.method(JMod.PUBLIC | JMod.STATIC,
+                        safeNarrow(builderClass, builderClass.typeParams()), "newBuilder");
+        newBuilderMethod.body()._return(JExpr._new(
+                safeNarrow(builderClass, builderClass.typeParams())));
 
-        JMethod newBuilderFromOldMethod = jclass.method(JMod.PUBLIC | JMod.STATIC, builderClass, "newBuilder");
-        newBuilderFromOldMethod.param(jclass, "from");
+        JMethod newBuilderFromOldMethod = jclass.method(JMod.PUBLIC | JMod.STATIC,
+                safeNarrow(builderClass, builderClass.typeParams()), "newBuilder");
+        newBuilderFromOldMethod.param(safeNarrow(jclass, builderClass.typeParams()), "from");
         JBlock body = newBuilderFromOldMethod.body();
-        JVar builderVar = body.decl(builderClass, "builder", JExpr._new(builderClass));
+
+        JVar builderVar = body.decl(safeNarrow(builderClass, builderClass.typeParams()), "builder",
+                JExpr._new(safeNarrow(builderClass, builderClass.typeParams())));
         for (Map.Entry<String, JFieldVar> e : jclass.fields().entrySet()) {
             body.add(builderVar.invoke("with" + capitalize(e.getKey())).arg(
                     immutableCopy(JExpr.ref("from").ref(e.getKey()), e.getValue().type())));
         }
+
+        for (JTypeVar param : jclass.typeParams()) {
+            newBuilderMethod.generify(param.name());
+            newBuilderFromOldMethod.generify(param.name());
+        }
+
         body._return(builderVar);
     }
 
@@ -242,7 +268,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
      *             that already exists, either on the classpath or in the
      *             current map of classes to be generated.
      */
-    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
+    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package, Schema schema)
+            throws ClassAlreadyExistsException {
 
         JDefinedClass newType;
 
@@ -255,6 +282,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
 
+                // determine if this is a type parameter
+                if (schema.getJavaType() instanceof JClass) {
+                    for (JTypeVar param : ((JClass) schema.getJavaType()).typeParams()) {
+                        if (fqn.equals(param.name().trim())) {
+                            throw new ClassAlreadyExistsException(param);
+                        }
+                    }
+                }
+
                 try {
                     JClass existingClass = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
                     
@@ -265,6 +301,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
                     newType = _package.owner()._class(fqn);
+                    if (isNotEmpty(genericArguments)) {
+                        for (String parameter : genericArguments) {
+                            newType.generify(parameter.trim());
+                        }
+                    }
                 }
             } else {
                 newType = _package._class(getClassName(nodeName, _package));
@@ -376,6 +417,17 @@ public class ObjectRule implements Rule<JPackage, JType> {
             return className;
         } catch (JClassAlreadyExistsException e) {
             return makeUnique(className + "_", _package);
+        }
+    }
+
+    /**
+     * Narrows the supplied jclass only if there are actually type parameters.
+     */
+    private JClass safeNarrow(JClass jclass, JTypeVar[] params) {
+        if (isEmpty(params)) {
+            return jclass;
+        } else {
+            return jclass.narrow(params);
         }
     }
 

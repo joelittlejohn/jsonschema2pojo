@@ -115,9 +115,8 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         // NOTE: Currently, Jackson requires a getter to serialize additional properties.
         addGetter(jclass, field);
-        if (!config.isUsePublicFields() && !config.isImmutable()) {
-            addSetter(jclass, propertyType, field);
-        }
+        // If we're using immutable fields, create a private setter so Jackson can still deserialize
+        addSetter(jclass, propertyType, field, !config.isUsePublicFields() && !config.isImmutable());
 
         if (config.isGenerateBuilders()) {
             addBuilderMethod(jclass, propertyType, field);
@@ -154,8 +153,10 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         field.init(JExpr._new(propertiesMapImplType));
     }
 
-    private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
-        JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperty");
+    private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field,
+                           boolean isPublic) {
+        JMethod setter = jclass.method(isPublic ? JMod.PUBLIC : JMod.PRIVATE,
+                void.class, "setAdditionalProperty");
 
         ruleFactory.getAnnotator().anySetter(setter);
 

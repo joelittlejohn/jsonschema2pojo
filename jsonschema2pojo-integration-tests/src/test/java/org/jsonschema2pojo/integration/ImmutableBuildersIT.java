@@ -186,6 +186,11 @@ public class ImmutableBuildersIT {
         // currently requires for serialization.
 
         // Check that deserialization works.
-        assertEquals(instance, mapper.readValue(mapper.writeValueAsString(instance), generatedType));
+        Object deserialized = mapper.readValue(mapper.writeValueAsString(instance), generatedType);
+        assertEquals(instance, deserialized);
+        try {
+            ((List<Integer>) generatedType.getField("qux").get(deserialized)).add(5);
+            fail("It should not be possible to modify a List in an immutable POJO");
+        } catch (UnsupportedOperationException e) { }
     }
 }

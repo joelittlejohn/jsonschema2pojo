@@ -1,0 +1,21 @@
+{
+    "type" : "object",
+    "javaType" : "com.example.Generic<T, U, V>",
+    "properties" : {
+        "generic_property" : {
+            "type" : "object",
+            "javaType": "T"
+        },
+        "generic_array" : {
+            "type" : "array",
+            "items": {
+                "type": "object",
+                "javaType": "U"
+            }
+        },
+        "generic_map" : {
+            "type" : "object",
+            "javaType": "java.util.Map<String, V>"
+        }
+    }
+}

@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -27,11 +29,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JAnnotationValue;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JStringLiteral;
+import com.sun.codemodel.JVar;
+
+import static org.jsonschema2pojo.rules.ObjectRule.immutableCopy;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
@@ -57,7 +68,42 @@ public class Jackson2Annotator implements Annotator {
 
     @Override
     public void objectBuilder(JDefinedClass clazz, JDefinedClass builder) {
-        clazz.annotate(JsonDeserialize.class).param("builder", builder);
+        JMethod constructor = clazz.constructor(JMod.PRIVATE);
+        constructor.annotate(JsonCreator.class);
+        JBlock body = constructor.body();
+
+        for (JVar field : clazz.fields().values()) {
+            for (JAnnotationUse annotation : field.annotations()) {
+                if (annotation.getAnnotationClass().name().equals("JsonProperty")) {
+                    JAnnotationValue value = annotation.getAnnotationMembers().get("value");
+                    if (value != null) {
+                        String str;
+                        try {
+                            Field valueField = value.getClass().getDeclaredField("value");
+                            valueField.setAccessible(true);
+                            str = ((JStringLiteral) valueField.get(value)).str;
+                        } catch (Exception e) {
+                            throw new IllegalStateException("Field " + field.name() + " " +
+                                    "is not properly annotated");
+                        }
+                        constructor.param(field.type(), field.name())
+                                .annotate(annotation.getAnnotationClass())
+                                .param("value", str);
+                        body.assign(JExpr._this().ref(field.name()),
+                                // TODO(micah): this should respect immutability config
+                                immutableCopy(JExpr.ref(field.name()), field.type()));
+                    }
+                }
+            }
+
+            if (field.name().equals("additionalProperties")) {
+                JClass propertiesMapImplType = clazz.owner().ref(HashMap.class);
+                propertiesMapImplType = propertiesMapImplType.narrow(clazz.owner().ref(String.class),
+                        clazz.owner().ref(Object.class));
+
+                body.assign(JExpr._this().ref(field.name()), JExpr._new(propertiesMapImplType));
+            }
+        }
     }
 
     @Override
