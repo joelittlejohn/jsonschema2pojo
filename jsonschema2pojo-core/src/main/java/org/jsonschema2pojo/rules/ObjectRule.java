@@ -299,7 +299,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         body._return(equalsBuilderInvocation.invoke("isEquals"));
 
-        JAnnotationUse suppress = equals.annotate(edu.umd.cs.findbugs.annotations.SuppressWarnings.class);
+        JAnnotationUse suppress = equals.annotate(edu.umd.cs.findbugs.annotations.SuppressFBWarnings.class);
         suppress.param("value", "EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC");
         suppress.param("justification", "jsonschema2pojo appears to know what it's doing");
 
