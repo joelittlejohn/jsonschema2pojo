@@ -35,11 +35,8 @@
         (getSchemaRule)
         (apply classname schema package (proxy [Schema] [nil schema])))))
 
-(def ^:private default-config
-  (DefaultGenerationConfig.))
-
 (defn params-based-config [params]
-  (proxy [GenerationConfig] []
+  (proxy [DefaultGenerationConfig] []
     (getTargetPackage []
       (params "targetpackage"))
     (isGenerateBuilders []
@@ -65,11 +62,11 @@
     (getAnnotationStyle []
       (if (contains? params "annotationstyle")
         (AnnotationStyle/valueOf (upper-case (params "annotationstyle")))
-        (.getAnnotationStyle default-config)))
+        (proxy-super getAnnotationStyle)))
     (getSourceType []
       (if (contains? params "sourcetype")
         (SourceType/valueOf (upper-case (params "sourcetype")))
-        (.getSourceType default-config)))))
+        (proxy-super getSourceType)))))
 
 (defn generate [schema classname config]
   (let [code-model (JCodeModel.)]
