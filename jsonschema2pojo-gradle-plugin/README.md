@@ -125,6 +125,9 @@ jsonSchema2Pojo {
   // Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, 
   // hashCode and toString methods.
   boolean useCommonsLang3 = false
+  
+  // Whether to initialize Set and List fields as empty collections, or leave them as null.
+  boolean initializeCollections = true
 }
 ```
 
