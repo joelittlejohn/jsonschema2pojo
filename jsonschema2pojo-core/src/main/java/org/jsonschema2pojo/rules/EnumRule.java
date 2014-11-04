@@ -212,6 +212,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
             if (!value.isNull()) {
                 JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText()));
                 constant.arg(JExpr.lit(value.asText()));
+                ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
         }
     }
@@ -246,7 +247,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         return enumName;
     }
-    
+
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
             jclass._implements(jclass.owner().ref(i.asText()));

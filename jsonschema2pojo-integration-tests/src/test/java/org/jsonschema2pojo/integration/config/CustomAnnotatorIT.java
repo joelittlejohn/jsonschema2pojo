@@ -16,23 +16,22 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.Annotator;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
-
-import org.jsonschema2pojo.Annotator;
-
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
@@ -153,16 +152,21 @@ public class CustomAnnotatorIT {
         }
 
         @Override
+        public void enumConstant(JEnumConstant constant, String value) {
+            constant.annotate(Deprecated.class);
+        }
+
+        @Override
         public boolean isAdditionalPropertiesSupported() {
             return true;
         }
 
-    	@Override
-    	public void additionalPropertiesField(JFieldVar field,
-    			JDefinedClass clazz, String propertyName) {
-    		field.annotate(Deprecated.class);
-    		
-    	}
+        @Override
+        public void additionalPropertiesField(JFieldVar field,
+                JDefinedClass clazz, String propertyName) {
+            field.annotate(Deprecated.class);
+
+        }
 
     }
 

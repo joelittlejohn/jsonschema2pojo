@@ -18,6 +18,7 @@ package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
@@ -129,6 +130,12 @@ public interface Annotator {
      *            serialization
      */
     void enumValueMethod(JMethod valueMethod);
+
+    /**
+     * Add the necessary annotations to an enum constant. For instance, to force
+     * the the given value to be used when serializing.
+     */
+    void enumConstant(JEnumConstant constant, String value);
 
     /**
      * Indicates whether the annotation style that this annotator uses can
