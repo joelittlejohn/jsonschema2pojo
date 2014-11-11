@@ -357,6 +357,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private MavenProject project;
 
     private FileFilter fileFilter = new AllFileFilter();
+    
+    /**
+     * Whether to add a prefix to generated classes.
+     * 
+     * @parameter expression="${jsonschema2pojo.classNamePrefix}"
+     * @since 0.4.6
+     */
+    private String classNamePrefix = "";
+    
+    /**
+     * Whether to add a prefix to generated classes.
+     * 
+     * @parameter expression="${jsonschema2pojo.classNameSuffix}"
+     * @since 0.4.6
+     */
+    private String classNameSuffix = "";
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -570,5 +586,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } catch (IOException e) {
             throw new MojoExecutionException("could not create file filter", e);
         }
+    }
+
+    @Override
+    public String getClassNamePrefix() {
+        return classNamePrefix;
+    }
+
+    @Override
+    public String getClassNameSuffix() {
+        return classNameSuffix;
     }
 }

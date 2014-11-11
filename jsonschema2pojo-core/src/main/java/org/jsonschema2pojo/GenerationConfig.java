@@ -228,4 +228,18 @@ public interface GenerationConfig {
      * @return Whether to initialize collections with empty instance or null.
      */
     boolean isInitializeCollections();
+    
+    /**
+     * Gets the 'getClassNamePrefix' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    String getClassNamePrefix();
+    
+    /**
+     * Gets the 'getClassNameSuffix' configuration option.
+     *
+     * @return Whether to initialize collections with empty instance or null.
+     */
+    String getClassNameSuffix();
 }
