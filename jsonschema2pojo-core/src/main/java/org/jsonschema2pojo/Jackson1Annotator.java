@@ -41,7 +41,7 @@ import com.sun.codemodel.JMethod;
  * 
  * @see <a href="http://jackson.codehaus.org/">http://jackson.codehaus.org/</a>
  */
-public class Jackson1Annotator implements Annotator {
+public class Jackson1Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {

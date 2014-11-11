@@ -24,7 +24,9 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -73,6 +75,27 @@ public class GsonIT {
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
+                config("annotationStyle", "gson",
+                        "propertyWordDelimiters", "_"));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
+        Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
+        Object instance = generatedType.newInstance();
+
+        Method setter = generatedType.getMethod("setEnumProperty", enumType);
+        setter.invoke(instance, enumType.getEnumConstants()[3]);
+
+        String json = new Gson().toJson(instance);
+        Map<String, String> jsonAsMap = new Gson().fromJson(json, Map.class);
+
+        assertThat(jsonAsMap.get("enum_Property"), is("4 ! 1"));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

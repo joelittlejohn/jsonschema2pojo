@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
@@ -41,7 +42,7 @@ import com.sun.codemodel.JMethod;
  * @see <a
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
-public class Jackson2Annotator implements Annotator {
+public class Jackson2Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
@@ -93,6 +94,10 @@ public class Jackson2Annotator implements Annotator {
     @Override
     public void enumValueMethod(JMethod valueMethod) {
         valueMethod.annotate(JsonValue.class);
+    }
+
+    @Override
+    public void enumConstant(JEnumConstant constant, String value) {
     }
 
     @Override

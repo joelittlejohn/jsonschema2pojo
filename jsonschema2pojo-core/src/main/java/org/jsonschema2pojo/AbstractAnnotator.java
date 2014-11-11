@@ -18,11 +18,12 @@ package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
 /**
- * A default implemenation of the Annotator interface that makes it easier t o
+ * A default implemenation of the Annotator interface that makes it easier to
  * plug in different Annotator implemenations.
  */
 public abstract class AbstractAnnotator implements Annotator {
@@ -65,10 +66,14 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
+    public void enumConstant(JEnumConstant constant, String value) {
+    }
+
+    @Override
     public boolean isAdditionalPropertiesSupported() {
         return true;
     }
-    
+
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
     }

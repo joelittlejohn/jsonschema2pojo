@@ -239,8 +239,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     /**
      * Whether to include <a
-     * href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations (for
-     * schema rules like minimum, maximum, etc) in generated Java types.
+     * href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations
+     * (for schema rules like minimum, maximum, etc) in generated Java types.
      * <p>
      * Schema rules and the annotation they produce:
      * <ul>
@@ -322,9 +322,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useCommonsLang3 = false;
 
     /**
-     * Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.
+     * Whether to initialize Set and List fields as empty collections, or leave
+     * them as <code>null</code>.
      *
-     * @parameter expression="${jsonschema2pojo.initializeCollections}" default="true"
+     * @parameter expression="${jsonschema2pojo.initializeCollections}"
+     *            default="true"
      * @since
      */
     private boolean initializeCollections = true;

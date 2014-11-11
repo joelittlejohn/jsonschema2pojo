@@ -18,6 +18,7 @@ package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
@@ -106,6 +107,13 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
+    public void enumConstant(JEnumConstant constant, String value) {
+        for (Annotator annotator : annotators) {
+            annotator.enumConstant(constant, value);
+        }
+    }
+
+    @Override
     public boolean isAdditionalPropertiesSupported() {
         for (Annotator annotator : annotators) {
             if (!annotator.isAdditionalPropertiesSupported()) {
@@ -114,7 +122,7 @@ public class CompositeAnnotator implements Annotator {
         }
         return true;
     }
-    
+
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
         for (Annotator annotator : annotators) {

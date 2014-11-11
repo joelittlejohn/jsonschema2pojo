@@ -29,13 +29,12 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
-
-import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Describes and parses the command line arguments supported by the
@@ -89,7 +88,7 @@ public class Arguments implements GenerationConfig {
             converter = ClassConverter.class)
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
-    @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
+    @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
 
     @Parameter(names = { "-T", "--source-type" })
@@ -109,12 +108,6 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
-    
-    @Parameter(names = { "-cp", "--class-prefix" }, description = "Adds prefix to the generated class names.")
-    private String classNamePrefix = "";
-
-    @Parameter(names = { "-cs", "--class-Suffix" }, description = "Adds Suffix to the generated class names.")
-    private String classNameSuffix = "";
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -212,7 +205,9 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public Class<? extends RuleFactory> getCustomRuleFactory() { return customRuleFactory; }
+    public Class<? extends RuleFactory> getCustomRuleFactory() {
+        return customRuleFactory;
+    }
 
     @Override
     public boolean isIncludeJsr303Annotations() {
@@ -243,7 +238,7 @@ public class Arguments implements GenerationConfig {
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }
-    
+
     protected void exit(int status) {
         System.exit(status);
     }
@@ -256,16 +251,6 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isInitializeCollections() {
         return !nullCollections;
-    }
-
-    @Override
-    public String getClassNamePrefix() {
-        return classNamePrefix;
-    }
-
-    @Override
-    public String getClassNameSuffix() {
-        return classNameSuffix;
     }
 
 }
