@@ -64,7 +64,7 @@
         "stringAsEmail" : {
             "type" : "string",
             "format" : "email"
-        }
+        },
         "stringAsUuid" : {
             "type" : "string",
             "format" : "uuid"
