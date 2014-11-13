@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
-
+import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -62,7 +62,8 @@ public class FormatRuleTest {
                 { "email", String.class },
                 { "ip-address", String.class },
                 { "ipv6", String.class },
-                { "host-name", String.class } });
+                { "host-name", String.class },
+                { "uuid", UUID.class }});
     }
 
     public FormatRuleTest(String formatValue, Class<?> expectedType) {
