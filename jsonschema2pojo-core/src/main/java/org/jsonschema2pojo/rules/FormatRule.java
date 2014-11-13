@@ -18,6 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
@@ -59,6 +60,7 @@ public class FormatRule implements Rule<JType, JType> {
      * <li>"format":"ip-address" =&gt; {@link String}
      * <li>"format":"ipv6" =&gt; {@link String}
      * <li>"format":"host-name" =&gt; {@link String}
+     * <li>"format":"uuid" =&gt; {@link java.util.UUID}
      * <li>other (unrecognised format) =&gt; baseType
      * </ul>
      * 
@@ -113,8 +115,11 @@ public class FormatRule implements Rule<JType, JType> {
 
         } else if (node.asText().equals("host-name")) {
             return baseType.owner().ref(String.class);
-
-        } else {
+        }
+          else if (node.asText().equals("uuid")) {
+                return baseType.owner().ref(UUID.class);
+        }
+         else {
             return baseType;
         }
 
