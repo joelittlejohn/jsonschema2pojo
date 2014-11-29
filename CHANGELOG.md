@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.7
+* Adding UUID support to FormatRule ([#270](https://github.com/joelittlejohn/jsonschema2pojo/pull/270))
+* Add GSON annotation '@SerializedName' to Enums ([#267](https://github.com/joelittlejohn/jsonschema2pojo/issues/267))
+* Add ability to set prefixes/suffixes for generated classes ([#258](https://github.com/joelittlejohn/jsonschema2pojo/pull/258))
+
 ## 0.4.6
 * ClassNotFoundException when attempting to use a custom annotator from a project dependency ([#256](https://github.com/joelittlejohn/jsonschema2pojo/issues/256))
 * Inflector incorrectly singularizes Address to Addres  ([#244](https://github.com/joelittlejohn/jsonschema2pojo/issues/244))

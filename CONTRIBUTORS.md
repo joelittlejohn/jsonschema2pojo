@@ -21,3 +21,5 @@
 * Kevin OBrien
 * David Padbury
 * Jan Willem Harmelink
+* Eimar Fandino
+* Daniel Chaffee
