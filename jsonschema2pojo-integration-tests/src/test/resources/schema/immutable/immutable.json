@@ -20,6 +20,10 @@
         "java_map": {
             "type": "object",
             "javaType": "java.util.Map<String, String>"
+        },
+        "default_int": {
+            "type": "integer",
+            "default": 42
         }
     }
 }
