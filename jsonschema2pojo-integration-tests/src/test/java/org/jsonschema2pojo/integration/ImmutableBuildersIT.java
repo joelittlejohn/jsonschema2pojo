@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -110,6 +112,7 @@ public class ImmutableBuildersIT {
         assertEquals(1, jsonified.get("qux").get(0).asInt());
         assertEquals(2, jsonified.get("qux").get(1).asInt());
         assertEquals(3, jsonified.get("qux").get(2).asInt());
+        assertEquals(42, jsonified.get("default_int").asInt());
         assertEquals("world", jsonified.get("hello").asText());
 
         // Check that deserialization works.
@@ -169,6 +172,7 @@ public class ImmutableBuildersIT {
         assertEquals(true, generatedType.getField("bar").get(instance));
         assertNull(generatedType.getField("baz").get(instance));
         assertEquals(Lists.newArrayList(1, 2, 3), generatedType.getField("qux").get(instance));
+        assertEquals(42, generatedType.getField("defaultInt").get(instance));
         assertEquals(ImmutableMap.of("hello", "world"),
                 generatedType.getField("additionalProperties").get(instance));
 
@@ -181,12 +185,18 @@ public class ImmutableBuildersIT {
         assertEquals(1, jsonified.get("qux").get(0).asInt());
         assertEquals(2, jsonified.get("qux").get(1).asInt());
         assertEquals(3, jsonified.get("qux").get(2).asInt());
+        assertEquals(42, jsonified.get("default_int").asInt());
         assertEquals("world", jsonified.get("hello").asText());
+
+        // check that when deserializing, we re-inflate default fields
+        ((ObjectNode) jsonified).remove("default_int");
+        assertFalse(jsonified.has("default_int"));
+
         // Check that the generate type has no getters or setters (except for getAdditionalProperties, which Jackson
         // currently requires for serialization.
 
         // Check that deserialization works.
-        Object deserialized = mapper.readValue(mapper.writeValueAsString(instance), generatedType);
+        Object deserialized = mapper.readValue(mapper.writeValueAsString(jsonified), generatedType);
         assertEquals(instance, deserialized);
         try {
             ((List<Integer>) generatedType.getField("qux").get(deserialized)).add(5);

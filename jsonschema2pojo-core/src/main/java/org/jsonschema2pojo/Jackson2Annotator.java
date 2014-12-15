@@ -36,9 +36,11 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JOp;
 import com.sun.codemodel.JStringLiteral;
 import com.sun.codemodel.JVar;
 
@@ -46,7 +48,7 @@ import static org.jsonschema2pojo.rules.ObjectRule.immutableCopy;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
- * 
+ *
  * @see <a
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
@@ -86,12 +88,45 @@ public class Jackson2Annotator implements Annotator {
                             throw new IllegalStateException("Field " + field.name() + " " +
                                     "is not properly annotated");
                         }
+
+                        // In order to support default values, we need to first find the default
+                        // value from the RHS of the declaration of the field in the builder, if
+                        // one exists, then add a ternary to the generated code that sets the field
+                        // to the default if the supplied value is null.
+                        //
+                        // Unfortunately the initialization value of a field is private in CodeModel
+                        // so we have to resort to reflection again to get the value.
+                        JExpression defaultValue;
+                        try {
+                            JFieldVar builderField = builder.fields().get(field.name());
+                            if (builderField == null) {
+                                throw new IllegalStateException("Field " + field.name() +
+                                    "not found in builder " + builder.fullName());
+                            }
+                            Field initField = builderField.getClass()
+                                .getSuperclass().getDeclaredField("init");
+                            initField.setAccessible(true);
+                            defaultValue = (JExpression) initField.get(builderField);
+                        } catch (Exception ex) {
+                            throw new IllegalStateException("Failed to get init field -- this" +
+                                "indicates an incompatible change in CodeModel", ex);
+                        }
+
+                        JExpression assignment;
+                        if (defaultValue != null) {
+                            // this means there's a default value and we must use it if the value is
+                            // null
+                            assignment = JOp.cond(
+                                field.eq(JExpr._null()), defaultValue, JExpr.ref(field.name()));
+                        } else {
+                            assignment = JExpr.ref(field.name());
+                        }
                         constructor.param(field.type(), field.name())
                                 .annotate(annotation.getAnnotationClass())
                                 .param("value", str);
                         body.assign(JExpr._this().ref(field.name()),
                                 // TODO(micah): this should respect immutability config
-                                immutableCopy(JExpr.ref(field.name()), field.type()));
+                                immutableCopy(assignment, field.type()));
                     }
                 }
             }
