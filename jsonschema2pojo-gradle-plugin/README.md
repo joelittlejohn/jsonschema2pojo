@@ -87,9 +87,9 @@ jsonSchema2Pojo {
   annotationStyle = 'jackson'
 
   // A fully qualified class name, referring to a custom annotator class that implements
-  // com.googlecode.jsonschema2pojo.Annotator and will be used in addition to the one chosen
+  // org.jsonschema2pojo.NoopAnnotator and will be used in addition to the one chosen
   // by annotationStyle. If you want to use the custom annotator alone, set annotationStyle to none.
-  customAnnotator = 'com.googlecode.jsonschema2pojo.NoopAnnotator'
+  customAnnotator = 'org.jsonschema2pojo.NoopAnnotator'
 
   // Whether to include JSR-303/349 annotations (for schema rules like minimum, maximum, etc) in
   // generated Java types. Schema rules and the annotation they produce:
