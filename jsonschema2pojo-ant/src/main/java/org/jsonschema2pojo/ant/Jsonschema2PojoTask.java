@@ -59,6 +59,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean includeConstructors = false;
+
     private boolean usePrimitives;
 
     private File source;
@@ -172,6 +174,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
                 return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]), parentClassloader);
             }
         });
+    }
+
+    /**
+     * Sets the 'includeConstructors' property of this class
+     * @param includeConstructors Whether to generate constructors or not.
+     */
+    public void setIncludeConstructors(boolean includeConstructors) {
+        this.includeConstructors = includeConstructors;
     }
 
     /**
@@ -583,6 +593,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public boolean isIncludeConstructors() {
+        return includeConstructors;
     }
 
 }

@@ -375,6 +375,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String classNameSuffix = "";
 
     /**
+     * Whether to generate constructors or not
+     * @parameter expression="${jsonschema2pojo.includeConstructors}"
+     * @since 0.4.8}"
+     */
+    private boolean includeConstructors = false;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -596,5 +603,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    /**
+     * Gets the 'includeConstructors' configuration option
+     *
+     * @return Whether to generate constructors or not.
+     */
+    @Override
+    public boolean isIncludeConstructors() {
+        return includeConstructors;
     }
 }

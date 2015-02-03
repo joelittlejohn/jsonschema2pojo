@@ -242,4 +242,11 @@ public interface GenerationConfig {
      * @return Whether to initialize collections with empty instance or null.
      */
     String getClassNameSuffix();
+
+    /**
+     * Gets the 'includeConstructors' configuration option
+     *
+     * @return Whether to generate constructors or not.
+     */
+    boolean isIncludeConstructors();
 }

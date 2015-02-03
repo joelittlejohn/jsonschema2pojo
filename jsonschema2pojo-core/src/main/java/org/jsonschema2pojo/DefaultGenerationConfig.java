@@ -192,4 +192,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getClassNameSuffix() {
         return "";
     }
+
+    @Override
+    public boolean isIncludeConstructors() {
+        return false;
+    }
 }
