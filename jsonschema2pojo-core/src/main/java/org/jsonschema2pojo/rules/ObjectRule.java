@@ -310,7 +310,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         // add a no-args constructor for serialization purposes
-        jclass.constructor(JMod.PUBLIC);
+        JMethod noargsConstructor = jclass.constructor(JMod.PUBLIC);
+        noargsConstructor.javadoc().add("No args constructor for use in serialization");
 
         // add the public constructor with property parameters
         JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
@@ -323,8 +324,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             if (field == null) {
                 throw new IllegalStateException("Required property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
             }
+
+            fieldsConstructor.javadoc().addParam(property);
             JVar param = fieldsConstructor.param(field.type(), field.name());
-            constructorBody.assign(field, param);
+            constructorBody.assign(JExpr._this().ref(field), param);
         }
     }
 
