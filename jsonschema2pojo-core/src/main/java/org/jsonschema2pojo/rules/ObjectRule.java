@@ -307,23 +307,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         hashCode.annotate(Override.class);
     }
 
-//    /**
-//     * Add a constructor which takes in values for the specified fields as parameters and assigns them.
-//     * @param jclass
-//     * @param fields
-//     */
-//    private void addConstructorWithFields(JDefinedClass jclass, List<JFieldVar> fields) {
-//
-//        JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
-//        JBlock constructorBody = fieldsConstructor.body();
-//
-//        for (JFieldVar field : fields) {
-//            fieldsConstructor.javadoc().addParam(field.name());
-//            JVar param = fieldsConstructor.param(field.type(), field.name());
-//            constructorBody.assign(JExpr._this().ref(field), param);
-//        }
-//    }
-
     private void addConstructors(JDefinedClass jclass, List<String> properties) {
 
         // no properties to put in the constructor => default constructor is good enough.
