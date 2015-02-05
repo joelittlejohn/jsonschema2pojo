@@ -118,7 +118,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            addConstructors(jclass, getRequiredProperties(node));
+            addConstructors(jclass, getConstructorProperties(node, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly()));
         }
 
         return jclass;
@@ -126,11 +126,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     /**
-     * Retrieve the list of required properties from node.
+     * Retrieve the list of properties to go in the constructor from node. This is all properties listed in node["properties"]
+     * if ! onlyRequired, and only required properties if onlyRequired.
      * @param node
      * @return
      */
-    private List<String> getRequiredProperties(JsonNode node) {
+    private List<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
 
         if (! node.has("properties")) {
             return new ArrayList<String>();
@@ -143,8 +144,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
             Map.Entry<String, JsonNode> property = properties.next();
 
             JsonNode propertyObj = property.getValue();
-            if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
-                rtn.add(nameHelper.getPropertyName(property.getKey()));
+            if (onlyRequired) {
+                if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
+                    rtn.add(nameHelper.getPropertyName(property.getKey()));
+                }
+            } else {
+                rtn.add((nameHelper.getPropertyName(property.getKey())));
             }
         }
         return rtn;
@@ -302,10 +307,27 @@ public class ObjectRule implements Rule<JPackage, JType> {
         hashCode.annotate(Override.class);
     }
 
-    private void addConstructors(JDefinedClass jclass, List<String> requiredProperties) {
+//    /**
+//     * Add a constructor which takes in values for the specified fields as parameters and assigns them.
+//     * @param jclass
+//     * @param fields
+//     */
+//    private void addConstructorWithFields(JDefinedClass jclass, List<JFieldVar> fields) {
+//
+//        JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
+//        JBlock constructorBody = fieldsConstructor.body();
+//
+//        for (JFieldVar field : fields) {
+//            fieldsConstructor.javadoc().addParam(field.name());
+//            JVar param = fieldsConstructor.param(field.type(), field.name());
+//            constructorBody.assign(JExpr._this().ref(field), param);
+//        }
+//    }
 
-        // no required properties => default constructor is good enough.
-        if (requiredProperties.isEmpty()) {
+    private void addConstructors(JDefinedClass jclass, List<String> properties) {
+
+        // no properties to put in the constructor => default constructor is good enough.
+        if (properties.isEmpty()) {
             return;
         }
 
@@ -316,13 +338,14 @@ public class ObjectRule implements Rule<JPackage, JType> {
         // add the public constructor with property parameters
         JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
         JBlock constructorBody = fieldsConstructor.body();
+
         Map<String, JFieldVar> fields = jclass.fields();
 
-        for (String property : requiredProperties) {
+        for (String property : properties) {
             JFieldVar field = fields.get(property);
 
             if (field == null) {
-                throw new IllegalStateException("Required property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
+                throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
             }
 
             fieldsConstructor.javadoc().addParam(property);

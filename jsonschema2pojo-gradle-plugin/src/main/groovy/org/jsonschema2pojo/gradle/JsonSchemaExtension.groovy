@@ -40,6 +40,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useLongIntegers
   boolean useDoubleNumbers
   boolean includeConstructors
+  boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
   boolean includeToString
   AnnotationStyle annotationStyle
@@ -67,6 +68,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     useDoubleNumbers = true
     includeHashcodeAndEquals = true
     includeConstructors = false
+    constructorsRequiredPropertiesOnly = false
     includeToString = true
     annotationStyle = AnnotationStyle.JACKSON
     customAnnotator = NoopAnnotator.class
@@ -133,6 +135,16 @@ public class JsonSchemaExtension implements GenerationConfig {
     @Override
     boolean isIncludeConstructors() {
         includeConstructors;
+    }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    boolean isConstructorsRequiredPropertiesOnly() {
+        constructorsRequiredPropertiesOnly
     }
 
     @Override

@@ -197,4 +197,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeConstructors() {
         return false;
     }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    public boolean isConstructorsRequiredPropertiesOnly() {
+        return false;
+    }
 }

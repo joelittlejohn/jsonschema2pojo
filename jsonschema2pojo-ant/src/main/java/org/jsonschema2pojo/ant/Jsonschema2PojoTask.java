@@ -107,6 +107,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String classNameSuffix = "";
 
+    private boolean constructorsRequiredPropertiesOnly = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -182,6 +184,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeConstructors(boolean includeConstructors) {
         this.includeConstructors = includeConstructors;
+    }
+
+    /**
+     * Sets the 'constructorsRequiredPropertiesOnly' property of this class.
+     * @param constructorsRequiredPropertiesOnly Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    public void setConstructorsRequiredPropertiesOnly(boolean constructorsRequiredPropertiesOnly) {
+        this.constructorsRequiredPropertiesOnly = constructorsRequiredPropertiesOnly;
     }
 
     /**
@@ -598,6 +608,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeConstructors() {
         return includeConstructors;
+    }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    public boolean isConstructorsRequiredPropertiesOnly() {
+        return constructorsRequiredPropertiesOnly;
     }
 
 }

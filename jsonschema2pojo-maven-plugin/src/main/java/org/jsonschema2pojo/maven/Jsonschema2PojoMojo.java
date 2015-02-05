@@ -377,9 +377,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to generate constructors or not
      * @parameter expression="${jsonschema2pojo.includeConstructors}"
-     * @since 0.4.8}"
+     * @since 0.4.8
      */
     private boolean includeConstructors = false;
+
+    /**
+     * Whether generated constructors should have parameters for all properties, or only required ones.
+     * @parameter expression="${jsonschema2pojo.constructorsRequiredPropertiesOnly}"
+     * @since 0.4.8
+     */
+    private boolean constructorsRequiredPropertiesOnly;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -613,5 +620,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeConstructors() {
         return includeConstructors;
+    }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    public boolean isConstructorsRequiredPropertiesOnly() {
+        return constructorsRequiredPropertiesOnly;
     }
 }

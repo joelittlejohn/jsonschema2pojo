@@ -249,4 +249,11 @@ public interface GenerationConfig {
      * @return Whether to generate constructors or not.
      */
     boolean isIncludeConstructors();
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    boolean isConstructorsRequiredPropertiesOnly();
 }
