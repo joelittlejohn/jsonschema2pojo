@@ -39,6 +39,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   char[] propertyWordDelimiters
   boolean useLongIntegers
   boolean useDoubleNumbers
+  boolean includeConstructors
+  boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
   boolean includeToString
   AnnotationStyle annotationStyle
@@ -65,6 +67,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     useLongIntegers = false
     useDoubleNumbers = true
     includeHashcodeAndEquals = true
+    includeConstructors = false
+    constructorsRequiredPropertiesOnly = false
     includeToString = true
     annotationStyle = AnnotationStyle.JACKSON
     customAnnotator = NoopAnnotator.class
@@ -123,7 +127,27 @@ public class JsonSchemaExtension implements GenerationConfig {
     classNameSuffix
   }
 
-  @Override
+    /**
+     * Gets the 'includeConstructors' configuration option
+     *
+     * @return Whether to generate constructors or not.
+     */
+    @Override
+    boolean isIncludeConstructors() {
+        includeConstructors;
+    }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    boolean isConstructorsRequiredPropertiesOnly() {
+        constructorsRequiredPropertiesOnly
+    }
+
+    @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
        |usePrimitives = ${usePrimitives}
@@ -134,6 +158,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useLongIntegers = ${useLongIntegers}
        |useDoubleNumbers = ${useDoubleNumbers}
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}
+       |includeConstructors = ${includeConstructors}
        |includeToString = ${includeToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
        |customAnnotator = ${customAnnotator.getName()}

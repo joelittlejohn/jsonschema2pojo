@@ -20,6 +20,9 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.*;
@@ -114,8 +117,42 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addEquals(jclass);
         }
 
+        if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
+            addConstructors(jclass, getConstructorProperties(node, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly()));
+        }
+
         return jclass;
 
+    }
+
+    /**
+     * Retrieve the list of properties to go in the constructor from node. This is all properties listed in node["properties"]
+     * if ! onlyRequired, and only required properties if onlyRequired.
+     * @param node
+     * @return
+     */
+    private List<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
+
+        if (! node.has("properties")) {
+            return new ArrayList<String>();
+        }
+
+        List<String> rtn = new ArrayList<String>();
+
+        NameHelper nameHelper = ruleFactory.getNameHelper();
+        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext(); ) {
+            Map.Entry<String, JsonNode> property = properties.next();
+
+            JsonNode propertyObj = property.getValue();
+            if (onlyRequired) {
+                if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
+                    rtn.add(nameHelper.getPropertyName(property.getKey()));
+                }
+            } else {
+                rtn.add((nameHelper.getPropertyName(property.getKey())));
+            }
+        }
+        return rtn;
     }
 
     /**
@@ -268,6 +305,36 @@ public class ObjectRule implements Rule<JPackage, JType> {
         body._return(hashCodeBuilderInvocation.invoke("toHashCode"));
 
         hashCode.annotate(Override.class);
+    }
+
+    private void addConstructors(JDefinedClass jclass, List<String> properties) {
+
+        // no properties to put in the constructor => default constructor is good enough.
+        if (properties.isEmpty()) {
+            return;
+        }
+
+        // add a no-args constructor for serialization purposes
+        JMethod noargsConstructor = jclass.constructor(JMod.PUBLIC);
+        noargsConstructor.javadoc().add("No args constructor for use in serialization");
+
+        // add the public constructor with property parameters
+        JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
+        JBlock constructorBody = fieldsConstructor.body();
+
+        Map<String, JFieldVar> fields = jclass.fields();
+
+        for (String property : properties) {
+            JFieldVar field = fields.get(property);
+
+            if (field == null) {
+                throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
+            }
+
+            fieldsConstructor.javadoc().addParam(property);
+            JVar param = fieldsConstructor.param(field.type(), field.name());
+            constructorBody.assign(JExpr._this().ref(field), param);
+        }
     }
 
     private void addEquals(JDefinedClass jclass) {

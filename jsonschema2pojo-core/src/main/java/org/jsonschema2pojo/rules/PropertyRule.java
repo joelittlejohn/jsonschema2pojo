@@ -31,6 +31,8 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
+import java.util.Iterator;
+
 /**
  * Applies the schema rules that represent a property definition.
  * 
@@ -69,7 +71,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
-        String propertyName = getPropertyName(nodeName);
+        String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName);
 
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
@@ -123,6 +125,21 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
+//    protected void addConstructorParam(JDefinedClass jclass, String propertyName, JType propertyType) {
+//        // TODO: handle multiple constructors
+//        Iterator<JMethod> constructors = jclass.constructors();
+//
+//        // add to the existing constructor if it exists, else add one
+//        JMethod constructor = constructors.hasNext() ? constructors.next() : jclass.constructor(JMod.PUBLIC);
+//
+//        assert "There should only be"! constructors.hasNext();
+//        JVar constructorParam = constructor.param(propertyType, propertyName);
+//
+//        JBlock constructorBody = constructor.body();
+//
+//        constructorBody.assign(JExpr._this().ref(propertyName), constructorParam);
+//    }
+
     private JsonNode resolveRefs(JsonNode node, Schema parent) {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText());
@@ -144,7 +161,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type()));
 
         // add @returns
-        getter.javadoc().addReturn().append("The " + getPropertyName(jsonPropertyName));
+        getter.javadoc().addReturn().append("The " + ruleFactory.getNameHelper().getPropertyName(jsonPropertyName));
 
         JBlock body = getter.body();
         body._return(field);
@@ -158,7 +175,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName));
 
         // add @param
-        setter.javadoc().addParam(getPropertyName(jsonPropertyName)).append("The " + jsonPropertyName);
+        setter.javadoc().addParam(ruleFactory.getNameHelper().getPropertyName(jsonPropertyName)).append("The " + jsonPropertyName);
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
@@ -178,21 +195,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         body._return(JExpr._this());
 
         return builder;
-    }
-
-    private String getPropertyName(String nodeName) {
-        nodeName = ruleFactory.getNameHelper().replaceIllegalCharacters(nodeName);
-        nodeName = ruleFactory.getNameHelper().normalizeName(nodeName);
-
-        if (isKeyword(nodeName)) {
-            nodeName = "_" + nodeName;
-        }
-
-        if (isKeyword(nodeName)) {
-            nodeName += "_";
-        }
-
-        return nodeName;
     }
 
     private String getSetterName(String propertyName) {

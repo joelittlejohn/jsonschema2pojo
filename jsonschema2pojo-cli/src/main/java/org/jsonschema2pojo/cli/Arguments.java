@@ -57,6 +57,13 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
 
+    @Parameter(names = {"-c", "--generate-constructors"}, description = "Generate constructors")
+    private boolean generateConstructors = false;
+
+    @Parameter(names = {"-r", "--constructors-required-only"}, description = "Generate constructors with only required fields")
+    private boolean constructorsRequiredPropertiesOnly = false;
+
+
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
@@ -267,6 +274,26 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    /**
+     * Gets the 'includeConstructors' configuration option
+     *
+     * @return Whether to generate constructors or not.
+     */
+    @Override
+    public boolean isIncludeConstructors() {
+        return generateConstructors;
+    }
+
+    /**
+     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
+     *
+     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     */
+    @Override
+    public boolean isConstructorsRequiredPropertiesOnly() {
+        return constructorsRequiredPropertiesOnly;
     }
 
 }

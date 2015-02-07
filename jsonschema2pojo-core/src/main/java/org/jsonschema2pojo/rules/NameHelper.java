@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import static java.lang.Character.*;
+import static javax.lang.model.SourceVersion.isKeyword;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -60,5 +61,25 @@ public class NameHelper {
         }
 
         return name;
+    }
+
+    /**
+     * Convert jsonFieldName into the equivalent Java fieldname by replacing illegal characters and normalizing it.
+     * @param jsonFieldName
+     * @return
+     */
+    public String getPropertyName(String jsonFieldName) {
+        jsonFieldName = replaceIllegalCharacters(jsonFieldName);
+        jsonFieldName = normalizeName(jsonFieldName);
+
+        if (isKeyword(jsonFieldName)) {
+            jsonFieldName = "_" + jsonFieldName;
+        }
+
+        if (isKeyword(jsonFieldName)) {
+            jsonFieldName += "_";
+        }
+
+        return jsonFieldName;
     }
 }
