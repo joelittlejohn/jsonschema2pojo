@@ -125,21 +125,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-//    protected void addConstructorParam(JDefinedClass jclass, String propertyName, JType propertyType) {
-//        // TODO: handle multiple constructors
-//        Iterator<JMethod> constructors = jclass.constructors();
-//
-//        // add to the existing constructor if it exists, else add one
-//        JMethod constructor = constructors.hasNext() ? constructors.next() : jclass.constructor(JMod.PUBLIC);
-//
-//        assert "There should only be"! constructors.hasNext();
-//        JVar constructorParam = constructor.param(propertyType, propertyName);
-//
-//        JBlock constructorBody = constructor.body();
-//
-//        constructorBody.assign(JExpr._this().ref(propertyName), constructorParam);
-//    }
-
     private JsonNode resolveRefs(JsonNode node, Schema parent) {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText());
