@@ -4,6 +4,10 @@
         "a" : {
             "type" : "object",
             "javaType" : "java.util.Map<String,Integer>"
+        },
+        "b" : {
+            "type" : "object",
+            "javaType" : "java.util.Map<java.util.Map<String,Integer>, java.util.List<java.util.List<Boolean>>>"
         }
     }
 }

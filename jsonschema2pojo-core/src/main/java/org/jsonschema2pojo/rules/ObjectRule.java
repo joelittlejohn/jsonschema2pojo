@@ -16,6 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
 import java.io.Serializable;
@@ -25,19 +26,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.apache.commons.lang3.ArrayUtils.*;
-
 import javax.annotation.Generated;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import com.sun.codemodel.*;
+import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.util.TypeUtil;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -182,7 +195,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
             boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
             if (node.has("javaType")) {
                 String fqn = substringBefore(node.get("javaType").asText(), "<");
-                String[] genericArguments = split(substringBetween(node.get("javaType").asText(), "<", ">"), ",");
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
@@ -194,11 +206,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
                 
                 try {
-                    JClass existingClass = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-
-                    if (isNotEmpty(genericArguments)) {
-                        existingClass = addGenericArguments(_package, existingClass, genericArguments);
-                    }
+                    _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
+                    JClass existingClass = TypeUtil.resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
 
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
@@ -224,15 +233,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         return newType;
 
-    }
-
-    private JClass addGenericArguments(JPackage _package, JClass existingClass, String[] genericArgumentClassNames) {
-        JClass[] genericArgumentClasses = new JClass[genericArgumentClassNames.length];
-        for (int i=0; i<genericArgumentClasses.length; i++) {
-            genericArgumentClasses[i] = _package.owner().ref(genericArgumentClassNames[i]);
-        }
-
-        return existingClass.narrow(genericArgumentClasses);
     }
 
     private boolean isFinal(JType superType) {

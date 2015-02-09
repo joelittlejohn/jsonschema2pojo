@@ -44,7 +44,7 @@
                 <fileset dir="${project.build.directory}/custom-libs">
                     <include name="**/*.jar" />
                 </fileset>
-        	</classpath>
+            </classpath>
         </jsonschema2pojo>
 
         <!-- use json input -->

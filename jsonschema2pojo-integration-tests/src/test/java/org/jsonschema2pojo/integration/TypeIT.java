@@ -253,11 +253,25 @@ public class TypeIT {
         Class<?> classWithNameConflict = generateAndCompile("/schema/type/genericJavaType.json", "com.example").loadClass("com.example.GenericJavaType");
 
         Method getterMethod = classWithNameConflict.getMethod("getA");
-
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
-        assertThat(((ParameterizedType)getterMethod.getGenericReturnType()).getActualTypeArguments()[0], is(equalTo((Type)String.class)));
-        assertThat(((ParameterizedType)getterMethod.getGenericReturnType()).getActualTypeArguments()[1], is(equalTo((Type)Integer.class)));
+        
+        Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
+        assertThat(typeArguments[0], is(equalTo((Type)String.class)));
+        assertThat(typeArguments[1], is(equalTo((Type)Integer.class)));
+
+        getterMethod = classWithNameConflict.getMethod("getB");
+        assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+
+        typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
+        assertThat(typeArguments[0], is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments().length, is(2));
+        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[0], is((Type)String.class));
+        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[1], is((Type)Integer.class));
+        assertThat(typeArguments[1], is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments().length, is(1));
+        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments()[0], is(instanceOf(ParameterizedType.class)));
     }
 
 }
