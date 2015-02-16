@@ -28,8 +28,10 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
+
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -111,6 +113,84 @@ public class TypeRuleTest {
     }
 
     @Test
+    public void applyGeneratesIntegerUsingJavaTypeIntegerPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("javaType", "int");
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("int"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeInteger() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("javaType", "java.lang.Integer");
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Integer"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("javaType", "long");
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLong() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("javaType", "java.lang.Long");
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeBigInteger() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("javaType", "java.math.BigInteger");
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.math.BigInteger"));
+    }
+
+    @Test
     public void applyGeneratesNumber() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
@@ -139,6 +219,84 @@ public class TypeRuleTest {
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
         assertThat(result.fullName(), is("double"));
+    }
+
+    @Test
+    public void applyGeneratesNumberUsingJavaTypeFloatPrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+        objectNode.put("javaType", "float");
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("float"));
+    }
+
+    @Test
+    public void applyGeneratesNumberUsingJavaTypeFloat() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+        objectNode.put("javaType", "java.lang.Float");
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Float"));
+    }
+
+    @Test
+    public void applyGeneratesNumberUsingJavaTypeDoublePrimitive() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+        objectNode.put("javaType", "double");
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("double"));
+    }
+
+    @Test
+    public void applyGeneratesNumberUsingJavaTypeDouble() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+        objectNode.put("javaType", "java.lang.Double");
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Double"));
+    }
+
+    @Test
+    public void applyGeneratesNumberUsingJavaTypeBigDecimal() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+        objectNode.put("javaType", "java.math.BigDecimal");
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("java.math.BigDecimal"));
     }
 
     @Test
