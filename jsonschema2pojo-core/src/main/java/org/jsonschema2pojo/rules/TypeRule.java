@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
@@ -83,12 +85,10 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            JType typeToUseForNumbers = getNumberType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
-            type = unboxIfNecessary(typeToUseForNumbers, ruleFactory.getGenerationConfig());
+        	type = getNumberType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
-            JType typeToUseForIntegers = getIntegerType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
-            type = unboxIfNecessary(typeToUseForIntegers, ruleFactory.getGenerationConfig());
+        	type = getIntegerType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("boolean")) {
 
             type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
@@ -132,19 +132,47 @@ public class TypeRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    private JType getIntegerType(JCodeModel owner, GenerationConfig config) {
-        if (config.isUseLongIntegers()) {
-            return owner.ref(Long.class);
+    /**
+     * Returns the JType for an integer field. Handles type lookup and unboxing.
+     */
+    private JType getIntegerType(JCodeModel owner, JsonNode node, GenerationConfig config) {
+        if (node.has("javaType")) {
+            String javaType = node.get("javaType").asText();
+            if (isPrimitive(javaType, owner)) {
+                return primitiveType(javaType, owner);
+            }
+            else {
+                return owner.ref(javaType);
+            }
         } else {
-            return owner.ref(Integer.class);
+            if (config.isUseLongIntegers()) {
+                return unboxIfNecessary(owner.ref(Long.class), config);
+            } else {
+                return unboxIfNecessary(owner.ref(Integer.class), config);
+            }
         }
     }
 
-    private JType getNumberType(JCodeModel owner, GenerationConfig config) {
-        if (config.isUseDoubleNumbers()) {
-            return owner.ref(Double.class);
+    /**
+     * Returns the JType for a number field. Handles type lookup and unboxing.
+     */
+    private JType getNumberType(JCodeModel owner, JsonNode node,
+            GenerationConfig config) {
+        if (node.has("javaType")) {
+            String javaType = node.get("javaType").asText();
+
+            if (isPrimitive(javaType, owner)) {
+                return primitiveType(javaType, owner);
+            }
+            else {
+                return owner.ref(javaType);
+            }
         } else {
-            return owner.ref(Float.class);
+            if (config.isUseDoubleNumbers()) {
+                return unboxIfNecessary(owner.ref(Double.class), config);
+            } else {
+                return unboxIfNecessary(owner.ref(Float.class), config);
+            }
         }
     }
 
