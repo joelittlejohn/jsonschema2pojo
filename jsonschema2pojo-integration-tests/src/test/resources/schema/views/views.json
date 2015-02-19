@@ -1,0 +1,12 @@
+{
+    "type" : "object",
+    "properties" : {
+        "notInView": {
+            "type": "string"
+        },
+        "inView": {
+            "type": "string",
+            "javaJsonView": "com.example.MyJsonViewClass"
+        }
+    }
+}
