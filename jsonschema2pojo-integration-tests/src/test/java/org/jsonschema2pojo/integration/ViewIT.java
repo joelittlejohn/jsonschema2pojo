@@ -28,15 +28,9 @@ import org.junit.Test;
 public class ViewIT {
     static abstract class JsonViewTest {
         String annotationStyle;
-        Class<?> jsonViewClass;
 
         public JsonViewTest(String annotationStyle) {
             this.annotationStyle = annotationStyle;
-            if (annotationStyle.equals("jackson1")) {
-                this.jsonViewClass = org.codehaus.jackson.map.annotate.JsonView.class; 
-            } else {
-                this.jsonViewClass = com.fasterxml.jackson.annotation.JsonView.class;
-            }
         }
 
         public void test() throws ClassNotFoundException, NoSuchFieldException {
