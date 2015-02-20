@@ -27,8 +27,6 @@ class JsonSchemaPlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-    project.apply plugin: 'java'
-
     project.extensions.create('jsonSchema2Pojo', JsonSchemaExtension)
     project.tasks.create('generateJsonSchema2Pojo', GenerateJsonSchemaTask)
   }
