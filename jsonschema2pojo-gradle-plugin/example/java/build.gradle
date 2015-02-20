@@ -1,9 +1,10 @@
 apply plugin: 'jsonschema2pojo'
+apply plugin: 'java'
 
 buildscript {
   repositories {
     mavenLocal()
-    mavenCentral()
+    jcenter()
   }
 
   dependencies {
