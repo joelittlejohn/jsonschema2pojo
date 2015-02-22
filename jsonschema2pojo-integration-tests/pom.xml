@@ -136,6 +136,10 @@
             <artifactId>mockito-all</artifactId>
         </dependency>
         <dependency>
+           <groupId>org.robolectric</groupId>
+           <artifactId>robolectric</artifactId>
+       </dependency>
+        <dependency>
             <groupId>qdox</groupId>
             <artifactId>qdox</artifactId>
         </dependency>

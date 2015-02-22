@@ -39,6 +39,7 @@
                          classpathRef="custom.libs"
                          useJodaDates="true"
                          useCommonsLang3="true"
+                         parcelable="true"
                          initializeCollections="false">
             <classpath>
                 <fileset dir="${project.build.directory}/custom-libs">

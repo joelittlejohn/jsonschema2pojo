@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jsonschema2pojo.rules;
+package org.jsonschema2pojo.util;
 
 import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.isKeyword;

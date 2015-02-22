@@ -21,6 +21,8 @@ import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
 import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
@@ -117,7 +119,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        return new ObjectRule(this);
+        return new ObjectRule(this, new ParcelableHelper());
     }
 
     /**
