@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.codemodel.JAnnotationArrayMember;
@@ -63,6 +64,11 @@ public class Jackson2Annotator extends AbstractAnnotator {
         field.annotate(JsonProperty.class).param("value", propertyName);
         if (field.type().erasure().equals(field.type().owner().ref(Set.class))) {
             field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
+        }
+
+        if (propertyNode.has("javaJsonView")) {
+            field.annotate(JsonView.class).param(
+                "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
         }
     }
 
