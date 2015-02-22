@@ -85,10 +85,10 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-        	type = getNumberType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
+            type = getNumberType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
-        	type = getIntegerType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
+            type = getIntegerType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("boolean")) {
 
             type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());

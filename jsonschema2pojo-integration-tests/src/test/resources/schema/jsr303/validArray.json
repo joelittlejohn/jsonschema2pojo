@@ -4,19 +4,19 @@
         "primitivearray" : {
             "type": "array",
             "items": {
-            	"type": "string"
+                "type": "string"
             }
         },
         "objectarray" : {
             "type": "array",
             "items": {
-            	"type": "object",
-            	"properties": {
-            		"arrayitem":{
-            			"type": "string",
-            			"maxLength" : 5
-            		}
-            	}
+                "type": "object",
+                "properties": {
+                    "arrayitem":{
+                        "type": "string",
+                        "maxLength" : 5
+                    }
+                }
             }
         },
         "refarray" : {

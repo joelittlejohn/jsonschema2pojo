@@ -80,7 +80,7 @@ public class PrefixSuffixIT {
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
     
-	@Test(expected = ClassNotFoundException.class)
+    @Test(expected = ClassNotFoundException.class)
     public void SuffixWithDefaultPackageName() throws ClassNotFoundException{
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "", config("classNameSuffix","Dao"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");

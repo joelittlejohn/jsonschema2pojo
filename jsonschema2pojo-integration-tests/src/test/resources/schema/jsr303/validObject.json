@@ -7,10 +7,10 @@
         "objectfield" : {
             "type": "object",
             "properties": {
-            	"childprimitivefield" : {
-            		"type": "string",
-            		"maxLength" : 5
-            	}
+                "childprimitivefield" : {
+                    "type": "string",
+                    "maxLength" : 5
+                }
             }
         }
     }

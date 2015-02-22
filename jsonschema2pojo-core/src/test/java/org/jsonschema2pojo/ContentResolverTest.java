@@ -96,12 +96,12 @@ public class ContentResolverTest {
         
         OutputStream outputStream = null;
         try {
-        	outputStream = new FileOutputStream(tempFile);
-        	outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
+            outputStream = new FileOutputStream(tempFile);
+            outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
         } finally {
-        	if (outputStream != null) {
-        		outputStream.close();
-        	}
+            if (outputStream != null) {
+                outputStream.close();
+            }
         }
         
         return tempFile.toURI();

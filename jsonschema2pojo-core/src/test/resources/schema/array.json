@@ -1,54 +1,54 @@
 {
-	"description": "list of products",
-	"type": "object",
-	"javaType": "Product",
-	"properties": 
-	{
-		"id": 
-		{
-			"title": "id",
-			"type": "string",
-			"additionalProperties": false
-		},
+    "description": "list of products",
+    "type": "object",
+    "javaType": "Product",
+    "properties": 
+    {
+        "id": 
+        {
+            "title": "id",
+            "type": "string",
+            "additionalProperties": false
+        },
 
-		"titleSortName": 
-		{
-			"type": "string"
-		},
+        "titleSortName": 
+        {
+            "type": "string"
+        },
 
-		"productType": 
-		{
-			"title": "Type of products",
-			"type": "array",
-			"items":
-			{
-				"$ref": "#/definitions/product-type"
-			}
-		}
-	},
+        "productType": 
+        {
+            "title": "Type of products",
+            "type": "array",
+            "items":
+            {
+                "$ref": "#/definitions/product-type"
+            }
+        }
+    },
 
-	"definitions": 
-	{
-		"product-type": 
-		{
-			"title": "product type",
-			"type": "object",
-			"javaType": "ProductTypes",
-			"properties": 
-			{
-				"id": 
-				{
-					"title": "Id",
-					"type": "string",
-					"additionalProperties": false
-				},
+    "definitions": 
+    {
+        "product-type": 
+        {
+            "title": "product type",
+            "type": "object",
+            "javaType": "ProductTypes",
+            "properties": 
+            {
+                "id": 
+                {
+                    "title": "Id",
+                    "type": "string",
+                    "additionalProperties": false
+                },
 
-				"type": 
-				{
-					"title": "Type",
-					"type": "string"
-				}
-			}
-		}
-	}
+                "type": 
+                {
+                    "title": "Type",
+                    "type": "string"
+                }
+            }
+        }
+    }
 }
