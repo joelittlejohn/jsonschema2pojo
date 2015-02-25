@@ -20,9 +20,8 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.util.HashMap;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -32,10 +31,7 @@ public class RegressionIT {
     @SuppressWarnings("rawtypes")
     public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException, MalformedURLException {
 
-        File file = new File("src/test/resources/schema/regression/spaces in path.json");
-
-        File sourcesDirectory = generate(file.toURI().toURL(), "com.example", new HashMap<String, Object>());
-        ClassLoader resultsClassLoader = compile(sourcesDirectory);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.<String, Object>emptyMap());
 
         Class generatedType = resultsClassLoader.loadClass("com.example.SpacesInPath");
         assertThat(generatedType, is(notNullValue()));

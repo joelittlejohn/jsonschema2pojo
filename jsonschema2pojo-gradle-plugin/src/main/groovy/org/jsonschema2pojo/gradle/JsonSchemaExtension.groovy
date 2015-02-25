@@ -15,7 +15,6 @@
  */
 package org.jsonschema2pojo.gradle
 
-import java.util.Map
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.AllFileFilter
@@ -85,8 +84,12 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   @Override
-  public Iterator<File> getSource() {
-    sourceFiles.iterator()
+  public Iterator<URL> getSource() {
+    def urlList = []
+    for (source in sourceFiles) {
+      urlList.add(source.toURI().toURL())
+    }
+    urlList.iterator()
   }
 
   public void setSource(Iterable<File> files) {

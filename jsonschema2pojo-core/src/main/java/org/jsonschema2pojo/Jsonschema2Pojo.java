@@ -18,10 +18,12 @@ package org.jsonschema2pojo;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,9 +31,10 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
-import org.jsonschema2pojo.FileCodeWriterWithEncoding;
+import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.URLUtil;
 
 public class Jsonschema2Pojo {
     /**
@@ -46,7 +49,7 @@ public class Jsonschema2Pojo {
      * @throws IOException
      *             if the application is unable to read data from the source
      */
-    public static void generate(GenerationConfig config) throws FileNotFoundException, IOException {
+    public static void generate(GenerationConfig config) throws IOException {
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
 
@@ -61,13 +64,19 @@ public class Jsonschema2Pojo {
             removeOldOutput(config.getTargetDirectory());
         }
 
-        for (Iterator<File> sources = config.getSource(); sources.hasNext();) {
-            File source = sources.next();
+        for (Iterator<URL> sources = config.getSource(); sources.hasNext();) {
+            URL source = sources.next();
 
-            if (source.isDirectory()) {
-                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(source.listFiles(config.getFileFilter())));
+            if (URLUtil.parseProtocol(source.toString()) == URLProtocol.FILE && URLUtil.getFileFromURL(source).isDirectory()) {
+                generateRecursive(
+                        config,
+                        mapper,
+                        codeModel,
+                        defaultString(config.getTargetPackage()),
+                        Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter()))
+                );
             } else {
-                mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source.toURI().toURL());
+                mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source);
             }
         }
 
@@ -96,12 +105,12 @@ public class Jsonschema2Pojo {
         }
     }
 
-    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws FileNotFoundException, IOException {
+    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
         Collections.sort(schemaFiles);
 
         for (File child : schemaFiles) {
             if (child.isFile()) {
-                mapper.generate(codeModel, getNodeName(child), defaultString(packageName), child.toURI().toURL());
+                mapper.generate(codeModel, getNodeName(child.toURI().toURL()), defaultString(packageName), child.toURI().toURL());
             } else {
                 generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles(config.getFileFilter())));
             }
@@ -133,7 +142,12 @@ public class Jsonschema2Pojo {
                 factory.getAnnotator(config.getCustomAnnotator()));
     }
 
-    private static String getNodeName(File file) {
-        return substringBeforeLast(file.getName(), ".");
+    private static String getNodeName(URL file) {
+        try {
+            return substringBeforeLast(FilenameUtils.getBaseName(URLDecoder.decode(file.toString(), "UTF-8")), ".");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", file.toString()), e);
+        }
+
     }
 }

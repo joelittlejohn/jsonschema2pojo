@@ -16,16 +16,16 @@
 
 package org.jsonschema2pojo.maven;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
+import org.jsonschema2pojo.maven.MatchPatternsFileFilter;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MatchPatternsFileFilterTest {
 

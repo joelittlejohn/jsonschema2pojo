@@ -21,9 +21,14 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -38,6 +43,7 @@ import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.URLUtil;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -70,7 +76,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @parameter expression="${jsonschema2pojo.sourceDirectory}"
      * @since 0.1.0
      */
-    private File sourceDirectory;
+    private String sourceDirectory;
 
     /**
      * An array of locations of the JSON Schema file(s). Note: each item may
@@ -79,7 +85,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @parameter expression="${jsonschema2pojo.sourcePaths}"
      * @since 0.3.1
      */
-    private File[] sourcePaths;
+    private String[] sourcePaths;
 
     /**
      * Package name used for generated Java classes (for types where a fully
@@ -416,7 +422,24 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             return;
         }
 
-        if (null == sourceDirectory && null == sourcePaths) {
+        // verify source directories
+        if (sourceDirectory != null) {
+            // verify sourceDirectory
+            try {
+                URLUtil.parseURL(sourceDirectory);
+            } catch (IllegalArgumentException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
+        } else if (sourcePaths != null) {
+            // verify individual source paths
+            for (String source : sourcePaths) {
+                try {
+                    URLUtil.parseURL(source);
+                } catch (IllegalArgumentException e) {
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
+            }
+        } else {
             throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
         }
 
@@ -437,7 +460,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);
+                    "Error generating classes from JSON Schema file(s) " + sourceDirectory, e);
         }
 
     }
@@ -469,11 +492,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public Iterator<File> getSource() {
+    public Iterator<URL> getSource() {
         if (null != sourceDirectory) {
-            return Collections.singleton(sourceDirectory).iterator();
+            return Collections.singleton(URLUtil.parseURL(sourceDirectory)).iterator();
         }
-        return Arrays.asList(sourcePaths).iterator();
+        List<URL> sourceURLs = new ArrayList<URL>();
+        for (String source : sourcePaths) {
+            sourceURLs.add(URLUtil.parseURL(source));
+        }
+        return sourceURLs.iterator();
     }
 
     @Override
@@ -590,11 +617,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     FileFilter createFileFilter() throws MojoExecutionException {
         try {
+            URL urlSource = URLUtil.parseURL(sourceDirectory);
             return new MatchPatternsFileFilter.Builder()
                     .addIncludes(includes)
                     .addExcludes(excludes)
                     .addDefaultExcludes()
-                    .withSourceDirectory(sourceDirectory.getCanonicalPath())
+                    .withSourceDirectory(URLUtil.getFileFromURL(urlSource).getCanonicalPath())
                     .withCaseSensitive(false)
                     .build();
         } catch (IOException e) {
