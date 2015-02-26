@@ -23,3 +23,5 @@
 * Jan Willem Harmelink
 * Eimar Fandino
 * Daniel Chaffee
+* Andrew Mains
+* Jon Landis

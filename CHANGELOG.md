@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.8
+* Android support in gradle plugin ([#292](https://github.com/joelittlejohn/jsonschema2pojo/pull/292))
+* Add support for Jackson's JsonView ([#291](https://github.com/joelittlejohn/jsonschema2pojo/pull/291))
+* Added support for javaType on integer and number properties. ([#287](https://github.com/joelittlejohn/jsonschema2pojo/pull/287))
+* Option to create constructors (with all fields, or with required fields) ([#231](https://github.com/joelittlejohn/jsonschema2pojo/issues/231))
+* Support nested generic type arguments in javaType ([#196](https://github.com/joelittlejohn/jsonschema2pojo/issues/196))
+
 ## 0.4.7
 * Adding UUID support to FormatRule ([#270](https://github.com/joelittlejohn/jsonschema2pojo/pull/270))
 * Add GSON annotation '@SerializedName' to Enums ([#267](https://github.com/joelittlejohn/jsonschema2pojo/issues/267))
