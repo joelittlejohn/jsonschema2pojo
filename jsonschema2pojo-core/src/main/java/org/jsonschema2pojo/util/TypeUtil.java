@@ -36,14 +36,14 @@ public class TypeUtil {
         try {
             FieldDeclaration fieldDeclaration = (FieldDeclaration) JavaParser.parseBodyDeclaration(typeDefinition + " foo;");
             ClassOrInterfaceType c = (ClassOrInterfaceType) fieldDeclaration.getType().getChildrenNodes().get(0);
-            
-            return buildClass(_package, c);
+
+            return buildClass(_package, c, 0);
         } catch (ParseException e) {
             throw new GenerationException(e);
         }
     }
 
-    private static JClass buildClass(JPackage _package, ClassOrInterfaceType c) {
+    private static JClass buildClass(JPackage _package, ClassOrInterfaceType c, int arrayCount) {
         final String packagePrefix = (c.getScope() != null) ? c.getScope().toString() + "." : "";
        
         JClass _class;
@@ -52,13 +52,17 @@ public class TypeUtil {
         } catch (ClassNotFoundException e) {
             _class = _package.owner().ref(packagePrefix + c.getName());            
         }
+
+        for (int i=0; i<arrayCount; i++) {
+            _class = _class.array();
+        }
         
         List<Type> typeArgs = c.getTypeArgs();
         if (typeArgs != null && typeArgs.size() > 0) {
             JClass[] genericArgumentClasses = new JClass[typeArgs.size()];
 
             for (int i=0; i<typeArgs.size(); i++) {
-                genericArgumentClasses[i] = buildClass(_package, (ClassOrInterfaceType) ((ReferenceType) typeArgs.get(i)).getType());
+                genericArgumentClasses[i] = buildClass(_package, (ClassOrInterfaceType) ((ReferenceType) typeArgs.get(i)).getType(), ((ReferenceType) typeArgs.get(i)).getArrayCount());
             }
             
             _class = _class.narrow(genericArgumentClasses);
