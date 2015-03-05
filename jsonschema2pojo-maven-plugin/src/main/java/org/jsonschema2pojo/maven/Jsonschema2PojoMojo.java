@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -90,6 +91,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.1.0
      */
     private String targetPackage = "";
+
+    /**
+     * List of sources (targetPackage + sourcePaths) to support generating
+     * source in multiple packages.
+     * 
+     * @parameter
+     * @since 0.4.0
+     */
+    private List<Source> sources;
 
     /**
      * Whether to generate builder-style methods of the form
@@ -416,8 +426,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             return;
         }
 
-        if (null == sourceDirectory && null == sourcePaths) {
-            throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
+        if (null == sourceDirectory && null == sourcePaths && (null == sources || sources.isEmpty())) {
+            throw new MojoExecutionException("One of sourceDirectory, sourcePaths, or sources must be provided");
         }
 
         if (filteringEnabled()) {
@@ -434,7 +444,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         }
 
         try {
-            Jsonschema2Pojo.generate(this);
+            if (null != sources && !sources.isEmpty()) {
+                for (Source source : sources) {
+                    source.setParentConfig(this);
+                    Jsonschema2Pojo.generate(source);
+                }
+            } else {
+                Jsonschema2Pojo.generate(this);
+            }
         } catch (IOException e) {
             throw new MojoExecutionException(
                     "Error generating classes from JSON Schema file(s) " + sourceDirectory.getPath(), e);

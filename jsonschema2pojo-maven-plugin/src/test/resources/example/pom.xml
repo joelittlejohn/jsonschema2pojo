@@ -24,6 +24,12 @@
                     <targetPackage>com.example.types</targetPackage>
                     <includeHashcodeAndEquals>false</includeHashcodeAndEquals>
                     <includeToString>false</includeToString>
+                    <sources>
+                        <source>
+                            <targetPackage>com.exmaple.types</targetPackage>
+                            <sourcePath>${basedir}/schema</sourcePath>
+                        </source>
+                    </sources>
                 </configuration>
                 <executions>
                     <execution>
