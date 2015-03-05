@@ -23,7 +23,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import org.jsonschema2pojo.util.URLUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +58,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getSource().next().getFile(), is("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
@@ -71,7 +74,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getSource().next().getFile(), is("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
@@ -96,7 +99,7 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next(), is(theFile("/home/source")));
+        assertThat(args.getSource().next().getFile(), is("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));

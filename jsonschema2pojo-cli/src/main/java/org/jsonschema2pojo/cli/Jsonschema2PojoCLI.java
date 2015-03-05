@@ -41,7 +41,7 @@ public final class Jsonschema2PojoCLI {
      *             if the application is unable to read data from the paths
      *             specified
      */
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) throws IOException {
 
         Arguments arguments = new Arguments().parse(args);
 

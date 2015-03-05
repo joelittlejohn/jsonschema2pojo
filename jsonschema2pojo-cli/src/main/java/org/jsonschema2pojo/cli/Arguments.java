@@ -20,6 +20,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,7 +35,6 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.converters.FileConverter;
 
 /**
  * Describes and parses the command line arguments supported by the
@@ -51,8 +51,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-t", "--target" }, description = "The target directory into which generated types will be written", required = true)
     private File targetDirectory;
 
-    @Parameter(names = { "-s", "--source" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, converter = FileConverter.class)
-    private List<File> sourcePaths;
+    @Parameter(names = { "-s", "--source" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, converter = UrlConverter.class)
+    private List<URL> sourcePaths;
 
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
@@ -158,7 +158,7 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public Iterator<File> getSource() {
+    public Iterator<URL> getSource() {
         return sourcePaths.iterator();
     }
 

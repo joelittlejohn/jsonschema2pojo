@@ -18,6 +18,7 @@ package org.jsonschema2pojo;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URL;
 import java.util.Iterator;
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -55,7 +56,7 @@ public interface GenerationConfig {
      * @return The source file(s) or directory(ies) from which JSON Schema will
      *         be read.
      */
-    Iterator<File> getSource();
+    Iterator<URL> getSource();
 
     /**
      * Gets the 'targetDirectory' configuration option.

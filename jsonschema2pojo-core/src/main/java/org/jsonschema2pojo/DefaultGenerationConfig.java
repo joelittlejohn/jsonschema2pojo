@@ -20,6 +20,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URL;
 import java.util.Iterator;
 
 /**
@@ -47,7 +48,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * Unsupported since no default source is possible.
      */
     @Override
-    public Iterator<File> getSource() {
+    public Iterator<URL> getSource() {
         throw new UnsupportedOperationException("No default source available");
     }
 

@@ -39,6 +39,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.maven.Jsonschema2PojoMojo;
+import org.jsonschema2pojo.util.URLUtil;
 
 public class CodeGenerationHelper {
 
@@ -85,7 +86,7 @@ public class CodeGenerationHelper {
             @SuppressWarnings("serial")
         Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
                 {
-                    put("sourceDirectory", new File(schema.toURI()));
+                    put("sourceDirectory", URLUtil.getFileFromURL(schema).getPath());
                     put("outputDirectory", outputDirectory);
                     put("project", getMockProject());
                     put("targetPackage", targetPackage);
@@ -94,8 +95,6 @@ public class CodeGenerationHelper {
             });
 
             pluginMojo.execute();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         } catch (MojoExecutionException e) {
             throw new RuntimeException(e);
         } catch (DependencyResolutionRequiredException e) {
