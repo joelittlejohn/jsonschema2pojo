@@ -38,6 +38,8 @@
                          includeJsr303Annotations="true"
                          classpathRef="custom.libs"
                          useJodaDates="true"
+                         useJodaLocalDates="true"
+                         useJodaLocalTimes="true"
                          useCommonsLang3="true"
                          initializeCollections="false">
             <classpath>

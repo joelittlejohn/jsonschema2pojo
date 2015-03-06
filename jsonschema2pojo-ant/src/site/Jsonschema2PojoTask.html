@@ -178,10 +178,23 @@
       </tr>
       <tr>
         <td valign="top">useJodaDates</td>
-        <td valign="top">Whether to use <code>org.joda.time.DateTime</code> instead of <code>java.util.Date</code> when adding date type fields to generated Java types.</td>
+        <td valign="top">Whether to use <code>org.joda.time.DateTime</code> instead of <code>java.util.Date</code>
+            when adding date-time type fields to generated Java types.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
-      <tr>
+        <tr>
+            <td valign="top">useJodaLocalDates</td>
+            <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of String
+                when adding string fields with format date to generated Java types.</td>
+            <td align="center" valign="top">No (default <code>false</code>)</td>
+        </tr>
+        <tr>
+            <td valign="top">useJodaLocalTimes</td>
+            <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of String
+                when adding string fields with format time to generated Java types.</td>
+            <td align="center" valign="top">No (default <code>false</code>)</td>
+        </tr>
+        <tr>
         <td valign="top">useLongIntegers</td>
         <td valign="top">Whether to use the java type <code>long</code> (or <code>Long</code>) instead of <code>int</code> (or <code>Integer</code>) when representing the JSON Schema type 'integer'.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>

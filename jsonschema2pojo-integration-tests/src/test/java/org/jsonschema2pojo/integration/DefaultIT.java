@@ -88,22 +88,22 @@ public class DefaultIT {
     }
 
     @Test
-    public void dateAsMillisecPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void dateTimeAsMillisecPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
 
-        Method getter = classWithDefaults.getMethod("getDateWithDefault");
+        Method getter = classWithDefaults.getMethod("getDateTimeWithDefault");
 
         assertThat((Date) getter.invoke(instance), is(equalTo(new Date(123456789))));
 
     }
 
     @Test
-    public void dateAsStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void dateTimeAsStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
 
-        Method getter = classWithDefaults.getMethod("getDateAsStringWithDefault");
+        Method getter = classWithDefaults.getMethod("getDateTimeAsStringWithDefault");
 
         assertThat((Date) getter.invoke(instance), is(equalTo(new Date(1298539523112L))));
 

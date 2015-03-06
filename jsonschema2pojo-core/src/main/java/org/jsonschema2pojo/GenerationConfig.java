@@ -209,6 +209,25 @@ public interface GenerationConfig {
     boolean isUseJodaDates();
 
     /**
+     * Gets the 'useJodaLocalDates' configuration option.
+     *
+     * @return Whether to use {@link org.joda.time.LocalDate} instead of string
+     *         when adding string type fields with a format of date
+     *         (not date-time) to generated Java types.
+     */
+    boolean isUseJodaLocalDates();
+
+
+    /**
+     * Gets the 'useJodaLocalTimes' configuration option.
+     *
+     * @return Whether to use {@link org.joda.time.LocalTime} instead of string
+     *         when adding string type fields with a format of time
+     *         (not date-time) to generated Java types.
+     */
+    boolean isUseJodaLocalTimes();
+
+    /**
      * Gets the 'useCommonsLang3' configuration option.
      * 
      * @return Whether to use commons-lang 3.x imports instead of commons-lang

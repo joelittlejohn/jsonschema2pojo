@@ -17,15 +17,25 @@
             "type" : "boolean",
             "default" : true
         },
-        "dateWithDefault" : {
+        "dateTimeWithDefault" : {
             "type" : "string",
             "format" : "date-time",
             "default" : 123456789
         },
-        "dateAsStringWithDefault" : {
+        "dateTimeAsStringWithDefault" : {
             "type" : "string",
             "format" : "date-time",
             "default" : "2011-02-24T09:25:23.112+0000"
+        },
+        "dateAsStringWithDefault" : {
+            "type" : "string",
+            "format" : "date",
+            "default" : "2015-03-04"
+        },
+        "timeAsStringWithDefault" : {
+            "type" : "string",
+            "format" : "time",
+            "default" : "16:15:00"
         },
         "utcmillisecWithDefault" : {
             "type" : "integer",

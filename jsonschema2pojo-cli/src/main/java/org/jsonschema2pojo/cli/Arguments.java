@@ -107,8 +107,17 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files.")
     private String outputEncoding = "UTF-8";
 
-    @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java.util.Date when adding date type fields to generated Java types.")
+    @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java" +
+            ".util.Date when adding date-time type fields to generated Java types.")
     private boolean useJodaDates = false;
+
+    @Parameter(names = { "-jd", "--joda-local-dates" }, description = "Whether to use org.joda.time.LocalDate instead" +
+            "of String when adding date type fields to generated Java types.")
+    private boolean useJodaLocalDates = false;
+
+    @Parameter(names = { "-jt", "--joda-local-times" }, description = "Whether to use org.joda.time.LocalTime instead" +
+            "of String when adding time type fields to generated Java types.")
+    private boolean useJodaLocalTimes = false;
 
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
     private boolean useCommonsLang3 = false;
@@ -245,6 +254,16 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseJodaDates() {
         return useJodaDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalDates() {
+        return useJodaLocalDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalTimes() {
+        return useJodaLocalTimes;
     }
 
     @Override

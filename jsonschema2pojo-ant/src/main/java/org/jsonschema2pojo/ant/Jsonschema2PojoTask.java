@@ -100,6 +100,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String outputEncoding = "UTF-8";
 
     private boolean useJodaDates = false;
+
+    private boolean useJodaLocalDates = false;
+
+    private boolean useJodaLocalTimes = false;
     
     private boolean useCommonsLang3 = false;
 
@@ -451,6 +455,30 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'useJodaLocalDates' property of this class
+     *
+     * @param useJodaLocalDates
+     *            Whether to use {@link org.joda.time.LocalDate} instead of
+     *            string when adding string fields of format date
+     *            (not date-time) to generated Java types.
+     */
+    public void setUseJodaLocalDates(boolean useJodaLocalDates) {
+        this.useJodaLocalDates = useJodaLocalDates;
+    }
+
+    /**
+     * Sets the 'useJodaLocalTimes' property of this class
+     *
+     * @param useJodaLocalTimes
+     *            Whether to use {@link org.joda.time.LocalTime} instead of
+     *            string when adding string fields of format time
+     *            (not date-time) to generated Java types.
+     */
+    public void setUseJodaLocalTimes(boolean useJodaLocalTimes) {
+        this.useJodaLocalTimes = useJodaLocalTimes;
+    }
+
+    /**
      * Sets the 'useCommonsLang3' property of this class
      * 
      * @param useCommonsLang3
@@ -593,6 +621,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJodaDates() {
         return useJodaDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalDates() {
+        return useJodaLocalDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalTimes() {
+        return useJodaLocalTimes;
     }
     
     @Override
