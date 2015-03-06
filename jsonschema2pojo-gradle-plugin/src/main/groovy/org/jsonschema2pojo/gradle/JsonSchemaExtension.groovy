@@ -51,6 +51,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean removeOldOutput
   String outputEncoding
   boolean useJodaDates
+  boolean useJodaLocalDates
+  boolean useJodaLocalTimes
   boolean useCommonsLang3
   FileFilter fileFilter
   boolean initializeCollections
@@ -77,6 +79,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     sourceType = SourceType.JSONSCHEMA
     outputEncoding = 'UTF-8'
     useJodaDates = false
+    useJodaLocalDates = false
+    useJodaLocalTimes = false
     useCommonsLang3 = false
     fileFilter = new AllFileFilter()
     initializeCollections = true
@@ -168,6 +172,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |removeOldOutput = ${removeOldOutput}
        |outputEncoding = ${outputEncoding}
        |useJodaDates = ${useJodaDates}
+       |useJodaLocalDates = ${useJodaLocalDates}
+       |useJodaLocalTimes = ${useJodaLocalTimes}
        |useCommonsLang3 = ${useCommonsLang3}
        |initializeCollections = ${initializeCollections}
        |classNamePrefix = ${classNamePrefix}

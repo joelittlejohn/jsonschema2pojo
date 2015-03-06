@@ -312,6 +312,26 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useJodaDates = false;
 
     /**
+     * Whether to use {@link org.joda.time.LocalDate} instead of string
+     * when adding string type fields of format date (not date-time) to
+     * generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.useJodaLocalDates}" default="false"
+     * @since 0.4.9
+     */
+    private boolean useJodaLocalDates = false;
+
+    /**
+     * Whether to use {@link org.joda.time.LocalTime} instead of string
+     * when adding string type fields of format time (not date-time) to
+     * generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.useJodaLocalTimes}" default="false"
+     * @since 0.4.9
+     */
+    private boolean useJodaLocalTimes = false;
+
+    /**
      * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
      * imports when adding equals, hashCode and toString methods.
      * 
@@ -567,6 +587,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJodaDates() {
         return useJodaDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalDates() {
+        return useJodaLocalDates;
+    }
+
+    @Override
+    public boolean isUseJodaLocalTimes() {
+        return useJodaLocalTimes;
     }
 
     @Override

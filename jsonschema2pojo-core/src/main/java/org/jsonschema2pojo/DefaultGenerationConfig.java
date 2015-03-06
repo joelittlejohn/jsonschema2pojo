@@ -165,6 +165,22 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isUseJodaLocalDates() {
+        return false;
+    }
+
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isUseJodaLocalTimes() {
+        return false;
+    }
+
     @Override
     public boolean isUseCommonsLang3() {
         return false;

@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Set;
 import static org.apache.commons.lang3.StringUtils.*;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.jsonschema2pojo.Schema;
 
 /**
@@ -112,13 +114,20 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
             return JExpr.lit(Boolean.parseBoolean(node.asText()));
 
-        } else if (fieldType.fullName().equals(getDateType().getName())) {
+        } else if (fieldType.fullName().equals(getDateTimeType().getName())) {
             long millisecs = parseDateToMillisecs(node.asText());
 
-            JInvocation newDate = JExpr._new(fieldType);
-            newDate.arg(JExpr.lit(millisecs));
+            JInvocation newDateTime = JExpr._new(fieldType);
+            newDateTime.arg(JExpr.lit(millisecs));
 
-            return newDate;
+            return newDateTime;
+
+        } else if (fieldType.fullName().equals(LocalDate.class.getName()) ||
+                   fieldType.fullName().equals(LocalTime.class.getName())) {
+
+            JInvocation stringParseableTypeInstance = JExpr._new(fieldType);
+            stringParseableTypeInstance.arg(JExpr.lit(node.asText()));
+            return stringParseableTypeInstance;
 
         } else if (fieldType.fullName().equals(long.class.getName())) {
             return JExpr.lit(Long.parseLong(node.asText()));
@@ -137,7 +146,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
     }
 
-    private Class<?> getDateType() {
+    private Class<?> getDateTimeType() {
         return ruleFactory.getGenerationConfig().isUseJodaDates() ? DateTime.class : Date.class;
     }
 
