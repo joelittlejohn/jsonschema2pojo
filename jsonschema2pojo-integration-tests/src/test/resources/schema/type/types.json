@@ -54,6 +54,27 @@
             "type" : "object",
             "javaType" : "long"
         },
+        "integerWithJavaType" : {
+          "type" : "integer",
+          "javaType" : "java.math.BigDecimal"
+        },
+        "numberWithJavaType" : {
+          "type" : "number",
+          "javaType" : "java.util.UUID"
+        },
+        "stringWithJavaType" : {
+          "type" : "string",
+          "javaType" : "java.lang.Boolean"
+        },
+        "booleanWithJavaType" : {
+          "type" : "boolean",
+          "javaType" : "long"
+        },
+        "dateWithJavaType" : {
+          "type" : "string",
+          "format" : "date-time",
+          "javaType" : "int"
+        },
         "typeWithInterfaces" : {
             "type" : "object",
             "javaInterfaces" : ["java.io.Serializable", "Cloneable"]

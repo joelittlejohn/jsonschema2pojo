@@ -63,7 +63,6 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-r", "--constructors-required-only"}, description = "Generate constructors with only required fields")
     private boolean constructorsRequiredPropertiesOnly = false;
 
-
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
