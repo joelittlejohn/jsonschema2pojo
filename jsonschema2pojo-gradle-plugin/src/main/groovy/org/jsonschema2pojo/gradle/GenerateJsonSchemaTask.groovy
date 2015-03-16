@@ -41,7 +41,7 @@ class GenerateJsonSchemaTask extends DefaultTask {
       
       if (project.plugins.hasPlugin('java')) {
         configureJava()
-      } else if (project.plugins.hasPlugin('com.android.application')) {
+      } else if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
         configureAndroid()
       } else {
         throw new GradleException('generateJsonSchema: Java or Android plugin required')
