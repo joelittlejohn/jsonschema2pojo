@@ -1,6 +1,6 @@
 {
     "type" : "object",
-    "deserializationClassProperty" : "deserializationClassName",
+    "deserializationClassName" : ["SubclassArraySchema"],
     "properties" : {
         "propertyOfParent" : {
             "type" : "string"
