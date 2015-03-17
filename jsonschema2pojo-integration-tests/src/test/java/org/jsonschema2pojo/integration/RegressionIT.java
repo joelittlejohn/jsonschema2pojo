@@ -50,4 +50,12 @@ public class RegressionIT {
         generatedType.getMethod("get_name");
     }
 
+    @Test
+    public void filesWithExtensionPrefixesAreNotTruncated() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.<String, Object>emptyMap());
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.FooBaz");
+        assertThat(generatedType, is(notNullValue()));
+    }
+
 }
