@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -144,7 +143,7 @@ public class Jsonschema2Pojo {
 
     private static String getNodeName(URL file) {
         try {
-            return substringBeforeLast(FilenameUtils.getBaseName(URLDecoder.decode(file.toString(), "UTF-8")), ".");
+            return FilenameUtils.getBaseName(URLDecoder.decode(file.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", file.toString()), e);
         }
