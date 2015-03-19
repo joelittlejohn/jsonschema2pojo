@@ -25,3 +25,6 @@
 * Daniel Chaffee
 * Andrew Mains
 * Jon Landis
+* Justin Vasiljevich
+* Brent Sowers
+* Yoann Mikami

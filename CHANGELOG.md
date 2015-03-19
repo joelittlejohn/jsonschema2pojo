@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.9
+* Array types are ignored inside generics in javaType ([#299](https://github.com/joelittlejohn/jsonschema2pojo/issues/299))
+* Add config options to generate Joda LocalDate and LocalTime ([#298](https://github.com/joelittlejohn/jsonschema2pojo/issues/298))
+* Allow URLs as source locations ([#293](https://github.com/joelittlejohn/jsonschema2pojo/issues/293))
+
 ## 0.4.8
 * Android support in gradle plugin ([#292](https://github.com/joelittlejohn/jsonschema2pojo/pull/292))
 * Add support for Jackson's JsonView ([#291](https://github.com/joelittlejohn/jsonschema2pojo/pull/291))
