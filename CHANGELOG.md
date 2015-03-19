@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.10
+* Initial class name is truncated after first . char, instead of last . char ([#313](https://github.com/joelittlejohn/jsonschema2pojo/issues/313))
+* Add support for android library plugin ([#305](https://github.com/joelittlejohn/jsonschema2pojo/issues/305))
+* Support "javaType" for things that are not "type": "object" ([#223](https://github.com/joelittlejohn/jsonschema2pojo/issues/223))
+
 ## 0.4.9
 * Array types are ignored inside generics in javaType ([#299](https://github.com/joelittlejohn/jsonschema2pojo/issues/299))
 * Add config options to generate Joda LocalDate and LocalTime ([#298](https://github.com/joelittlejohn/jsonschema2pojo/issues/298))
