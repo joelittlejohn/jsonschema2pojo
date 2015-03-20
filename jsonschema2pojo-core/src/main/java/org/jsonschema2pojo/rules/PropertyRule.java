@@ -129,7 +129,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText());
             JsonNode refNode = refSchema.getContent();
-            return resolveRefs(refNode, parent);
+            return resolveRefs(refNode, refSchema);
         } else {
             return node;
         }
