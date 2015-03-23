@@ -44,6 +44,17 @@ public class DefaultIT {
     }
 
     @Test
+    public void emptyStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Method getter = classWithDefaults.getMethod("getEmptyStringWithDefault");
+
+        assertThat((String) getter.invoke(instance), is(equalTo("")));
+
+    }
+
+    @Test
     public void stringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();

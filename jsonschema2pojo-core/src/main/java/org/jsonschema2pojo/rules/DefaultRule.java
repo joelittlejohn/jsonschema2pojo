@@ -89,7 +89,8 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         } else if (fieldType.startsWith(Set.class.getName())) {
             field.init(getDefaultSet(field.type(), node));
-
+        } else if (fieldType.startsWith(String.class.getName()) && node != null ) {
+            field.init(getDefaultValue(field.type(), node));
         } else if (defaultPresent) {
             field.init(getDefaultValue(field.type(), node));
 
