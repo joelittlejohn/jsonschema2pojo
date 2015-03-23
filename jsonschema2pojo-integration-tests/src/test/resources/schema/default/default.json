@@ -1,6 +1,10 @@
 {
     "type" : "object",
     "properties" : {
+        "emptyStringWithDefault" : {
+          "type" : "string",
+          "default" : ""
+        },
         "stringWithDefault" : {
             "type" : "string",
             "default" : "abc"
