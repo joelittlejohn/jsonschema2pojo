@@ -30,7 +30,7 @@ import com.sun.codemodel.JDocComment;
 
 public class RequiredRuleTest {
 
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = RequiredRuleTest.class.getName() + ".DummyClass";
 
     private RequiredRule rule = new RequiredRule(new RuleFactory());
 

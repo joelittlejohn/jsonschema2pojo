@@ -121,6 +121,14 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a "required"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "required" declaration.
+     */
+    public Rule<JDefinedClass, JDefinedClass> getRequiredArrayRule() { return new RequiredArrayRule(this); }
+
+    /**
      * Provides a rule instance that should be applied when a "properties"
      * declaration is found in the schema.
      * 
@@ -150,6 +158,7 @@ public class RuleFactory {
     public Rule<JDocCommentable, JDocComment> getRequiredRule() {
         return new RequiredRule(this);
     }
+    
 
     /**
      * Provides a rule instance that should be applied to a node to find its
