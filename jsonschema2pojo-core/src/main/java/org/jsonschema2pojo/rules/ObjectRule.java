@@ -302,6 +302,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JClass hashCodeBuilderClass = jclass.owner().ref(hashCodeBuilder);
         JInvocation hashCodeBuilderInvocation = JExpr._new(hashCodeBuilderClass);
 
+        if (!jclass._extends().name().equals("Object")) {
+            hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper")
+                    .arg(JExpr._super().invoke("hashCode"));
+        }
+        
         for (JFieldVar fieldVar : fields.values()) {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
         }
@@ -358,11 +363,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
         body._if(otherObject._instanceof(jclass).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
-
+        
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
         JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
         JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
 
+        if (!jclass._extends().name().equals("Object")) {
+            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr.TRUE);
+        }
+        
         for (JFieldVar fieldVar : fields.values()) {
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
                     .arg(fieldVar)
