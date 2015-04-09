@@ -1,6 +1,11 @@
 {
-    "type" : "object",
-    "extends" : {
-        "$ref" : "subtypeOfA.json"
+    "type": "object",
+    "extends": {
+        "$ref": "subtypeOfA.json"
+    },
+    "properties": {
+        "child": {
+            "type": "string"
+        }
     }
 }

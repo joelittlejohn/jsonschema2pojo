@@ -1,6 +1,11 @@
 {
-    "type" : "object",
-    "extends" : {
-        "$ref" : "a.json"
+    "type": "object",
+    "extends": {
+        "$ref": "a.json"
+    },
+    "properties": {
+        "parent": {
+            "type": "string"
+        }
     }
 }

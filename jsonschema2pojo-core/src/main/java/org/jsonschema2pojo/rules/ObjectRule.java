@@ -369,7 +369,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
 
         if (!jclass._extends().name().equals("Object")) {
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr.TRUE);
+            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper")
+                    .arg(JExpr._super().invoke("equals").arg(otherObject));
         }
         
         for (JFieldVar fieldVar : fields.values()) {
