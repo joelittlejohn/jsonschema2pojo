@@ -41,13 +41,7 @@ public class GsonAnnotator extends AbstractAnnotator {
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
-
-        boolean fieldDiffersFromPropertyName = !field.name().equals(propertyName);
-
-        if (fieldDiffersFromPropertyName) {
-            field.annotate(SerializedName.class).param("value", propertyName);
-        }
-
+        field.annotate(SerializedName.class).param("value", propertyName);
         field.annotate(Expose.class);
     }
 
