@@ -348,11 +348,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useCommonsLang3 = false;
 
     /**
-     * Whether to make the generated types 'parcelable' (for Android development).
+     * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for Android development).
      *
      * @parameter expression="${jsonschema2pojo.parcelable}"
      *            default="false"
-     * @since 0.4.8
+     * @since 0.4.11
      */
     private boolean parcelable = false;
 
