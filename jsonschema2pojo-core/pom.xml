@@ -22,6 +22,10 @@
             <artifactId>javaparser</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.sun.codemodel</groupId>
             <artifactId>codemodel</artifactId>
         </dependency>

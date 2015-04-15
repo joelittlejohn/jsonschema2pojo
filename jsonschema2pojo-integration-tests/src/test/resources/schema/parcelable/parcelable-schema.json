@@ -1,0 +1,55 @@
+{
+    "type" : "object",
+    "properties" : {
+        "booleanProperty" : {
+            "type" : "boolean"
+        },
+        "stringProperty" : {
+            "type" : "string"
+        },
+        "integerProperty" : {
+            "type" : "integer"
+        },
+        "numberProperty" : {
+            "type" : "number"
+        },
+        "arrayProperty" : {
+            "type" : "array"
+        },
+        "anyProperty" : {
+            "type" : "any"
+        },
+        "objectProperty" : {
+            "type" : "object",
+            "properties" : {
+                "property" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "nonUniqueArray" : {
+            "type" : "array",
+            "uniqueItems" : false,
+            "items" : {
+                "type" : "integer"
+            }
+        },
+        "uniqueArray" : {
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "type" : "boolean"
+            }
+        },
+        "complexTypesArray" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
+        },
+        "enumProperty" : {
+            "type" : "string",
+            "enum" : ["one", "two", "three"]
+        }
+    }
+}

@@ -121,9 +121,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
     private boolean useCommonsLang3 = false;
 
+    @Parameter(names = { "-pl", "--parcelable" }, description = "Whether to make the generated types 'parcelable' (for Android development).")
+    private boolean parcelable = false;
+
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
-    
+
     @Parameter(names = { "-y", "--class-prefix" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private String classNamePrefix = "";
     
@@ -268,6 +271,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
+    }
+
+    @Override
+    public boolean isParcelable() {
+        return parcelable;
     }
 
     protected void exit(int status) {

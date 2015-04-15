@@ -188,6 +188,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     @Override
+    public boolean isParcelable() {
+        return false;
+    }
+
+    @Override
     public FileFilter getFileFilter() {
         return new AllFileFilter();
     }

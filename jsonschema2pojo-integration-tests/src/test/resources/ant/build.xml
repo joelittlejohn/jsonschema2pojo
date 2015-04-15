@@ -41,6 +41,7 @@
                          useJodaLocalDates="true"
                          useJodaLocalTimes="true"
                          useCommonsLang3="true"
+                         parcelable="true"
                          initializeCollections="false">
             <classpath>
                 <fileset dir="${project.build.directory}/custom-libs">

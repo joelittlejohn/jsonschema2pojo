@@ -107,6 +107,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     
     private boolean useCommonsLang3 = false;
 
+    private boolean parcelable = false;
+
     private boolean initializeCollections = true;
 
     private String classNamePrefix = "";
@@ -490,6 +492,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.useCommonsLang3 = useCommonsLang3;
     }
 
+    /**
+     * Sets the 'parcelable' property of this class
+     *
+     * @param parcelable
+     *             Whether to make the generated types 'parcelable' (for Android development).
+     */
+    public void setParcelable(boolean parcelable) {
+        this.parcelable = parcelable;
+    }
 
     /**
      * Sets the 'initializeCollections' property of this class
@@ -636,6 +647,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
+    }
+
+    @Override
+    public boolean isParcelable() {
+        return parcelable;
     }
 
     @Override

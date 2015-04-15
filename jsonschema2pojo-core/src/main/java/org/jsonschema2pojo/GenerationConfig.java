@@ -234,7 +234,14 @@ public interface GenerationConfig {
      *         2.x imports when adding equals, hashCode and toString methods.
      */
     boolean isUseCommonsLang3();
-    
+
+    /**
+     * Gets the 'parcelable' configuration option.
+     *
+     * @return Whether to make the generated types 'parcelable' (for Android development)
+     */
+    boolean isParcelable();
+
     /**
      * Gets the file filter used to isolate the schema mapping files in the source directories.
      * 

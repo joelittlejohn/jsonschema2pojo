@@ -28,10 +28,13 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
+import android.os.Parcelable;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -61,9 +64,11 @@ import com.sun.codemodel.JVar;
 public class ObjectRule implements Rule<JPackage, JType> {
 
     private final RuleFactory ruleFactory;
+    private final ParcelableHelper parcelableHelper;
 
-    protected ObjectRule(RuleFactory ruleFactory) {
+    protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper) {
         this.ruleFactory = ruleFactory;
+        this.parcelableHelper = parcelableHelper;
     }
 
     /**
@@ -134,12 +139,24 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addEquals(jclass);
         }
 
+        if (ruleFactory.getGenerationConfig().isParcelable()) {
+            addParcelSupport(jclass);
+        }
+
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
             addConstructors(jclass, getConstructorProperties(node, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly()));
         }
 
         return jclass;
 
+    }
+
+    private void addParcelSupport(JDefinedClass jclass) {
+        jclass._implements(Parcelable.class);
+        
+        parcelableHelper.addWriteToParcel(jclass);
+        parcelableHelper.addDescribeContents(jclass);
+        parcelableHelper.addCreator(jclass);
     }
 
     /**

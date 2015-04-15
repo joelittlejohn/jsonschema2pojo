@@ -53,6 +53,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useJodaLocalDates
   boolean useJodaLocalTimes
   boolean useCommonsLang3
+  boolean parcelable
   FileFilter fileFilter
   boolean initializeCollections
   String classNamePrefix
@@ -81,6 +82,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     useJodaLocalDates = false
     useJodaLocalTimes = false
     useCommonsLang3 = false
+    parcelable = false
     fileFilter = new AllFileFilter()
     initializeCollections = true
     classNamePrefix = ''
@@ -178,6 +180,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaLocalDates = ${useJodaLocalDates}
        |useJodaLocalTimes = ${useJodaLocalTimes}
        |useCommonsLang3 = ${useCommonsLang3}
+       |parcelable = ${parcelable}
        |initializeCollections = ${initializeCollections}
        |classNamePrefix = ${classNamePrefix}
        |classNameSuffix = ${classNameSuffix}

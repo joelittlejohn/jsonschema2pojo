@@ -1,0 +1,13 @@
+{
+    "booleanProperty" : true,
+    "stringProperty" : "aaa",
+    "integerProperty" : 10,
+    "numberProperty" : 9.945,
+    "arrayProperty" : [1, 2, 3],
+    "anyProperty" : {"a" : 1},
+    "objectProperty" : {"property" : "foo"},
+    "nonUniqueArray" : [5, 5, 5],
+    "uniqueArray" : [true, false],
+    "complexTypesArray" : [{}, {}],
+    "enumProperty" : "two"
+}
