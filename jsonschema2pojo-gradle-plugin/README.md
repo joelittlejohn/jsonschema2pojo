@@ -113,21 +113,21 @@ jsonSchema2Pojo {
   // that have been generated previously. <strong>Be warned</strong>, when activated this option
   // will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target
   // directory (all files and folders)</strong> before it begins generating sources.
-  boolean removeOldOutput = false
+  removeOldOutput = false
 
   // The character encoding that should be used when writing the generated Java source files
-  String outputEncoding = 'UTF-8'
+  outputEncoding = 'UTF-8'
 
   // Whether to use {@link org.joda.time.DateTime} instead of {@link java.util.Date} when adding
   // date type fields to generated Java types.
-  boolean useJodaDates = false
+  useJodaDates = false
 
   // Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, 
   // hashCode and toString methods.
-  boolean useCommonsLang3 = false
+  useCommonsLang3 = false
   
   // Whether to initialize Set and List fields as empty collections, or leave them as null.
-  boolean initializeCollections = true
+  initializeCollections = true
 }
 ```
 
