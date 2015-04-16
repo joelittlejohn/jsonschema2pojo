@@ -128,6 +128,9 @@ jsonSchema2Pojo {
   
   // Whether to initialize Set and List fields as empty collections, or leave them as null.
   initializeCollections = true
+  
+  // **EXPERIMENTAL** Whether to make the generated types Parcelable for Android
+  parcelable = false
 }
 ```
 
