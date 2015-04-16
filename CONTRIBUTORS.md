@@ -28,3 +28,6 @@
 * Justin Vasiljevich
 * Brent Sowers
 * Yoann Mikami
+* Jakub Wierzbowski
+* David McFarland
+* Brent Ryan

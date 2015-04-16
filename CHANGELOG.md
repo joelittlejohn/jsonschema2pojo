@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.11
+* Add super() to the equals/hashcode impl ([#333](https://github.com/joelittlejohn/jsonschema2pojo/pull/333))
+* Use Gson @SerializedName annotation on ALL fields, even when JSON name matches Java name ([#327](https://github.com/joelittlejohn/jsonschema2pojo/issues/327))
+* Adding support for required array from http://tools.ietf.org/html/draft-... ([#325](https://github.com/joelittlejohn/jsonschema2pojo/pull/325))
+* default tag doesn't work for empty string ([#320](https://github.com/joelittlejohn/jsonschema2pojo/issues/320))
+* **EXPERIMENTAL** Support Parcelable types for Android ([#127](https://github.com/joelittlejohn/jsonschema2pojo/issues/127))
+
 ## 0.4.10
 * Initial class name is truncated after first . char, instead of last . char ([#313](https://github.com/joelittlejohn/jsonschema2pojo/issues/313))
 * Add support for android library plugin ([#305](https://github.com/joelittlejohn/jsonschema2pojo/issues/305))
