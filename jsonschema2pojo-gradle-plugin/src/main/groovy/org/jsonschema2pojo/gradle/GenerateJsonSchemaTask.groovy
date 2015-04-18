@@ -41,7 +41,8 @@ class GenerateJsonSchemaTask extends DefaultTask {
       
       if (project.plugins.hasPlugin('java')) {
         configureJava()
-      } else if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
+      } else if (project.plugins.hasPlugin('com.android.application') ||
+          project.plugins.hasPlugin('com.android.library')) {
         configureAndroid()
       } else {
         throw new GradleException('generateJsonSchema: Java or Android plugin required')
@@ -57,7 +58,7 @@ class GenerateJsonSchemaTask extends DefaultTask {
 
     if (!configuration.source.hasNext()) {
       configuration.source = project.files("${project.sourceSets.main.output.resourcesDir}/json")
-      configuration.source.each { it.mkdir() }
+      configuration.sourceFiles.each { it.mkdir() }
     }
   }
   
@@ -69,8 +70,8 @@ class GenerateJsonSchemaTask extends DefaultTask {
       variant.javaCompile.dependsOn(this)
     }
     
-    if (!configuration.source.hasNext()) {
-      configuration.source = project.files(
+    if (!configuration.sourceFiles.hasNext()) {
+      configuration.sourceFiles = project.files(
         android.sourceSets.main.resources.srcDirs.collect { 
           "${it}/json"
         }.findAll {

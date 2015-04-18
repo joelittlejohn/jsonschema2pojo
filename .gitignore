@@ -13,6 +13,7 @@ apidocs
 
 # Gradle derived files #
 build/
+.gradle
 
 # IntelliJ files #
 .idea

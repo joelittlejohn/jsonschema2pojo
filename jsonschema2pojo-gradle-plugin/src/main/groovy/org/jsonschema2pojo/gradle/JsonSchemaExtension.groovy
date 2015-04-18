@@ -119,44 +119,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
   }
-  
-  public void setClassNamePrefix(String s) {
-    classNamePrefix = s
-  }
-  
-  public String getClassNamePrefix() {
-    classNamePrefix
-  }
-  
-  public void setClassNameSuffix(String s) {
-    classNameSuffix = s
-  }
-  
-  public String getClassNameSuffix() {
-    classNameSuffix
-  }
 
-    /**
-     * Gets the 'includeConstructors' configuration option
-     *
-     * @return Whether to generate constructors or not.
-     */
-    @Override
-    boolean isIncludeConstructors() {
-        includeConstructors;
-    }
-
-    /**
-     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
-     *
-     * @return Whether generated constructors should have parameters for all properties, or only required ones.
-     */
-    @Override
-    boolean isConstructorsRequiredPropertiesOnly() {
-        constructorsRequiredPropertiesOnly
-    }
-
-    @Override
+  @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
        |usePrimitives = ${usePrimitives}
