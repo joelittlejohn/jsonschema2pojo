@@ -19,6 +19,12 @@ package org.jsonschema2pojo.integration.filtering;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -27,11 +33,34 @@ import org.junit.Test;
  * @author Christian Trimble
  */
 public class FilteringIT {
+    URL filteredSchemaUrl;
+    
+    @Before
+    public void setUp() throws MalformedURLException {
+        filteredSchemaUrl = new File("./src/test/resources/schema/filtering").toURI().toURL();
+    }
+
     @Test
     public void shouldFilterFiles() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/filtering", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile(filteredSchemaUrl, "com.example",
                 config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
 
         resultsClassLoader.loadClass("com.example.Included");
+    }
+    
+    @Test(expected=ClassNotFoundException.class)
+    public void shouldNotProcessExcludedFiles() throws ClassNotFoundException {
+        ClassLoader resultsClassLoader = generateAndCompile(filteredSchemaUrl, "com.example",
+                config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
+
+        resultsClassLoader.loadClass("com.example.Excluded");
+    }
+
+    @Test
+    public void shouldIncludeNestedFilesWithFiltering() throws ClassNotFoundException {
+        ClassLoader resultsClassLoader = generateAndCompile(filteredSchemaUrl, "com.example",
+                config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
+
+        resultsClassLoader.loadClass("com.example.sub.Sub");
     }
 }

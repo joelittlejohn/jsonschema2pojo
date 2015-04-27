@@ -73,6 +73,24 @@ public class MatchPatternsFileFilterTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    public void shouldIncludeMatchesAndDirectoriesWhenIncludingAndDefaultExcludes() throws IOException {
+        fileFilter = new MatchPatternsFileFilter.Builder()
+                .addIncludes(asList("**/*.json"))
+                .addDefaultExcludes()
+                .withSourceDirectory(basedir.getCanonicalPath())
+                .build();
+
+        File[] files = basedir.listFiles(fileFilter);
+
+        assertThat("all of the files were found.", asList(files),
+                hasItems(
+                        equalTo(file("sub1")),
+                        equalTo(file("excluded")),
+                        equalTo(file("example.json"))));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
     public void shouldNoIncludedUnmatchedFiles() throws IOException {
         fileFilter = new MatchPatternsFileFilter.Builder()
                 .addIncludes(asList("**/*.json"))
@@ -123,6 +141,58 @@ public class MatchPatternsFileFilterTest {
         assertThat("the markdown file was not found.", asList(files), not(hasItem(file("excluded"))));
     }
 
+    @Test
+    public void ahouldNotExcludeRegularDirectoriesWithDefaultExcludes() throws IOException {
+        fileFilter = new MatchPatternsFileFilter.Builder()
+                .addDefaultExcludes()
+                .addIncludes(asList("**"))
+                .withSourceDirectory(basedir.getCanonicalPath())
+                .build();
+
+        File[] files = basedir.listFiles(fileFilter);
+
+        assertThat("the sub directory was not found.", asList(files), hasItem(file("excluded")));
+    }
+
+    @Test
+    public void shouldExcludeSvnDirectoriesWithDefaultExcludes() throws IOException {
+        fileFilter = new MatchPatternsFileFilter.Builder()
+                .addDefaultExcludes()
+                .addIncludes(asList("**"))
+                .withSourceDirectory(basedir.getCanonicalPath())
+                .build();
+
+        File[] files = basedir.listFiles(fileFilter);
+
+        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file(".svn"))));
+    }
+
+    @Test
+    public void shouldExcludeFilesInSvnDirectoriesWithDefaultExcludes() throws IOException {
+        fileFilter = new MatchPatternsFileFilter.Builder()
+                .addDefaultExcludes()
+                .addIncludes(asList("**/*.json"))
+                .withSourceDirectory(basedir.getCanonicalPath())
+                .build();
+
+        File[] files = new File(basedir, ".svn").listFiles(fileFilter);
+
+        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file("svn-file.json"))));
+    }
+
+    @Test
+    public void shouldExcludeNestedFilesInSvnDirectoriesWithDefaultExcludes() throws IOException {
+        fileFilter = new MatchPatternsFileFilter.Builder()
+                .addDefaultExcludes()
+                .addIncludes(asList("**/*.json"))
+                .withSourceDirectory(basedir.getCanonicalPath())
+                .build();
+
+        File[] files = new File(basedir, ".svn/sub").listFiles(fileFilter);
+
+        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file("sub-svn-file.json"))));
+    }
+    
     private File file(String relativePath) {
         return new File(basedir, relativePath);
     }
