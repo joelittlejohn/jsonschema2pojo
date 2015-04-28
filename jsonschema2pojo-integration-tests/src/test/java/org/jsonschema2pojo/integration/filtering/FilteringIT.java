@@ -34,10 +34,12 @@ import org.junit.Test;
  */
 public class FilteringIT {
     URL filteredSchemaUrl;
+    URL subSchemaUrl;
     
     @Before
     public void setUp() throws MalformedURLException {
         filteredSchemaUrl = new File("./src/test/resources/schema/filtering").toURI().toURL();
+        subSchemaUrl = new File("./src/test/resources/schema/filtering/sub").toURI().toURL();
     }
 
     @Test
@@ -62,5 +64,14 @@ public class FilteringIT {
                 config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
 
         resultsClassLoader.loadClass("com.example.sub.Sub");
+    }
+
+    @Test
+    public void shouldUseDefaultExcludesWithoutIncludesAndExcludes() throws ClassNotFoundException {
+        ClassLoader resultsClassLoader = generateAndCompile(subSchemaUrl, "com.example.sub",
+                config("includes", new String[] {}, "excludes", new String[] {}));
+
+        resultsClassLoader.loadClass("com.example.sub.Sub");
+        resultsClassLoader.loadClass("com.example.sub.sub2.Sub");
     }
 }

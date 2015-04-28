@@ -472,10 +472,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
         }
 
-        if (filteringEnabled()) {
+        if (filteringEnabled() || (sourceDirectory != null && sourcePaths == null) ) {
 
             if (sourceDirectory == null) {
                 throw new MojoExecutionException("Source includes and excludes require the sourceDirectory property");
+            }
+
+            if( sourcePaths != null ) {
+                throw new MojoExecutionException("Source includes and excludes are incompatible with the sourcePaths property");
             }
 
             fileFilter = createFileFilter();
