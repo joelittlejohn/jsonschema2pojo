@@ -170,6 +170,14 @@ public class CodeGenerationHelper {
 
     }
 
+    public static ClassLoader generateAndCompile(URL schema, String targetPackage, Map<String, Object> configValues) {
+
+        File outputDirectory = generate(schema, targetPackage, configValues);
+
+        return compile(outputDirectory);
+
+    }
+
     public static File createTemporaryOutputFolder() {
 
         String tempDirectoryName = System.getProperty("java.io.tmpdir");

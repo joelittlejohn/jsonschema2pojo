@@ -113,7 +113,7 @@ public class MatchPatternsFileFilter implements FileFilter {
         try {
             String path = relativePath(file);
             return file.isDirectory() ?
-                    includePatterns.matchesPatternStart(path, caseSensitive) && !excludePatterns.matchesPatternStart(path, caseSensitive) :
+                    includePatterns.matchesPatternStart(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive) :
                     includePatterns.matches(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive);
         } catch (IOException e) {
             return false;
