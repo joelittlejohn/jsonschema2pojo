@@ -150,3 +150,4 @@ rm -rf $WORKING_DIR
 echo Release complete. Next steps:
 echo    - Update release notes for $RELEASE_PAGE
 echo    - Update CHANGELOG.md
+echo    - Check README.md links are working
