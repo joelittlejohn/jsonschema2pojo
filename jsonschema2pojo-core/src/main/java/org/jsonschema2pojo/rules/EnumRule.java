@@ -54,7 +54,7 @@ import com.sun.codemodel.JVar;
 
 /**
  * Applies the "enum" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
@@ -63,9 +63,60 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     private static final String VALUE_FIELD_NAME = "value";
 
     private final RuleFactory ruleFactory;
+    private final ConstantNameMapper constantNameMapper;
+
+    public interface ConstantNameMapper {
+        String getConstantName(String name, RuleFactory ruleFactory);
+    }
+
+    private static class ExactConstantNameMapper implements ConstantNameMapper {
+
+        @Override
+        public String getConstantName(String name, RuleFactory ruleFactory) {
+            return name;
+        }
+    }
+
+    private static class SplitCamelCaseNameMapper implements ConstantNameMapper {
+
+        public String getConstantName(String nodeName, RuleFactory ruleFactory) {
+            List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
+
+            String enumName = "";
+            for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext(); ) {
+                if (containsOnly(ruleFactory.getNameHelper().replaceIllegalCharacters(iter.next()), "_")) {
+                    iter.remove();
+                }
+            }
+
+            enumName = upperCase(join(enumNameGroups, "_"));
+
+            if (isEmpty(enumName)) {
+                enumName = "__EMPTY__";
+            } else if (Character.isDigit(enumName.charAt(0))) {
+                enumName = "_" + enumName;
+            }
+
+            return enumName;
+        }
+
+    }
+
+    public static EnumRule newSplitCamelCaseMapperEnumRule(RuleFactory ruleFactory) {
+        return new EnumRule(ruleFactory, new SplitCamelCaseNameMapper());
+    }
+
+    public static EnumRule newExactMapperEnumRule(RuleFactory ruleFactory) {
+        return new EnumRule(ruleFactory, new ExactConstantNameMapper());
+    }
+
+    protected EnumRule(RuleFactory ruleFactory, ConstantNameMapper constantNameMapper) {
+        this.constantNameMapper = constantNameMapper;
+        this.ruleFactory = ruleFactory;
+    }
 
     protected EnumRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        this(ruleFactory, new SplitCamelCaseNameMapper());
     }
 
     /**
@@ -82,7 +133,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      * <code>fromValue(String)</code> is added to the generated enum, and the
      * methods are annotated to allow Jackson to marshal/unmarshal values
      * correctly.
-     * 
+     *
      * @param nodeName
      *            the name of the property which is an "enum"
      * @param node
@@ -206,11 +257,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     private void addEnumConstants(JsonNode node, JDefinedClass _enum) {
-        for (Iterator<JsonNode> values = node.elements(); values.hasNext();) {
+        for (Iterator<JsonNode> values = node.elements(); values.hasNext(); ) {
             JsonNode value = values.next();
 
             if (!value.isNull()) {
-                JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText()));
+                String mappedValue = constantNameMapper.getConstantName(value.asText(), ruleFactory);
+                JEnumConstant constant = _enum.enumConstant(mappedValue);
                 constant.arg(JExpr.lit(value.asText()));
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
@@ -227,26 +279,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return ruleFactory.getNameHelper().normalizeName(className);
     }
 
-    private String getConstantName(String nodeName) {
-        List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
-
-        String enumName = "";
-        for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {
-            if (containsOnly(ruleFactory.getNameHelper().replaceIllegalCharacters(iter.next()), "_")) {
-                iter.remove();
-            }
-        }
-
-        enumName = upperCase(join(enumNameGroups, "_"));
-
-        if (isEmpty(enumName)) {
-            enumName = "__EMPTY__";
-        } else if (Character.isDigit(enumName.charAt(0))) {
-            enumName = "_" + enumName;
-        }
-
-        return enumName;
-    }
 
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {

@@ -17,9 +17,11 @@
 package org.jsonschema2pojo.integration.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 import org.joda.time.LocalDate;
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.rules.EnumRule;
 import org.jsonschema2pojo.rules.FormatRule;
 import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -49,6 +51,20 @@ public class CustomRuleFactoryIT {
         assertThat(returnType.equals(LocalDate.class), is(true));
     }
 
+    @Test
+    public void testEnumWithCustomConstantNameMapper() throws Exception {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithDigits.json", "com.example",
+                config("customRuleFactory", CustomEnumRuleFactory.class.getName()));
+
+        Class<Enum> enumWithDigitsClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.EnumWithDigits");
+
+        assertThat(enumWithDigitsClass.isEnum(), is(true));
+        assertThat(enumWithDigitsClass.getEnumConstants()[0].name(), is("ONE"));
+        assertThat(enumWithDigitsClass.getEnumConstants()[1].name(), is("TWO2"));
+        assertThat(enumWithDigitsClass.getEnumConstants()[2].name(), is("three3"));
+
+    }
+
     public static class TestRuleFactory extends RuleFactory {
 
         @Override
@@ -65,5 +81,12 @@ public class CustomRuleFactoryIT {
             };
         }
 
+    }
+
+    public static class CustomEnumRuleFactory extends RuleFactory {
+        @Override
+        public Rule<JClassContainer, JType> getEnumRule() {
+            return EnumRule.newExactMapperEnumRule(this);
+        }
     }
 }

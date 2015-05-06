@@ -1,0 +1,5 @@
+{
+    "javaType" : "com.example.enums.EnumWithDigits",
+    "type" : "string",
+    "enum" : ["ONE", "TWO2", "three3"]
+}
