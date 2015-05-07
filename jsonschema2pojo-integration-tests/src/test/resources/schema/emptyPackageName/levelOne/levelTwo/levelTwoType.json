@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A schema at the second level of packaging.",
+  "type": "object",
+  "properties": {
+    "name": {
+    	"type": "string"
+    }
+  }
+}
