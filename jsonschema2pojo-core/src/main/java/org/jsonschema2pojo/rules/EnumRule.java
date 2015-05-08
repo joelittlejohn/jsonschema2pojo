@@ -28,29 +28,13 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForEach;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 
 /**
  * Applies the "enum" schema rule.
@@ -138,7 +122,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 }
             } else {
                 try {
-                    return container._class(modifiers, getEnumName(nodeName), ClassType.ENUM);
+                    return container._class(modifiers, getEnumName(nodeName, container), ClassType.ENUM);
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }
@@ -222,10 +206,28 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
-    private String getEnumName(String nodeName) {
+    private String getEnumName(String nodeName, JClassContainer container) {
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
-        return ruleFactory.getNameHelper().normalizeName(className);
+        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
+        return makeUnique(normalizedName, container);
     }
+
+    private String makeUnique(String className, JClassContainer container) {
+        boolean found = false;
+        Iterator<JDefinedClass> classes = container.classes();
+        while (classes.hasNext()) {
+            JDefinedClass aClass = classes.next();
+            if (className.equalsIgnoreCase(aClass.name())) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            className = makeUnique(className + "_", container);
+        }
+        return className;
+    }
+
 
     private String getConstantName(String nodeName) {
         List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
