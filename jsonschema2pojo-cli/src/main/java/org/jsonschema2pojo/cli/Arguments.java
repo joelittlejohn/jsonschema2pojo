@@ -127,10 +127,10 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
 
-    @Parameter(names = { "-y", "--class-prefix" }, description = "Initialize Set and List fields to null instead of an empty collection.")
+    @Parameter(names = { "-y", "--class-prefix" }, description = "Prefix for generated class.")
     private String classNamePrefix = "";
     
-    @Parameter(names = { "-x", "--class-suffix" }, description = "Initialize Set and List fields to null instead of an empty collection.")
+    @Parameter(names = { "-x", "--class-suffix" }, description = "Suffix for generated class.")
     private String classNameSuffix = "";
 
     private static final int EXIT_OKAY = 0;
