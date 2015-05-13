@@ -15,4 +15,7 @@
 # limitations under the License.
 #
 
-java -jar ${project.build.finalName}.jar "$@"
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+java -jar ${SCRIPTPATH}/${project.build.finalName}.jar "$@"
