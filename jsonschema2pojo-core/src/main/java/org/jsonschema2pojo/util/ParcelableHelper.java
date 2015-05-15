@@ -35,7 +35,11 @@ public class ParcelableHelper {
         method.param(int.class, "flags");
         
         for (JFieldVar f : jclass.fields().values()) {
-            method.body().invoke(dest, "writeValue").arg(f);
+            if (f.type().isArray()) {
+                method.body().invoke(dest, "writeList").arg(f);
+            } else {
+                method.body().invoke(dest, "writeValue").arg(f);
+            }
         }
     }
     
@@ -66,7 +70,21 @@ public class ParcelableHelper {
         JVar in = createFromParcel.param(Parcel.class, "in");
         JVar instance = createFromParcel.body().decl(jclass, "instance", JExpr._new(jclass));
         for (JFieldVar f : jclass.fields().values()) {
-            createFromParcel.body().assign(instance.ref(f), JExpr.cast(f.type(), in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))));
+            if (f.type().isArray()) {
+                createFromParcel.body()
+                        .invoke(in, "readList")
+                        .arg(instance.ref(f))
+                        .arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"));
+             } else {
+                createFromParcel.body().assign(
+                        instance.ref(f),
+                        JExpr.cast(
+                                f.type(),
+                                in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))
+                        )
+                );
+            }
+
         }
         createFromParcel.body()._return(instance);
     }
