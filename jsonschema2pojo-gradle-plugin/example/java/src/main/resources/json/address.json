@@ -8,7 +8,8 @@
     "locality":{ "type": "string", "required": true },
     "region": { "type": "string", "required": true },
     "postal_code": { "type": "string" },
-    "country_name": { "type": "string", "required": true}
+    "country_name": { "type": "string", "required": true},
+    "address": {"type": "array", "items": "string"}
   },
   "dependencies": {
     "post_office_box": "street_address",
