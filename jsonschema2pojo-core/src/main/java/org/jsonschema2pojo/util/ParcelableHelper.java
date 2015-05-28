@@ -18,14 +18,8 @@ package org.jsonschema2pojo.util;
 
 import android.os.Parcel;
 import android.os.Parcelable.Creator;
+import com.sun.codemodel.*;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JVar;
 
 public class ParcelableHelper {
 
@@ -35,7 +29,7 @@ public class ParcelableHelper {
         method.param(int.class, "flags");
         
         for (JFieldVar f : jclass.fields().values()) {
-            if (f.type().isArray()) {
+            if (f.type().erasure().name().equals("List")) {
                 method.body().invoke(dest, "writeList").arg(f);
             } else {
                 method.body().invoke(dest, "writeValue").arg(f);
@@ -70,11 +64,11 @@ public class ParcelableHelper {
         JVar in = createFromParcel.param(Parcel.class, "in");
         JVar instance = createFromParcel.body().decl(jclass, "instance", JExpr._new(jclass));
         for (JFieldVar f : jclass.fields().values()) {
-            if (f.type().isArray()) {
+            if (f.type().erasure().name().equals("List")) {
                 createFromParcel.body()
                         .invoke(in, "readList")
                         .arg(instance.ref(f))
-                        .arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"));
+                        .arg(JExpr.direct(getGenericType(f.type()) + ".class.getClassLoader()"));
              } else {
                 createFromParcel.body().assign(
                         instance.ref(f),
@@ -88,5 +82,27 @@ public class ParcelableHelper {
         }
         createFromParcel.body()._return(instance);
     }
-    
+
+    private String getGenericType(JType jType) {
+        if (jType.erasure().name().equals("List")) {
+            final String typeName = jType.fullName();
+            int start = 0;
+            int end = typeName.length();
+
+            for (int i = 0; i < typeName.length(); ++i) {
+                switch (typeName.charAt(i)) {
+                    case '<':
+                        start = i;
+                        break;
+                    case '>':
+                        end = i;
+                        break;
+                }
+            }
+            // plus one for excluding '<'
+            return typeName.substring(start+1, end);
+        }
+        return jType.erasure().name();
+    }
+
 }
