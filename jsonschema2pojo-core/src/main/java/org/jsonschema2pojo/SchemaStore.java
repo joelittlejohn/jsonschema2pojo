@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class SchemaStore {
 
-    private Map<URI, Schema> schemas = new HashMap<URI, Schema>();
+    protected Map<URI, Schema> schemas = new HashMap<URI, Schema>();
 
-    private FragmentResolver fragmentResolver = new FragmentResolver();
-    private ContentResolver contentResolver = new ContentResolver();
+    protected FragmentResolver fragmentResolver = new FragmentResolver();
+    protected ContentResolver contentResolver = new ContentResolver();
 
     /**
      * Create or look up a new schema which has the given ID and read the
@@ -56,7 +56,7 @@ public class SchemaStore {
         return schemas.get(id);
     }
 
-    private URI removeFragment(URI id) {
+    protected URI removeFragment(URI id) {
         return URI.create(substringBefore(id.toString(), "#"));
     }
 
@@ -94,7 +94,7 @@ public class SchemaStore {
 
     }
 
-    private boolean selfReferenceWithoutParentFile(Schema parent, String path) {
+    protected boolean selfReferenceWithoutParentFile(Schema parent, String path) {
         return parent != null && parent.getId() == null && path.startsWith("#/");
     }
 
