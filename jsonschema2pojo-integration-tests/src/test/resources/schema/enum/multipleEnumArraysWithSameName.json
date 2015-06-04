@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "properties": {
+        "foo": {
+            "type": "object",
+            "properties": {
+                "statuses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed"
+                        ]
+                    }
+                }
+            }
+        },
+        "bar": {
+            "type": "object",
+            "properties": {
+                "statuses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

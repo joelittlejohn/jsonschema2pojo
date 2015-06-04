@@ -168,6 +168,16 @@ public class EnumIT {
     }
 
     @Test
+    public void multipleEnumArraysWithSameName() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");
+
+        resultsClassLoader.loadClass("com.example.MultipleEnumArraysWithSameName");
+        resultsClassLoader.loadClass("com.example.Status");
+        resultsClassLoader.loadClass("com.example.Status_");
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
 
