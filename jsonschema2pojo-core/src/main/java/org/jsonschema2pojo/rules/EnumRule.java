@@ -229,7 +229,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
 
-    private String getConstantName(String nodeName) {
+    protected String getConstantName(String nodeName) {
         List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
 
         String enumName = "";

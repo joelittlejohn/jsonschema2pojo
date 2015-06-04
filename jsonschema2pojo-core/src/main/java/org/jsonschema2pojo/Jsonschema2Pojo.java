@@ -18,6 +18,8 @@ package org.jsonschema2pojo;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
+
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +30,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -111,9 +115,13 @@ public class Jsonschema2Pojo {
             if (child.isFile()) {
                 mapper.generate(codeModel, getNodeName(child.toURI().toURL()), defaultString(packageName), child.toURI().toURL());
             } else {
-                generateRecursive(config, mapper, codeModel, packageName + "." + child.getName(), Arrays.asList(child.listFiles(config.getFileFilter())));
+                generateRecursive(config, mapper, codeModel, childQualifiedName(packageName, child.getName()), Arrays.asList(child.listFiles(config.getFileFilter())));
             }
         }
+    }
+    
+    private static String childQualifiedName( String parentQualifiedName, String childSimpleName ) {
+        return isEmpty(parentQualifiedName) ? childSimpleName : parentQualifiedName + "." + childSimpleName;
     }
 
     private static void removeOldOutput(File targetDirectory) {
