@@ -70,7 +70,7 @@ class GenerateJsonSchemaTask extends DefaultTask {
       variant.javaCompile.dependsOn(this)
     }
     
-    if (!configuration.sourceFiles.hasNext()) {
+    if (!configuration.source.hasNext()) {
       configuration.sourceFiles = project.files(
         android.sourceSets.main.resources.srcDirs.collect { 
           "${it}/json"
