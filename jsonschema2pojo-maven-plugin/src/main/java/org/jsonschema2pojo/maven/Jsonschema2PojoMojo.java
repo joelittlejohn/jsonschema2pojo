@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.maven;
 
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -459,7 +460,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             } catch (IllegalArgumentException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
-        } else if (sourcePaths != null) {
+        } else if (!isEmpty(sourcePaths)) {
             // verify individual source paths
             for (String source : sourcePaths) {
                 try {
@@ -472,13 +473,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
         }
 
-        if (filteringEnabled() || (sourceDirectory != null && sourcePaths == null) ) {
+        if (filteringEnabled() || (sourceDirectory != null && isEmpty(sourcePaths)) ) {
 
             if (sourceDirectory == null) {
                 throw new MojoExecutionException("Source includes and excludes require the sourceDirectory property");
             }
 
-            if( sourcePaths != null ) {
+            if( !isEmpty(sourcePaths) ) {
                 throw new MojoExecutionException("Source includes and excludes are incompatible with the sourcePaths property");
             }
 
