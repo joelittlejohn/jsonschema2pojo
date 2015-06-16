@@ -31,3 +31,7 @@
 * Jakub Wierzbowski
 * David McFarland
 * Brent Ryan
+* Marudhachalam, Karthikeyan
+* Huang Wei
+* Sim Sun
+* Srikalyan Swayampakula

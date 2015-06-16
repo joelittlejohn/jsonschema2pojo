@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.12
+* Didn't work in Android Studio with with current master branch '040e3ae'  ([#370](https://github.com/joelittlejohn/jsonschema2pojo/issues/370))
+* Use the correct ClassLoader in createFromParcel for lists ([#356](https://github.com/joelittlejohn/jsonschema2pojo/pull/356))
+* Find jar when jsonschema2pojo sh script is not running in script folder ([#351](https://github.com/joelittlejohn/jsonschema2pojo/pull/351))
+* Fix parameter description of --class-prefix and --class-suffix. ([#350](https://github.com/joelittlejohn/jsonschema2pojo/pull/350))
+* Multiple enum array properties with same name cause JClassAlreadyExistsException ([#349](https://github.com/joelittlejohn/jsonschema2pojo/pull/349))
+* Allow empty package names ([#348](https://github.com/joelittlejohn/jsonschema2pojo/pull/348))
+* Corrected Exclude pattern behavior with Maven to avoid excluding all files ([#340](https://github.com/joelittlejohn/jsonschema2pojo/pull/340))
+
 ## 0.4.11
 * Add super() to the equals/hashcode impl ([#333](https://github.com/joelittlejohn/jsonschema2pojo/pull/333))
 * Use Gson @SerializedName annotation on ALL fields, even when JSON name matches Java name ([#327](https://github.com/joelittlejohn/jsonschema2pojo/issues/327))
