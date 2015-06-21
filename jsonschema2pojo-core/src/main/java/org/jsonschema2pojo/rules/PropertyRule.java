@@ -20,17 +20,22 @@ import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.Inflector;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -83,6 +88,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         JMethod getter = addGetter(jclass, field, nodeName);
         JMethod setter = addSetter(jclass, field, nodeName);
+        if (isArray(node)) {
+        	addAppender(jclass, field);
+        }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             addBuilder(jclass, field);
@@ -195,4 +203,26 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return ruleFactory.getNameHelper().getGetterName(propertyName, type);
     }
 
+    private JMethod addAppender(JDefinedClass c, JFieldVar field) {
+    	String elemName = Inflector.getInstance().singularize(field.name());
+    	String appenderName = "add" + capitalize(elemName);    	
+    	JClass elemType = ((JClass) field.type()).getTypeParameters().get(0);
+    	
+    	JMethod appender = c.method(JMod.PUBLIC, c, appenderName);
+    	
+    	JVar param = appender.param(elemType, elemName);
+    	JBlock body = appender.body();
+    	    	
+    	body._if(field.eq(JExpr._null()))
+    		._then()
+    		.assign(field, 
+    				JExpr._new(
+    						c.owner().ref(ArrayList.class).narrow(elemType)
+    				)
+    		);
+    	
+    	body.add(field.invoke("add").arg(param));
+    	body._return(JExpr._this());
+    	return appender;
+    }
 }
