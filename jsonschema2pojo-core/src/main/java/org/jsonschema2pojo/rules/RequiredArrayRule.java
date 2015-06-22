@@ -18,9 +18,12 @@ package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.*;
+
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 import javax.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +51,7 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
         List<String> requiredFieldMethods = new ArrayList<String>();
 
         for (Iterator iterator = node.elements(); iterator.hasNext(); ) {
-            String fieldName = ((JsonNode) iterator.next()).asText();
+            String fieldName = ruleFactory.getNameHelper().getPropertyName(((JsonNode) iterator.next()).asText());
             JFieldVar field = jclass.fields().get(fieldName);
 
             if (field == null) {

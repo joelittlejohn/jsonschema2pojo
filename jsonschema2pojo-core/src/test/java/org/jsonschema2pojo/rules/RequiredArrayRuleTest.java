@@ -69,7 +69,7 @@ public class RequiredArrayRuleTest {
         jclass.field(JMod.PRIVATE, jclass.owner().ref(String.class), "foo");
 
         ObjectMapper mapper = new ObjectMapper();
-        ArrayNode requiredNode = mapper.createArrayNode().add("fooBar");
+        ArrayNode requiredNode = mapper.createArrayNode().add("foo_bar");
 
         rule.apply("Class", requiredNode, jclass, null);
 
@@ -84,6 +84,7 @@ public class RequiredArrayRuleTest {
     
     private void setupRuleFactoryToIncludeJsr303() {
         GenerationConfig config = mock(GenerationConfig.class);
+        when(config.getPropertyWordDelimiters()).thenReturn(new char[] { '-', ' ', '_' });
         RuleFactory ruleFactory = new RuleFactory();
         ruleFactory.setGenerationConfig(config);
         rule = new RequiredArrayRule(ruleFactory);
