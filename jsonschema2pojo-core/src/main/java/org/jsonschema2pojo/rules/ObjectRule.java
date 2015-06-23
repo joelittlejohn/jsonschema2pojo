@@ -39,6 +39,7 @@ import org.jsonschema2pojo.util.TypeUtil;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -129,7 +130,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
-        
+
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
         }
@@ -153,7 +154,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addParcelSupport(JDefinedClass jclass) {
         jclass._implements(Parcelable.class);
-        
+
         parcelableHelper.addWriteToParcel(jclass);
         parcelableHelper.addDescribeContents(jclass);
         parcelableHelper.addCreator(jclass);
@@ -171,19 +172,32 @@ public class ObjectRule implements Rule<JPackage, JType> {
             return new ArrayList<String>();
         }
 
+        List<String> required = new ArrayList<String>();
+        if (node.has("required")) {
+            JsonNode requiredObj = node.get("required");
+            if (requiredObj.isArray()) {
+                for (JsonNode requiredEntry : (ArrayNode) requiredObj) {
+                    if (requiredEntry.isTextual()) {
+                        required.add(requiredEntry.asText());
+                    }
+                }
+            }
+        }
+
         List<String> rtn = new ArrayList<String>();
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
         for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext(); ) {
             Map.Entry<String, JsonNode> property = properties.next();
 
+            String propertyKey = property.getKey();
             JsonNode propertyObj = property.getValue();
             if (onlyRequired) {
-                if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
-                    rtn.add(nameHelper.getPropertyName(property.getKey()));
+                if (required.contains(propertyKey) || (propertyObj.has("required") && propertyObj.get("required").asBoolean())) {
+                    rtn.add(nameHelper.getPropertyName(propertyKey));
                 }
             } else {
-                rtn.add((nameHelper.getPropertyName(property.getKey())));
+                rtn.add((nameHelper.getPropertyName(propertyKey)));
             }
         }
         return rtn;
@@ -220,12 +234,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
-                
+
                 int index = fqn.lastIndexOf(".") + 1;
                 if(index >= 0 && index<fqn.length()) {
                     fqn = fqn.substring(0, index) + ruleFactory.getGenerationConfig().getClassNamePrefix() + fqn.substring(index)  +ruleFactory.getGenerationConfig().getClassNameSuffix();
                 }
-                
+
                 try {
                     _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
                     JClass existingClass = TypeUtil.resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
@@ -323,7 +337,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper")
                     .arg(JExpr._super().invoke("hashCode"));
         }
-        
+
         for (JFieldVar fieldVar : fields.values()) {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
         }
@@ -380,7 +394,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
         body._if(otherObject._instanceof(jclass).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
-        
+
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
         JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
         JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
@@ -389,7 +403,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper")
                     .arg(JExpr._super().invoke("equals").arg(otherObject));
         }
-        
+
         for (JFieldVar fieldVar : fields.values()) {
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
                     .arg(fieldVar)
