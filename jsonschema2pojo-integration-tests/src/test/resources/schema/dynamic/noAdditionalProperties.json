@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "javaType": "com.example.NoAdditionalProperties",
+    "properties": {
+        "stringValue": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false
+}

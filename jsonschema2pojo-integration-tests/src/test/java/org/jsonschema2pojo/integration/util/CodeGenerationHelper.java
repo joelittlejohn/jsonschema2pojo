@@ -135,7 +135,7 @@ public class CodeGenerationHelper {
         fullClasspath.addAll(classpath);
         fullClasspath.add(System.getProperty("java.class.path"));
 
-        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar), (String)config.get("target"));
+        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar), (String)config.get("targetVersion"));
 
         try {
             return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());

@@ -263,4 +263,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getTargetVersion() {
         return "1.6";
     }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return true;
+    }
 }

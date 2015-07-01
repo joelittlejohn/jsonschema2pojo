@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "javaType": "com.example.ParentType",
+    "properties": {
+        "stringValue": {
+            "type": "string"
+        },
+        "numberValue": {
+            "type": "number"
+        },
+        "integerValue": {
+            "type": "integer"
+        },
+        "enumType": {
+            "enum": ["one", "two", "three"]
+        }
+    }
+}

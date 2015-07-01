@@ -357,4 +357,12 @@ public class RuleFactory {
         return new MediaRule(this);
     }
 
+    /**
+     * Provides a rule instance that adds methods for dynamically getting, setting, and
+     * building properties.
+     */
+    public Rule<JDefinedClass, JDefinedClass> getDynamicPropertiesRule() {
+        return new DynamicPropertiesRule(this);
+    }
+
 }
