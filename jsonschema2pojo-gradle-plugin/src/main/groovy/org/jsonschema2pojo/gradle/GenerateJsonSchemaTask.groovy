@@ -28,6 +28,8 @@ import org.gradle.api.tasks.TaskAction
 class GenerateJsonSchemaTask extends DefaultTask {
   def configuration
 
+  enum AndroidProject  { APP, LIBRARY }
+
   GenerateJsonSchemaTask() {
     description = 'Generates Java classes from a json schema.'
     group = 'Build'
@@ -38,19 +40,20 @@ class GenerateJsonSchemaTask extends DefaultTask {
       configuration = project.jsonSchema2Pojo
       configuration.targetDirectory = configuration.targetDirectory ?:
         project.file("${project.buildDir}/generated-sources/js2p")
-      
+
       if (project.plugins.hasPlugin('java')) {
         configureJava()
-      } else if (project.plugins.hasPlugin('com.android.application') ||
-          project.plugins.hasPlugin('com.android.library')) {
-        configureAndroid()
+      } else if (project.plugins.hasPlugin('com.android.application')) {
+        configureAndroid(AndroidProject.APP)
+      } else if (project.plugins.hasPlugin('com.android.library')) {
+        configureAndroid(AndroidProject.LIBRARY)
       } else {
         throw new GradleException('generateJsonSchema: Java or Android plugin required')
       }
       outputs.dir configuration.targetDirectory
     }
   }
-  
+
   def configureJava() {
     project.sourceSets.main.java.srcDirs += [ configuration.targetDirectory ]
     dependsOn(project.tasks.processResources)
@@ -61,22 +64,34 @@ class GenerateJsonSchemaTask extends DefaultTask {
       configuration.sourceFiles.each { it.mkdir() }
     }
   }
-  
-  def configureAndroid() {
+
+  def configureAndroid(AndroidProject androidProject) {
     def android = project.extensions.android
     android.sourceSets.main.java.srcDirs += [ configuration.targetDirectory ]
-    android.applicationVariants.all { variant ->
+
+    android.(getVariantProperty(androidProject)).all { variant ->
       dependsOn("process${variant.name.capitalize()}Resources")
       variant.javaCompile.dependsOn(this)
     }
-    
+
     if (!configuration.source.hasNext()) {
       configuration.sourceFiles = project.files(
-        android.sourceSets.main.resources.srcDirs.collect { 
+        android.sourceSets.main.resources.srcDirs.collect {
           "${it}/json"
         }.findAll {
-          project.file(it).exists() 
+          project.file(it).exists()
         })
+    }
+  }
+
+  def getVariantProperty(AndroidProject androidProject) {
+    switch(androidProject) {
+      case AndroidProject.APP:
+        return "applicationVariants"
+      case AndroidProject.LIBRARY:
+        return "libraryVariants"
+      default:
+        throw new IllegalArgumentException("Passed an invalid android project type")
     }
   }
 
