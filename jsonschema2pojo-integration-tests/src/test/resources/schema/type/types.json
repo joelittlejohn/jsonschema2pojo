@@ -78,6 +78,9 @@
         "typeWithInterfaces" : {
             "type" : "object",
             "javaInterfaces" : ["java.io.Serializable", "Cloneable"]
+        },
+        "nullableStringProperty" : {
+          "type" : ["null", "string"]
         }
     }
 }

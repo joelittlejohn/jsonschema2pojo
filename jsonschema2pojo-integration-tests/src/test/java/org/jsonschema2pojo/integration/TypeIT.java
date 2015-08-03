@@ -23,10 +23,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -106,7 +103,7 @@ public class TypeIT {
         assertThat(getterMethod.getReturnType().getName(), is("java.lang.Object"));
 
     }
-    
+
     @Test
     public void presenceOfPropertiesImpliesTypeObject() throws NoSuchMethodException {
 
@@ -165,6 +162,15 @@ public class TypeIT {
     }
 
     @Test
+    public void correctTypeIsChosenForNullableType() throws NoSuchMethodException {
+
+        Method getterMethod = classWithManyTypes.getMethod("getNullableStringProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.String"));
+
+    }
+
+    @Test
     public void javaTypeCanBeUsedForAnyShemaType() throws NoSuchMethodException {
 
         assertThat(classWithManyTypes.getMethod("getIntegerWithJavaType").getReturnType().getName(), is("java.math.BigDecimal"));
@@ -188,8 +194,7 @@ public class TypeIT {
 
     @Test
     public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example",
-                config("useLongIntegers", true, "usePrimitives", true));
+        File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true, "usePrimitives", true));
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -210,8 +215,7 @@ public class TypeIT {
 
     @Test
     public void useDoubleNumbersFalseCausesPrimitiveNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        File generatedTypesDirectory = generate("/schema/type/numberAsFloat.json", "com.example",
-                config("useDoubleNumbers", false, "usePrimitives", true));
+        File generatedTypesDirectory = generate("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false, "usePrimitives", true));
         Class<?> classWithDoubleProperty = compile(generatedTypesDirectory).loadClass("com.example.NumberAsFloat");
 
         Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");

@@ -18,6 +18,8 @@ package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
+import java.util.Iterator;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
@@ -28,9 +30,10 @@ import com.sun.codemodel.JType;
 
 /**
  * Applies the "type" schema rule.
- * 
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
+ *
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http:/
+ *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class TypeRule implements Rule<JClassContainer, JType> {
 
@@ -60,10 +63,10 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      * <li>"type":"number" =&gt; <code>double</code>
      * <li>"type":"object" =&gt; Generated type (see {@link ObjectRule})
      * {@link java.util.List}, see {@link ArrayRule}
-     * <li>"type":"string" =&gt; {@link java.lang.String} (or alternative based on
-     * presence of "format", see {@link FormatRule})
+     * <li>"type":"string" =&gt; {@link java.lang.String} (or alternative based
+     * on presence of "format", see {@link FormatRule})
      * </ul>
-     * 
+     *
      * @param nodeName
      *            the name of the node for which this "type" rule applies
      * @param node
@@ -108,7 +111,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
         if (!node.has("javaType") && node.has("format")) {
             type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), type, schema);
-        } else if(!node.has("javaType") && propertyTypeName.equals("string") && node.has("media")) {
+        } else if (!node.has("javaType") && propertyTypeName.equals("string") && node.has("media")) {
             type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), type, schema);
         }
 
@@ -117,10 +120,15 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
     private String getTypeName(JsonNode node) {
         if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0) {
-            return node.get("type").get(0).asText();
+            for (Iterator<JsonNode> typeNames = node.get("type").iterator(); typeNames.hasNext();) {
+                String typeName = typeNames.next().asText();
+                if (!typeName.equals("null")) {
+                    return typeName;
+                }
+            }
         }
 
-        if (node.has("type")) {
+        if (node.has("type") && node.get("type").isTextual()) {
             return node.get("type").asText();
         }
 
@@ -165,8 +173,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
         if (isPrimitive(javaTypeName, owner)) {
             return primitiveType(javaTypeName, owner);
-        }
-        else {
+        } else {
             return owner.ref(javaTypeName);
         }
     }
