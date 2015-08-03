@@ -44,6 +44,16 @@
         <td align="center" valign="top">No (default <code>JACKSON2</code>)</td>
       </tr>
       <tr>
+        <td valign="top">classNamePrefix</td>
+        <td valign="top">Whether to add a prefix to generated classes</td>
+        <td align="center" valign="top">No (default <code>""</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">classNameSuffix</td>
+        <td valign="top">Whether to add a Suffix to generated classes</td>
+        <td align="center" valign="top">No (default <code>""</code>)</td>
+      </tr>
+      <tr>
         <td valign="top">classpath</td>
         <td valign="top">Additional classpath to use. Any path elements provided here will be added to the classpath when this task is invoked.
         <p>
@@ -87,23 +97,25 @@
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
-        <td valign="top">includeHashcodeAndEquals</td>
-        <td valign="top">Whether to use include <code>hashCode</code> and <code>equals</code> methods in generated Java types.</td>
+        <td valign="top">includeAdditionalProperties</td>
+        <td valign="top">Whether to allow 'additional properties' support in objects. Setting this to false will disable additional properties support, regardless of the input schema(s).</td>
         <td align="center" valign="top">No (default <code>true</code>)</td>
       </tr>
-
       <tr>
         <td valign="top">includeConstructors</td>
         <td valign="top">Whether to generate constructors for generated Java types</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
-
       <tr>
         <td valign="top">constructorsRequiredPropertiesOnly</td>
         <td valign="top">Whether generated constructors should have parameters for all properties, or only required ones.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
-
+      <tr>
+        <td valign="top">includeHashcodeAndEquals</td>
+        <td valign="top">Whether to use include <code>hashCode</code> and <code>equals</code> methods in generated Java types.</td>
+        <td align="center" valign="top">No (default <code>true</code>)</td>
+      </tr>
       <tr>
         <td valign="top">includeJsr303Annotations</td>
         <td valign="top">Whether to include <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations (for schema rules like minimum, maximum, etc) in generated Java types.
@@ -125,6 +137,11 @@
         <td valign="top">includeToString</td>
         <td valign="top">Whether to use include a <code>toString</code> method in generated Java types.</td>
         <td align="center" valign="top">No (default <code>true</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">initializeCollections</td>
+        <td valign="top">Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.</td>
+        <td align="center" valign="top">Yes (default <code>true</code>)</td>
       </tr>
       <tr>
         <td valign="top">outputEncoding</td>
@@ -183,23 +200,20 @@
       </tr>
       <tr>
         <td valign="top">useJodaDates</td>
-        <td valign="top">Whether to use <code>org.joda.time.DateTime</code> instead of <code>java.util.Date</code>
-            when adding date-time type fields to generated Java types.</td>
+        <td valign="top">Whether to use <code>org.joda.time.DateTime</code> instead of <code>java.util.Date</code>  when adding date-time type fields to generated Java types.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
-        <tr>
-            <td valign="top">useJodaLocalDates</td>
-            <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of String
-                when adding string fields with format date to generated Java types.</td>
-            <td align="center" valign="top">No (default <code>false</code>)</td>
-        </tr>
-        <tr>
-            <td valign="top">useJodaLocalTimes</td>
-            <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of String
-                when adding string fields with format time to generated Java types.</td>
-            <td align="center" valign="top">No (default <code>false</code>)</td>
-        </tr>
-        <tr>
+      <tr>
+        <td valign="top">useJodaLocalDates</td>
+        <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of String when adding string fields with format date to generated Java types.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">useJodaLocalTimes</td>
+        <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of String when adding string fields with format time to generated Java types.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
         <td valign="top">useLongIntegers</td>
         <td valign="top">Whether to use the java type <code>long</code> (or <code>Long</code>) instead of <code>int</code> (or <code>Integer</code>) when representing the JSON Schema type 'integer'.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
@@ -208,21 +222,6 @@
         <td valign="top">usePrimitives</td>
         <td valign="top">Whether to use primitives (<code>long</code>, <code>double</code>, <code>boolean</code>) instead of wrapper types where possible when generating bean properties (has the side-effect of making those.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
-      </tr>
-        <tr>
-            <td valign="top">initializeCollections</td>
-            <td valign="top">Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.</td>
-            <td align="center" valign="top">Yes (default <code>true</code>)</td>
-        </tr>
-        <tr>
-        <td valign="top">classNamePrefix</td>
-        <td valign="top">Whether to add a prefix to generated classes</td>
-        <td align="center" valign="top">No (default <code>""</code>)</td>
-      </tr>
-      <tr>
-        <td valign="top">classNameSuffix</td>
-        <td valign="top">Whether to add a Suffix to generated classes</td>
-        <td align="center" valign="top">No (default <code>""</code>)</td>
       </tr>
     </table>
 

@@ -30,34 +30,35 @@ import org.jsonschema2pojo.rules.RuleFactory
  * @see https://github.com/joelittlejohn/jsonschema2pojo
  */
 public class JsonSchemaExtension implements GenerationConfig {
-  boolean generateBuilders
-  boolean usePrimitives
   Iterable<File> sourceFiles
   File targetDirectory
   String targetPackage
-  char[] propertyWordDelimiters
-  boolean useLongIntegers
-  boolean useDoubleNumbers
+  AnnotationStyle annotationStyle
+  String classNamePrefix
+  String classNameSuffix
+  Class<? extends Annotator> customAnnotator
+  Class<? extends RuleFactory> customRuleFactory
+  boolean generateBuilders
+  boolean includeAdditionalProperties
   boolean includeConstructors
   boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
-  boolean includeToString
-  AnnotationStyle annotationStyle
-  Class<? extends Annotator> customAnnotator
-  Class<? extends RuleFactory> customRuleFactory
   boolean includeJsr303Annotations
-  SourceType sourceType
-  boolean removeOldOutput
+  boolean includeToString
+  boolean initializeCollections
   String outputEncoding
+  boolean parcelable
+  char[] propertyWordDelimiters
+  boolean removeOldOutput
+  SourceType sourceType
+  boolean useCommonsLang3
+  boolean useDoubleNumbers
   boolean useJodaDates
   boolean useJodaLocalDates
   boolean useJodaLocalTimes
-  boolean useCommonsLang3
-  boolean parcelable
+  boolean useLongIntegers
+  boolean usePrimitives
   FileFilter fileFilter
-  boolean initializeCollections
-  String classNamePrefix
-  String classNameSuffix
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -87,6 +88,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     initializeCollections = true
     classNamePrefix = ''
     classNameSuffix = ''
+    includeAdditionalProperties = true
   }
 
   @Override

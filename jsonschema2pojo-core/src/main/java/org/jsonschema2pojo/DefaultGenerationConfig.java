@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo;
 
-import org.jsonschema2pojo.rules.RuleFactory;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
+
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * A generation config that returns default values for all behavioural options.
@@ -220,13 +220,13 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
-    /**
-     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
-     *
-     * @return Whether generated constructors should have parameters for all properties, or only required ones.
-     */
     @Override
     public boolean isConstructorsRequiredPropertiesOnly() {
+        return false;
+    }
+
+    @Override
+    public boolean isIncludeAdditionalProperties() {
         return false;
     }
 }

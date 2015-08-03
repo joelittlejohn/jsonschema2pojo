@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
+
 import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
@@ -33,7 +34,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'generateBuilders' configuration option.
-     * 
+     *
      * @return Whether to generate builder-style methods of the form
      *         <code>withXxx(value)</code> (that return <code>this</code>),
      *         alongside the standard, void-return setters.
@@ -42,7 +43,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'usePrimitives' configuration option.
-     * 
+     *
      * @return whether to use primitives (<code>long</code>, <code>double</code>
      *         , <code>boolean</code>) instead of wrapper types where possible
      *         when generating bean properties (has the side-effect of making
@@ -52,7 +53,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'source' configuration option.
-     * 
+     *
      * @return The source file(s) or directory(ies) from which JSON Schema will
      *         be read.
      */
@@ -60,7 +61,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'targetDirectory' configuration option.
-     * 
+     *
      * @return The target directory into which generated types will be written
      *         (may or may not exist before types are written)
      */
@@ -68,14 +69,14 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'targetPackage' configuration option.
-     * 
+     *
      * @return The java package used for generated types.
      */
     String getTargetPackage();
 
     /**
      * Gets the 'propertyWordDelimiters' configuration option.
-     * 
+     *
      * @return an array of characters that should act as word delimiters when
      *         choosing java bean property names.
      */
@@ -83,7 +84,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'useLongIntegers' configuration option.
-     * 
+     *
      * @return Whether to use the java type <code>long</code> (or
      *         {@link java.lang.Long}) instead of <code>int</code> (or
      *         {@link java.lang.Integer}) when representing the JSON Schema type
@@ -93,7 +94,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'useDoubleNumbers' configuration option.
-     * 
+     *
      * @return Whether to use the java type <code>double</code> (or
      *         {@link java.lang.Double}) instead of <code>float</code> (or
      *         {@link java.lang.Float}) when representing the JSON Schema type
@@ -103,7 +104,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'includeHashcodeAndEquals' configuration option.
-     * 
+     *
      * @return Whether to use include <code>hashCode</code> and
      *         <code>equals</code> methods in generated Java types.
      */
@@ -111,7 +112,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'includeToString' configuration option.
-     * 
+     *
      * @return Whether to use include a <code>toString</code> method in
      *         generated Java types.
      */
@@ -119,23 +120,21 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'annotationStyle' configuration option.
-     * 
+     *
      * @return The style of annotations to use in the generated Java types.
      *         <p>
      *         Supported values:
      *         <ul>
-     *         <li>
-     *         <code>jackson1</code> (apply annotations from the <a
-     *         href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
-     *         <li>
-     *         <code>jackson2</code> (apply annotations from the <a
-     *         href="https://github.com/FasterXML/jackson-annotations">Jackson
-     *         2.x</a> library)</li>
-     *         <li>
-     *         <code>gson</code> (apply annotations from the <a
-     *         href="https://code.google.com/p/google-gson/">gson</a> library)</li>
-     *         <li>
-     *         <code>none</code> (apply no annotations at all)</li>
+     *         <li><code>jackson1</code> (apply annotations from the
+     *         <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)
+     *         </li>
+     *         <li><code>jackson2</code> (apply annotations from the
+     *         <a href="https://github.com/FasterXML/jackson-annotations">
+     *         Jackson 2.x</a> library)</li>
+     *         <li><code>gson</code> (apply annotations from the
+     *         <a href="https://code.google.com/p/google-gson/">gson</a>
+     *         library)</li>
+     *         <li><code>none</code> (apply no annotations at all)</li>
      *         </ul>
      * @see AnnotatorFactory
      */
@@ -143,7 +142,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'customAnnotator' configuration option.
-     * 
+     *
      * @return An annotator that will be used in addition to the one chosen by
      *         {@link #getAnnotationStyle()}
      */
@@ -152,15 +151,16 @@ public interface GenerationConfig {
     /**
      * Gets the 'customRuleFactory' configuration option.
      *
-     * @return An Rule Factory that will be used for the creation of generation rules.
+     * @return An Rule Factory that will be used for the creation of generation
+     *         rules.
      */
     Class<? extends RuleFactory> getCustomRuleFactory();
 
     /**
      * Gets the 'includeJsr303Annotations' configuration option.
-     * 
-     * @return Whether to include <a
-     *         href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a>
+     *
+     * @return Whether to include
+     *         <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a>
      *         annotations (for schema rules like minimum, maximum, etc) in
      *         generated Java types.
      */
@@ -168,7 +168,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'sourceType' configuration option.
-     * 
+     *
      * @return The type of input documents that will be read
      *         <p>
      *         Supported values:
@@ -181,7 +181,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'removeOldOutput' configuration option.
-     * 
+     *
      * @return Whether to empty the target directory before generation occurs,
      *         to clear out all source files that have been generated
      *         previously. <strong>Be warned</strong>, when activated this
@@ -193,7 +193,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'outputEncoding' configuration option.
-     * 
+     *
      * @return The character encoding that should be used when writing the
      *         generated Java source files.
      */
@@ -201,7 +201,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'useJodaDates' configuration option.
-     * 
+     *
      * @return Whether to use {@link org.joda.time.DateTime} instead of
      *         {@link java.util.Date} when adding date type fields to generated
      *         Java types.
@@ -212,24 +212,23 @@ public interface GenerationConfig {
      * Gets the 'useJodaLocalDates' configuration option.
      *
      * @return Whether to use {@link org.joda.time.LocalDate} instead of string
-     *         when adding string type fields with a format of date
-     *         (not date-time) to generated Java types.
+     *         when adding string type fields with a format of date (not
+     *         date-time) to generated Java types.
      */
     boolean isUseJodaLocalDates();
-
 
     /**
      * Gets the 'useJodaLocalTimes' configuration option.
      *
      * @return Whether to use {@link org.joda.time.LocalTime} instead of string
-     *         when adding string type fields with a format of time
-     *         (not date-time) to generated Java types.
+     *         when adding string type fields with a format of time (not
+     *         date-time) to generated Java types.
      */
     boolean isUseJodaLocalTimes();
 
     /**
      * Gets the 'useCommonsLang3' configuration option.
-     * 
+     *
      * @return Whether to use commons-lang 3.x imports instead of commons-lang
      *         2.x imports when adding equals, hashCode and toString methods.
      */
@@ -238,13 +237,15 @@ public interface GenerationConfig {
     /**
      * Gets the 'parcelable' configuration option.
      *
-     * @return Whether to make the generated types 'parcelable' (for Android development)
+     * @return Whether to make the generated types 'parcelable' (for Android
+     *         development)
      */
     boolean isParcelable();
 
     /**
-     * Gets the file filter used to isolate the schema mapping files in the source directories.
-     * 
+     * Gets the file filter used to isolate the schema mapping files in the
+     * source directories.
+     *
      * @return the file filter use when scanning for schema files.
      */
     FileFilter getFileFilter();
@@ -255,14 +256,14 @@ public interface GenerationConfig {
      * @return Whether to initialize collections with empty instance or null.
      */
     boolean isInitializeCollections();
-    
+
     /**
      * Gets the 'getClassNamePrefix' configuration option.
      *
      * @return Whether to initialize collections with empty instance or null.
      */
     String getClassNamePrefix();
-    
+
     /**
      * Gets the 'getClassNameSuffix' configuration option.
      *
@@ -280,7 +281,17 @@ public interface GenerationConfig {
     /**
      * Gets the 'constructorsRequiredPropertiesOnly' configuration option
      *
-     * @return Whether generated constructors should have parameters for all properties, or only required ones.
+     * @return Whether generated constructors should have parameters for all
+     *         properties, or only required ones.
      */
     boolean isConstructorsRequiredPropertiesOnly();
+
+    /**
+     * Gets the 'includeAdditionalProperties' configuration option
+     *
+     * @return Whether to allow 'additional properties' support in objects.
+     *         Setting this to false will disable additional properties support,
+     *         regardless of the input schema(s).
+     */
+    boolean isIncludeAdditionalProperties();
 }

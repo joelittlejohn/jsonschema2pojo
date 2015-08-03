@@ -57,10 +57,10 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
 
-    @Parameter(names = {"-c", "--generate-constructors"}, description = "Generate constructors")
+    @Parameter(names = { "-c", "--generate-constructors" }, description = "Generate constructors")
     private boolean generateConstructors = false;
 
-    @Parameter(names = {"-r", "--constructors-required-only"}, description = "Generate constructors with only required fields")
+    @Parameter(names = { "-r", "--constructors-required-only" }, description = "Generate constructors with only required fields")
     private boolean constructorsRequiredPropertiesOnly = false;
 
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
@@ -84,14 +84,10 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
-    @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " +
-            "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none",
-            converter = ClassConverter.class)
+    @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " + "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none", converter = ClassConverter.class)
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
 
-    @Parameter(names = { "-F", "--custom-rule-factory" }, description = "The fully qualified class name of referring to a custom rule factory class that extends org.jsonschema2pojo.rules.RuleFactory " +
-            "to create custom rules for code generation.",
-            converter = ClassConverter.class)
+    @Parameter(names = { "-F", "--custom-rule-factory" }, description = "The fully qualified class name of referring to a custom rule factory class that extends org.jsonschema2pojo.rules.RuleFactory " + "to create custom rules for code generation.", converter = ClassConverter.class)
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
@@ -106,16 +102,13 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files.")
     private String outputEncoding = "UTF-8";
 
-    @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java" +
-            ".util.Date when adding date-time type fields to generated Java types.")
+    @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java" + ".util.Date when adding date-time type fields to generated Java types.")
     private boolean useJodaDates = false;
 
-    @Parameter(names = { "-jd", "--joda-local-dates" }, description = "Whether to use org.joda.time.LocalDate instead" +
-            "of String when adding date type fields to generated Java types.")
+    @Parameter(names = { "-jd", "--joda-local-dates" }, description = "Whether to use org.joda.time.LocalDate instead" + "of String when adding date type fields to generated Java types.")
     private boolean useJodaLocalDates = false;
 
-    @Parameter(names = { "-jt", "--joda-local-times" }, description = "Whether to use org.joda.time.LocalTime instead" +
-            "of String when adding time type fields to generated Java types.")
+    @Parameter(names = { "-jt", "--joda-local-times" }, description = "Whether to use org.joda.time.LocalTime instead" + "of String when adding time type fields to generated Java types.")
     private boolean useJodaLocalTimes = false;
 
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
@@ -129,9 +122,12 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-y", "--class-prefix" }, description = "Prefix for generated class.")
     private String classNamePrefix = "";
-    
+
     @Parameter(names = { "-x", "--class-suffix" }, description = "Suffix for generated class.")
     private String classNameSuffix = "";
+
+    @Parameter(names = { "-D", "--disable-additional-properties" }, description = "Disable additional properties support on generated types, regardless of the input schema(s)")
+    private boolean disableAdditionalProperties = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -142,7 +138,7 @@ public class Arguments implements GenerationConfig {
      * If the command line arguments include the "help" argument, or if the
      * arguments have incorrect values or order, then usage information is
      * printed to {@link System#out} and the program terminates.
-     * 
+     *
      * @param args
      *            the command line arguments
      * @return an instance of the parsed arguments object
@@ -302,24 +298,19 @@ public class Arguments implements GenerationConfig {
         return classNameSuffix;
     }
 
-    /**
-     * Gets the 'includeConstructors' configuration option
-     *
-     * @return Whether to generate constructors or not.
-     */
     @Override
     public boolean isIncludeConstructors() {
         return generateConstructors;
     }
 
-    /**
-     * Gets the 'constructorsRequiredPropertiesOnly' configuration option
-     *
-     * @return Whether generated constructors should have parameters for all properties, or only required ones.
-     */
     @Override
     public boolean isConstructorsRequiredPropertiesOnly() {
         return constructorsRequiredPropertiesOnly;
+    }
+
+    @Override
+    public boolean isIncludeAdditionalProperties() {
+        return disableAdditionalProperties;
     }
 
 }

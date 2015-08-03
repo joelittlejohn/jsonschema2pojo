@@ -19,8 +19,9 @@ package org.jsonschema2pojo.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -34,9 +35,10 @@ import com.sun.codemodel.JVar;
 
 /**
  * Applies the "additionalProperties" JSON schema rule.
- * 
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6</a>
+ *
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6">http:/
+ *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6</a>
  */
 public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -67,7 +69,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
      * additionalProperties schema provided. If the schema does not specify the
      * javaType property, the name of the newly generated type will be derived
      * from the nodeName and the suffix 'Property'.
-     * 
+     *
      * @param nodeName
      *            the name of the schema node for which the additionalProperties
      *            node applies
@@ -82,6 +84,11 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
         if (node != null && node.isBoolean() && node.asBoolean() == false) {
+            // no additional properties allowed
+            return jclass;
+        }
+
+        if (!this.ruleFactory.getGenerationConfig().isIncludeAdditionalProperties()) {
             // no additional properties allowed
             return jclass;
         }
@@ -119,9 +126,9 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
-        
+
         ruleFactory.getAnnotator().additionalPropertiesField(field, jclass, "additionalProperties");
-        
+
         field.init(JExpr._new(propertiesMapImplType));
 
         return field;
@@ -151,10 +158,10 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
     private void addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod builder = jclass.method(JMod.PUBLIC, jclass, "withAdditionalProperty");
-        
+
         JVar nameParam = builder.param(String.class, "name");
         JVar valueParam = builder.param(propertyType, "value");
-        
+
         JBlock body = builder.body();
         JInvocation mapInvocation = body.invoke(JExpr._this().ref(field), "put");
         mapInvocation.arg(nameParam);
