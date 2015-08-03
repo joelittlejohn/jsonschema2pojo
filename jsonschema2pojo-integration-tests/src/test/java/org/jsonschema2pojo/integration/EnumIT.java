@@ -43,8 +43,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
-                config("propertyWordDelimiters", "_"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("propertyWordDelimiters", "_"));
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
@@ -175,6 +174,34 @@ public class EnumIT {
         resultsClassLoader.loadClass("com.example.MultipleEnumArraysWithSameName");
         resultsClassLoader.loadClass("com.example.Status");
         resultsClassLoader.loadClass("com.example.Status_");
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked" })
+    public void enumWithCustomJavaNames() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithCustomJavaNames.json", "com.example");
+
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames$EnumProperty");
+
+        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Method enumSetter = typeWithEnumProperty.getMethod("setEnumProperty", enumClass);
+        enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[2]);
+        assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
+        assertThat(enumClass.getEnumConstants()[1].name(), is("TWO"));
+        assertThat(enumClass.getEnumConstants()[2].name(), is("THREE"));
+        assertThat(enumClass.getEnumConstants()[3].name(), is("FOUR"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonString = objectMapper.writeValueAsString(valueWithEnumProperty);
+        JsonNode jsonTree = objectMapper.readTree(jsonString);
+
+        assertThat(jsonTree.size(), is(1));
+        assertThat(jsonTree.has("enum_Property"), is(true));
+        assertThat(jsonTree.get("enum_Property").isTextual(), is(true));
+        assertThat(jsonTree.get("enum_Property").asText(), is("3"));
     }
 
     @Test

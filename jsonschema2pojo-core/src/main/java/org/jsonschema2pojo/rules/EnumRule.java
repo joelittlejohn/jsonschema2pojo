@@ -28,19 +28,36 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
-import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JEnumConstant;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForEach;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 /**
  * Applies the "enum" schema rule.
- * 
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
+ *
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http:
+ *      //tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
 public class EnumRule implements Rule<JClassContainer, JType> {
 
@@ -66,7 +83,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      * <code>fromValue(String)</code> is added to the generated enum, and the
      * methods are annotated to allow Jackson to marshal/unmarshal values
      * correctly.
-     * 
+     *
      * @param nodeName
      *            the name of the property which is an "enum"
      * @param node
@@ -96,7 +113,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         JFieldVar valueField = addValueField(_enum);
         addToString(_enum, valueField);
-        addEnumConstants(node.path("enum"), _enum);
+        addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"));
         addFactoryMethod(_enum);
 
         return _enum;
@@ -189,12 +206,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         toString.annotate(Override.class);
     }
 
-    private void addEnumConstants(JsonNode node, JDefinedClass _enum) {
-        for (Iterator<JsonNode> values = node.elements(); values.hasNext();) {
-            JsonNode value = values.next();
+    private void addEnumConstants(JsonNode node, JDefinedClass _enum, JsonNode customNames) {
+        for (int i = 0; i < node.size(); i++) {
+            JsonNode value = node.path(i);
 
             if (!value.isNull()) {
-                JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText()));
+                JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText(), customNames.path(i).asText()));
                 constant.arg(JExpr.lit(value.asText()));
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
@@ -228,8 +245,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return className;
     }
 
+    protected String getConstantName(String nodeName, String customName) {
+        if (isNotBlank(customName)) {
+            return customName;
+        }
 
-    protected String getConstantName(String nodeName) {
         List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
 
         String enumName = "";
