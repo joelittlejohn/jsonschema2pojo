@@ -111,11 +111,11 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   public void setCustomAnnotator(String clazz) {
-    customAnnotator = Class.forName(clazz)
+    customAnnotator = Class.forName(clazz, true, this.class.classLoader)
   }
 
   public void setCustomRuleFactory(String clazz) {
-    customRuleFactory = Class.forName(clazz)
+    customRuleFactory = Class.forName(clazz, true, this.class.classLoader)
   }
 
   public void setSourceType(String s) {
