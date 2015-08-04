@@ -31,6 +31,7 @@
 
 package org.jsonschema2pojo.integration;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertNotNull;
@@ -52,6 +53,34 @@ public class PolymorphicIT {
         Class supertype = subtype.getSuperclass();
 
         assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void extendsWithPolymorphicDeserializationClassName() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/subclassSchema.json", "com.example");
+
+        Class subtype = resultsClassLoader.loadClass("com.example.SubclassSchema");
+        Class supertype = subtype.getSuperclass();
+
+        assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(supertype.getAnnotation(JsonSubTypes.class));
+
+    }
+    
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void extendsWithPolymorphicArrayDeserializationClassName() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/subclassArraySchema.json", "com.example");
+
+        Class subtype = resultsClassLoader.loadClass("com.example.SubclassArraySchema");
+        Class supertype = subtype.getSuperclass();
+
+        assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(supertype.getAnnotation(JsonSubTypes.class));
 
     }
 }

@@ -37,9 +37,11 @@ import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -47,6 +49,7 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
@@ -54,6 +57,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -106,6 +110,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         if (node.has("deserializationClassProperty")) {
             addJsonTypeInfoAnnotation(jclass, node);
+        }
+
+        if(node.has("deserializationClassName")) {
+            addJsonTypeAndSubtypeInfoAnnotation(jclass, node);
         }
 
         if (node.has("title")) {
@@ -286,6 +294,34 @@ public class ObjectRule implements Rule<JPackage, JType> {
             jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
             jsonTypeInfo.param("property", annotationName);
         }
+    }
+
+    private void addJsonTypeAndSubtypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
+        if (this.ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
+            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+            jsonTypeInfo.param("use", JsonTypeInfo.Id.NAME);
+            jsonTypeInfo.param("include", JsonTypeInfo.As.WRAPPER_OBJECT);
+            jsonTypeInfo.param("property", "name"); 
+            JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
+            JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
+            Iterator<JsonNode> subClasses = node.get("deserializationClassName").iterator();
+            // if the value is an array add all the subClasses
+            if(subClasses.hasNext()) {
+                while(subClasses.hasNext()) {
+                    String subClass = subClasses.next().asText();
+                    addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass);
+                }
+            } else {
+                String subClass = node.get("deserializationClassName").asText();
+                addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass);
+            }
+        }
+    }
+    
+    private void addJsonSubtypeAnnotation(JDefinedClass jclass, JAnnotationArrayMember jsonSubTypesValues, String subClass) {
+        JAnnotationUse jsonSubType = jsonSubTypesValues.annotate(JsonSubTypes.Type.class);
+        jsonSubType.param("value", jclass.owner().ref(subClass));
+        jsonSubType.param("name", subClass);      
     }
 
     private void addToString(JDefinedClass jclass) {
