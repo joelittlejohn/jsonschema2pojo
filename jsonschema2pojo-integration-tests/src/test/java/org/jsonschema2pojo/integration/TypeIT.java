@@ -262,4 +262,17 @@ public class TypeIT {
         assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Serializable.class));
     }
 
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void typeImplementsInterfacesWithGenericArgsCorrectly() throws NoSuchMethodException, SecurityException {
+        Method getterMethod = classWithManyTypes.getMethod("getTypeWithGenericInterface");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.TypeWithGenericInterface"));
+        assertThat(getterMethod.getReturnType().getInterfaces().length, is(1));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) InterfaceWithGenerics.class));
+    }
+
+    public static interface InterfaceWithGenerics<T, U, V> {
+    }
+
 }

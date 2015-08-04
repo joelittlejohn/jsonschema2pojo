@@ -79,6 +79,10 @@
             "type" : "object",
             "javaInterfaces" : ["java.io.Serializable", "Cloneable"]
         },
+        "typeWithGenericInterface" : {
+            "type" : "object",
+            "javaInterfaces" : ["org.jsonschema2pojo.integration.TypeIT.InterfaceWithGenerics<String,Integer,Boolean>"]
+        },
         "nullableStringProperty" : {
           "type" : ["null", "string"]
         }

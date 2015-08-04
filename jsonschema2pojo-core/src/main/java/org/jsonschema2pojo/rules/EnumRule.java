@@ -19,6 +19,7 @@ package org.jsonschema2pojo.rules;
 import static java.util.Arrays.*;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -272,7 +273,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
-            jclass._implements(jclass.owner().ref(i.asText()));
+            jclass._implements(resolveType(jclass._package(), i.asText()));
         }
     }
 
