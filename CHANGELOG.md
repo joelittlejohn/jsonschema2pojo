@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.14
+* Fix 'Unable to load class org.jsonschema2pojo.NoopAnnotator' from Gradle plugin ([#395](https://github.com/joelittlejohn/jsonschema2pojo/pull/395))
+* Library projects should use android.libraryVariants instead of android.applicationVariants  ([#391](https://github.com/joelittlejohn/jsonschema2pojo/pull/391))
+* Allow nullable type (instead of Object) when JSON type is an array with ["string", "null"] ([#390](https://github.com/joelittlejohn/jsonschema2pojo/issues/390))
+* Allow custom names to be supplied when creating an enum ([#385](https://github.com/joelittlejohn/jsonschema2pojo/issues/385))
+* Allow disabling additionalProperties generation with a global config option ([#376](https://github.com/joelittlejohn/jsonschema2pojo/issues/376))
+* 'javaInterfaces' which contain generics produce syntactically incorrect imports  ([#317](https://github.com/joelittlejohn/jsonschema2pojo/issues/317))
+
+## 0.4.13
+* RequiredArrayRule not working for properties with _ or -. ([#377](https://github.com/joelittlejohn/jsonschema2pojo/issues/377))
+* Maven plugin shows sourcePaths error for includes/excludes when sourcePaths is not defined ([#374](https://github.com/joelittlejohn/jsonschema2pojo/issues/374))
+
 ## 0.4.12
 * Didn't work in Android Studio with with current master branch '040e3ae'  ([#370](https://github.com/joelittlejohn/jsonschema2pojo/issues/370))
 * Use the correct ClassLoader in createFromParcel for lists ([#356](https://github.com/joelittlejohn/jsonschema2pojo/pull/356))

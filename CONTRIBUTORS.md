@@ -35,3 +35,6 @@
 * Huang Wei
 * Sim Sun
 * Srikalyan Swayampakula
+* Nate Stoddard
+* Josh Deffibaugh
+* Jaeho Suk
