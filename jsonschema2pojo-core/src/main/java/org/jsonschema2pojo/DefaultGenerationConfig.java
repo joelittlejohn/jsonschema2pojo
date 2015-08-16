@@ -227,6 +227,6 @@ public class DefaultGenerationConfig implements GenerationConfig {
 
     @Override
     public boolean isIncludeAdditionalProperties() {
-        return false;
+        return true;
     }
 }
