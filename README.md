@@ -4,37 +4,56 @@ _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and ca
 
 ### [Try jsonschema2pojo online](http://jsonschema2pojo.org/)
 
-You can also use jsonschema2pojo as a Maven plugin, an Ant task, a command line utility, a Gradle plugin or embedded within your own Java app. The [Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started) guide will show you how.
+This code is a fork from https://github.com/joelittlejohn/jsonschema2pojo and is based on https://github.com/lsubramanya/jsonschema2pojo
 
-A very simple Maven example:
-```xml
-<plugin>
-    <groupId>org.jsonschema2pojo</groupId>
-    <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-    <version>0.4.14</version>
-    <configuration>
-        <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
-        <targetPackage>com.example.types</targetPackage>
-    </configuration>
-    <executions>
-        <execution>
-            <goals>
-                <goal>generate</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
+This code improves the property 'deserializationClassProperty' adding to generated pojos the annotation @JsonSubTypes.
+
+Example:
+
+```
+{
+    "type" : "object",
+    "deserializationClassProperty":{
+        "propertyName":"discriminatorValue",
+        "children":
+            [
+                {
+                    "className": "ChildArraySchema1",
+                    "value": "OBJ_1"
+                },
+                {
+                    "className": "ChildArraySchema2",
+                    "value": "OBJ_2"
+                }
+            ]
+    },
+    "properties" : {
+        "propertyOfParent" : {
+            "type" : "string"
+        },
+        "deserializationClassProperty":{
+            "type" : "string"
+        }
+    }
+}
 ```
 
-Useful pages:
-  * **[Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
-  * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
-  * [Latest Javadocs](http://joelittlejohn.github.io/jsonschema2pojo/javadocs/0.4.14/)
-  * [Documentation for the Maven plugin](http://joelittlejohn.github.io/jsonschema2pojo/site/0.4.14/generate-mojo.html)
-  * [Documentation for the Ant task](http://joelittlejohn.github.io/jsonschema2pojo/site/0.4.14/Jsonschema2PojoTask.html)
+The result will be:
+```
+@Generated("org.jsonschema2pojo")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "discriminatorValue")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ChildArraySchema1.class, name = "OBJ_1"),
+    @JsonSubTypes.Type(value = ChildArraySchema2.class, name = "OBJ_2")
+})
+@JsonPropertyOrder({
+    "discriminatorValue"
+})
+public class ValidationRQRDTO {
 
-Project resources:
-  * [Downloads](https://github.com/joelittlejohn/jsonschema2pojo/releases)
-  * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
+    @JsonProperty("discriminatorValue")
+    private String discriminatorValue;
+    ....
+}
 
-Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+```

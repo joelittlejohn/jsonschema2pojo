@@ -276,11 +276,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
             jsonTypeInfo.param("property", nodeAnnotation.get("propertyName").textValue());
             JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
             JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
-            Iterator<JsonNode> subClasses = nodeAnnotation.get("values").iterator();
+            Iterator<JsonNode> subClasses = nodeAnnotation.get("children").iterator();
 
             while(subClasses.hasNext()) {
                 JsonNode childAnnotationData = subClasses.next();
-                String subClass = childAnnotationData.get("classRef").asText();
+                String subClass = childAnnotationData.get("className").asText();
                 String value = childAnnotationData.get("value").asText();
                 addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass, value);
             }
