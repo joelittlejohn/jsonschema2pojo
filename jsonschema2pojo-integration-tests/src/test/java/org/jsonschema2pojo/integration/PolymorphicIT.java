@@ -31,10 +31,12 @@
 
 package org.jsonschema2pojo.integration;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.Test;
+
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
 
 /**
  *
@@ -46,12 +48,13 @@ public class PolymorphicIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithPolymorphicDeserialization() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/childArraySchema1.json", "com.example");
 
-        Class subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
+        Class subtype = resultsClassLoader.loadClass("com.example.ChildArraySchema1");
         Class supertype = subtype.getSuperclass();
 
         assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(supertype.getAnnotation(JsonSubTypes.class));
 
     }
 }

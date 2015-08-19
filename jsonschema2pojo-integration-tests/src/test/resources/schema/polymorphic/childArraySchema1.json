@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "propertyOfChild1" : {
+            "type" : "string"
+        }
+    },
+    "extends" : {
+        "$ref" : "parentWithMultipleSubClass.json"
+    }
+}

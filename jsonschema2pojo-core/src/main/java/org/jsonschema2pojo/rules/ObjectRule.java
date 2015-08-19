@@ -16,19 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Generated;
-
+import android.os.Parcelable;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
@@ -37,25 +29,18 @@ import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import javax.annotation.Generated;
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import android.os.Parcelable;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -284,12 +269,28 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
         if (this.ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            String annotationName = node.get("deserializationClassProperty").asText();
             JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
-            jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
+            JsonNode nodeAnnotation = node.get("deserializationClassProperty");
+            jsonTypeInfo.param("use", JsonTypeInfo.Id.NAME);
             jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
-            jsonTypeInfo.param("property", annotationName);
+            jsonTypeInfo.param("property", nodeAnnotation.get("propertyName").textValue());
+            JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
+            JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
+            Iterator<JsonNode> subClasses = nodeAnnotation.get("values").iterator();
+
+            while(subClasses.hasNext()) {
+                JsonNode childAnnotationData = subClasses.next();
+                String subClass = childAnnotationData.get("classRef").asText();
+                String value = childAnnotationData.get("value").asText();
+                addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass, value);
+            }
         }
+    }
+
+    private void addJsonSubtypeAnnotation(JDefinedClass jclass, JAnnotationArrayMember jsonSubTypesValues, String subClass, String value) {
+        JAnnotationUse jsonSubType = jsonSubTypesValues.annotate(JsonSubTypes.Type.class);
+        jsonSubType.param("value", jclass.owner().ref(subClass));
+        jsonSubType.param("name", value);
     }
 
     private void addToString(JDefinedClass jclass) {
