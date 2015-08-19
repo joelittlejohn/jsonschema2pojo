@@ -274,6 +274,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             jsonTypeInfo.param("use", JsonTypeInfo.Id.NAME);
             jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
             jsonTypeInfo.param("property", nodeAnnotation.get("propertyName").textValue());
+            jsonTypeInfo.param("visible", true);
             JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
             JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
             Iterator<JsonNode> subClasses = nodeAnnotation.get("children").iterator();
