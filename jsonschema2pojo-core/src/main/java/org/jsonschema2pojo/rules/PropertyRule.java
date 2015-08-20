@@ -16,22 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang3.StringUtils.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
-
-import java.util.Iterator;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -108,6 +97,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         if (node.has("pattern")) {
             ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), field, schema);
+        }
+
+        if (node.has("deserializationClassProperty")) {
+            ruleFactory.getPolymorphicMarshallingRule().apply(nodeName, node.get("deserializationClassProperty"), field, schema);
         }
 
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);

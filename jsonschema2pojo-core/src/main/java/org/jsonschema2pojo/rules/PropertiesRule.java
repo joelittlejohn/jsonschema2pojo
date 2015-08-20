@@ -16,11 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import java.util.Iterator;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDefinedClass;
+import org.jsonschema2pojo.Schema;
+
+import java.util.Iterator;
 
 /**
  * Applies the "properties" schema rule.

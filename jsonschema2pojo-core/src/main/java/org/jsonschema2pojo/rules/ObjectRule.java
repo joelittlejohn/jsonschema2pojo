@@ -91,7 +91,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
-
         if (node.has("deserializationClassProperty")) {
             addJsonTypeInfoAnnotation(jclass, node);
         }
@@ -269,21 +268,23 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
         if (this.ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
             JsonNode nodeAnnotation = node.get("deserializationClassProperty");
-            jsonTypeInfo.param("use", JsonTypeInfo.Id.NAME);
-            jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
-            jsonTypeInfo.param("property", nodeAnnotation.get("propertyName").textValue());
-            jsonTypeInfo.param("visible", true);
-            JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
-            JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
-            Iterator<JsonNode> subClasses = nodeAnnotation.get("children").iterator();
+            if (!nodeAnnotation.has("externalProperty") || !nodeAnnotation.get("externalProperty").booleanValue()) {
+                JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+                jsonTypeInfo.param("use", JsonTypeInfo.Id.NAME);
+                jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
+                jsonTypeInfo.param("property", nodeAnnotation.get("propertyName").textValue());
+                jsonTypeInfo.param("visible", true);
+                JAnnotationUse jsonSubTypes = jclass.annotate(JsonSubTypes.class);
+                JAnnotationArrayMember jsonSubTypesValues = jsonSubTypes.paramArray("value");
+                Iterator<JsonNode> subClasses = nodeAnnotation.get("children").iterator();
 
-            while(subClasses.hasNext()) {
-                JsonNode childAnnotationData = subClasses.next();
-                String subClass = childAnnotationData.get("className").asText();
-                String value = childAnnotationData.get("value").asText();
-                addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass, value);
+                while (subClasses.hasNext()) {
+                    JsonNode childAnnotationData = subClasses.next();
+                    String subClass = childAnnotationData.get("className").asText();
+                    String value = childAnnotationData.get("value").asText();
+                    addJsonSubtypeAnnotation(jclass, jsonSubTypesValues, subClass, value);
+                }
             }
         }
     }

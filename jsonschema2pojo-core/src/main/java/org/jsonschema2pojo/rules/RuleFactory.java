@@ -260,6 +260,16 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a "deserializationExternalProperty"
+     * declaration is found in the schema for a property.
+     *
+     * @return a schema rule that can handle the "deserializationExternalProperty" declaration.
+     */
+    public Rule<JFieldVar, JFieldVar> getPolymorphicMarshallingRule() {
+        return new PolymorphicMarshallingRule(this);
+    }
+
+    /**
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema which itself contains properties, to
      * assign validation of the properties within that property
