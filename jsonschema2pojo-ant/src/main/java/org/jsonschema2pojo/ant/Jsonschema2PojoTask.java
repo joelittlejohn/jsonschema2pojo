@@ -111,6 +111,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean parcelable = false;
 
+    private boolean serializable = false;
+
     private boolean initializeCollections = true;
 
     private String classNamePrefix = "";
@@ -540,6 +542,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'serializable' property of this class
+     *
+     * @param serializable
+     *            Whether to make the generated types 'serializable'.
+     */
+    public void setSerializable(boolean serializable) {
+        this.serializable = serializable;
+    }
+
+    /**
      * Sets the 'initializeCollections' property of this class
      *
      * @param initializeCollections
@@ -734,6 +746,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isParcelable() {
         return parcelable;
+    }
+
+    @Override
+    public boolean isSerializable() {
+        return serializable;
     }
 
     @Override
