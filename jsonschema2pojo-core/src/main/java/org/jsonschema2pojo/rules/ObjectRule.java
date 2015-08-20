@@ -169,7 +169,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private void addSerializableSupport(JDefinedClass jclass) {
-        jclass._implements(Serializable.class)
+        jclass._implements(Serializable.class);
     }
 
     /**
