@@ -351,6 +351,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.4.11
      */
     private boolean parcelable = false;
+    
+    /**
+     * Whether to make the generated types 'serializable'.
+     *
+     * @parameter expression="${jsonschema2pojo.serializable}" default="false"
+     * @since 0.4.???
+     */
+    private boolean serializable = false;
 
     /**
      * Whether to initialize Set and List fields as empty collections, or leave
@@ -656,6 +664,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isParcelable() {
         return parcelable;
+    }
+    
+    @Override
+    public boolean isSerializable() {
+        return serializable;
     }
 
     @Override
