@@ -148,6 +148,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addParcelSupport(jclass);
         }
 
+        if (ruleFactory.getGenerationConfig().isSerializable()) {
+            addSerializableSupport(jclass);
+        }
+
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
             addConstructors(jclass, getConstructorProperties(node, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly()));
         }
@@ -162,6 +166,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addWriteToParcel(jclass);
         parcelableHelper.addDescribeContents(jclass);
         parcelableHelper.addCreator(jclass);
+    }
+
+    private void addSerializableSupport(JDefinedClass jclass) {
+        jclass._implements(Serializable.class)
     }
 
     /**
