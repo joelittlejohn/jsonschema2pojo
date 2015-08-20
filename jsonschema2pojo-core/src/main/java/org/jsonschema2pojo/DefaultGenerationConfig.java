@@ -191,6 +191,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isParcelable() {
         return false;
     }
+    
+    @Override
+    public boolean isSerializable() {
+        return false;
+    }
 
     @Override
     public FileFilter getFileFilter() {
