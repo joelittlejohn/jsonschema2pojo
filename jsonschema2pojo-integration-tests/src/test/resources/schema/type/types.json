@@ -83,6 +83,14 @@
             "type" : "object",
             "javaInterfaces" : ["org.jsonschema2pojo.integration.TypeIT.InterfaceWithGenerics<String,Integer,Boolean>"]
         },
+        "typeWithInheritedClass" : {
+            "type" : "object",
+            "extendsJavaClass" : "org.jsonschema2pojo.integration.TypeIT.InheritedClass"
+        },
+        "typeWithInheritedClassWithGenerics" : {
+            "type" : "object",
+            "extendsJavaClass" : "org.jsonschema2pojo.integration.TypeIT.InheritedClassWithGenerics<String,Integer,Boolean>"
+        },
         "nullableStringProperty" : {
           "type" : ["null", "string"]
         }

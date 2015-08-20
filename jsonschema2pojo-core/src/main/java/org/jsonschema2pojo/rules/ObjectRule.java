@@ -44,7 +44,6 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
@@ -166,7 +165,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * Retrieve the list of properties to go in the constructor from node. This
      * is all properties listed in node["properties"] if ! onlyRequired, and
      * only required properties if onlyRequired.
-     * 
+     *
      * @param node
      * @return
      */
@@ -179,7 +178,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         List<String> rtn = new ArrayList<String>();
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
-        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
+        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext(); ) {
             Map.Entry<String, JsonNode> property = properties.next();
 
             JsonNode propertyObj = property.getValue();
@@ -269,10 +268,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private JType getSuperType(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
-        JType superType = jClassContainer.owner().ref(Object.class);
+    private JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
+        if (node.has("extends") && node.has("extendsJavaClass")) {
+            throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
+        }
+        JType superType = jPackage.owner().ref(Object.class);
         if (node.has("extends")) {
-            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jClassContainer, schema);
+            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, schema);
+        } else if (node.has("extendsJavaClass")) {
+            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
         }
         return superType;
     }
