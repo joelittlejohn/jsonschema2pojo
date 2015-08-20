@@ -356,7 +356,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to make the generated types 'serializable'.
      *
      * @parameter expression="${jsonschema2pojo.serializable}" default="false"
-     * @since 0.4.???
+     * @since 0.4.15
      */
     private boolean serializable = false;
 
