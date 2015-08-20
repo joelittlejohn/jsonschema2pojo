@@ -33,6 +33,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 import org.jsonschema2pojo.AnnotationStyle;
@@ -41,9 +42,9 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -147,9 +148,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (ruleFactory.getGenerationConfig().isParcelable()) {
             addParcelSupport(jclass);
         }
-
+        
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
             addConstructors(jclass, getConstructorProperties(node, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly()));
+        }
+
+        if (ruleFactory.getGenerationConfig().isSerializable()) {
+            SerializableHelper.addSerializableSupport(jclass);
         }
 
         return jclass;

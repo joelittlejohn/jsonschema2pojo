@@ -145,6 +145,9 @@ jsonSchema2Pojo {
   
   // **EXPERIMENTAL** Whether to make the generated types Parcelable for Android
   parcelable = false
+
+  // Whether to make the generated types Serializable
+  serializable = false
 }
 ```
 
