@@ -48,6 +48,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean initializeCollections
   String outputEncoding
   boolean parcelable
+  boolean serializable
   char[] propertyWordDelimiters
   boolean removeOldOutput
   SourceType sourceType
@@ -84,6 +85,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     useJodaLocalTimes = false
     useCommonsLang3 = false
     parcelable = false
+    serializable = false
     fileFilter = new AllFileFilter()
     initializeCollections = true
     classNamePrefix = ''
@@ -147,6 +149,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaLocalTimes = ${useJodaLocalTimes}
        |useCommonsLang3 = ${useCommonsLang3}
        |parcelable = ${parcelable}
+       |serializable = ${serializable}
        |initializeCollections = ${initializeCollections}
        |classNamePrefix = ${classNamePrefix}
        |classNameSuffix = ${classNameSuffix}
