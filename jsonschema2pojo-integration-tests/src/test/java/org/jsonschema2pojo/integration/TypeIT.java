@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.junit.BeforeClass;
@@ -272,7 +274,35 @@ public class TypeIT {
         assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) InterfaceWithGenerics.class));
     }
 
-    public static interface InterfaceWithGenerics<T, U, V> {
+    public interface InterfaceWithGenerics<T, U, V> {
+    }
+
+    @Test
+    public void typeExtendsJavaClass() throws NoSuchMethodException {
+        Method getterMethod = classWithManyTypes.getMethod("getTypeWithInheritedClass");
+
+        final Class<?> generatedClass = getterMethod.getReturnType();
+        assertThat(generatedClass.getName(), is("com.example.TypeWithInheritedClass"));
+        assertThat(generatedClass.getSuperclass().equals(InheritedClass.class), equalTo(true));
+    }
+
+    public static class InheritedClass {
+    }
+
+    @Test
+    public void typeExtendsJavaClassWithGenerics() throws NoSuchMethodException {
+        Method getterMethod = classWithManyTypes.getMethod("getTypeWithInheritedClassWithGenerics");
+
+        final Class<?> generatedClass = getterMethod.getReturnType();
+        assertThat(generatedClass.getName(), is("com.example.TypeWithInheritedClassWithGenerics"));
+        assertThat(generatedClass.getSuperclass().equals(InheritedClassWithGenerics.class), equalTo(true));
+        assertThat(((ParameterizedType) generatedClass.getGenericSuperclass()).getActualTypeArguments(), equalTo(new Type[]
+                {
+                        String.class, Integer.class, Boolean.class
+                }));
+    }
+
+    public static class InheritedClassWithGenerics<X, Y, Z> {
     }
 
 }
