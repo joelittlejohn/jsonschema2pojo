@@ -211,18 +211,28 @@
       </div>
 
       <p class="muted form-section">
-        <iframe style="float: right;" src="http://ghbtns.com/github-btn.html?user=joelittlejohn&repo=jsonschema2pojo&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
+        <div style="float: right; padding-right: 120px">
+          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="2UEVPQ8P647HC">
+            <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1"> <small data-toggle="tooltip" data-placement="right" title="We use donations to renew this domain name and pay for a Heroku dyno. Just $1/£1/€1 will really help towards this month's bill :)">Why?</small>
+          </form>
+        </div>
+
+        <iframe style="float: right;" src="http://ghbtns.com/github-btn.html?user=joelittlejohn&repo=jsonschema2pojo&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="30"></iframe>
 
         <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
           {lang: 'en-GB'}
         </script>
-        <div style="float: right; margin-right: 1.5em;">
+        <div style="float: right; margin-right: 1.5em; margin-left: 1.5em">
           <div class="g-plus" data-action="share" data-annotation="bubble"></div>
         </div>
         <div style="float: right;">
           <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.jsonschema2pojo.org" data-text="Generate Java types from JSON, online!" data-dnt="true">Tweet</a>
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
         </div>
+
         <small>
           Copyright © 2012-2014 Joe Littlejohn
           <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues?page=1&state=open">
@@ -232,5 +242,11 @@
       </p>
     </div>
   </body>
+
+  <script type="text/javascript">
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
 
 </html>
