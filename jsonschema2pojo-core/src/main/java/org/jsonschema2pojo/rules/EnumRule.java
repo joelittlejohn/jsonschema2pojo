@@ -16,24 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Generated;
-
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
@@ -52,6 +34,30 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Generated;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the "enum" schema rule.
@@ -115,7 +121,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JFieldVar valueField = addValueField(_enum);
         addToString(_enum, valueField);
         addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"));
-        addFactoryMethod(_enum);
+        addFactoryMethod(_enum, node.has("javaIgnoreUnknownValue") && node.path("javaIgnoreUnknownValue").asBoolean(), node.path("default"));
 
         return _enum;
     }
@@ -150,7 +156,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    private void addFactoryMethod(JDefinedClass _enum) {
+    private void addFactoryMethod(JDefinedClass _enum, boolean returnDefaultOnUnknownValue, JsonNode defaultValue) {
         JFieldVar quickLookupMap = addQuickLookupMap(_enum);
 
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
@@ -162,10 +168,17 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         JConditional _if = body._if(constant.eq(JExpr._null()));
 
-        JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
-        illegalArgumentException.arg(valueParam);
-        _if._then()._throw(illegalArgumentException);
-        _if._else()._return(constant);
+        // Allow default value (if set) to be returned if javaIgnoreUnknownValue is set
+        if (returnDefaultOnUnknownValue && null != defaultValue) {
+            _if._then()._return(quickLookupMap.invoke("get").arg(defaultValue.asText()));
+            _if._else()._return(constant);
+        }
+        else {
+            JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
+            illegalArgumentException.arg(valueParam);
+            _if._then()._throw(illegalArgumentException);
+            _if._else()._return(constant);
+        }
 
         ruleFactory.getAnnotator().enumCreatorMethod(fromValue);
     }
