@@ -16,9 +16,12 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.PackageUtil;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 /**
@@ -56,14 +59,18 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
-            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText());
+            String refAsText = schemaNode.get("$ref").asText();
+            schema = ruleFactory.getSchemaStore().create(schema, refAsText);
             schemaNode = schema.getContent();
 
             if (schema.isGenerated()) {
                 return schema.getJavaType();
             }
 
-            return apply(nodeName, schemaNode, generatableType, schema);
+            String packageName = generatableType.getPackage().name();
+            JPackage refPackage = generatableType.owner()._package(PackageUtil.resolve(packageName, refAsText));
+
+            return apply(nodeName, schemaNode, refPackage, schema);
         }
 
         JType javaType;
