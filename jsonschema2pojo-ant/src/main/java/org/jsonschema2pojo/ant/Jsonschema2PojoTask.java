@@ -119,6 +119,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeAdditionalProperties = true;
 
+    private boolean includeAccessors = true;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -384,6 +386,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void setCustomRuleFactory(String customRuleFactory) {
         if (isNotBlank(customRuleFactory)) {
             try {
@@ -530,6 +533,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeAdditionalProperties(boolean includeAdditionalProperties) {
         this.includeAdditionalProperties = includeAdditionalProperties;
+    }
+
+    /**
+     * Sets the 'includeAccessors' property of this class
+     *
+     * @param includeAccessors
+     *            Whether to include getters/setters or to omit these accessor
+     *            methods and create public fields instead.
+     */
+    public void setIncludeAccessors(boolean includeAccessors) {
+        this.includeAccessors = includeAccessors;
     }
 
     @Override
@@ -707,5 +721,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
+    }
+
+    @Override
+    public boolean isIncludeAccessors() {
+        return includeAccessors;
     }
 }

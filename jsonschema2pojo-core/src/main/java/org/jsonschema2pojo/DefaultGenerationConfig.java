@@ -84,6 +84,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    /**
+     * @return <code>true</code>
+     */
     @Override
     public boolean isUseDoubleNumbers() {
         return true;
@@ -182,11 +185,17 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isUseCommonsLang3() {
         return false;
     }
 
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isParcelable() {
         return false;
@@ -215,18 +224,35 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return "";
     }
 
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isIncludeConstructors() {
         return false;
     }
 
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isConstructorsRequiredPropertiesOnly() {
         return false;
     }
 
+    /**
+     * @return <code>true</code>
+     */
     @Override
     public boolean isIncludeAdditionalProperties() {
+        return true;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeAccessors() {
         return true;
     }
 }

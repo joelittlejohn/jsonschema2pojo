@@ -419,11 +419,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * to false will disable additional properties support, regardless of the
      * input schema(s).
      *
-     * @parameter expression= "${jsonschema2pojo.includeAdditionalProperties}"
-     *            default="false"
-     * @since 0.4.8
+     * @parameter expression="${jsonschema2pojo.includeAdditionalProperties}"
+     *            default="true"
+     * @since 0.4.14
      */
     private boolean includeAdditionalProperties = true;
+
+    /**
+     * Whether to include getters/setters or to omit these accessor methods and
+     * create public fields instead.
+     *
+     * @parameter expression="${jsonschema2pojo.includeAccessors}"
+     *            default="true"
+     * @since 0.4.15
+     */
+    private boolean includeAccessors = true;
 
     /**
      * The project being built.
@@ -705,4 +715,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
     }
+
+    @Override
+    public boolean isIncludeAccessors() {
+        return includeAccessors;
+    }
+
 }

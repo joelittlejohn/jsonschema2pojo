@@ -39,6 +39,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
+  boolean includeAccessors
   boolean includeAdditionalProperties
   boolean includeConstructors
   boolean constructorsRequiredPropertiesOnly
@@ -89,6 +90,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     classNamePrefix = ''
     classNameSuffix = ''
     includeAdditionalProperties = true
+    includeAccessors = true
   }
 
   @Override
