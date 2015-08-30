@@ -178,7 +178,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         List<String> rtn = new ArrayList<String>();
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
-        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext(); ) {
+        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
             Map.Entry<String, JsonNode> property = properties.next();
 
             JsonNode propertyObj = property.getValue();
@@ -272,12 +272,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (node.has("extends") && node.has("extendsJavaClass")) {
             throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
         }
+
         JType superType = jPackage.owner().ref(Object.class);
         if (node.has("extends")) {
-            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, schema);
+            Schema superTypeSchema = ruleFactory.getSchemaStore().create(schema, "#extends");
+            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, superTypeSchema);
         } else if (node.has("extendsJavaClass")) {
             superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
         }
+
         return superType;
     }
 

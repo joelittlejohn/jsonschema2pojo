@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "extends": {
+    "$ref": "AuthMessage.schema.json"
+  },
+  "javaType": "org.abc.SimpleMessage",
+  "additionalProperties": false,
+  "properties": {
+    "msg": {
+      "type": "string"
+    }
+  },
+  "required": ["msg"]
+}
