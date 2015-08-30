@@ -17,17 +17,17 @@
 package org.jsonschema2pojo.util;
 
 import static java.lang.Character.*;
-import static javax.lang.model.SourceVersion.isKeyword;
+import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
-import com.sun.codemodel.JType;
 import org.apache.commons.lang3.text.WordUtils;
-
 import org.jsonschema2pojo.GenerationConfig;
+
+import com.sun.codemodel.JType;
 
 public class NameHelper {
 
-    private static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
+    public static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
     private final GenerationConfig generationConfig;
 
@@ -65,7 +65,9 @@ public class NameHelper {
     }
 
     /**
-     * Convert jsonFieldName into the equivalent Java fieldname by replacing illegal characters and normalizing it.
+     * Convert jsonFieldName into the equivalent Java fieldname by replacing
+     * illegal characters and normalizing it.
+     * 
      * @param jsonFieldName
      * @return
      */
@@ -84,9 +86,9 @@ public class NameHelper {
         return jsonFieldName;
     }
 
-
     /**
-     * Generate setter method name for property. 
+     * Generate setter method name for property.
+     * 
      * @param propertyName
      * @return
      */
@@ -101,9 +103,9 @@ public class NameHelper {
         return setterName;
     }
 
-
     /**
      * Generate getter method name for property.
+     * 
      * @param propertyName
      * @param type
      * @return

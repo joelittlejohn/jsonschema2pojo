@@ -16,10 +16,8 @@
 
 package org.jsonschema2pojo;
 
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
+import static org.apache.commons.lang3.StringUtils.*;
 
-import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,18 +29,19 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.URLUtil;
+
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
     /**
      * Reads the contents of the given source and initiates schema generation.
-     * 
+     *
      * @param config
      *            the configuration options (including source and target paths,
      *            and other behavioural options) that will control code
@@ -71,13 +70,7 @@ public class Jsonschema2Pojo {
             URL source = sources.next();
 
             if (URLUtil.parseProtocol(source.toString()) == URLProtocol.FILE && URLUtil.getFileFromURL(source).isDirectory()) {
-                generateRecursive(
-                        config,
-                        mapper,
-                        codeModel,
-                        defaultString(config.getTargetPackage()),
-                        Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter()))
-                );
+                generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter())));
             } else {
                 mapper.generate(codeModel, getNodeName(source), defaultString(config.getTargetPackage()), source);
             }
@@ -119,9 +112,10 @@ public class Jsonschema2Pojo {
             }
         }
     }
-    
-    private static String childQualifiedName( String parentQualifiedName, String childSimpleName ) {
-        return isEmpty(parentQualifiedName) ? childSimpleName : parentQualifiedName + "." + childSimpleName;
+
+    private static String childQualifiedName(String parentQualifiedName, String childSimpleName) {
+        String safeChildName = childSimpleName.replaceAll(NameHelper.ILLEGAL_CHARACTER_REGEX, "_");
+        return isEmpty(parentQualifiedName) ? safeChildName : parentQualifiedName + "." + safeChildName;
     }
 
     private static void removeOldOutput(File targetDirectory) {
@@ -132,7 +126,7 @@ public class Jsonschema2Pojo {
         }
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
     private static void delete(File f) {
         if (f.isDirectory()) {
             for (File child : f.listFiles()) {
@@ -144,9 +138,7 @@ public class Jsonschema2Pojo {
 
     private static Annotator getAnnotator(GenerationConfig config) {
         AnnotatorFactory factory = new AnnotatorFactory();
-        return factory.getAnnotator(
-                factory.getAnnotator(config.getAnnotationStyle()),
-                factory.getAnnotator(config.getCustomAnnotator()));
+        return factory.getAnnotator(factory.getAnnotator(config.getAnnotationStyle()), factory.getAnnotator(config.getCustomAnnotator()));
     }
 
     private static String getNodeName(URL file) {
