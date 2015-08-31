@@ -16,13 +16,14 @@
 
 package org.jsonschema2pojo.integration.json;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -36,8 +37,7 @@ public class JsonTypesIT {
     @Test
     public void simpleTypesInExampleAreMappedToCorrectJavaTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example",
-                config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
 
@@ -48,14 +48,14 @@ public class JsonTypesIT {
         assertThat((Double) generatedType.getMethod("getC").invoke(deserialisedValue), is(12999999999999999999999.99d));
         assertThat((Boolean) generatedType.getMethod("getD").invoke(deserialisedValue), is(true));
         assertThat(generatedType.getMethod("getE").invoke(deserialisedValue), is(nullValue()));
+        assertThat((Date) generatedType.getMethod("getF").invoke(deserialisedValue), is(new Date(1440962799000L)));
 
     }
 
     @Test(expected = ClassNotFoundException.class)
     public void simpleTypeAtRootProducesNoJavaTypes() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypeAsRoot.json", "com.example",
-                config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypeAsRoot.json", "com.example", config("sourceType", "json"));
 
         resultsClassLoader.loadClass("com.example.SimpleTypeAsRoot");
 
@@ -65,8 +65,7 @@ public class JsonTypesIT {
     @SuppressWarnings("unchecked")
     public void complexTypesProduceObjects() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/complexObject.json", "com.example",
-                config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/complexObject.json", "com.example", config("sourceType", "json"));
 
         Class<?> complexObjectClass = resultsClassLoader.loadClass("com.example.ComplexObject");
         Object complexObject = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/complexObject.json"), complexObjectClass);
@@ -90,8 +89,7 @@ public class JsonTypesIT {
     @SuppressWarnings("rawtypes")
     public void arrayTypePropertiesProduceLists() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/array.json", "com.example",
-                config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/array.json", "com.example", config("sourceType", "json"));
 
         Class<?> arrayType = resultsClassLoader.loadClass("com.example.Array");
         Class<?> itemType = resultsClassLoader.loadClass("com.example.A");
@@ -113,8 +111,7 @@ public class JsonTypesIT {
     @Test(expected = ClassNotFoundException.class)
     public void arrayAtRootProducesNoJavaTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/arrayAsRoot.json", "com.example",
-                config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/arrayAsRoot.json", "com.example", config("sourceType", "json"));
 
         resultsClassLoader.loadClass("com.example.ArrayAsRoot");
 

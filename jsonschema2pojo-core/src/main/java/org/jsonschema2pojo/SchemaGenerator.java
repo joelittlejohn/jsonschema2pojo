@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 
+import org.joda.time.DateTime;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,8 +38,7 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
 public class SchemaGenerator {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     public ObjectNode schemaFromExample(URL example) {
 
@@ -113,14 +113,28 @@ public class SchemaGenerator {
             Object valueAsJavaType = OBJECT_MAPPER.treeToValue(exampleValue, Object.class);
 
             SchemaAware valueSerializer = getValueSerializer(valueAsJavaType);
+            ObjectNode schema = (ObjectNode) valueSerializer.getSchema(OBJECT_MAPPER.getSerializerProvider(), null);
 
-            return (ObjectNode) valueSerializer.getSchema(OBJECT_MAPPER.getSerializerProvider(), null);
+            if (exampleValue.isTextual() && isDate(exampleValue.asText())) {
+                schema.set("format", schema.textNode("date-time"));
+            }
+
+            return schema;
         } catch (JsonMappingException e) {
             throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
         } catch (JsonProcessingException e) {
             throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
         }
 
+    }
+
+    private boolean isDate(String value) {
+        try {
+            DateTime.parse(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     private SchemaAware getValueSerializer(Object valueAsJavaType) throws JsonMappingException {
