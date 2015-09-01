@@ -38,3 +38,4 @@
 * Nate Stoddard
 * Josh Deffibaugh
 * Jaeho Suk
+* Alexey Hanin
