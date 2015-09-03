@@ -382,8 +382,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JBlock body = equals.body();
 
+        body._if(otherObject.eq(JExpr._null()))._then()._return(JExpr.FALSE);
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
-        body._if(otherObject._instanceof(jclass).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
+        body._if(otherObject.invoke("getClass").ne(JExpr._this().invoke("getClass")))._then()._return(JExpr.FALSE);
 
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
         JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
