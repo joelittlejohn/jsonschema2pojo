@@ -57,6 +57,14 @@
       (boolean (Boolean/valueOf (params "usedoublenumbers"))))
     (isUseCommonsLang3 []
       (boolean (Boolean/valueOf (params "usecommonslang3"))))
+    (isIncludeAccessors []
+      (boolean (Boolean/valueOf (params "includeaccessors"))))
+    (isIncludeAdditionalProperties []
+      (boolean (Boolean/valueOf (params "includeadditionalproperties"))))
+    (isIncludeConstructors []
+      (boolean (Boolean/valueOf (params "includeconstructors"))))
+    (isParcelable []
+      (boolean (Boolean/valueOf (params "parcelable"))))
     (getPropertyWordDelimiters []
       (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []
