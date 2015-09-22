@@ -42,18 +42,17 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
-/**
- * @author Labi0@github.com
+/** Annotates the generated Java types with JPA annotations.
  * This class is aggressively biased towards using ManyToOne
  * Supports the following features:
- *  Schema with "embeddable: true" will be treated as a component.
- *  Numeric fields named "id" will be annotated with Id.
+ *  Numeric fields named "id" will be annotated with Id, if none exists it will generate id-field automatically.
  *  Numeric fields named "version" will be annotated with Version.
  *  Date fields named createdAt, and modifiedAt
  *  
- *  Supports "ext" attribute in schema- it is an array that contain one or more of the following
- *   notInsertable, unique, notUpdatable, Lob, "one-to-many", "one-to-one", "many-to-one", "many-to-many", readOnly
- *   Supports "mappedBy" attribute
+ *  Supports "ext" attribute in schema- it is a string-array that contain one or more of the following
+ *   [notInsertable, unique, notUpdatable, Lob, "one-to-many", "one-to-one", "many-to-one", "many-to-many", readOnly]
+ *   - readonly is currently not yet supported
+ *  Supports "mappedBy" attribute
  *   
  *   Rules for association:
  *    The association from the current-class point of view is termed as "this-side", 
@@ -70,6 +69,7 @@ import com.sun.codemodel.JVar;
  *      -if there is a collection-reference to this class from the other side
  *        )
  *    
+ * @author Labi0@github.com
  */
 public class JPAAnnotator extends AbstractAnnotator {
   public final static Class<Integer> DEFAULT_ID_CLASS = Integer.class;

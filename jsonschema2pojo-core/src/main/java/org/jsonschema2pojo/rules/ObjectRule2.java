@@ -23,7 +23,6 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.rules.ObjectRule;
 import org.jsonschema2pojo.rules.Rule;
-import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
@@ -49,9 +48,10 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
- * Hacked the code to make it useful for URN support
- * @author Labi0@github.com
+ * Lifted the original ObjectRule code and hacked it to make it useful for URN support.
+ * This logic could be refactored into the original object-rule in the future.
  *
+ * @author Labi0@github.com
  */
 public class ObjectRule2 extends ObjectRule {
   RuleFactory2 ruleFactory;

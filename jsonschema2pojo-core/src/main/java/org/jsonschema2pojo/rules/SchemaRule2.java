@@ -25,6 +25,9 @@ public class SchemaRule2 extends SchemaRule {
     this.ruleFactory = ruleFactory;
   }
 
+  /**
+   * @see org.jsonschema2pojo.rules.SchemaRule.apply
+   */
   public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
     if (nodeName.equals("id") && schemaNode.has("id")) { //LABI HACK :)
       SchemaStore2 schemaStore = (SchemaStore2) ruleFactory.getSchemaStore();

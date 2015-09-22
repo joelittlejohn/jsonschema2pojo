@@ -13,9 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 
 /**
- * Provides miscelaneous features such as tracking the generated classes. 
- * At the end of one or more schema-mapper-generate invocation, it can be cleared
- * by using the reset method.
+ * Provides miscellaneous features such as tracking the generated classes. 
+ * At the end of one or more SchemaMapper::generate invocation, 
+ * tracked-classes can be cleared by using the reset method.
+ * 
  * @author Labi0@github.com
  *
  */

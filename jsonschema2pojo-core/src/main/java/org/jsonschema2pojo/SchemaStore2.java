@@ -7,8 +7,8 @@ import org.jsonschema2pojo.SchemaStore;
 
 /**
  * Provides support for URN schemas
- * @author labi
  *
+ * @author Labi0@github.com
  */
 public class SchemaStore2 extends SchemaStore {
 
