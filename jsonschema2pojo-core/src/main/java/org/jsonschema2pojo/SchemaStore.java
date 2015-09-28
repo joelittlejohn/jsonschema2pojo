@@ -47,10 +47,11 @@ public class SchemaStore {
             JsonNode content = contentResolver.resolve(removeFragment(id));
 
             if (id.toString().contains("#")) {
-                content = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
+                JsonNode childContent = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
+                schemas.put(id, new Schema(id, childContent, content));
+        	} else {
+        		schemas.put(id, new Schema(id, content, content));
             }
-
-            schemas.put(id, new Schema(id, content));
         }
 
         return schemas.get(id);
@@ -86,7 +87,7 @@ public class SchemaStore {
         URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
 
         if (selfReferenceWithoutParentFile(parent, path)) {
-            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getContent(), path)));
+            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getContent()));
             return schemas.get(id);
         }
         
@@ -95,7 +96,7 @@ public class SchemaStore {
     }
 
     protected boolean selfReferenceWithoutParentFile(Schema parent, String path) {
-        return parent != null && parent.getId() == null && path.startsWith("#/");
+        return parent != null && (parent.getId() == null || parent.getId().toString().startsWith("#/")) && path.startsWith("#/");
     }
 
     public synchronized void clearCache() {

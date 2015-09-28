@@ -26,13 +26,15 @@ import com.sun.codemodel.JType;
  */
 public class Schema {
 
-    private URI id;
-    private JsonNode content;
+    private final URI id;
+    private final JsonNode content;
+    private final JsonNode parentContent;
     private JType javaType;
 
-    public Schema(URI id, JsonNode content) {
+    public Schema(URI id, JsonNode content, JsonNode parentContent) {
         this.id = id;
         this.content = content;
+        this.parentContent = parentContent;
     }
 
     public JType getJavaType() {
@@ -57,6 +59,10 @@ public class Schema {
         return content;
     }
 
+    public JsonNode getParentContent() {
+		return parentContent;
+	}
+    
     public boolean isGenerated() {
         return javaType != null;
     }

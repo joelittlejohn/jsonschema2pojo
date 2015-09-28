@@ -85,7 +85,7 @@ public class SchemaMapper {
 
         ObjectNode schemaNode = readSchema(schemaUrl);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode, schemaNode));
 
     }
 
@@ -113,7 +113,7 @@ public class SchemaMapper {
         JsonNode schemaNode = mapper.readTree(json);
 
         return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, 
-                new Schema(schemaLocation, schemaNode));
+                new Schema(schemaLocation, schemaNode, schemaNode));
     }
 
     public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
@@ -123,7 +123,6 @@ public class SchemaMapper {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode schemaNode = mapper.readTree(json);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, 
-                new Schema(null, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode, schemaNode));
     }
 }

@@ -69,7 +69,36 @@ public class FragmentRefIT {
         JsonNode schema = new ObjectMapper().readTree("{\"type\":\"object\", \"properties\":{\"a\":{\"$ref\":\"#/b\"}}, \"b\":\"string\"}");
         
         JPackage p = codeModel._package("com.example");
-        new RuleFactory().getSchemaRule().apply("Example", schema, p, new Schema(null, schema));
+        new RuleFactory().getSchemaRule().apply("Example", schema, p, new Schema(null, schema, schema));
+    }
+    
+    @Test
+    public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException, ClassNotFoundException {
+        JCodeModel codeModel = new JCodeModel();
+        JsonNode schema = new ObjectMapper().readTree("{\n" + 
+        		"    \"type\": \"object\",\n" + 
+        		"    \"definitions\": {\n" + 
+        		"        \"location\": {\n" + 
+        		"            \"type\": \"object\",\n" + 
+        		"            \"properties\": {\n" + 
+        		"                \"cat\": {\n" + 
+        		"                    \"$ref\": \"#/definitions/cat\"\n" + 
+        		"                }\n" + 
+        		"            }\n" + 
+        		"        },\n" + 
+        		"        \"cat\": {\n" + 
+        		"            \"type\": \"number\"\n" + 
+        		"        }\n" + 
+        		"    },\n" + 
+        		"    \"properties\": {\n" + 
+        		"        \"location\": {\n" + 
+        		"            \"$ref\": \"#/definitions/location\"\n" + 
+        		"        }\n" + 
+        		"    }\n" + 
+        		"}");
+        
+        JPackage p = codeModel._package("com.example");
+        new RuleFactory().getSchemaRule().apply("Example", schema, p, new Schema(null, schema, schema));
     }
 
 }
