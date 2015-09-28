@@ -85,4 +85,19 @@ public class ExtendsIT {
         
         assertFalse(instance.equals(instance2));
     }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void extendsSchemaWithinDefinitions() throws Exception {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/extendsSchemaWithinDefinitions.json", "com.example");
+
+        Class subtype = resultsClassLoader.loadClass("com.example.Child");
+        assertNotNull("no propertyOfChild field", subtype.getDeclaredField("propertyOfChild"));
+
+        Class supertype = resultsClassLoader.loadClass("com.example.ChildParent");
+        assertNotNull("no propertyOfParent field", supertype.getDeclaredField("propertyOfParent"));
+
+        assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
+    }
 }
