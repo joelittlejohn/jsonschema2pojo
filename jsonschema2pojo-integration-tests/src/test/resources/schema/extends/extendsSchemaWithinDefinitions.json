@@ -1,0 +1,25 @@
+{
+  "definitions": {
+    "parent": {
+      "type": "object",
+      "properties": {
+        "propertyOfParent": {
+          "type": "string"
+        }
+      }
+    },
+    "child": {
+      "type": "object",
+      "extends": {"$ref": "#/definitions/parent"},
+      "properties": {
+        "propertyOfChild": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "child": {"$ref": "#/definitions/child"}
+  }
+}

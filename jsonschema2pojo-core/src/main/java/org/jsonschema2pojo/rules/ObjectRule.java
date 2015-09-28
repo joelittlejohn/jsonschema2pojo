@@ -275,7 +275,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JType superType = jPackage.owner().ref(Object.class);
         if (node.has("extends")) {
-            Schema superTypeSchema = ruleFactory.getSchemaStore().create(schema, "#extends");
+            String path;
+            if (schema.getId().getFragment() == null) {
+                path = "#extends";
+            } else {
+                path = "#" + schema.getId().getFragment() + "/extends";
+            }
+            Schema superTypeSchema = ruleFactory.getSchemaStore().create(schema, path);
             superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, superTypeSchema);
         } else if (node.has("extendsJavaClass")) {
             superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
