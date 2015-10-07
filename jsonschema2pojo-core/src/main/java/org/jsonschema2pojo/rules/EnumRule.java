@@ -173,7 +173,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     private JFieldVar addQuickLookupMap(JDefinedClass _enum) {
 
         JClass lookupType = _enum.owner().ref(Map.class).narrow(_enum.owner().ref(String.class), _enum);
-        JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC, lookupType, "constants");
+        JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "CONSTANTS");
 
         JClass lookupImplType = _enum.owner().ref(HashMap.class).narrow(_enum.owner().ref(String.class), _enum);
         lookupMap.init(JExpr._new(lookupImplType));
