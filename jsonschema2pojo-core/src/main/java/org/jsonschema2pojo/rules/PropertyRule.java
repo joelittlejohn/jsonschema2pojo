@@ -82,10 +82,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
-            JMethod getter = addGetter(jclass, field, nodeName);
+            JMethod getter = addGetter(jclass, field, nodeName, node);
             propertyAnnotations(nodeName, node, schema, getter);
 
-            JMethod setter = addSetter(jclass, field, nodeName);
+            JMethod setter = addSetter(jclass, field, nodeName, node);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
@@ -144,7 +144,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return node.path("type").asText().equals("array");
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode propertyNode) {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type()));
 
         // add @returns
@@ -153,12 +153,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JBlock body = getter.body();
         body._return(field);
 
-        ruleFactory.getAnnotator().propertyGetter(getter, jsonPropertyName);
+        ruleFactory.getAnnotator().propertyGetter(getter, jsonPropertyName, propertyNode);
 
         return getter;
     }
 
-    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
+    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode propertyNode) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName));
 
         // add @param
@@ -168,7 +168,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JBlock body = setter.body();
         body.assign(JExpr._this().ref(field), param);
 
-        ruleFactory.getAnnotator().propertySetter(setter, jsonPropertyName);
+        ruleFactory.getAnnotator().propertySetter(setter, jsonPropertyName, propertyNode);
 
         return setter;
     }

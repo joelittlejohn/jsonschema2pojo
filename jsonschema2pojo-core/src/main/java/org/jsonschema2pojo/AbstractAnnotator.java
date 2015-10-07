@@ -42,11 +42,11 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyGetter(JMethod getter, String propertyName) {
+    public void propertyGetter(JMethod getter, String propertyName, JsonNode propertyNode) {
     }
 
     @Override
-    public void propertySetter(JMethod setter, String propertyName) {
+    public void propertySetter(JMethod setter, String propertyName, JsonNode propertyNode) {
     }
 
     @Override

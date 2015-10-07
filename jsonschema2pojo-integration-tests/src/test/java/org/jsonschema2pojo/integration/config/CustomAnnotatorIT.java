@@ -122,12 +122,12 @@ public class CustomAnnotatorIT {
         }
 
         @Override
-        public void propertyGetter(JMethod getter, String propertyName) {
+        public void propertyGetter(JMethod getter, String propertyName, JsonNode propertyNode) {
             getter.annotate(Deprecated.class);
         }
 
         @Override
-        public void propertySetter(JMethod setter, String propertyName) {
+        public void propertySetter(JMethod setter, String propertyName, JsonNode propertyNode) {
             setter.annotate(Deprecated.class);
         }
 

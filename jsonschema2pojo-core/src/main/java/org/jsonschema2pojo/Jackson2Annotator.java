@@ -61,7 +61,10 @@ public class Jackson2Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
-        field.annotate(JsonProperty.class).param("value", propertyName);
+        field.annotate(JsonProperty.class)
+                .param("value", propertyName)
+                .param("required", propertyNode.has("required") && propertyNode.get("required").asBoolean());
+
         if (field.type().erasure().equals(field.type().owner().ref(Set.class))) {
             field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
         }
@@ -73,13 +76,18 @@ public class Jackson2Annotator extends AbstractAnnotator {
     }
 
     @Override
-    public void propertyGetter(JMethod getter, String propertyName) {
-        getter.annotate(JsonProperty.class).param("value", propertyName);
+    public void propertyGetter(JMethod getter, String propertyName, JsonNode propertyNode) {
+        getter.annotate(JsonProperty.class)
+                .param("value", propertyName)
+                .param("required", propertyNode.has("required") && propertyNode.get("required").asBoolean());
+
     }
 
     @Override
-    public void propertySetter(JMethod setter, String propertyName) {
-        setter.annotate(JsonProperty.class).param("value", propertyName);
+    public void propertySetter(JMethod setter, String propertyName, JsonNode propertyNode) {
+        setter.annotate(JsonProperty.class)
+                .param("value", propertyName)
+                .param("required", propertyNode.has("required") && propertyNode.get("required").asBoolean());
     }
 
     @Override

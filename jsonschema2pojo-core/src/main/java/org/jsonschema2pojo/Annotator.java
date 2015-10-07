@@ -73,8 +73,10 @@ public interface Annotator {
      *            JSON property
      * @param propertyName
      *            the name of the JSON property that this getter gets
+     * @param propertyNode
+     *            the schema node defining this property
      */
-    void propertyGetter(JMethod getter, String propertyName);
+    void propertyGetter(JMethod getter, String propertyName, JsonNode propertyNode);
 
     /**
      * Add the necessary annotation to mark a Java method as the setter for a
@@ -85,8 +87,10 @@ public interface Annotator {
      *            JSON property
      * @param propertyName
      *            the name of the JSON property that this setter sets
+     * @param propertyNode
+     *            the schema node defining this property
      */
-    void propertySetter(JMethod setter, String propertyName);
+    void propertySetter(JMethod setter, String propertyName, JsonNode propertyNode);
 
     /**
      * Add the necessary annotation to mark a Java method as the getter for

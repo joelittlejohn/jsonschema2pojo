@@ -65,16 +65,16 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyGetter(JMethod getter, String propertyName) {
+    public void propertyGetter(JMethod getter, String propertyName, JsonNode propertyNode) {
         for (Annotator annotator : annotators) {
-            annotator.propertyGetter(getter, propertyName);
+            annotator.propertyGetter(getter, propertyName, propertyNode);
         }
     }
 
     @Override
-    public void propertySetter(JMethod setter, String propertyName) {
+    public void propertySetter(JMethod setter, String propertyName, JsonNode propertyNode) {
         for (Annotator annotator : annotators) {
-            annotator.propertySetter(setter, propertyName);
+            annotator.propertySetter(setter, propertyName, propertyNode);
         }
     }
 
