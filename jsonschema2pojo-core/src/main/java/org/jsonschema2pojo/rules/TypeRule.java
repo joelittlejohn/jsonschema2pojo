@@ -148,7 +148,9 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      */
     private JType getIntegerType(JCodeModel owner, JsonNode node, GenerationConfig config) {
 
-        if (config.isUseLongIntegers()) {
+        if (config.isUseLongIntegers() ||
+                (node.has("minimum") && node.get("minimum").isLong()) ||
+                (node.has("maximum") && node.get("maximum").isLong())) {
             return unboxIfNecessary(owner.ref(Long.class), config);
         } else {
             return unboxIfNecessary(owner.ref(Integer.class), config);

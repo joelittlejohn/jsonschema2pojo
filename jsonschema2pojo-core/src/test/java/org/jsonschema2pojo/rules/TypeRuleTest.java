@@ -177,6 +177,134 @@ public class TypeRuleTest {
     }
 
     @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumGreaterThanIntegerMax() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("maximum", Integer.MAX_VALUE + 1L);
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumGreaterThanIntegerMax() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("maximum", Integer.MAX_VALUE + 1L);
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Long.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumLessThanIntegerMin() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("maximum", Integer.MIN_VALUE - 1L);
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumLessThanIntegerMin() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("maximum", Integer.MIN_VALUE - 1L);
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Long.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumLessThanIntegerMin() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("minimum", Integer.MIN_VALUE - 1L);
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumLessThanIntegerMin() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("minimum", Integer.MIN_VALUE - 1L);
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Long.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumGreaterThanIntegerMax() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("minimum", Integer.MAX_VALUE + 1L);
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is("long"));
+    }
+
+    @Test
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumGreaterThanIntegerMax() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+        objectNode.put("minimum", Integer.MAX_VALUE + 1L);
+
+        when(config.isUsePrimitives()).thenReturn(false);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(Long.class.getName()));
+    }
+
+    @Test
     public void applyGeneratesIntegerUsingJavaTypeBigInteger() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());

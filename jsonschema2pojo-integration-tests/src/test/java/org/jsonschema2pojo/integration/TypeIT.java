@@ -184,6 +184,50 @@ public class TypeIT {
     }
 
     @Test
+    public void maximumGreaterThanIntegerMaxCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerWithLongMaximumAsLong.json", "com.example");
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerWithLongMaximumAsLong");
+
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
+
+    }
+
+    @Test
+    public void maximumGreaterThanIntegerMaxCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerWithLongMaximumAsLong.json", "com.example", config("usePrimitives", true));
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerWithLongMaximumAsLong");
+
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("long"));
+
+    }
+
+    @Test
+    public void minimumLessThanIntegerMinCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerWithLongMinimumAsLong.json", "com.example");
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerWithLongMinimumAsLong");
+
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
+
+    }
+
+    @Test
+    public void minimumLessThanIntegerMinCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+        File generatedTypesDirectory = generate("/schema/type/integerWithLongMinimumAsLong.json", "com.example", config("usePrimitives", true));
+        Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerWithLongMinimumAsLong");
+
+        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
+
+        assertThat(getterMethod.getReturnType().getName(), is("long"));
+
+    }
+
+    @Test
     public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
         File generatedTypesDirectory = generate("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true));
         Class<?> classWithLongProperty = compile(generatedTypesDirectory).loadClass("com.example.IntegerAsLong");
