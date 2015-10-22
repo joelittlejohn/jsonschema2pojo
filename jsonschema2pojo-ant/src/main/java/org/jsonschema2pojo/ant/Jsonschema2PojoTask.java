@@ -120,6 +120,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeAdditionalProperties = true;
 
     private boolean includeAccessors = true;
+    
+    
+    private String dateTimeType = null;
+    private String timeType = null;
+    private String dateType = null;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -726,5 +731,20 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeAccessors() {
         return includeAccessors;
+    }
+
+    @Override
+    public String getDateTimeType() {
+        return dateTimeType;
+    }
+
+    @Override
+    public String getDateType() {
+        return dateType;
+    }
+
+    @Override
+    public String getTimeType() {
+        return timeType;
     }
 }

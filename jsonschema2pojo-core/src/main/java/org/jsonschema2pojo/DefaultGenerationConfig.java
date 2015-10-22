@@ -255,4 +255,19 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeAccessors() {
         return true;
     }
+
+    @Override
+    public String getDateTimeType() {
+        return null;
+    }
+
+    @Override
+    public String getDateType() {
+        return null;
+    }
+
+    @Override
+    public String getTimeType() {
+        return null;
+    }
 }
