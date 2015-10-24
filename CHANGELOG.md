@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.16
+* Use minimum and maximum value of an integer property to determine java type long ([#434](https://github.com/joelittlejohn/jsonschema2pojo/pull/434))
+* Fix path to jar in windows script for the case it is run not from home dir ([#432](https://github.com/joelittlejohn/jsonschema2pojo/pull/432))
+* Make the quick lookup map 'final' ([#428](https://github.com/joelittlejohn/jsonschema2pojo/pull/428))
+* "extends" schema resolution assumes current schema is at root of file ([#425](https://github.com/joelittlejohn/jsonschema2pojo/issues/425))
+* Recursive $ref failed ([#250](https://github.com/joelittlejohn/jsonschema2pojo/issues/250))
+
 ## 0.4.15
 * $ref doesn't work when ref'ed message also has extends ([#408](https://github.com/joelittlejohn/jsonschema2pojo/issues/408))
 * Support direct class inheritance with 'extendsJavaType', without using 'extends' ([#402](https://github.com/joelittlejohn/jsonschema2pojo/issues/402))

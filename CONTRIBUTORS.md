@@ -39,3 +39,7 @@
 * Josh Deffibaugh
 * Jaeho Suk
 * Alexey Hanin
+* Mark Ingram
+* Andreas Kohn
+* D Redreev
+* Ben Jefferies
