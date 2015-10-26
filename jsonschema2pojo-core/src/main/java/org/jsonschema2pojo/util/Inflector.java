@@ -36,11 +36,11 @@ public class Inflector {
     private static final Pattern UNDERSCORE_PATTERN_1 = Pattern.compile("([A-Z]+)([A-Z][a-z])");
     private static final Pattern UNDERSCORE_PATTERN_2 = Pattern.compile("([a-z\\d])([A-Z])");
 
-    private static List<RuleAndReplacement> plurals = new ArrayList<RuleAndReplacement>();
-    private static List<RuleAndReplacement> singulars = new ArrayList<RuleAndReplacement>();
-    private static List<String> uncountables = new ArrayList<String>();
+    private List<RuleAndReplacement> plurals = new ArrayList<RuleAndReplacement>();
+    private List<RuleAndReplacement> singulars = new ArrayList<RuleAndReplacement>();
+    private List<String> uncountables = new ArrayList<String>();
 
-    private static Inflector instance; // (Pseudo-)Singleton instance.
+    private static Inflector instance  = new Inflector();
 
     private Inflector() {
         // Woo, you can't touch me.
@@ -109,13 +109,10 @@ public class Inflector {
     }
 
     public static Inflector getInstance() {
-        if (instance == null) {
-            instance = new Inflector();
-        }
         return instance;
     }
 
-    public String underscore(String camelCasedWord) {
+    private String underscore(String camelCasedWord) {
 
         // Regexes in Java are fucking stupid...
         String underscoredWord = UNDERSCORE_PATTERN_1.matcher(camelCasedWord).replaceAll("$1_$2");
@@ -125,14 +122,14 @@ public class Inflector {
         return underscoredWord;
     }
 
-    public String pluralize(String word) {
+    public synchronized String pluralize(String word) {
         if (uncountables.contains(word.toLowerCase())) {
             return word;
         }
         return replaceWithFirstRule(word, plurals);
     }
 
-    public String singularize(String word) {
+    public synchronized String singularize(String word) {
         if (uncountables.contains(word.toLowerCase())) {
             return word;
         }
@@ -154,30 +151,30 @@ public class Inflector {
         return word;
     }
 
-    public String tableize(String className) {
+    private String tableize(String className) {
         return pluralize(underscore(className));
     }
 
-    public String tableize(Class<?> klass) {
+    private String tableize(Class<?> klass) {
         // Strip away package name - we only want the 'base' class name.
         String className = klass.getName().replace(klass.getPackage().getName() + ".", "");
         return tableize(className);
     }
 
-    public static void plural(String rule, String replacement) {
+    private void plural(String rule, String replacement) {
         plurals.add(0, new RuleAndReplacement(rule, replacement));
     }
 
-    public static void singular(String rule, String replacement) {
+    private void singular(String rule, String replacement) {
         singulars.add(0, new RuleAndReplacement(rule, replacement));
     }
 
-    public static void irregular(String singular, String plural) {
+    private void irregular(String singular, String plural) {
         plural(singular, plural);
         singular(plural, singular);
     }
 
-    public static void uncountable(String... words) {
+    private void uncountable(String... words) {
         for (String word : words) {
             uncountables.add(word);
         }
