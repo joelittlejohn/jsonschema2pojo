@@ -21,14 +21,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 public class InflectorTest {
 
     @Test
@@ -65,37 +57,6 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().pluralize("matress"), is("matresses"));
         assertThat(Inflector.getInstance().pluralize("address"), is("addresses"));
 
-    }
-
-    @Test
-    public void testThreadSafety() throws InterruptedException, ExecutionException {
-        final int numberOfThreads = 10;
-        final int numberOfTasks = 1000;
-
-        class SingulariseSomething implements Callable<String> {
-            private final String something;
-
-            public SingulariseSomething(String something) {
-                this.something = something;
-            }
-
-            @Override
-            public String call() throws Exception {
-                return Inflector.getInstance().singularize(something);
-            }
-        }
-
-        List<SingulariseSomething> tasks = new ArrayList<SingulariseSomething>();
-        for (int i = 0; i < numberOfTasks; i++) {
-            tasks.add(new SingulariseSomething(i + "zebras"));
-        }
-
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        List<Future<String>> futures = executorService.invokeAll(tasks);
-
-        for (Future<String> future : futures) {
-            future.get();
-        }
     }
 
 }
