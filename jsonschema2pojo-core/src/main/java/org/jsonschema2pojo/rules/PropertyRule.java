@@ -16,27 +16,19 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.*;
 
 import org.jsonschema2pojo.Schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 /**
  * Applies the schema rules that represent a property definition.
- *
- * @see <a href=
- *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
- *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
+ * 
+ * @see <a
+ *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -54,10 +46,11 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      * accessor methods.
      * <p>
      * If this rule's schema mapper is configured to include builder methods
-     * (see {@link org.jsonschema2pojo.GenerationConfig#isGenerateBuilders()} ),
-     * then a builder method of the form <code>withFoo(Foo foo);</code> is also
-     * added.
-     *
+     * (see
+     * {@link org.jsonschema2pojo.GenerationConfig#isGenerateBuilders()}
+     * ), then a builder method of the form <code>withFoo(Foo foo);</code> is
+     * also added.
+     * 
      * @param nodeName
      *            the name of the property to be applied
      * @param node
@@ -75,26 +68,63 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         node = resolveRefs(node, schema);
 
-        int accessModifier = ruleFactory.getGenerationConfig().isIncludeAccessors() ? JMod.PRIVATE : JMod.PUBLIC;
-        JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
-        propertyAnnotations(nodeName, node, schema, field);
+        JFieldVar field = jclass.field(JMod.PRIVATE, propertyType, propertyName);
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
-        if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
-            JMethod getter = addGetter(jclass, field, nodeName);
-            propertyAnnotations(nodeName, node, schema, getter);
-
-            JMethod setter = addSetter(jclass, field, nodeName);
-            propertyAnnotations(nodeName, node, schema, setter);
-        }
+        JMethod getter = addGetter(jclass, field, nodeName, node);
+      
+        
+        
+        
+        JMethod setter = addSetter(jclass, field, nodeName);
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             addBuilder(jclass, field);
         }
 
+        if (node.has("title")) {
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), field, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), getter, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), setter, schema);
+        }
+
+        if (node.has("description")) {
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), field, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), getter, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), setter, schema);
+        }
+
+        if (node.has("required")) {
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), field, schema);
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), getter, schema);
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), setter, schema);
+        }
+        
+        /* Set ignore for all */
+        if (node.has("ignore")) {
+            ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignore"), field, schema);
+            ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignore"), getter, schema);
+            ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignore"), setter, schema);
+        } else {
+            /* Ignore Setter method */
+            if (node.has("ignoreSetter")) {
+            	ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignoreSetter"), setter, schema);
+            }
+            
+            /* Ignore Getter method */
+            if (node.has("ignoreGetter")) {
+           	    ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignoreGetter"), getter, schema);
+            }
+        }
+
+        
         if (node.has("pattern")) {
             ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), field, schema);
+        }
+
+        if (node.has("deserializationClassProperty")) {
+            ruleFactory.getPolymorphicMarshallingRule().apply(nodeName, node.get("deserializationClassProperty"), field, schema);
         }
 
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
@@ -112,20 +142,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-    private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
-        if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), generatedJavaConstruct, schema);
-        }
-
-        if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), generatedJavaConstruct, schema);
-        }
-
-        if (node.has("required")) {
-            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
-        }
-    }
-
     private JsonNode resolveRefs(JsonNode node, Schema parent) {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText());
@@ -139,12 +155,11 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private boolean isObject(JsonNode node) {
         return node.path("type").asText().equals("object");
     }
-
     private boolean isArray(JsonNode node) {
         return node.path("type").asText().equals("array");
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type()));
 
         // add @returns
@@ -152,12 +167,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         JBlock body = getter.body();
         body._return(field);
-
+        
         ruleFactory.getAnnotator().propertyGetter(getter, jsonPropertyName);
 
         return getter;
     }
 
+   
     private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName));
 
