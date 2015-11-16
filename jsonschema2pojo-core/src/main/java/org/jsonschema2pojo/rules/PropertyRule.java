@@ -104,7 +104,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         /* Set ignore for all */
         if (node.has("ignore")) {
             ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignore"), field, schema);
-        } else {
+        } 
             /* Ignore Setter method */
             if (node.has("ignoreSetter")) {
             	ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignoreSetter"), setter, schema);
@@ -114,7 +114,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             if (node.has("ignoreGetter")) {
            	    ruleFactory.getIgnoreRule().apply(nodeName, node.get("ignoreGetter"), getter, schema);
             }
-        }
+      
 
         
         if (node.has("pattern")) {
