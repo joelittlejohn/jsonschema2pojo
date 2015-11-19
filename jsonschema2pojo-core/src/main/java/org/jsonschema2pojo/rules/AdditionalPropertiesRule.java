@@ -107,9 +107,10 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         JFieldVar field = addAdditionalPropertiesField(jclass, propertyType);
 
-        addGetter(jclass, field);
-
-        addSetter(jclass, propertyType, field);
+        if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
+            addGetter(jclass, field);
+            addSetter(jclass, propertyType, field);
+        }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             addBuilder(jclass, propertyType, field);
@@ -125,13 +126,17 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
-        JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
+        JFieldVar field = jclass.field(fieldScopeModifier(), propertiesMapType, "additionalProperties");
 
         ruleFactory.getAnnotator().additionalPropertiesField(field, jclass, "additionalProperties");
 
         field.init(JExpr._new(propertiesMapImplType));
 
         return field;
+    }
+
+    private int fieldScopeModifier() {
+        return ruleFactory.getGenerationConfig().isIncludeAccessors() ? JMod.PRIVATE : JMod.PUBLIC;
     }
 
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
