@@ -37,6 +37,12 @@ import static org.junit.Assert.*;
 public class Compiler {
 
     public void compile(File directory, String classpath) {
+        compile(directory, classpath, null);
+    }
+
+    public void compile(File directory, String classpath, String targetVersion) {
+        
+        targetVersion = targetVersion == null ? "1.6" : targetVersion;
 
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
@@ -44,10 +50,16 @@ public class Compiler {
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(directory));
 
         ArrayList<String> options = new ArrayList<String>();
+        options.add("-source");
+        options.add(targetVersion);
+        options.add("-target");
+        options.add(targetVersion);
         options.add("-classpath");
         options.add(classpath);
         options.add("-encoding");
         options.add("UTF8");
+        options.add("-Xlint:-options");
+        options.add("-Xlint:unchecked");
         if (compilationUnits.iterator().hasNext()) {
             Boolean success = javaCompiler.getTask(null, fileManager, null, options, null, compilationUnits).call();
             assertThat("Compilation was not successful, check stdout for errors", success, is(true));

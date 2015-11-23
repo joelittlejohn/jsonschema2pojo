@@ -121,17 +121,21 @@ public class CodeGenerationHelper {
      */
     public static ClassLoader compile(File sourceDirectory) {
 
-        return compile(sourceDirectory, new ArrayList<String>());
+        return compile(sourceDirectory, new ArrayList<String>(), new HashMap<String, Object>());
 
     }
+    
+    public static ClassLoader compile(File sourceDirectory, List<String> classpath ) {
+        return compile(sourceDirectory, classpath, new HashMap<String, Object>());
+    }
 
-    public static ClassLoader compile(File sourceDirectory, List<String> classpath) {
+    public static ClassLoader compile(File sourceDirectory, List<String> classpath, Map<String, Object> config) {
 
         List<String> fullClasspath = new ArrayList<String>();
         fullClasspath.addAll(classpath);
         fullClasspath.add(System.getProperty("java.class.path"));
 
-        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar));
+        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar), (String)config.get("target"));
 
         try {
             return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());
@@ -158,7 +162,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory);
+        return compile(outputDirectory, new ArrayList<String>(), configValues);
 
     }
 
@@ -174,7 +178,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory);
+        return compile(outputDirectory, new ArrayList<String>(), configValues);
 
     }
 

@@ -302,5 +302,12 @@ public interface GenerationConfig {
      *         methods and create public fields instead.
      */
     boolean isIncludeAccessors();
+    
+    /**
+     * Gets the 'targetVersion' configuration option
+     * 
+     *  @return The target version for generated source files.
+     */
+    String getTargetVersion();
 
 }
