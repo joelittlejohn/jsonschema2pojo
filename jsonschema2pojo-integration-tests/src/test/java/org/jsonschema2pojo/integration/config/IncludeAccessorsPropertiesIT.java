@@ -19,17 +19,19 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
+import static org.fest.util.Lists.newArrayList;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
@@ -74,9 +76,7 @@ public class IncludeAccessorsPropertiesIT {
         ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
-        for (Method method : generatedType.getDeclaredMethods()) {
-            assertThat("getters and setters should not exist", method.getName(), not(anyOf(startsWith("get"), startsWith("set"))));
-        }
+        assertThat("getters and setters should not exist", generatedType.getDeclaredMethods(), everyItemInArray(anyOf(methodWhitelist(), not(fieldGetterOrSetter()))));
     }
 
     @Test
@@ -84,11 +84,7 @@ public class IncludeAccessorsPropertiesIT {
         ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
-        List<String> methodNames = new ArrayList<String>();
-        for (Method method : generatedType.getDeclaredMethods()) {
-            methodNames.add(method.getName());
-        }
-        assertThat("a getter or setter should be found.", methodNames, hasItem(anyOf(startsWith("get"), startsWith("set"))));
+        assertThat("a getter or setter should be found.", generatedType.getDeclaredMethods(), hasItemInArray(allOf(not(methodWhitelist()), fieldGetterOrSetter())));
     }
 
     @Test
@@ -96,12 +92,7 @@ public class IncludeAccessorsPropertiesIT {
         ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
-        for (Field field : generatedType.getDeclaredFields()) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            assertThat("only public instance fields exist", Modifier.isPublic(field.getModifiers()), equalTo(true));
-        }
+        assertThat("only public instance fields exist", generatedType.getDeclaredFields(), everyItemInArray(anyOf(hasModifiers(Modifier.STATIC), fieldWhitelist(), hasModifiers(Modifier.PUBLIC))));
     }
 
     @Test
@@ -109,17 +100,76 @@ public class IncludeAccessorsPropertiesIT {
         ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
-        for (Field field : generatedType.getDeclaredFields()) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            assertThat("only public instance fields exist", Modifier.isPublic(field.getModifiers()), not(equalTo(true)));
-        }
+        assertThat("only public instance fields exist", generatedType.getDeclaredFields(), everyItemInArray(anyOf(not(hasModifiers(Modifier.PUBLIC)), fieldWhitelist())));
     }
 
     private static Map<String, Object> configWithIncludeAccessors(Map<String, Object> template, boolean includeAccessors) {
         Map<String, Object> config = new HashMap<String, Object>(template);
         config.put("includeAccessors", includeAccessors);
         return config;
+    }
+
+    private static <M extends Member> Matcher<M> hasModifiers(final int modifiers) {
+        return new TypeSafeMatcher<M>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has modifier ").appendValue(Modifier.toString(modifiers));
+            }
+
+            @Override
+            protected boolean matchesSafely(M item) {
+                int masked = item.getModifiers() & modifiers;
+                return masked == modifiers;
+            }
+        };
+    }
+
+    private static <M extends Member> Matcher<M> nameMatches(final Matcher<String> nameMatcher) {
+        return new TypeSafeMatcher<M>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("name ").appendDescriptionOf(nameMatcher);
+            }
+
+            @Override
+            protected boolean matchesSafely(M item) {
+                return nameMatcher.matches(item.getName());
+            }
+        };
+    }
+
+    private static <T> Matcher<T[]> everyItemInArray(final Matcher<T> itemMatcher) {
+        return new TypeSafeDiagnosingMatcher<T[]>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("every item in array is ").appendDescriptionOf(itemMatcher);
+            }
+
+            @Override
+            protected boolean matchesSafely(T[] items, Description mismatchDescription) {
+                for (T item : items) {
+                    if (!itemMatcher.matches(item)) {
+                        mismatchDescription.appendText("an item ");
+                        itemMatcher.describeMismatch(item, mismatchDescription);
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+        };
+    }
+
+    private static <M extends Member> Matcher<M> methodWhitelist() {
+        return nameMatches(isIn(newArrayList("setAdditionalProperty", "getAdditionalProperties")));
+    }
+
+    private static <M extends Member> Matcher<M> fieldWhitelist() {
+        return nameMatches(isIn(newArrayList("additionalProperties")));
+    }
+
+    private static <M extends Member> Matcher<M> fieldGetterOrSetter() {
+        return nameMatches(anyOf(startsWith("get"), startsWith("set")));
     }
 }
