@@ -62,10 +62,46 @@ public class AdditionalPropertiesIT {
 
     }
 
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void jacksonCanDeserializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAccessors", false));
+
+        Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
+
+        Object deserialized = mapper.readValue("{\"a\":\"1\", \"b\":2}", classWithAdditionalProperties);
+
+        Method getter = classWithAdditionalProperties.getMethod("getAdditionalProperties");
+
+        assertThat(getter.invoke(deserialized), is(notNullValue()));
+        assertThat(((Map<String, Object>) getter.invoke(deserialized)).containsKey("a"), is(true));
+        assertThat((String) ((Map<String, Object>) getter.invoke(deserialized)).get("a"), is("1"));
+        assertThat(((Map<String, Object>) getter.invoke(deserialized)).containsKey("b"), is(true));
+        assertThat((Integer) ((Map<String, Object>) getter.invoke(deserialized)).get("b"), is(2));
+
+    }
+ 
     @Test
     public void jacksonCanSerializeOurAdditionalProperties() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
+
+        Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
+        String jsonWithAdditionalProperties = "{\"a\":1, \"b\":2};";
+        Object instanceWithAdditionalProperties = mapper.readValue(jsonWithAdditionalProperties, classWithAdditionalProperties);
+
+        JsonNode jsonNode = mapper.readTree(mapper.writeValueAsString(instanceWithAdditionalProperties));
+
+        assertThat(jsonNode.path("a").asText(), is("1"));
+        assertThat(jsonNode.path("b").asInt(), is(2));
+    }
+
+    @Test
+    public void jacksonCanSerializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAccessors", false));
 
         Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
         String jsonWithAdditionalProperties = "{\"a\":1, \"b\":2};";
