@@ -21,6 +21,7 @@ import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
 import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.polimorphic.PolymorphicMarshallingRule;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 
@@ -161,6 +162,15 @@ public class RuleFactory {
         return new RequiredRule(this);
     }
     
+    /**
+     * Provides a rule instance that should be applied when a "jsonIgnore"
+     * declaration is found in the schema.
+     * 
+     * @return a schema rule that can handle the "required" declaration.
+     */
+    public Rule<JDocCommentable, JDocComment> getIgnoreRule() {
+        return new IgnoreRule(this);
+    }
 
     /**
      * Provides a rule instance that should be applied to a node to find its
@@ -257,6 +267,16 @@ public class RuleFactory {
      */
     public Rule<JFieldVar, JFieldVar> getPatternRule() {
         return new PatternRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a "deserializationExternalProperty"
+     * declaration is found in the schema for a property.
+     *
+     * @return a schema rule that can handle the "deserializationExternalProperty" declaration.
+     */
+    public Rule<JFieldVar, JFieldVar> getPolymorphicMarshallingRule() {
+        return new PolymorphicMarshallingRule(this);
     }
 
     /**
