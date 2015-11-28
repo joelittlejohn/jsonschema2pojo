@@ -33,7 +33,7 @@
         schema (if (= (.getSourceType config) (SourceType/JSON)) (.schemaFromExample schema-generator input) input)]
     (.. (RuleFactory. config (annotator config) (SchemaStore.))
         (getSchemaRule)
-        (apply classname schema package (proxy [Schema] [nil schema])))))
+        (apply classname schema package (proxy [Schema] [nil schema schema])))))
 
 (defn params-based-config [params]
   (proxy [DefaultGenerationConfig] []
