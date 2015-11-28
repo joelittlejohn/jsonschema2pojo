@@ -25,8 +25,8 @@ $(document).ready(function() {
     lineNumbers: true,
     matchBrackets: true,
     onChange : function() {
-      if (!$("#download-jar-link").hasClass("hide")) {
-        $("#download-jar-link").addClass("hide");
+      if (!$("#download-zip-link").hasClass("hide")) {
+        $("#download-zip-link").addClass("hide");
       }
     }
   });
@@ -36,11 +36,11 @@ $(document).ready(function() {
     return false;
   });
 
-  $("#jar-button").click(function(e) {
+  $("#zip-button").click(function(e) {
 
-    $("#jar-button").button("loading");
+    $("#zip-button").button("loading");
     $(".alert").alert("close");
-    $("#download-jar-link").addClass("hide");
+    $("#download-zip-link").addClass("hide");
     schemaTextArea.value = myCodeMirror.getValue();
 
     $.ajax({
@@ -48,15 +48,15 @@ $(document).ready(function() {
       type: "POST",
       data: $("#form").serialize(),
       success: function(data) {
-        $("#download-jar-link").attr("href", "data:application/zip;base64," + data);
-        $("#download-jar-link").attr("download", $("#classname").val() + "-sources.jar");
-        $("#download-jar-link").text($("#classname").val() + "-sources.jar");
-        $("#download-jar-link").removeClass("hide");
+        $("#download-zip-link").attr("href", "data:application/zip;base64," + data);
+        $("#download-zip-link").attr("download", $("#classname").val() + "-sources.zip");
+        $("#download-zip-link").text($("#classname").val() + "-sources.zip");
+        $("#download-zip-link").removeClass("hide");
 
-        $("#jar-button").button("reset");
+        $("#zip-button").button("reset");
       },
       error: function(xhr) {
-        $("#jar-button").button("reset");
+        $("#zip-button").button("reset");
         $("#alert-area").prepend($("<div class='alert alert-error fade in' data-alert>" +
                                    "<button type='button' class='close' data-dismiss='alert'>×</button>" +
                                    "<strong>There's a problem:</strong> " + xhr.responseText +
