@@ -1,0 +1,29 @@
+{
+
+   "definitions": {
+     "Namespace": {
+       "type": "string"
+     },
+     "Name": {
+       "type": "string"
+     },
+     "Version": {
+       "type": "string"
+     },
+     "Thing": {
+       "properties": {
+         "namespace": { "$ref": "#/definitions/Namespace" },
+         "name": { "$ref": "#/definitions/Name" },
+         "version": { "$ref": "#/definitions/Version"}
+       }
+     },
+     "ThingList": {
+       "type": "array",
+       "items": { "$ref": "#/definitions/Thing" }
+     }
+   },
+  "type": "object",
+  "properties": {
+    "things": { "$ref": "#/definitions/ThingList" }
+  }
+}

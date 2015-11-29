@@ -87,7 +87,7 @@ public class SchemaStore {
         URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
 
         if (selfReferenceWithoutParentFile(parent, path)) {
-            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getContent()));
+            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getParentContent()));
             return schemas.get(id);
         }
         
