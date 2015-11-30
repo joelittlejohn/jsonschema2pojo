@@ -65,7 +65,7 @@ public class Jsonschema2PojoTaskIT {
         String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"));
 
         for (Field f : Jsonschema2PojoTask.class.getDeclaredFields()) {
-            assertThat(documentation, containsString(f.getName()));
+            assertThat(documentation, containsString(">"+f.getName()+"<"));
         }
 
     }

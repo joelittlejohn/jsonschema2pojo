@@ -131,6 +131,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-da", "--disable-accessors" }, description = "Whether to omit getter/setter methods and create public fields instead.")
     private boolean disableAccessors = false;
+    
+    @Parameter(names = { "-tv", "--target-version" }, description = "The target version for generated source files.")
+    private String targetVersion = "1.6";
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -319,6 +322,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeAccessors() {
         return !disableAccessors;
+    }
+
+    @Override
+    public String getTargetVersion() {
+        return targetVersion;
     }
 
 }
