@@ -39,6 +39,7 @@ import org.jsonschema2pojo.util.TypeUtil;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -175,19 +176,32 @@ public class ObjectRule implements Rule<JPackage, JType> {
             return new ArrayList<String>();
         }
 
+        List<String> required = new ArrayList<String>();
+        if (node.has("required")) {
+            JsonNode requiredObj = node.get("required");
+            if (requiredObj.isArray()) {
+                for (JsonNode requiredEntry : (ArrayNode) requiredObj) {
+                    if (requiredEntry.isTextual()) {
+                        required.add(requiredEntry.asText());
+                    }
+                }
+            }
+        }
+
         List<String> rtn = new ArrayList<String>();
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
         for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
             Map.Entry<String, JsonNode> property = properties.next();
 
+            String propertyKey = property.getKey();
             JsonNode propertyObj = property.getValue();
             if (onlyRequired) {
-                if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
-                    rtn.add(nameHelper.getPropertyName(property.getKey()));
+                if (required.contains(propertyKey) || (propertyObj.has("required") && propertyObj.get("required").asBoolean())) {
+                    rtn.add(nameHelper.getPropertyName(propertyKey));
                 }
             } else {
-                rtn.add((nameHelper.getPropertyName(property.getKey())));
+                rtn.add((nameHelper.getPropertyName(propertyKey)));
             }
         }
         return rtn;
