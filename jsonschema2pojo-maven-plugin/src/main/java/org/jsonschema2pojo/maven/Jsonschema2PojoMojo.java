@@ -445,6 +445,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetVersion = "1.6";
 
     /**
+     * Whether to include dynamic getters, setters, and builders or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
+     *            default="true"
+     * @since 0.4.17
+     */
+    private boolean includeDynamicAccessors = true;
+
+    /**
      * The project being built.
      *
      * @parameter expression="${project}"
@@ -733,6 +742,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getTargetVersion() {
         return targetVersion;
+    }
+
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return includeDynamicAccessors;
     }
 
 }

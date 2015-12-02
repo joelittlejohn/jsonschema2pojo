@@ -30,6 +30,9 @@ public class ParcelableHelper {
         method.param(int.class, "flags");
         
         for (JFieldVar f : jclass.fields().values()) {
+            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
+                continue;
+            }
             if (f.type().erasure().name().equals("List")) {
                 method.body().invoke(dest, "writeList").arg(f);
             } else {
@@ -66,6 +69,9 @@ public class ParcelableHelper {
         JVar instance = createFromParcel.body().decl(jclass, "instance", JExpr._new(jclass));
         suppressWarnings(createFromParcel, "unchecked");
         for (JFieldVar f : jclass.fields().values()) {
+            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
+                continue;
+            }
             if (f.type().erasure().name().equals("List")) {
                 createFromParcel.body()
                         .invoke(in, "readList")

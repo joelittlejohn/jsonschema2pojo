@@ -310,4 +310,12 @@ public interface GenerationConfig {
      */
     String getTargetVersion();
 
+    /**
+     * Gets the `includeDynamicAccessors` configuraiton option
+     *
+     * @return Whether to include dynamic getters, setters, and builders
+     *         or to omit these methods.
+     */
+    boolean isIncludeDynamicAccessors();
+
 }

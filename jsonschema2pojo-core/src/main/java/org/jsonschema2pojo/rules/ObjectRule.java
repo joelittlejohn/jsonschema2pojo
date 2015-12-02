@@ -132,6 +132,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
 
+        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
+
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
         }
@@ -337,6 +339,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         for (JFieldVar fieldVar : fields.values()) {
+            if( (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) continue;
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
         }
 
@@ -400,7 +403,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         for (JFieldVar fieldVar : fields.values()) {
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("append").arg(fieldVar).arg(rhsVar.ref(fieldVar.name()));
+            if( (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC ) continue;
+            equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
+                    .arg(fieldVar)
+                    .arg(rhsVar.ref(fieldVar.name()));
         }
 
         JInvocation reflectionEquals = jclass.owner().ref(equalsBuilder).staticInvoke("reflectionEquals");

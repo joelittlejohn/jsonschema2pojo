@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "extends": {
+        "$ref": "parentType.json"
+    },
+    "properties": {
+        "childStringValue": {
+            "type": "string"
+        },
+        "childNumberValue": {
+            "type": "number"
+        }
+    }
+}
