@@ -16,15 +16,15 @@
 
 package org.jsonschema2pojo.rules;
 
-import java.util.Iterator;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
-import com.sun.codemodel.JDefinedClass;
+
+import java.util.Iterator;
 
 /**
  * Applies the "properties" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
@@ -41,7 +41,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
      * <p>
      * For each property present within the properties node, this rule will
      * invoke the 'property' rule provided by the given schema mapper.
-     * 
+     *
      * @param nodeName
      *            the name of the node for which properties are being added
      * @param node
@@ -54,14 +54,44 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
-        for (Iterator<String> properties = node.fieldNames(); properties.hasNext();) {
+        for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
             String property = properties.next();
 
             ruleFactory.getPropertyRule().apply(property, node.get(property), jclass, schema);
         }
 
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
+            if (!jclass._extends().name().equals("Object")) {
+                addOverrideBuilders(jclass, jclass.owner()._getClass(jclass._extends().fullName()));
+            }
+        }
+
         ruleFactory.getAnnotator().propertyOrder(jclass, node);
 
         return jclass;
+    }
+
+    private void addOverrideBuilders(JDefinedClass jclass, JDefinedClass parentJclass) {
+        if (parentJclass == null) {
+            return;
+        }
+
+        for (JMethod parentJMethod : parentJclass.methods()) {
+            if (parentJMethod.name().startsWith("with") && parentJMethod.params().size() == 1) {
+                addOverrideBuilder(jclass, parentJMethod, parentJMethod.params().get(0));
+            }
+        }
+    }
+
+    private JMethod addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
+        JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
+        builder.annotate(Override.class);
+
+        JVar param = builder.param(parentParam.type(), parentParam.name());
+        JBlock body = builder.body();
+        body.invoke(JExpr._super(), parentBuilder).arg(param);
+        body._return(JExpr._this());
+
+        return builder;
     }
 }
