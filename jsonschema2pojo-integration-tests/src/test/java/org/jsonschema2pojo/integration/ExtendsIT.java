@@ -13,6 +13,8 @@
 package org.jsonschema2pojo.integration;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -99,5 +101,22 @@ public class ExtendsIT {
         assertNotNull("no propertyOfParent field", supertype.getDeclaredField("propertyOfParent"));
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void extendsBuilderMethods() throws Exception {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
+
+        Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfAParent");
+
+        Method builderMethod = supertype.getDeclaredMethod("withParent", String.class);
+        assertNotNull("no withParent method", builderMethod);
+        assertThat(builderMethod.getReturnType(), is(equalTo(supertype)));
+
+        Method builderMethodOverride = subtype.getDeclaredMethod("withParent", String.class);
+        assertNotNull("no withParent method", builderMethodOverride);
+        assertThat(builderMethodOverride.getReturnType(), is(equalTo(subtype)));
     }
 }
