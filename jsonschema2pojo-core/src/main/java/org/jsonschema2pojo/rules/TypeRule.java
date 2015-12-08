@@ -16,10 +16,16 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 import java.util.Iterator;
 
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JMod;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
@@ -27,6 +33,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.TypeUtil;
 
 /**
  * Applies the "type" schema rule.
@@ -172,12 +180,10 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     }
 
     private JType getJavaType(String javaTypeName, JCodeModel owner) {
-
-        if (isPrimitive(javaTypeName, owner)) {
-            return primitiveType(javaTypeName, owner);
-        } else {
-            return owner.ref(javaTypeName);
+        try {
+            return resolveType(owner, ruleFactory.getNameHelper(), javaTypeName);
+        }  catch (ClassNotFoundException e) {
+            return owner.ref(Object.class);
         }
     }
-
 }

@@ -221,34 +221,24 @@ public class ObjectRule implements Rule<JPackage, JType> {
         try {
             boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
             if (node.has("javaType")) {
-                String fqn = substringBefore(node.get("javaType").asText(), "<");
-
-                if (isPrimitive(fqn, _package.owner())) {
-                    throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
-                }
-
-                int index = fqn.lastIndexOf(".") + 1;
-                if (index >= 0 && index < fqn.length()) {
-                    fqn = fqn.substring(0, index) + ruleFactory.getGenerationConfig().getClassNamePrefix() + fqn.substring(index) + ruleFactory.getGenerationConfig().getClassNameSuffix();
-                }
-
-                try {
-                    _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    JClass existingClass = TypeUtil.resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
-
-                    throw new ClassAlreadyExistsException(existingClass);
+                try{
+                    JType type = resolveType(
+                            _package.owner(), ruleFactory.getNameHelper(), node.get("javaType").asText());
+                    throw new ClassAlreadyExistsException(type);
                 } catch (ClassNotFoundException e) {
+                    String className = ruleFactory.getNameHelper().getJavaTypeClassName(node.get("javaType").asText());
+                    className = substringBefore(className, "<");
                     if (usePolymorphicDeserialization) {
-                        newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
+                        newType = _package.owner()._class(JMod.PUBLIC, className, ClassType.CLASS);
                     } else {
-                        newType = _package.owner()._class(fqn);
+                        newType = _package.owner()._class(className);
                     }
                 }
             } else {
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, _package), ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, getUniqueClassName(nodeName, _package), ClassType.CLASS);
                 } else {
-                    newType = _package._class(getClassName(nodeName, _package));
+                    newType = _package._class(getUniqueClassName(nodeName, _package));
                 }
             }
         } catch (JClassAlreadyExistsException e) {
@@ -286,7 +276,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             Schema superTypeSchema = ruleFactory.getSchemaStore().create(schema, path);
             superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, superTypeSchema);
         } else if (node.has("extendsJavaClass")) {
-            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
+            superType = resolveType(jPackage.owner(), node.get("extendsJavaClass").asText());
         }
 
         return superType;
@@ -420,14 +410,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
-            jclass._implements(resolveType(jclass._package(), i.asText()));
+            jclass._implements(resolveType(jclass._package().owner(), i.asText()));
         }
     }
 
-    private String getClassName(String nodeName, JPackage _package) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
-        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
-        return makeUnique(normalizedName, _package);
+    private String getUniqueClassName(String nodeName, JPackage _package) {
+        String className = ruleFactory.getNameHelper().getClassName(nodeName);
+        return makeUnique(className, _package);
     }
 
     private String makeUnique(String className, JPackage _package) {

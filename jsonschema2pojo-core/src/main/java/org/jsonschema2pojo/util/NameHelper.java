@@ -16,14 +16,17 @@
 
 package org.jsonschema2pojo.util;
 
-import static java.lang.Character.*;
-import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang3.StringUtils.*;
-
+import com.sun.codemodel.JType;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
-import com.sun.codemodel.JType;
+import static java.lang.Character.isDigit;
+import static javax.lang.model.SourceVersion.isKeyword;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.containsAny;
+import static org.apache.commons.lang3.StringUtils.remove;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 
 public class NameHelper {
 
@@ -120,5 +123,27 @@ public class NameHelper {
         }
 
         return getterName;
+    }
+
+    public String getClassName(String className) {
+        String conditionedClassName = replaceIllegalCharacters(capitalize(className));
+        String normalizedName = normalizeName(conditionedClassName);
+        return getJavaTypeClassName(normalizedName);
+    }
+
+    public String getJavaTypeClassName(String javaType) {
+        String genericParameters = javaType.contains("<") ? "<" + substringAfter(javaType, "<") : "";
+        String baseName = substringBefore(javaType, "<");
+        return configureTypeName(baseName) + genericParameters;
+    }
+
+    private String configureTypeName(String typeName) {
+        int index = typeName.lastIndexOf(".") + 1;
+        if (index >= 0 && index < typeName.length()) {
+            return "" + typeName.substring(0, index) + generationConfig.getClassNamePrefix() +
+                    typeName.substring(index) + generationConfig.getClassNameSuffix();
+        } else {
+            return typeName;
+        }
     }
 }
