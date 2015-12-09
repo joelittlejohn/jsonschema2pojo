@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.17
+* Covariant builders - copy builder methods from superclass, with narrow return type ([#455](https://github.com/joelittlejohn/jsonschema2pojo/issues/455))
+* Specify target JVM version ([#454](https://github.com/joelittlejohn/jsonschema2pojo/pull/454))
+* Nested refs not resolved correctly when schema supplied as string ([#446](https://github.com/joelittlejohn/jsonschema2pojo/issues/446))
+* Make Inflector more amenable to thread safety. ([#435](https://github.com/joelittlejohn/jsonschema2pojo/pull/435))
+* Add Dynamic Accessors ([#386](https://github.com/joelittlejohn/jsonschema2pojo/pull/386))
+
 ## 0.4.16
 * Use minimum and maximum value of an integer property to determine java type long ([#434](https://github.com/joelittlejohn/jsonschema2pojo/pull/434))
 * Fix path to jar in windows script for the case it is run not from home dir ([#432](https://github.com/joelittlejohn/jsonschema2pojo/pull/432))
