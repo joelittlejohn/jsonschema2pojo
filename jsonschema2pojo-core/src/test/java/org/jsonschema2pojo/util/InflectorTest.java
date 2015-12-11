@@ -41,7 +41,8 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("lives"), is("life"));
         assertThat(Inflector.getInstance().singularize("knives"), is("knife"));
         assertThat(Inflector.getInstance().singularize("addresses"), is("address"));
-        assertThat(Inflector.getInstance().singularize("matresses"), is("matress"));
+        assertThat(Inflector.getInstance().singularize("mattresses"), is("mattress"));
+        assertThat(Inflector.getInstance().singularize("databases"), is("database"));
 
         assertThat(Inflector.getInstance().singularize("bison"), is("bison"));
         assertThat(Inflector.getInstance().singularize("buffalo"), is("buffalo"));
@@ -49,12 +50,12 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("fish"), is("fish"));
         assertThat(Inflector.getInstance().singularize("sheep"), is("sheep"));
         assertThat(Inflector.getInstance().singularize("squid"), is("squid"));
-        assertThat(Inflector.getInstance().singularize("matress"), is("matress"));
+        assertThat(Inflector.getInstance().singularize("mattress"), is("mattress"));
         assertThat(Inflector.getInstance().singularize("address"), is("address"));
 
         assertThat(Inflector.getInstance().singularize("s"), is("s"));
 
-        assertThat(Inflector.getInstance().pluralize("matress"), is("matresses"));
+        assertThat(Inflector.getInstance().pluralize("mattress"), is("mattresses"));
         assertThat(Inflector.getInstance().pluralize("address"), is("addresses"));
 
     }
