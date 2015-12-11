@@ -27,7 +27,8 @@ A very simple Maven example:
 ```
 
 Useful pages:
-  * **[Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
+  * **[Getting started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
+  * **[How to contribute](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Contribute)**
   * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
   * [Latest Javadocs](http://joelittlejohn.github.io/jsonschema2pojo/javadocs/0.4.17/)
   * [Documentation for the Maven plugin](http://joelittlejohn.github.io/jsonschema2pojo/site/0.4.17/generate-mojo.html)
