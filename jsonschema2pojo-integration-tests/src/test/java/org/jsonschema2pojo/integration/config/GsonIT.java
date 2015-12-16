@@ -17,18 +17,19 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.jsonschema2pojo.integration.util.JsonAssert.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,23 +39,23 @@ import com.google.gson.Gson;
 
 public class GsonIT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
 
-        File generatedOutputDirectory = generate("/json/examples/torrent.json", "com.example",
+        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_",
-                        "sourceType", "json"));
+                        "sourceType", "json"))
+                .loadClass("com.example.Torrent");
 
-        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
-        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
-        assertThat(generatedOutputDirectory, containsText("com.google.gson"));
-        assertThat(generatedOutputDirectory, containsText("@SerializedName"));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
+        assertThat(schemaRule.getGenerateDir(), containsText("com.google.gson"));
+        assertThat(schemaRule.getGenerateDir(), containsText("@SerializedName"));
 
-        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.Torrent");
         Method getter = generatedType.getMethod("getBuild");
 
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(nullValue()));
@@ -65,13 +66,11 @@ public class GsonIT {
     @Test
     public void annotationStyleGsonMakesTypesThatWorkWithGson() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, IOException {
 
-        File generatedOutputDirectory = generate("/json/examples/", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_",
                         "sourceType", "json",
                         "useLongIntegers", true));
-
-        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
@@ -81,7 +80,7 @@ public class GsonIT {
     @Test
     public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_"));
 

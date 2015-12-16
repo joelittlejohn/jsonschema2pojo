@@ -17,14 +17,15 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,11 +35,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AnnotationStyleIT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void defaultAnnotationStyeIsJackson2() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -53,7 +56,7 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJacksonProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "jackson"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -69,15 +72,12 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJackson2ProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2"));
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+                config("annotationStyle", "jackson2"))
+                .loadClass("com.example.PrimitiveProperties");
 
-        assertThat(generatedOutputDirectory, not(containsText("org.codehaus.jackson")));
-        assertThat(generatedOutputDirectory, containsText("com.fasterxml.jackson"));
-
-        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
 
         Method getter = generatedType.getMethod("getA");
 
@@ -90,15 +90,12 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJackson1ProducesJackson1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1"));
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+                config("annotationStyle", "jackson1"))
+                .loadClass("com.example.PrimitiveProperties");
 
-        assertThat(generatedOutputDirectory, not(containsText("com.fasterxml.jackson")));
-        assertThat(generatedOutputDirectory, containsText("org.codehaus.jackson"));
-
-        ClassLoader resultsClassLoader = compile(generatedOutputDirectory);
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
+        assertThat(schemaRule.getGenerateDir(), containsText("org.codehaus.jackson"));
 
         Method getter = generatedType.getMethod("getA");
 
@@ -111,7 +108,7 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleNoneProducesNoAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "none"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -128,7 +125,7 @@ public class AnnotationStyleIT {
     public void invalidAnnotationStyleCausesMojoException() {
 
         try {
-            generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle"));
+            schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle"));
             fail();
         } catch (RuntimeException e) {
             assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));

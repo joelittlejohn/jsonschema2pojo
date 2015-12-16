@@ -16,24 +16,27 @@
 
 package org.jsonschema2pojo.integration.ref;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 public class RelativeRefIT {
+
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> relativeRefsClass;
 
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader relativeRefsClassLoader = generateAndCompile("/schema/ref/refsToA.json", "com.example");
+        ClassLoader relativeRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refsToA.json", "com.example");
 
         relativeRefsClass = relativeRefsClassLoader.loadClass("com.example.RefsToA");
 

@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 import static org.fest.util.Lists.newArrayList;
 
@@ -32,6 +32,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameters;
@@ -59,6 +61,8 @@ public class IncludeAccessorsPropertiesIT {
         });
     }
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     private String path;
     private String typeName;
     private Map<String, Object> includeAccessorsFalse;
@@ -73,7 +77,7 @@ public class IncludeAccessorsPropertiesIT {
 
     @Test
     public void noGettersOrSettersWhenFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsFalse);
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
         assertThat("getters and setters should not exist", generatedType.getDeclaredMethods(), everyItemInArray(anyOf(methodWhitelist(), not(fieldGetterOrSetter()))));
@@ -81,7 +85,7 @@ public class IncludeAccessorsPropertiesIT {
 
     @Test
     public void hasGettersOrSettersWhenTrue() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsTrue);
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
         assertThat("a getter or setter should be found.", generatedType.getDeclaredMethods(), hasItemInArray(allOf(not(methodWhitelist()), fieldGetterOrSetter())));
@@ -89,7 +93,7 @@ public class IncludeAccessorsPropertiesIT {
 
     @Test
     public void onlyHasPublicInstanceFieldsWhenFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsFalse);
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
         assertThat("only public instance fields exist", generatedType.getDeclaredFields(), everyItemInArray(anyOf(hasModifiers(Modifier.STATIC), fieldWhitelist(), hasModifiers(Modifier.PUBLIC))));
@@ -97,7 +101,7 @@ public class IncludeAccessorsPropertiesIT {
 
     @Test
     public void noPublicInstanceFieldsWhenTrue() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = generateAndCompile(path, PACKAGE, includeAccessorsTrue);
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
         assertThat("only public instance fields exist", generatedType.getDeclaredFields(), everyItemInArray(anyOf(not(hasModifiers(Modifier.PUBLIC)), fieldWhitelist())));

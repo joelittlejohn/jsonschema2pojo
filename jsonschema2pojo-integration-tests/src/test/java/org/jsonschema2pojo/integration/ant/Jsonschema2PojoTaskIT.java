@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.integration.ant;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -31,18 +30,22 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.jsonschema2pojo.ant.Jsonschema2PojoTask;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 
 public class Jsonschema2PojoTaskIT {
+    
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
 
-        File outputDirectory = invokeAntBuild("/ant/build.xml");
+       invokeAntBuild("/ant/build.xml");
 
-        ClassLoader resultsClassLoader = compile(outputDirectory, buildCustomClasspath());
+        ClassLoader resultsClassLoader = schemaRule.compile(buildCustomClasspath());
 
         Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
 
@@ -55,8 +58,8 @@ public class Jsonschema2PojoTaskIT {
      * classpath element being read and no new type being generated. To test the
      * result, we need to compile with the same custom classpath.
      */
-    private List<String> buildCustomClasspath() {
-        return asList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar").getAbsolutePath());
+    private List<File> buildCustomClasspath() {
+        return asList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar"));
     }
 
     @Test
@@ -70,14 +73,12 @@ public class Jsonschema2PojoTaskIT {
 
     }
 
-    private File invokeAntBuild(String pathToBuildFile) throws URISyntaxException {
+    private void invokeAntBuild(String pathToBuildFile) throws URISyntaxException {
         File buildFile = new File(this.getClass().getResource(pathToBuildFile).toURI());
-
-        File targetDirectory = createTemporaryOutputFolder();
 
         Project project = new Project();
         project.setUserProperty("ant.file", buildFile.getAbsolutePath());
-        project.setUserProperty("targetDirectory", targetDirectory.getAbsolutePath());
+        project.setUserProperty("targetDirectory", schemaRule.getGenerateDir().getAbsolutePath());
         project.init();
 
         ProjectHelper helper = ProjectHelper.getProjectHelper();
@@ -85,8 +86,6 @@ public class Jsonschema2PojoTaskIT {
         helper.parse(project, buildFile);
 
         project.executeTarget(project.getDefaultTarget());
-
-        return targetDirectory;
     }
 
 }

@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -26,12 +26,15 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropertiesIT {
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -39,7 +42,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nullProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nullProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
         Object instance = generatedType.newInstance();
@@ -59,7 +62,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesAreSerializedInCorrectOrder() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/orderedProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/orderedProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
         Object instance = generatedType.newInstance();
@@ -83,7 +86,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("usePrimitives", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("usePrimitives", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -97,7 +100,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example",
                 config("usePrimitives", true, "propertyWordDelimiters", "_ -"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
@@ -118,7 +121,7 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -136,7 +139,7 @@ public class PropertiesIT {
     @Test
     public void propertyCalledClassCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/propertyCalledClass.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertyCalledClass.json", "com.example");
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertyCalledClass");
 

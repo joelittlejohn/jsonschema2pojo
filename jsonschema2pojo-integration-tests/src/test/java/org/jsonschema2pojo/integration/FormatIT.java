@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -32,7 +31,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -44,10 +45,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RunWith(Parameterized.class)
 public class FormatIT {
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithFormattedProperties;
 
-    @Parameters
+    @Parameters(name="{0}")
     public static List<Object[]> data() {
         return asList(new Object[][] {
                 /* { propertyName, expectedType, jsonValue, javaValue } */
@@ -85,7 +87,7 @@ public class FormatIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example");
+        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example");
 
         classWithFormattedProperties = resultsClassLoader.loadClass("com.example.FormattedProperties");
 
