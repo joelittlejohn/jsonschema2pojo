@@ -124,7 +124,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String targetVersion = "1.6";
 
     private boolean includeDynamicAccessors = true;
-
+    
+    private String dateTimeType = null;
+    
+    private String timeType = null;
+    
+    private String dateType = null;
+    
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -763,4 +769,20 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isIncludeDynamicAccessors() {
         return includeDynamicAccessors;
     }
+
+    @Override
+    public String getDateTimeType() {
+        return dateTimeType;
+    }
+
+    @Override
+    public String getDateType() {
+        return dateType;
+    }
+
+    @Override
+    public String getTimeType() {
+        return timeType;
+    }
+
 }
