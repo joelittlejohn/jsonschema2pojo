@@ -256,6 +256,21 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return true;
     }
 
+    @Override
+    public String getDateTimeType() {
+        return null;
+    }
+
+    @Override
+    public String getDateType() {
+        return null;
+    }
+
+    @Override
+    public String getTimeType() {
+        return null;
+    }
+
     /**
      * @return <code>1.6</code>
      */
