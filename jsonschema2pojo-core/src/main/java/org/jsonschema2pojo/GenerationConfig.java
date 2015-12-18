@@ -302,7 +302,7 @@ public interface GenerationConfig {
      *         methods and create public fields instead.
      */
     boolean isIncludeAccessors();
-    
+
     /**
      * Gets the 'targetVersion' configuration option
      * 
@@ -317,5 +317,31 @@ public interface GenerationConfig {
      *         or to omit these methods.
      */
     boolean isIncludeDynamicAccessors();
+    
+    /**
+     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
+     * [org.joda.time.LocalDateTime,java.time.LocalDateTime, ...]
+     * java.time.* require JVM8 or greater
+     * @return
+     */
+    String getDateTimeType();
+    
+    
+    /**
+     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
+     * [org.joda.time.LocalDate,java.time.LocalDate, ...]
+     * java.time.* require JVM8 or greater
+     * @return
+     */
+    String getDateType();
+    
+    /**
+     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
+     * [org.joda.time.LocalTime,java.time.LocalTime, ...]
+     * java.time.* require JVM8 or greater
+     * @return
+     */
+    String getTimeType();
+    
 
 }

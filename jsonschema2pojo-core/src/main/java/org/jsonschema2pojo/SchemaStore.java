@@ -49,8 +49,8 @@ public class SchemaStore {
             if (id.toString().contains("#")) {
                 JsonNode childContent = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
                 schemas.put(id, new Schema(id, childContent, content));
-        	} else {
-        		schemas.put(id, new Schema(id, content, content));
+            } else {
+                schemas.put(id, new Schema(id, content, content));
             }
         }
 

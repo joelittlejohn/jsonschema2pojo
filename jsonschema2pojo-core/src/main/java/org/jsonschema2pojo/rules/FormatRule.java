@@ -128,14 +128,45 @@ public class FormatRule implements Rule<JType, JType> {
     }
 
     private Class<?> getDateTimeType() {
+        String type=ruleFactory.getGenerationConfig().getDateTimeType();
+        if (type!=null && type.length()>0){
+            try {
+                Class<?> clazz=Class.forName(type);
+                return clazz;
+            } 
+            catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         return ruleFactory.getGenerationConfig().isUseJodaDates() ? DateTime.class : Date.class;
     }
 
     private Class<?> getDateOnlyType() {
+        String type=ruleFactory.getGenerationConfig().getDateType();
+        if (type!=null && type.length()>0){
+            try {
+                Class<?> clazz=Class.forName(type);
+                return clazz;
+            } 
+            catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            
+        }        
         return ruleFactory.getGenerationConfig().isUseJodaLocalDates() ? LocalDate.class : String.class;
     }
 
     private Class<?> getTimeOnlyType() {
+        String type=ruleFactory.getGenerationConfig().getTimeType();
+        if (type!=null && type.length()>0){
+            try {
+                Class<?> clazz=Class.forName(type);
+                return clazz;
+            } 
+            catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }      
         return ruleFactory.getGenerationConfig().isUseJodaLocalTimes() ? LocalTime.class : String.class;
     }
 

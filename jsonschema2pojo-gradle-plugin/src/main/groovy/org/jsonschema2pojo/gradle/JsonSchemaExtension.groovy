@@ -59,6 +59,9 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useJodaDates
   boolean useJodaLocalDates
   boolean useJodaLocalTimes
+  String dateTimeType
+  String dateType
+  String timeType
   boolean useLongIntegers
   boolean usePrimitives
   FileFilter fileFilter
@@ -85,6 +88,9 @@ public class JsonSchemaExtension implements GenerationConfig {
     useJodaDates = false
     useJodaLocalDates = false
     useJodaLocalTimes = false
+    dateTimeType = null
+    dateType = null
+    timeType = null
     useCommonsLang3 = false
     parcelable = false
     fileFilter = new AllFileFilter()
@@ -151,6 +157,9 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useJodaDates = ${useJodaDates}
        |useJodaLocalDates = ${useJodaLocalDates}
        |useJodaLocalTimes = ${useJodaLocalTimes}
+       |dateTimeType = ${dateTimeType}
+       |dateType = ${dateType}
+       |timeType = ${timeType}
        |useCommonsLang3 = ${useCommonsLang3}
        |parcelable = ${parcelable}
        |initializeCollections = ${initializeCollections}

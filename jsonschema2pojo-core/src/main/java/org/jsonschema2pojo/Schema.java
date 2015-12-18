@@ -60,8 +60,8 @@ public class Schema {
     }
 
     public JsonNode getParentContent() {
-		return parentContent;
-	}
+        return parentContent;
+    }
     
     public boolean isGenerated() {
         return javaType != null;
