@@ -56,7 +56,7 @@ public class CustomDatesIT {
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDateTime", clazz);
     }
-    
+
     @Test
     public void disablingDateTimeTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
@@ -73,7 +73,7 @@ public class CustomDatesIT {
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDate", clazz);
     }
-    
+
     @Test
     public void disablingDateTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
@@ -81,7 +81,7 @@ public class CustomDatesIT {
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDate", "java.lang.String");
     }
-    
+
     @Test
     public void timeTypeCausesCustomTimeType() throws IntrospectionException, ClassNotFoundException {
         String clazz="org.joda.time.LocalTime";
@@ -90,15 +90,14 @@ public class CustomDatesIT {
         Class<?> classWithTime = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithTime, "stringAsTime", clazz);
     }
-    
+
     @Test
     public void disablingTimeTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("timeType", null));
         Class<?> classWithTime = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithTime, "stringAsTime", "java.lang.String");
-    }    
-   
+    }
 
     @Test(expected=GenerationException.class)
     public void throwsGenerationExceptionForUnknownDateTimeType() {

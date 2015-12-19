@@ -136,7 +136,7 @@ public class FormatRule implements Rule<JType, JType> {
             try {
                 Class<?> clazz=Class.forName(type);
                 return clazz;
-            } 
+            }
             catch (ClassNotFoundException e) {
                 throw new GenerationException(format("could not load java type %s for date-time format", type), e);
             }
@@ -150,12 +150,11 @@ public class FormatRule implements Rule<JType, JType> {
             try {
                 Class<?> clazz=Class.forName(type);
                 return clazz;
-            } 
+            }
             catch (ClassNotFoundException e) {
                 throw new GenerationException(format("could not load java type %s for date format", type), e);
             }
-            
-        }        
+        }
         return ruleFactory.getGenerationConfig().isUseJodaLocalDates() ? LocalDate.class : String.class;
     }
 
@@ -165,11 +164,11 @@ public class FormatRule implements Rule<JType, JType> {
             try {
                 Class<?> clazz=Class.forName(type);
                 return clazz;
-            } 
+            }
             catch (ClassNotFoundException e) {
                 throw new GenerationException(format("could not load java type %s for time format", type), e);
             }
-        }      
+        }
         return ruleFactory.getGenerationConfig().isUseJodaLocalTimes() ? LocalTime.class : String.class;
     }
 

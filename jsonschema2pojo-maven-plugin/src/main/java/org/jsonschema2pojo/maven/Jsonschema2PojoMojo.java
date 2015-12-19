@@ -332,7 +332,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.4.9
      */
     private boolean useJodaLocalTimes = false;
-    
+
     private String dateTimeType = null;
     private String timeType = null;
     private String dateType = null;

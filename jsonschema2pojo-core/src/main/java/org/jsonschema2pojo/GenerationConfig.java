@@ -272,7 +272,7 @@ public interface GenerationConfig {
     String getClassNameSuffix();
 
     /**
-     * Gets the 'includeConstructors' configuration option
+     * Gets the 'includeConstructors' configuration option.
      *
      * @return Whether to generate constructors or not.
      */
@@ -287,7 +287,7 @@ public interface GenerationConfig {
     boolean isConstructorsRequiredPropertiesOnly();
 
     /**
-     * Gets the 'includeAdditionalProperties' configuration option
+     * Gets the 'includeAdditionalProperties' configuration option.
      *
      * @return Whether to allow 'additional properties' support in objects.
      *         Setting this to false will disable additional properties support,
@@ -296,7 +296,7 @@ public interface GenerationConfig {
     boolean isIncludeAdditionalProperties();
 
     /**
-     * Gets the 'includeAccessors' configuration option
+     * Gets the 'includeAccessors' configuration option.
      *
      * @return Whether to include getters/setters or to omit these accessor
      *         methods and create public fields instead.
@@ -304,44 +304,65 @@ public interface GenerationConfig {
     boolean isIncludeAccessors();
 
     /**
-     * Gets the 'targetVersion' configuration option
+     * Gets the 'targetVersion' configuration option.
      * 
      *  @return The target version for generated source files.
      */
     String getTargetVersion();
 
     /**
-     * Gets the `includeDynamicAccessors` configuraiton option
+     * Gets the `includeDynamicAccessors` configuraiton option.
      *
      * @return Whether to include dynamic getters, setters, and builders
      *         or to omit these methods.
      */
     boolean isIncludeDynamicAccessors();
-    
+
     /**
-     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
-     * [org.joda.time.LocalDateTime,java.time.LocalDateTime, ...]
-     * java.time.* require JVM8 or greater
-     * @return
+     * Gets the `dateTimeType` configuration option.
+     *         <p>
+     *         Example values:
+     *         <ul>
+     *         <li><code>org.joda.time.LocalDateTime</code> (Joda)</li>
+     *         <li><code>java.time.LocalDateTime</code> (JSR310)</li>
+     *         <li><code>null</code> (default behavior)</li>
+     *         </ul>
+     *
+     * @return The java type to use instead of {@link java.util.Date}
+     *         when adding date type fields to generate Java types.
      */
     String getDateTimeType();
-    
-    
+
     /**
-     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
-     * [org.joda.time.LocalDate,java.time.LocalDate, ...]
-     * java.time.* require JVM8 or greater
-     * @return
+     * Gets the `dateType` configuration option.
+     *         <p>
+     *         Example values:
+     *         <ul>
+     *         <li><code>org.joda.time.LocalDate</code> (Joda)</li>
+     *         <li><code>java.time.LocalDate</code> (JSR310)</li>
+     *         <li><code>null</code> (default behavior)</li>
+     *         </ul>
+     *
+     * @return The java type to use instead of string
+     *         when adding string type fields with a format of date (not
+     *         date-time) to generated Java types.
      */
     String getDateType();
-    
+
     /**
-     * Allow to specifiy a class for date-time jsonschema type. Could be JSR310, Joda, ...  
-     * [org.joda.time.LocalTime,java.time.LocalTime, ...]
-     * java.time.* require JVM8 or greater
-     * @return
+     * Gets the `timeType` configuration option.
+     *         <p>
+     *         Example values:
+     *         <ul>
+     *         <li><code>org.joda.time.LocalTime</code> (Joda)</li>
+     *         <li><code>java.time.LocalTime</code> (JSR310)</li>
+     *         <li><code>null</code> (default behavior)</li>
+     *         </ul>
+     *
+     * @return The java type to use instead of string
+     *         when adding string type fields with a format of time (not
+     *         date-time) to generated Java types.
      */
     String getTimeType();
-    
 
 }

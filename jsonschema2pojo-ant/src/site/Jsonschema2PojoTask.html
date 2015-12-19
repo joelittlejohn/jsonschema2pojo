@@ -215,12 +215,12 @@
       </tr>
       <tr>
         <td valign="top">useJodaLocalDates</td>
-        <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of String when adding string fields with format date to generated Java types.</td>
+        <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of <code>java.lang.String</code> when adding string fields with format date to generated Java types.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
         <td valign="top">useJodaLocalTimes</td>
-        <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of String when adding string fields with format time to generated Java types.</td>
+        <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of <code>java.lang.String</code> when adding string fields with format time to generated Java types.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
@@ -237,23 +237,37 @@
         <td valign="top">targetVersion</td>
         <td valign="top">The target version for generated source files.</td>
         <td align="center" valign="top">No (default <code>1.6</code>)</td>
-      </tr>      
+      </tr>
       <tr>
         <td valign="top">dateTimeType</td>
-        <td valign="top">Specify class to use i.e.<code>java.time.LocalDateTime</code> instead of <code>java.util.Date</code> when adding date-time type fields to generated Java types.</td>
-        <td align="center" valign="top">default <code>null</code></td>
+        <td valign="top">The java type to use instead of <code>java.util.Date</code> when adding date-time type fields to generated Java types.
+          <ul>
+            <li><code>org.joda.time.LocalDateTime</code> (Joda)</li>
+            <li><code>java.time.LocalDateTime</code> (JSR310)</li>
+          </ul>
+        </td>
+        <td align="center" valign="top">No</td>
       </tr>
       <tr>
         <td valign="top">dateType</td>
-        <td valign="top">Specify class to use i.e.<code>java.time.LocalDate</code> instead of <code>java.util.Date</code> when adding date-time type fields to generated Java types.</td>
-        <td align="center" valign="top">default <code>null</code></td>
+        <td valign="top">The java type to use instead of <code>java.lang.String</code> when adding string fields with format date to generated Java types.
+          <ul>
+            <li><code>org.joda.time.LocalDate</code> (Joda)</li>
+            <li><code>java.time.LocalDate</code> (JSR310)</li>
+          </ul>
+        </td>
+        <td align="center" valign="top">No</td>
       </tr>
       <tr>
         <td valign="top">timeType</td>
-        <td valign="top">Specify class to use i.e.<code>java.time.LocalTime</code> instead of <code>java.util.Date</code> when adding date-time type fields to generated Java types.</td>
-        <td align="center" valign="top">default <code>null</code></td>
+        <td valign="top">The java type to use instead of <code>java.lang.String</code> when adding string fields with format time to generated Java types.
+          <ul>
+            <li><code>org.joda.time.LocalTime</code> (Joda)</li>
+            <li><code>java.time.LocalTime</code> (JSR310)</li>
+          </ul>
+        </td>
+        <td align="center" valign="top">No</td>
       </tr>
-	  
     </table>
 
     <h3>Examples</h3>

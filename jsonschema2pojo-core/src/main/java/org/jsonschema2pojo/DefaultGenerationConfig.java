@@ -271,7 +271,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeDynamicAccessors() {
         return true;
     }
-    
+
     @Override
     public String getDateTimeType() {
         return null;
@@ -285,5 +285,5 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public String getTimeType() {
         return null;
-    }    
+    }
 }
