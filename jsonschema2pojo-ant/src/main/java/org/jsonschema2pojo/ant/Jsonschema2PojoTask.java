@@ -122,13 +122,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeAccessors = true;
     
     private String targetVersion = "1.6";
-    
+
     private boolean includeDynamicAccessors = true;
-    
+
     private String dateTimeType = null;
-    
+
     private String timeType = null;
-    
+
     private String dateType = null;
 
 
@@ -769,7 +769,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeDynamicAccessors() {
         return includeDynamicAccessors;
-    }    
+    }
 
     @Override
     public String getDateTimeType() {

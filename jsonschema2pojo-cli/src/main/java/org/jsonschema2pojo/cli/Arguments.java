@@ -119,7 +119,7 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-dt", "--date-class" }, description = "Specify date class")
     private String dateType = null;
-    
+
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
     private boolean useCommonsLang3 = false;
 

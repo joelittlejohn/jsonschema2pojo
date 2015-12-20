@@ -22,14 +22,11 @@ import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.jsonschema2pojo.exception.GenerationException;
 import org.junit.Test;
 
 public class CustomDatesIT {
@@ -59,10 +56,9 @@ public class CustomDatesIT {
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDateTime", clazz);
     }
-    
+
     @Test
     public void disablingDateTimeTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
-        String clazz="org.joda.time.LocalDateTime";
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("dateTimeType", null));
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
@@ -77,16 +73,15 @@ public class CustomDatesIT {
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDate", clazz);
     }
-    
+
     @Test
     public void disablingDateTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
-        String clazz="org.joda.time.LocalDate";
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("dateType", null));
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithDate, "stringAsDate", "java.lang.String");
     }
-    
+
     @Test
     public void timeTypeCausesCustomTimeType() throws IntrospectionException, ClassNotFoundException {
         String clazz="org.joda.time.LocalTime";
@@ -95,16 +90,32 @@ public class CustomDatesIT {
         Class<?> classWithTime = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithTime, "stringAsTime", clazz);
     }
-    
+
     @Test
     public void disablingTimeTypeCausesDefault() throws ClassNotFoundException, IntrospectionException {
-        String clazz="org.joda.time.LocalTime";
         ClassLoader classLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("timeType", null));
         Class<?> classWithTime = classLoader.loadClass("com.example.FormattedProperties");
         assertTypeIsExpected(classWithTime, "stringAsTime", "java.lang.String");
-    }    
-   
+    }
+
+    @Test(expected=GenerationException.class)
+    public void throwsGenerationExceptionForUnknownDateTimeType() {
+        generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+                config("dateTimeType", "org.jsonschema2pojo.integration.config.UnknownType"));
+    }
+
+    @Test(expected=GenerationException.class)
+    public void throwsGenerationExceptionForUnknownDateType() {
+        generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+                config("dateType", "org.jsonschema2pojo.integration.config.UnknownType"));
+    }
+
+    @Test(expected=GenerationException.class)
+    public void throwsGenerationExceptionForUnknownTimeType() {
+        generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+                config("timeType", "org.jsonschema2pojo.integration.config.UnknownType"));
+    }
 
     private void assertTypeIsExpected(Class<?> classInstance, String propertyName, String expectedType)
             throws IntrospectionException {
