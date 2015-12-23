@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "oneOfProperties",
+  "properties": {
+    "stringOrInteger": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "integer"}
+      ]
+    }
+  }
+}
