@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -48,6 +49,7 @@ public class TypeRuleTest {
     @Before
     public void wireUpConfig() {
         when(ruleFactory.getGenerationConfig()).thenReturn(config);
+        when(ruleFactory.getNameHelper()).thenReturn(new NameHelper(config));
     }
 
     @Test

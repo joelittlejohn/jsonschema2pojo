@@ -273,7 +273,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
-            jclass._implements(resolveType(jclass._package(), i.asText()));
+            jclass._implements(resolveType(jclass._package().owner(), i.asText()));
         }
     }
 
