@@ -1,0 +1,14 @@
+{
+    "type" : "object",
+    "properties" : {
+        "a" : {
+            "type" : "integer"
+        },
+        "b" : {
+            "type" : "number"
+        },
+        "c" : {
+            "type" : "boolean"
+        }
+    }
+}

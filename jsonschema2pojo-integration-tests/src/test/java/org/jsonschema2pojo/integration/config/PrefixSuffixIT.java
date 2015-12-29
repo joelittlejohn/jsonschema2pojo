@@ -28,7 +28,7 @@ public class PrefixSuffixIT {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
         resultsClassLoader.loadClass("com.example.PrimitiveProperties");
     }
-    
+
     @Test
     public void customClassPrefix() throws ClassNotFoundException{
 
@@ -37,12 +37,19 @@ public class PrefixSuffixIT {
     }
     
     @Test
-    public void defaultClassSufix() throws ClassNotFoundException{
+    public void noCapsCustomClassPrefix() throws ClassNotFoundException{
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","abstract"));
+        resultsClassLoader.loadClass("com.example.abstractPrimitiveProperties");
+    }
+
+    @Test
+    public void defaultClassSuffix() throws ClassNotFoundException{
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
         resultsClassLoader.loadClass("com.example.PrimitiveProperties");
     }
-    
+
     @Test
     public void customClassSuffix() throws ClassNotFoundException{
 
@@ -50,31 +57,73 @@ public class PrefixSuffixIT {
         resultsClassLoader.loadClass("com.example.PrimitivePropertiesDao");
     }
     
+    @Test
+    public void noCapsCustomClassSuffix() throws ClassNotFoundException{
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNameSuffix","dao"));
+        resultsClassLoader.loadClass("com.example.PrimitivePropertiesdao");
+    }
+
     @Test(expected = ClassNotFoundException.class)
-    public void NotExitstingClassPrefix() throws ClassNotFoundException{
+    public void NotExistingClassPrefix() throws ClassNotFoundException{
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
-    
+
     @Test(expected = ClassNotFoundException.class)
-    public void NotExitstingClassSufix() throws ClassNotFoundException{
+    public void NotExistingClassSufix() throws ClassNotFoundException{
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
-    
+
     @Test(expected = ClassNotFoundException.class)
     public void SuffixWithDefaultPackageName() throws ClassNotFoundException{
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "", config("classNameSuffix","Dao"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
-    
+
     @Test(expected = ClassNotFoundException.class)
     public void PrefixWithDefaultPackageName() throws ClassNotFoundException{
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "", config("classNamePrefix","Abstract"));
         resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
     }
 
+    @Test
+    public void customClassPrefixNoJavaType() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitivePropertiesNoJavaType.json",
+                "com.example", config("classNamePrefix","Prefix"));
+        resultsClassLoader.loadClass("com.example.PrefixPrimitivePropertiesNoJavaType");
+    }
     
+    @Test
+    public void customClassPrefixNoCapsNoJavaType() throws ClassNotFoundException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitivePropertiesNoJavaType.json",
+                "com.example", config("classNamePrefix","prefix"));
+        resultsClassLoader.loadClass("com.example.prefixPrimitivePropertiesNoJavaType");
+    }
+
+    @Test
+    public void customClassSuffixNoJavaType() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitivePropertiesNoJavaType.json",
+                "com.example", config("classNameSuffix","Suffix"));
+        resultsClassLoader.loadClass("com.example.PrimitivePropertiesNoJavaTypeSuffix");
+    }
+    
+    @Test
+    public void customClassSuffixNoCapsNoJavaType() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitivePropertiesNoJavaType.json",
+                "com.example", config("classNameSuffix","suffix"));
+        resultsClassLoader.loadClass("com.example.PrimitivePropertiesNoJavaTypesuffix");
+    }
+
+    @Test
+    public void customClassPrefixAndSuffixNoJavaType() throws ClassNotFoundException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitivePropertiesNoJavaType.json",
+                "com.example", config("classNamePrefix", "Prefix", "classNameSuffix","Suffix"));
+        resultsClassLoader.loadClass("com.example.PrefixPrimitivePropertiesNoJavaTypeSuffix");
+    }
 }

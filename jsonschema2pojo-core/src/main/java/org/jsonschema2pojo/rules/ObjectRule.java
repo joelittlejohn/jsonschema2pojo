@@ -425,9 +425,27 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private String getClassName(String nodeName, JPackage _package) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
+        String prefix = ruleFactory.getGenerationConfig().getClassNamePrefix();
+        String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
+        String capitalizedNodeName = capitalize(nodeName);
+        String fullNodeName = createFullNodeName(capitalizedNodeName, prefix, suffix);
+
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(fullNodeName);
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
         return makeUnique(normalizedName, _package);
+    }
+
+    private String createFullNodeName(String nodeName, String prefix, String suffix) {
+        String returnString = nodeName;
+        if (prefix != null) {
+            returnString = prefix + returnString;
+        }
+
+        if (suffix != null) {
+            returnString = returnString + suffix;
+        }
+
+        return returnString;
     }
 
     private String makeUnique(String className, JPackage _package) {
