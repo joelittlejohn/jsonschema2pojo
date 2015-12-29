@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.18
+* Added support for custom date-time, date, time classes. ([#469](https://github.com/joelittlejohn/jsonschema2pojo/pull/469))
+* Databases element of type array generated class name Databasis instead of Database ([#461](https://github.com/joelittlejohn/jsonschema2pojo/issues/461))
+
 ## 0.4.17
 * Covariant builders - copy builder methods from superclass, with narrow return type ([#455](https://github.com/joelittlejohn/jsonschema2pojo/issues/455))
 * Specify target JVM version ([#454](https://github.com/joelittlejohn/jsonschema2pojo/pull/454))

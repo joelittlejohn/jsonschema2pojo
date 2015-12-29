@@ -44,3 +44,6 @@
 * D Redreev
 * Ben Jefferies
 * blizznets
+* R Patrick
+* Denis Miorandi
+* P Wilder
