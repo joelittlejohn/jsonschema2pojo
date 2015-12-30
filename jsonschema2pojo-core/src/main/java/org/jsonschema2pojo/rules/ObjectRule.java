@@ -33,6 +33,7 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.MakeUniqueClassName;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
@@ -436,7 +437,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             _package.remove(_class);
             return className;
         } catch (JClassAlreadyExistsException e) {
-            return makeUnique(className + "_", _package);
+            return makeUnique(MakeUniqueClassName.makeUnique(className), _package);
         }
     }
 
