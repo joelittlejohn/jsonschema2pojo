@@ -121,7 +121,13 @@ public class SchemaMapper {
         JPackage jpackage = codeModel._package(packageName);
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode schemaNode = mapper.readTree(json);
+        JsonNode schemaNode = null;
+        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON) {
+            JsonNode jsonNode = mapper.readTree(json);
+            schemaNode = schemaGenerator.schemaFromExample(jsonNode);
+        } else {
+            schemaNode = mapper.readTree(json);
+        }
 
         return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode, schemaNode));
     }
