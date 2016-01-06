@@ -17,79 +17,63 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
-import org.junit.Before;
+import org.hamcrest.Matcher;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runner.RunWith;
 
+@RunWith(Parameterized.class)
 public class InitializeCollectionsIT {
-
-    @SuppressWarnings("rawtypes")
-    private Class generatedType;
-    private Object instance;
     
-    @Before
-    public void setUp() throws Exception {
+    @Parameters(name="{0}")
+    public static Collection<Object[]> parameters() {
+        Map<String, Object> withOptionFalse = config("initializeCollections", false);
+        Map<String, Object> withOptionAbsent = config();
+        return Arrays.asList(new Object[][] {
+            {"defaultValueForCollectionsIsEmptyCollection", withOptionAbsent, "getList", notNullValue()},
+            {"defaultValueForListIsNullWithProperty", withOptionFalse, "getList", nullValue()},
+            {"defaultValueForSetIsNullWithProperty", withOptionFalse, "getSet", nullValue()},
+            {"defaultValueForListWithValuesIsNotNullWithProperty", withOptionFalse, "getListWithValues", notNullValue()},
+            {"defaultValueForSetWithValuesIsNotNullWithProperty", withOptionFalse, "getSetWithValues", notNullValue()}
+        });
+    }
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example", config("initializeCollections", false));
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-        generatedType = resultsClassLoader.loadClass("com.example.InitializeCollectionProperties");
-        instance = generatedType.newInstance();
+    private Map<String, Object> config;
+    private Matcher<Object> resultMatcher;
+    private String getterName;
+    
+    public InitializeCollectionsIT(String label, Map<String, Object> config, String getterName, Matcher<Object> resultMatcher) {
+        this.config = config;
+        this.getterName = getterName;
+        this.resultMatcher = resultMatcher;
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void defaultValueForCollectionsIsEmptyCollection() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public void correctResult() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example", config);
 
-        generatedType = resultsClassLoader.loadClass("com.example.InitializeCollectionProperties");
-        instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.InitializeCollectionProperties");
+        Object instance = generatedType.newInstance();
 
-        Method getter = generatedType.getMethod("getList");
+        Method getter = generatedType.getMethod(getterName);
 
-        assertThat(getter.invoke(instance), notNullValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void defaultValueForListIsNullWithProperty() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
-        Method getter = generatedType.getMethod("getList");
-
-        assertThat(getter.invoke(instance), nullValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void defaultValueForSetIsNullWithProperty() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
-        Method getter = generatedType.getMethod("getSet");
-
-        assertThat(getter.invoke(instance), nullValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void defaultValueForListWithValuesIsNotNullWithProperty() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
-        Method getter = generatedType.getMethod("getListWithValues");
-
-        assertThat(getter.invoke(instance), notNullValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void defaultValueForSetWithValuesIsNotNullWithProperty() throws ClassNotFoundException, IntrospectionException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
-        Method getter = generatedType.getMethod("getSetWithValues");
-
-        assertThat(getter.invoke(instance), notNullValue());
+        assertThat(getter.invoke(instance), resultMatcher);
     }
 
 }

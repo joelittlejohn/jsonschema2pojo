@@ -16,19 +16,22 @@
 
 package org.jsonschema2pojo.integration.ref;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CyclicalRefIT {
+
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void cyclicalRefsAreReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example");
 
         Class class1 = resultsClassLoader.loadClass("com.example.RefToSubdirectory2");
         Class class2 = resultsClassLoader.loadClass("com.example.RefToSubdirectory1");

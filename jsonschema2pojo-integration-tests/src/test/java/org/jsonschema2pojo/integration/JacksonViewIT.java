@@ -17,15 +17,18 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class JacksonViewIT {
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void javaJsonViewWithJackson1x() throws Exception {
@@ -47,7 +50,7 @@ public class JacksonViewIT {
     }
 
     private Annotation jsonViewTest(String annotationStyle, Class<? extends Annotation> annotationType) throws ClassNotFoundException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = generateAndCompile(
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
                 "/schema/views/views.json",
                 "com.example",
                 config("annotationStyle", annotationStyle));

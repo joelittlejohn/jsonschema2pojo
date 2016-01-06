@@ -17,12 +17,14 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +32,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class IncludeAccessorsIT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     public void beansIncludeGettersAndSettersByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -46,7 +50,7 @@ public class IncludeAccessorsIT {
     @Test
     public void beansOmitGettersAndSettersWhenAccessorsAreDisabled() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -69,7 +73,7 @@ public class IncludeAccessorsIT {
     @Test
     public void beansWithoutAccessorsRoundTripJsonCorrectly() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 

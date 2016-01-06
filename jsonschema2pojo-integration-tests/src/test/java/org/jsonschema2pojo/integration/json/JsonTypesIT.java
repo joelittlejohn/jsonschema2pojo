@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.integration.json;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -25,18 +25,22 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonTypesIT {
+    
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
     public void simpleTypesInExampleAreMappedToCorrectJavaTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
@@ -54,7 +58,7 @@ public class JsonTypesIT {
     @Test(expected = ClassNotFoundException.class)
     public void simpleTypeAtRootProducesNoJavaTypes() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypeAsRoot.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypeAsRoot.json", "com.example",
                 config("sourceType", "json"));
 
         resultsClassLoader.loadClass("com.example.SimpleTypeAsRoot");
@@ -65,7 +69,7 @@ public class JsonTypesIT {
     @SuppressWarnings("unchecked")
     public void complexTypesProduceObjects() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/complexObject.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/complexObject.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> complexObjectClass = resultsClassLoader.loadClass("com.example.ComplexObject");
@@ -90,7 +94,7 @@ public class JsonTypesIT {
     @SuppressWarnings("rawtypes")
     public void arrayTypePropertiesProduceLists() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/array.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/array.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> arrayType = resultsClassLoader.loadClass("com.example.Array");
@@ -113,7 +117,7 @@ public class JsonTypesIT {
     @Test(expected = ClassNotFoundException.class)
     public void arrayAtRootProducesNoJavaTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/arrayAsRoot.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/arrayAsRoot.json", "com.example",
                 config("sourceType", "json"));
 
         resultsClassLoader.loadClass("com.example.ArrayAsRoot");

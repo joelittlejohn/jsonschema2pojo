@@ -19,12 +19,17 @@ package org.jsonschema2pojo.integration.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import static java.util.Arrays.*;
+import java.util.Arrays;
+
 import java.util.Collection;
+import java.util.List;
+
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
+
 import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -36,26 +41,29 @@ import static org.junit.Assert.*;
  */
 public class Compiler {
 
-    public void compile(File directory, String classpath) {
-        compile(directory, classpath, null);
-    }
-
-    public void compile(File directory, String classpath, String targetVersion) {
-        
+    public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
         targetVersion = targetVersion == null ? "1.6" : targetVersion;
 
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(directory));
+        if (outputDirectory != null) {
+            try {
+                fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
+                        Arrays.asList(outputDirectory));
+                fileManager.setLocation(StandardLocation.CLASS_PATH, classpath);
+            } catch (IOException e) {
+                throw new RuntimeException("could not set output directory", e);
+            }
+        }
+
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(sourceDirectory));
 
         ArrayList<String> options = new ArrayList<String>();
         options.add("-source");
         options.add(targetVersion);
         options.add("-target");
         options.add(targetVersion);
-        options.add("-classpath");
-        options.add(classpath);
         options.add("-encoding");
         options.add("UTF8");
         options.add("-Xlint:-options");

@@ -17,20 +17,24 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.not;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CommonsLang3IT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     public void hashCodeAndEqualsUseCommonsLang2ByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example");
+        File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example");
 
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang3.")));
         assertThat(generatedOutputDirectory, containsText("org.apache.commons.lang."));
@@ -40,7 +44,7 @@ public class CommonsLang3IT {
     @Test
     public void hashCodeAndEqualsUseCommonsLang3() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example",
+        File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example",
                 config("useCommonsLang3", true));
 
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang.")));

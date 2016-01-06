@@ -32,8 +32,10 @@
 package org.jsonschema2pojo.integration;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertNotNull;
+
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -41,15 +43,15 @@ import org.junit.Test;
  * @author JAshe
  */
 public class PolymorphicIT {
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
     
     @Test
-    @SuppressWarnings("rawtypes")
     public void extendsWithPolymorphicDeserialization() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
 
-        Class subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
-        Class supertype = subtype.getSuperclass();
+        Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
+        Class<?> supertype = subtype.getSuperclass();
 
         assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
 

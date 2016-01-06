@@ -18,15 +18,18 @@ package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class DynamicPropertiesIT {
+    
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void shouldSetStringField() throws Throwable {
@@ -169,7 +172,7 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldSetAdditionalProperty() throws Exception {
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/dynamic/parentType.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example");
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example.ParentType");
         Object instance = parentType.newInstance();
@@ -189,7 +192,7 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldGetAdditionalProperty() throws Exception {
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/dynamic/parentType.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example");
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example.ParentType");
         Object instance = parentType.newInstance();
@@ -209,12 +212,12 @@ public class DynamicPropertiesIT {
                 equalTo("value"));
     }
 
-    public static void setDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
+    public void setDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
         setDeclaredPropertyTest(config(), schemaLocation, typeName, fieldType, fieldName, fieldGetter, value);
     }
 
-    public static void setDeclaredPropertyTest(Map<String, Object> config, String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaLocation, "com.example", config);
+    public void setDeclaredPropertyTest(Map<String, Object> config, String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config);
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
@@ -233,9 +236,9 @@ public class DynamicPropertiesIT {
 
     }
 
-    public static void withDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
+    public void withDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
         ClassLoader resultsClassLoader =
-                generateAndCompile(schemaLocation, "com.example", config("generateBuilders", true));
+                schemaRule.generateAndCompile(schemaLocation, "com.example", config("generateBuilders", true));
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
@@ -256,8 +259,8 @@ public class DynamicPropertiesIT {
 
     }
 
-    public static void getDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldSetter, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaLocation, "com.example");
+    public void getDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldSetter, Object value) throws Throwable {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example");
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = parentType.newInstance();
@@ -276,7 +279,7 @@ public class DynamicPropertiesIT {
     }
 
     public void setAdditionalPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaLocation, "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example");
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = parentType.newInstance();
@@ -299,7 +302,7 @@ public class DynamicPropertiesIT {
     }
 
     public void setPropertyTest(String schemaLocation, String typeName, String fieldName, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaLocation, "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example");
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
@@ -313,7 +316,7 @@ public class DynamicPropertiesIT {
     }
 
     public void getPropertyTest(String schemaLocation, String typeName, String fieldName) throws Throwable {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaLocation, "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example");
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();

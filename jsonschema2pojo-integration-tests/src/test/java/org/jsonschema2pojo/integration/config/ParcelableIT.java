@@ -17,13 +17,14 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.ParcelUtils.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -38,11 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Config(manifest=Config.NONE)
 public class ParcelableIT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     public void parcelableTreeIsParcelable() throws ClassNotFoundException, IOException {
-        File generatedTypesDirectory = generate("/schema/parcelable/parcelable-schema.json", "com.example", 
-                config("parcelable", true));
-        Class<?> parcelableType = compile(generatedTypesDirectory).loadClass("com.example.ParcelableSchema");
+        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-schema.json", "com.example", 
+                config("parcelable", true))
+                .loadClass("com.example.ParcelableSchema");
         
         Parcelable instance = (Parcelable) new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-data.json"), parcelableType);
         String key = "example";

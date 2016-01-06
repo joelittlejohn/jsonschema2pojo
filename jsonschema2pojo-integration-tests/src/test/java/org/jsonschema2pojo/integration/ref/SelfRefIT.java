@@ -17,10 +17,8 @@
 package org.jsonschema2pojo.integration.ref;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,19 +26,25 @@ import java.lang.reflect.Type;
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     private static Class<?> selfRefsClass;
 
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader selfRefsClassLoader = generateAndCompile("/schema/ref/selfRefs.json", "com.example");
+        ClassLoader selfRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/selfRefs.json", "com.example");
 
         selfRefsClass = selfRefsClassLoader.loadClass("com.example.SelfRefs");
 
@@ -79,11 +83,10 @@ public class SelfRefIT {
         String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"));
         JCodeModel codeModel = new JCodeModel();
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
+
+        codeModel.build(schemaRule.getGenerateDir());
         
-        File outputFolder = createTemporaryOutputFolder();
-        codeModel.build(outputFolder);
-        
-        ClassLoader classLoader = compile(outputFolder);
+        ClassLoader classLoader = schemaRule.compile();
         
         Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsInString");
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));

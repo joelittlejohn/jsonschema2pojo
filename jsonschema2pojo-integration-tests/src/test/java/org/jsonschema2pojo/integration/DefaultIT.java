@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,17 +26,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 public class DefaultIT {
+    
+    @ClassRule public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithDefaults;
 
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example");
 
         classWithDefaults = resultsClassLoader.loadClass("com.example.Default");
 
