@@ -25,7 +25,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.URLUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
@@ -127,28 +129,26 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             if (reference.startsWith("#/")) {
                 // self reference with type definition
                 // use the name of the type
+                
+                // TODO: what about nested references? How to handle them: e.g: "$ref": "#/definitions/level/sublevel/actual_element"
+                // with type information available only on actual_element and level/sublevel used as namespaces to avoid type conflicts
+                // e.g. level could also contain an actual_element definition which differs from the sublevel/actual_element.
+                // Maybe it is worth to generate java subpackages for such cases. 
                 return reference.substring(reference.lastIndexOf('/') + 1);
             } else {
                 // global reference (other file, url whatever)
                 final URI uri = schema == null || schema.getId() == null ? URI.create(reference) : schema.getId().resolve(reference);
-
-                try {
-                    return getNodeName(uri.toURL());
-                } catch (final MalformedURLException e) {
-                    throw new IllegalArgumentException(String.format("The referenced URL %s for %s is invalid", uri, nodeName), e);
-                }
+                
+                // TODO: actually this fix is incomplete. The uri may by any valid URL (file, classpath, java, http, etc)
+                // Also same problem exists here. The url may point to a schema with a type name already defined e.g.
+                // in the document referencing it, but with different contents. How to handle this?
+                // Maybe it is worth to require the usage of the "id" element of the json schema and generate package
+                // names based on it. In addition one could introduce configuration options to map these ids to 
+                // java packages.
+                return FilenameUtils.getBaseName(uri.getPath());
             }
         } else {
             return nodeName;
-        }
-
-    }
-
-    private String getNodeName(URL url) {
-        try {
-            return FilenameUtils.getBaseName(URLDecoder.decode(url.toString(), "UTF-8"));
-        } catch (final UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", url.toString()), e);
         }
 
     }

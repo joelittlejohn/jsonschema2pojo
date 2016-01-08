@@ -1,0 +1,28 @@
+{
+	"id": "http://test.com",
+	"$schema": "http://json-schema.org/schema#",
+	
+	"definitions": {
+		"a_type": {
+		    "type": "object",
+		    "properties": {
+		        "first_prop": { "$ref": "#/definitions/b_type" },
+		        "second_prop": { "$ref": "#/definitions/b_type" }
+		    }
+	    },
+	    "b_type": {
+		    "type": "object",
+		    "properties": {
+		        "first_prop": { "type": "string" },
+		        "second_prop": { "type": "string" }
+		    }
+	    }
+    },
+    
+    "type": "object",
+    
+    "properties": {
+    	"first_ref": { "$ref": "#/definitions/a_type" },
+    	"second_ref": { "$ref": "#/definitions/a_type" }
+    }
+}
