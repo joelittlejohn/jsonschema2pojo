@@ -123,7 +123,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     
     private String targetVersion = "1.6";
 
-    private boolean includeDynamicAccessors = true;
+    private boolean includeDynamicAccessors = false;
 
     private String dateTimeType = null;
 

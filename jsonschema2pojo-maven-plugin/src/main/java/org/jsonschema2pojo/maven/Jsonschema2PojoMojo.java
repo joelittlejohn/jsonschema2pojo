@@ -452,10 +452,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include dynamic getters, setters, and builders or to omit these methods.
      *
      * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
-     *            default-value="true"
+     *            default-value="false"
      * @since 0.4.17
      */
-    private boolean includeDynamicAccessors = true;
+    private boolean includeDynamicAccessors = false;
 
     /**
      * The project being built.

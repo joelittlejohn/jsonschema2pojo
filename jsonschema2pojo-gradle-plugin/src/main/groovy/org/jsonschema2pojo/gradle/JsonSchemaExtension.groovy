@@ -100,7 +100,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeAdditionalProperties = true
     includeAccessors = true
     targetVersion = '1.6'
-    includeDynamicAccessors = true
+    includeDynamicAccessors = false
   }
 
   @Override
