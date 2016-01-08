@@ -18,6 +18,13 @@ package org.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
+
+import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -70,8 +77,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
         String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName);
+        final String propertyTypeName = getPropertyTypeName(schema, node, nodeName);
 
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
+        JType propertyType = ruleFactory.getSchemaRule().apply(propertyTypeName, node, jclass, schema);
 
         node = resolveRefs(node, schema);
 
@@ -110,6 +118,39 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         return jclass;
+    }
+
+    private String getPropertyTypeName(Schema schema, JsonNode node, String nodeName) {
+        if (node.has("$ref")) {
+            final String reference = node.get("$ref").asText();
+
+            if (reference.startsWith("#/")) {
+                // self reference with type definition
+                // use the name of the type
+                return reference.substring(reference.lastIndexOf('/') + 1);
+            } else {
+                // global reference (other file, url whatever)
+                final URI uri = schema == null || schema.getId() == null ? URI.create(reference) : schema.getId().resolve(reference);
+
+                try {
+                    return getNodeName(uri.toURL());
+                } catch (final MalformedURLException e) {
+                    throw new IllegalArgumentException(String.format("The referenced URL %s for %s is invalid", uri, nodeName), e);
+                }
+            }
+        } else {
+            return nodeName;
+        }
+
+    }
+
+    private String getNodeName(URL url) {
+        try {
+            return FilenameUtils.getBaseName(URLDecoder.decode(url.toString(), "UTF-8"));
+        } catch (final UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", url.toString()), e);
+        }
+
     }
 
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
