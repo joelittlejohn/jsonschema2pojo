@@ -25,12 +25,10 @@ import org.gradle.api.tasks.TaskAction
  *
  * @author Ben Manes (ben.manes@gmail.com)
  */
-class GenerateJsonSchemaTask extends DefaultTask {
+class GenerateJsonSchemaJavaTask extends DefaultTask {
   def configuration
 
-  enum AndroidProject  { APP, LIBRARY }
-
-  GenerateJsonSchemaTask() {
+  GenerateJsonSchemaJavaTask() {
     description = 'Generates Java classes from a json schema.'
     group = 'Build'
 
@@ -43,12 +41,8 @@ class GenerateJsonSchemaTask extends DefaultTask {
 
       if (project.plugins.hasPlugin('java')) {
         configureJava()
-      } else if (project.plugins.hasPlugin('com.android.application')) {
-        configureAndroid(AndroidProject.APP)
-      } else if (project.plugins.hasPlugin('com.android.library')) {
-        configureAndroid(AndroidProject.LIBRARY)
       } else {
-        throw new GradleException('generateJsonSchema: Java or Android plugin required')
+        throw new GradleException('generateJsonSchema: Java plugin is required')
       }
       outputs.dir configuration.targetDirectory
     }
@@ -62,36 +56,6 @@ class GenerateJsonSchemaTask extends DefaultTask {
     if (!configuration.source.hasNext()) {
       configuration.source = project.files("${project.sourceSets.main.output.resourcesDir}/json")
       configuration.sourceFiles.each { it.mkdir() }
-    }
-  }
-
-  def configureAndroid(AndroidProject androidProject) {
-    def android = project.extensions.android
-    android.sourceSets.main.java.srcDirs += [ configuration.targetDirectory ]
-
-    android.(getVariantProperty(androidProject)).all { variant ->
-      dependsOn("process${variant.name.capitalize()}Resources")
-      variant.javaCompile.dependsOn(this)
-    }
-
-    if (!configuration.source.hasNext()) {
-      configuration.sourceFiles = project.files(
-        android.sourceSets.main.resources.srcDirs.collect {
-          "${it}/json"
-        }.findAll {
-          project.file(it).exists()
-        })
-    }
-  }
-
-  def getVariantProperty(AndroidProject androidProject) {
-    switch(androidProject) {
-      case AndroidProject.APP:
-        return "applicationVariants"
-      case AndroidProject.LIBRARY:
-        return "libraryVariants"
-      default:
-        throw new IllegalArgumentException("Passed an invalid android project type")
     }
   }
 
