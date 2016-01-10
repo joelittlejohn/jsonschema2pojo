@@ -19,12 +19,11 @@ package org.jsonschema2pojo.cli;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.net.URL;
+
 import org.junit.Test;
 
 import com.beust.jcommander.ParameterException;
-import org.jsonschema2pojo.Annotator;
-
-import java.net.URL;
 
 public class UrlConverterTest {
 
@@ -34,7 +33,9 @@ public class UrlConverterTest {
     public void urlIsCreatedFromFilePath() {
         URL url = converter.convert("/path/to/something");
 
-        assertThat(url.getPath(), is("/path/to/something"));
+        // on *ux the path part of the URL is equal to the given path
+        // on Windows C: is prepended, which is expected
+        assertThat(url.getPath(), endsWith("/path/to/something"));
     }
 
     @Test
