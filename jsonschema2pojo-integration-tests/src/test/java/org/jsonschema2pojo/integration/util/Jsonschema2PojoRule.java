@@ -241,7 +241,7 @@ public class Jsonschema2PojoRule implements TestRule {
     static String classNameToPath(String className) {
         return className
                 .replaceAll("\\A(?:.*\\.)?([^\\.]*)\\Z", "$1")
-                .replaceAll("\\$", File.separator);
+                .replaceAll("\\$", Pattern.quote(File.separator));
     }
 
 }

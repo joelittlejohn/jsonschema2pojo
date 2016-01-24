@@ -23,10 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import org.jsonschema2pojo.util.URLUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,33 +51,35 @@ public class ArgumentsTest {
     public void parseRecognisesValidArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target", "--package", "mypackage",
-                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring"
+                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors"
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getFile(), is("/home/source"));
+        assertThat(args.getSource().next().getFile(), endsWith("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
+        assertThat(args.isIncludeDynamicAccessors(), is(true));
     }
 
     @Test
     public void parseRecognisesShorthandArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S"
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida"
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getFile(), is("/home/source"));
+        assertThat(args.getSource().next().getFile(), endsWith("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is("mypackage"));
         assertThat(args.isGenerateBuilders(), is(true));
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
+        assertThat(args.isIncludeDynamicAccessors(), is(true));
     }
 
     @Test
@@ -99,13 +98,14 @@ public class ArgumentsTest {
         });
 
         assertThat(args.didExit(), is(false));
-        assertThat(args.getSource().next().getFile(), is("/home/source"));
+        assertThat(args.getSource().next().getFile(), endsWith("/home/source"));
         assertThat(args.getTargetDirectory(), is(theFile("/home/target")));
         assertThat(args.getTargetPackage(), is(nullValue()));
         assertThat(args.isGenerateBuilders(), is(false));
         assertThat(args.isUsePrimitives(), is(false));
         assertThat(args.isIncludeHashcodeAndEquals(), is(true));
         assertThat(args.isIncludeToString(), is(true));
+        assertThat(args.isIncludeDynamicAccessors(), is(false));
     }
 
     @Test
