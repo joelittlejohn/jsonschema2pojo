@@ -87,7 +87,7 @@ jsonSchema2Pojo {
   annotationStyle = 'jackson'
 
   // A fully qualified class name, referring to a custom annotator class that implements
-  // org.jsonschema2pojo.NoopAnnotator and will be used in addition to the one chosen
+  // org.jsonschema2pojo.Annotator and will be used in addition to the one chosen
   // by annotationStyle. If you want to use the custom annotator alone, set annotationStyle to none.
   customAnnotator = 'org.jsonschema2pojo.NoopAnnotator'
 
