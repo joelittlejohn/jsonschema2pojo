@@ -122,7 +122,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
-        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC | JMod.STATIC;
+        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC;
 
         try {
             if (node.has("javaType")) {
