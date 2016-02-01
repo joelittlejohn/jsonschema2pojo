@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "one": {
+      "type": "string",
+      "javaName": "three"
+    },
+    "two": {
+      "type": "string",
+      "javaName": "three"
+    }
+  }
+}
