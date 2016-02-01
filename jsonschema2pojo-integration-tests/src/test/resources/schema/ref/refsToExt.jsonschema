@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    
+    "properties": {
+    	"first_ext_ref": { "$ref": "firstRef.json" },
+    	"second_ext_ref": { "$ref": "secondRef.json" },
+    	
+    	"third_ext_ref": { "$ref": "firstRef.json" },
+    	"fourth_ext_ref": { "$ref": "secondRef.json" }
+    }
+}

@@ -92,9 +92,9 @@ public class SelfRefIT {
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));
         
         Class<?> listEntryType = (Class<?>) ((ParameterizedType)nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
-        assertThat(listEntryType.getName(), equalTo("com.example.Thing"));
+        assertThat(listEntryType.getName(), equalTo("com.example.ThingList"));
         
-        Class<?> thingClass = classLoader.loadClass("com.example.Thing");
+        Class<?> thingClass = classLoader.loadClass("com.example.ThingList");
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getVersion").getReturnType().getSimpleName(), equalTo("String"));
