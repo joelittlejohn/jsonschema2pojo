@@ -16,10 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import org.jsonschema2pojo.Schema;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
@@ -30,6 +26,11 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import org.jsonschema2pojo.Schema;
+
+import static org.apache.commons.lang3.StringUtils.capitalize;
+
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -69,9 +70,15 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
 
-        String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName);
+        String fieldName = nodeName;
 
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
+        if (node.has("javaName")) {
+            fieldName = node.get("javaName").textValue();
+        }
+
+        String propertyName = ruleFactory.getNameHelper().getPropertyName(fieldName);
+
+        JType propertyType = ruleFactory.getSchemaRule().apply(fieldName, node, jclass, schema);
 
         node = resolveRefs(node, schema);
 
@@ -82,10 +89,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
-            JMethod getter = addGetter(jclass, field, nodeName);
+            JMethod getter = addGetter(jclass, field, fieldName);
+            ruleFactory.getAnnotator().propertyGetter(getter, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
 
-            JMethod setter = addSetter(jclass, field, nodeName);
+            JMethod setter = addSetter(jclass, field, fieldName);
+            ruleFactory.getAnnotator().propertySetter(setter, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
@@ -115,6 +124,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), generatedJavaConstruct, schema);
+        }
+
+        if (node.has("javaName")) {
+            ruleFactory.getJavaNameRule().apply(nodeName, node.get("javaName"), generatedJavaConstruct, schema);
         }
 
         if (node.has("description")) {
@@ -153,8 +166,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JBlock body = getter.body();
         body._return(field);
 
-        ruleFactory.getAnnotator().propertyGetter(getter, jsonPropertyName);
-
         return getter;
     }
 
@@ -167,8 +178,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
         body.assign(JExpr._this().ref(field), param);
-
-        ruleFactory.getAnnotator().propertySetter(setter, jsonPropertyName);
 
         return setter;
     }

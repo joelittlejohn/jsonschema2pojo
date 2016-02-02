@@ -16,14 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
@@ -32,6 +24,14 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -363,6 +363,10 @@ public class RuleFactory {
      */
     public Rule<JDefinedClass, JDefinedClass> getDynamicPropertiesRule() {
         return new DynamicPropertiesRule(this);
+    }
+
+    public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
+        return new JavaNameRule();
     }
 
 }
