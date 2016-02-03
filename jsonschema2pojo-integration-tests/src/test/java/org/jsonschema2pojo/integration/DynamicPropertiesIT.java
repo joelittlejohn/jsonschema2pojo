@@ -229,7 +229,7 @@ public class DynamicPropertiesIT {
             throw e.getCause();
         }
 
-        assertThat("set$ for field " + fieldName + " of type " + fieldType + " works.",
+        assertThat("set for field " + fieldName + " of type " + fieldType + " works.",
                 fieldType.cast(type.getMethod(fieldGetter)
                         .invoke(instance)),
                 equalTo(value));
