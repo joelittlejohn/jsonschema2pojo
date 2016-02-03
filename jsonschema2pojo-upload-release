@@ -138,7 +138,7 @@ pushd $WORKING_DIR
     RELEASE=$(curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -sX POST \
                   -d "{\"tag_name\":\"jsonschema2pojo-$VERSION\", \"name\":\"$VERSION\"}" \
                   "https://api.github.com/repos/joelittlejohn/jsonschema2pojo/releases")
-    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?name}/?name=jsonschema2pojo-$VERSION.tar.gz/")
+    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?.*}/?name=jsonschema2pojo-$VERSION.tar.gz/")
     RELEASE_PAGE=$(echo $RELEASE | jq -r .html_url)
     curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -X POST \
         -H"Content-Type: application/x-tar" --data-binary @../jsonschema2pojo-$VERSION.tar.gz "$UPLOAD_URL" -o /dev/null
