@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.19
+* Add javaName schema property ([#499](https://github.com/joelittlejohn/jsonschema2pojo/pull/499))
+* Declare an enum without that "static" ([#496](https://github.com/joelittlejohn/jsonschema2pojo/issues/496))
+* includeDynamicAccessors should default to false (don't include dynamic accessors by default) ([#482](https://github.com/joelittlejohn/jsonschema2pojo/pull/482))
+* Inflector - incorrect for word "specimen" ([#479](https://github.com/joelittlejohn/jsonschema2pojo/issues/479))
+* Allow JSON to be passed as a String to SchemaMapper ([#475](https://github.com/joelittlejohn/jsonschema2pojo/pull/475))
+* Prefix / Suffix support when javaType is not specified ([#465](https://github.com/joelittlejohn/jsonschema2pojo/pull/465))
+
 ## 0.4.18
 * Added support for custom date-time, date, time classes. ([#469](https://github.com/joelittlejohn/jsonschema2pojo/pull/469))
 * Databases element of type array generated class name Databasis instead of Database ([#461](https://github.com/joelittlejohn/jsonschema2pojo/issues/461))

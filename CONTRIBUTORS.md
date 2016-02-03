@@ -47,3 +47,8 @@
 * R Patrick
 * Denis Miorandi
 * P Wilder
+* Rakshith Rao (rakrao)
+* Lomig Megard
+* Dimitrij Drus
+* Arno Puder
+* SpaceBison
