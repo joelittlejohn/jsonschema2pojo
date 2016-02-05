@@ -36,7 +36,7 @@ public class OneOfRule implements Rule<JClassContainer, JType> {
         
       // find interfaces common to all types, add those to the field type as an intersection.
         
-      // create a field with that type.
+      // create a field with that type.  The parent is doing this.
         
       // In Jackson annotator:
       // generate a deserializer that will...

@@ -16,9 +16,13 @@
 
 package org.jsonschema2pojo;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -29,13 +33,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.gson.JsonElement;
 import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
+import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
@@ -69,6 +84,11 @@ public class Jackson2Annotator extends AbstractAnnotator {
         if (propertyNode.has("javaJsonView")) {
             field.annotate(JsonView.class).param(
                 "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+        }
+        
+        if (propertyNode.has("oneOf")) {
+            JType deserializer = addOneOfDeserializer(field, clazz, propertyName, propertyNode);
+            field.annotate(JsonDeserialize.class).param("using", deserializer);
         }
     }
 
@@ -114,5 +134,26 @@ public class Jackson2Annotator extends AbstractAnnotator {
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
         field.annotate(JsonIgnore.class);
+    }
+    
+    static JClass addOneOfDeserializer( JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode ) {
+      String deserializerName = field.name().substring(0, 1).toUpperCase()+field.name().substring(1)+"$Jackson2Deserializer";
+      JClass jsonDeserializer = clazz.owner().ref(JsonDeserializer.class).narrow(field.type());
+      try {
+        JDefinedClass fieldDeser = clazz._class(JMod.PUBLIC | JMod.STATIC, deserializerName);
+        fieldDeser._extends(jsonDeserializer);
+        
+        JMethod deserMethod = fieldDeser.method(JMod.PUBLIC, field.type(), "deserialize");
+        deserMethod._throws(clazz.owner().ref(IOException.class));
+        deserMethod._throws(clazz.owner().ref(JsonProcessingException.class));
+        deserMethod.param(clazz.owner().ref(JsonParser.class), "jp");
+        deserMethod.param(clazz.owner().ref(DeserializationContext.class), "ctxt");
+        
+        deserMethod.body()._return(JExpr._null());
+        
+        return fieldDeser;
+      } catch (JClassAlreadyExistsException e) {
+        throw new GenerationException("could not add oneOf deserializer to "+field, e);
+      }
     }
 }
