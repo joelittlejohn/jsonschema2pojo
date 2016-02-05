@@ -370,7 +370,7 @@ public class RuleFactory {
     }
 
     public Rule<JClassContainer, JType> getOneOfRule() {
-        return new OneOfRule();
+        return new OneOfRule(this);
     }
 
 }
