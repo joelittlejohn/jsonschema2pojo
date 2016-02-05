@@ -18,6 +18,7 @@ package org.jsonschema2pojo.integration.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -33,6 +39,7 @@ import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.jsonschema2pojo.integration.util.Compiler.systemJavaCompiler;
 
 /**
  * A JUnit rule that executes JsonSchema2Pojo.
@@ -48,6 +55,7 @@ public class Jsonschema2PojoRule implements TestRule {
     private boolean sourceDirInitialized = false;
     private boolean classesDirInitialized = false;
     private ClassLoader classLoader;
+    private List<Diagnostic<? extends JavaFileObject>> diagnostics;
 
     /**
      * Gets the target directory for generate calls.
@@ -82,12 +90,18 @@ public class Jsonschema2PojoRule implements TestRule {
         return classLoader;
     }
 
+    public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
+      checkActive();
+      return diagnostics;
+    }
+
     @Override
     public Statement apply(final Statement base, final Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
                 active = true;
+                diagnostics = new ArrayList<Diagnostic<? extends JavaFileObject>>();
                 try {
                     File testRoot = methodNameDir(classNameDir(rootDirectory(), description.getClassName()),
                             description.getMethodName());
@@ -101,6 +115,7 @@ public class Jsonschema2PojoRule implements TestRule {
                     classLoader = null;
                     sourceDirInitialized = false;
                     classesDirInitialized = false;
+                    diagnostics = null;
                     active = false;
                 }
             }
@@ -133,10 +148,14 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     public ClassLoader compile(List<File> classpath, Map<String, Object> config) {
+      return compile(systemJavaCompiler(), null, classpath, config);
+    }
+
+    public ClassLoader compile(JavaCompiler compiler, Writer out, List<File> classpath, Map<String, Object> config) {
         if (classLoader != null) {
             throw new IllegalStateException("cannot recompile sources");
         }
-        classLoader = CodeGenerationHelper.compile(getGenerateDir(), getCompileDir(), classpath, config);
+        classLoader = CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, new CapturingDiagnosticListener());
         return classLoader;
     }
 
@@ -168,6 +187,13 @@ public class Jsonschema2PojoRule implements TestRule {
         if (active != true) {
             throw new IllegalStateException("cannot access Jsonschema2PojoRule state when inactive");
         }
+    }
+
+    class CapturingDiagnosticListener implements DiagnosticListener<JavaFileObject> {
+      @Override
+      public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+        diagnostics.add(diagnostic);
+      }
     }
 
     private static List<File> emptyClasspath() {

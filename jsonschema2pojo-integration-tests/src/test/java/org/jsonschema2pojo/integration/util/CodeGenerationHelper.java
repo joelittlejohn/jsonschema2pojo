@@ -20,9 +20,11 @@ import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.jsonschema2pojo.integration.util.Compiler.systemJavaCompiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -33,6 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -135,12 +141,16 @@ public class CodeGenerationHelper {
     }
     
     public static ClassLoader compile(File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config) {
+      return compile(systemJavaCompiler(), null, sourceDirectory, outputDirectory, classpath, config, null);
+    }
+
+    public static ClassLoader compile(JavaCompiler compiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config, DiagnosticListener<? super JavaFileObject> listener) {
 
         List<File> fullClasspath = new ArrayList<File>();
         fullClasspath.addAll(classpath);
         fullClasspath.addAll(CodeGenerationHelper.classpathToFileArray(System.getProperty("java.class.path")));
 
-        new Compiler().compile(sourceDirectory, outputDirectory, fullClasspath, (String)config.get("targetVersion"));
+        new Compiler().compile(compiler, out, sourceDirectory, outputDirectory, fullClasspath, listener, (String)config.get("targetVersion"));
 
         try {
             return URLClassLoader.newInstance(new URL[] { outputDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());

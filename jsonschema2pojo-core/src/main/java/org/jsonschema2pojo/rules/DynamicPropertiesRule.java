@@ -166,7 +166,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PROTECTED, jclass.owner()._ref(Object.class), DEFINED_GETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar notFoundParam = method.param(jclass.owner()._ref(Object.class), "notFoundValue");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JSwitch propertySwitch = body._switch(nameParam);
         if (propertiesNode != null) {
@@ -197,7 +196,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PROTECTED, jclass.owner()._ref(Object.class), DEFINED_GETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar notFoundParam = method.param(jclass.owner()._ref(Object.class), "notFoundValue");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JConditional propertyConditional = null;
         if (propertiesNode != null) {
@@ -245,7 +243,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PUBLIC, jclass.owner().VOID, SETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar valueParam = method.param(Object.class, "value");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
@@ -273,7 +270,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PUBLIC, jclass, BUILDER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar valueParam = method.param(Object.class, "value");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
@@ -297,7 +293,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PROTECTED, jclass.owner().BOOLEAN, DEFINED_SETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar valueParam = method.param(Object.class, "value");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JSwitch propertySwitch = body._switch(nameParam);
         if (propertiesNode != null) {
@@ -326,7 +321,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JMethod method = jclass.method(PROTECTED, jclass.owner().BOOLEAN, DEFINED_SETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar valueParam = method.param(Object.class, "value");
-        Models.suppressWarnings(method, "unchecked");
         JBlock body = method.body();
         JConditional propertyConditional = null;
         if (propertiesNode != null) {
