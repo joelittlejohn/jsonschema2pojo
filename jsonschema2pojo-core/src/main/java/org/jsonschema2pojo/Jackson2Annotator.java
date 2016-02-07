@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.google.gson.JsonElement;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JBlock;
@@ -177,10 +178,14 @@ public class Jackson2Annotator extends AbstractAnnotator {
           
           // add code to deserialize with the type if the option is successful.
           JConditional ifAccepted = body._if(fieldDeser.staticInvoke(acceptMethod).arg(tree));
-          ifAccepted._then()._return(
+          // in the if, try the parse, move on if it fails.
+          JBlock ifAcceptedThen = ifAccepted._then();
+          JClass typeRefClass = model.ref(TypeReference.class).narrow(optionType);
+          JVar typeRef = ifAcceptedThen.decl(typeRefClass, "typeRef", JExpr._new(model.anonymousClass(typeRefClass)));
+          ifAcceptedThen._return(
               codec.invoke("readValue")
                 .arg(codec.invoke("treeAsTokens").arg(tree))
-                .arg(JExpr._new(model.anonymousClass(model.ref(TypeReference.class).narrow(optionType)))));
+                .arg(typeRef));
         }
         deserMethod.body()._return(JExpr._null());
         
@@ -202,22 +207,70 @@ public class Jackson2Annotator extends AbstractAnnotator {
       JVar token = body.decl(model.ref(JsonToken.class), "token", JExpr.invoke(tree, "asToken"));
       
       if( "string".equals(type) ) {
-        body._return(model.ref(JsonToken.class).staticRef("VALUE_STRING").eq(token));
+        filterOtherTokens(model, body, token, "VALUE_STRING");
+        
+        // filter by min/max
+        JsonNode minLength = optionNode.path("minLength");
+        JsonNode maxLength = optionNode.path("maxLength");
+        if( !minLength.isMissingNode() || !maxLength.isMissingNode() ) {
+          JVar value = valueNodeVar(model, body, model.ref(String.class), tree, "asText");
+          if( !minLength.isMissingNode() ) {
+            body._if(value.invoke("length").lt(JExpr.lit(minLength.asInt())))._then()._return(JExpr.FALSE);
+          }
+          if( !maxLength.isMissingNode() ) {
+            body._if(value.invoke("length").gt(JExpr.lit(maxLength.asInt())))._then()._return(JExpr.FALSE);
+          }
+        }
+     
+        body._return(JExpr.TRUE);
       }
       else if( "boolean".equals(type)) {
-        body._return(model.ref(JsonToken.class).staticRef("VALUE_TRUE").eq(token).cor(model.ref(JsonToken.class).staticRef("VALUE_FALSE").eq(token)));                
+        filterOtherTokens(model, body, token, "VALUE_TRUE", "VALUE_FALSE");
+        
+        body._return(JExpr.TRUE);
       }
       else if( "integer".equals(type) ) {
-        body._return(model.ref(JsonToken.class).staticRef("VALUE_NUMBER_INT").eq(token));        
+        filterOtherTokens(model, body, token, "VALUE_NUMBER_INT");
+        
+        JsonNode minimum = optionNode.path("minimum");
+        JsonNode maximum = optionNode.path("maximum");
+        if( !maximum.isMissingNode() || !minimum.isMissingNode() ) {
+          JVar value = valueNodeVar(model, body, model.INT, tree, "asInt");
+          if( !minimum.isMissingNode() ) {
+            body._if(value.lt(JExpr.lit(minimum.asInt())))._then()._return(JExpr.FALSE);
+          }
+          if( !maximum.isMissingNode() ) {
+            body._if(value.gt(JExpr.lit(maximum.asInt())))._then()._return(JExpr.FALSE);
+          }
+        }
+              
+        body._return(JExpr.TRUE);
       }
       else if( "number".equals(type) ) {
-        body._return(model.ref(JsonToken.class).staticRef("VALUE_NUMBER_FLOAT").eq(token));        
+        filterOtherTokens(model, body, token, "VALUE_NUMBER_FLOAT");     
+        
+        body._return(JExpr.TRUE);
       }
       else if( "array".equals(type) ) {
-        body._return(model.ref(JsonToken.class).staticRef("START_ARRAY").eq(token));                
+        filterOtherTokens(model, body, token, "START_ARRAY");               
+        
+        body._return(JExpr.TRUE);
       }
       
       return acceptMethod;
+    }
+    
+    static void filterOtherTokens(JCodeModel model, JBlock block, JVar token, String firstType, String... types) {
+      JExpression test = model.ref(JsonToken.class).staticRef(firstType).ne(token);
+      for( String type : types ) {
+        test = test.cand(model.ref(JsonToken.class).staticRef(type));
+      }
+      block._if(test)
+      ._then()._return(JExpr.FALSE);
+    }
+    
+    static JVar valueNodeVar( JCodeModel model, JBlock body, JType type, JVar tree, String accessor ) {
+      return body.decl(type, "value", ((JExpression)JExpr.cast(model.ref(ValueNode.class), tree)).invoke(accessor));
     }
 
 }

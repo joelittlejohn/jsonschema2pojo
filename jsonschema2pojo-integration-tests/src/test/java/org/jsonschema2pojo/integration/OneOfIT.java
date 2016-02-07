@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -49,18 +50,54 @@ public class OneOfIT {
   public static Collection<Object[]> parameters() {
     return Arrays.asList(new Object[][]{
       {
-        "simpleOneOf",
+        "simpleOneOfString",
         "/schema/oneOf/oneOf.json",
         "com.example.OneOf",
         json("{\"stringOrInteger\": 1}"),
         hasProperty("stringOrInteger", equalTo(1))
       },{
-        "simpleOneOf",
+        "simpleOneOfInteger",
         "/schema/oneOf/oneOf.json",
         "com.example.OneOf",
         json("{\"stringOrInteger\": \"1\"}"),
         hasProperty("stringOrInteger", equalTo("1"))
-      },
+      },{
+        "stringLengthBelowMin",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"minLength\": \"http://example.com/\"}"),
+        hasProperty("minLength", equalTo(URI.create("http://example.com/")))
+      },{
+        "stringLengthAtMin",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"minLength\": \"http://example.com/a\"}"),
+        hasProperty("minLength", equalTo("http://example.com/a"))
+      },{
+        "stringLengthAboveMin",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"minLength\": \"http://example.com/ab\"}"),
+        hasProperty("minLength", equalTo("http://example.com/ab"))
+      },{
+        "stringLengthBelowMax",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"maxLength\": \"http://example.com/\"}"),
+        hasProperty("maxLength", equalTo("http://example.com/"))
+      },{
+        "stringLengthAtMax",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"maxLength\": \"http://example.com/a\"}"),
+        hasProperty("maxLength", equalTo("http://example.com/a"))
+      },{
+        "stringLengthAboveMax",
+        "/schema/oneOf/oneOfStringLength.json",
+        "com.example.OneOfStringLength",
+        json("{\"maxLength\": \"http://example.com/ab\"}"),
+        hasProperty("maxLength", equalTo(URI.create("http://example.com/ab")))
+      }
     });
   }
   
