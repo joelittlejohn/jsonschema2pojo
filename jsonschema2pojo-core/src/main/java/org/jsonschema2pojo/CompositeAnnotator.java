@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
@@ -61,6 +63,13 @@ public class CompositeAnnotator implements Annotator {
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         for (Annotator annotator : annotators) {
             annotator.propertyField(field, clazz, propertyName, propertyNode);
+        }
+    }
+
+    @Override
+    public void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+        for (Annotator annotator : annotators) {
+            annotator.propertyField(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
         }
     }
 

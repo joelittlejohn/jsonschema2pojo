@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
@@ -157,4 +159,6 @@ public interface Annotator {
     boolean isAdditionalPropertiesSupported();
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
+
+    void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema);
 }
