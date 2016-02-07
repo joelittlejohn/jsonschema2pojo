@@ -97,6 +97,42 @@ public class OneOfIT {
         "com.example.OneOfStringLength",
         json("{\"maxLength\": \"http://example.com/ab\"}"),
         hasProperty("maxLength", equalTo(URI.create("http://example.com/ab")))
+      },{
+        "integerBoundsBelowMin",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 4}"),
+        hasProperty("minimum", equalTo(new Integer(4)))
+      },{
+        "integerBoundsAtMin",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 5}"),
+        hasProperty("minimum", equalTo(new Long(5)))
+      },{
+        "integerBoundsAboveMin",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 6}"),
+        hasProperty("minimum", equalTo(new Long(6)))
+      },{
+        "integerBoundsBelowMax",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 4}"),
+        hasProperty("minimum", equalTo(new Integer(4)))
+      },{
+        "integerBoundsAtMax",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 5}"),
+        hasProperty("minimum", equalTo(new Long(5)))
+      },{
+        "integerBoundsAboveMax",
+        "/schema/oneOf/oneOfIntegerBounds.json",
+        "com.example.OneOfIntegerBounds",
+        json("{\"minimum\": 6}"),
+        hasProperty("minimum", equalTo(new Long(6)))
       }
     });
   }

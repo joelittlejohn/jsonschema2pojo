@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "oneOfProperties",
+  "properties": {
+    "minimum": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "javaType": "java.lang.Long",
+          "minimum": 5
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Integer"
+        }
+      ]
+    },
+    "maximum": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "javaType": "java.lang.Integer",
+          "maximum": 5
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Long"
+        }
+      ]
+    }
+  }
+}
