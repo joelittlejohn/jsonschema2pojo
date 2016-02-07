@@ -119,20 +119,20 @@ public class OneOfIT {
         "integerBoundsBelowMax",
         "/schema/oneOf/oneOfIntegerBounds.json",
         "com.example.OneOfIntegerBounds",
-        json("{\"minimum\": 4}"),
-        hasProperty("minimum", equalTo(new Integer(4)))
+        json("{\"maximum\": 4}"),
+        hasProperty("maximum", equalTo(new Integer(4)))
       },{
         "integerBoundsAtMax",
         "/schema/oneOf/oneOfIntegerBounds.json",
         "com.example.OneOfIntegerBounds",
-        json("{\"minimum\": 5}"),
-        hasProperty("minimum", equalTo(new Long(5)))
+        json("{\"maximum\": 5}"),
+        hasProperty("maximum", equalTo(new Integer(5)))
       },{
         "integerBoundsAboveMax",
         "/schema/oneOf/oneOfIntegerBounds.json",
         "com.example.OneOfIntegerBounds",
-        json("{\"minimum\": 6}"),
-        hasProperty("minimum", equalTo(new Long(6)))
+        json("{\"maximum\": 6}"),
+        hasProperty("maximum", equalTo(new Long(6)))
       }
     });
   }
