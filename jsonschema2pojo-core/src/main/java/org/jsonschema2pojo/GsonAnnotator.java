@@ -105,7 +105,7 @@ public class GsonAnnotator extends AbstractAnnotator {
       JClass jsonElement = model.ref(JsonElement.class);
       try {
         JDefinedClass adapterImpl = deserContainer._class(JMod.STATIC, "GsonTypeAdapter");
-        adapterImpl._implements(typeAdapterField);
+        adapterImpl._extends(typeAdapterField);
         
         JFieldVar gsonField = adapterImpl.field(JMod.PRIVATE, gson, "gson");
         JFieldVar typeField = adapterImpl.field(JMod.PRIVATE, typeTokenField, "type");
@@ -113,25 +113,25 @@ public class GsonAnnotator extends AbstractAnnotator {
         JMethod adapterImplConstructor = adapterImpl.constructor(JMod.PUBLIC);
         JVar gsonConstructorVar = adapterImplConstructor.param(gson, "gson");
         JVar typeConstructorVar = adapterImplConstructor.param(typeTokenField, "type");
-        adapterImplConstructor.body().assign(gsonField, gsonConstructorVar);
-        adapterImplConstructor.body().assign(typeField, typeConstructorVar);
+        adapterImplConstructor.body().assign(JExpr.refthis(gsonField.name()), gsonConstructorVar);
+        adapterImplConstructor.body().assign(JExpr.refthis(typeField.name()), typeConstructorVar);
         
         JMethod adapterImplWrite = adapterImpl.method(JMod.PUBLIC, model.VOID, "write");
         JVar writerVar = adapterImplWrite.param(model.ref(JsonWriter.class), "writer");
         JVar valueVar = adapterImplWrite.param(field.type(), "value");
-        adapterImplWrite.body().add(gsonField.invoke("toJson").arg(valueVar).arg(typeField).arg(writerVar));
+        adapterImplWrite.body().add(gsonField.invoke("toJson").arg(valueVar).arg(typeField.invoke("getType")).arg(writerVar));
         
         JMethod adapterImplRead = adapterImpl.method(JMod.PUBLIC, field.type(), "read");
         JVar readerVar = adapterImplRead.param(model.ref(JsonReader.class), "reader");
         JBlock readBody = adapterImplRead.body();
         
         // read from Gson as JsonElement.
-        JVar elementVar = readBody.decl(jsonElement, "element", gsonField.invoke("fromJson").arg(readerVar).arg(JExpr.dotclass(model.ref(Class.class).narrow(jsonElement))));
+        JVar elementVar = readBody.decl(jsonElement, "element", gsonField.invoke("fromJson").arg(readerVar).arg(JExpr.dotclass(jsonElement)));
         
         // do type testing
         
         // read JsonElement to target type using Gson.
-        readBody._return(gsonField.invoke("fromJson").arg(elementVar).arg(typeField));
+        readBody._return(gsonField.invoke("fromJson").arg(elementVar).arg(typeField.invoke("getType")));
         
         JDefinedClass factoryImpl = deserContainer._class(JMod.PUBLIC|JMod.STATIC, "GsonTypeAdapterFactory");
         factoryImpl._implements(typeAdapterFactory);
