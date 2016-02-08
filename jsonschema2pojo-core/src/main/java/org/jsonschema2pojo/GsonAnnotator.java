@@ -19,12 +19,34 @@
  */
 package org.jsonschema2pojo;
 
+import java.io.Writer;
+
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.rules.RuleFactory;
+
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
+import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 /**
  * Annotates generated Java types using Gson. The annotations used here are most
@@ -54,5 +76,78 @@ public class GsonAnnotator extends AbstractAnnotator {
     public boolean isAdditionalPropertiesSupported() {
         return false;
     }
+    
+    @Override
+    public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+      if (propertyNode.has("oneOf")) {
+        JClass typeAdapterFactory = addOneOfTypeFactory(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
+        field.annotate(JsonAdapter.class).param("value", typeAdapterFactory);
+      }
+    }
+    
+    static JDefinedClass addOneOfTypeFactory(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+      JCodeModel model = clazz.owner();
+      JsonNode oneOf = propertyNode.get("oneOf");
+      String fieldName = field.name();
+      if( !oneOf.isArray() ) throw new IllegalArgumentException("oneOf must contain an array");
+      
+      String deserContainerName = fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+      JDefinedClass deserContainer = innerClass(clazz, JMod.PUBLIC|JMod.STATIC, deserContainerName);
+      
+      JClass gson = model.ref(Gson.class);
+      JClass typeT = model.ref("T");
+      JClass typeTokenT = model.ref(TypeToken.class).narrow(typeT);
+      JClass typeAdapterT = model.ref(TypeAdapter.class).narrow(typeT);
+      JClass typeAdapterField = model.ref(TypeAdapter.class).narrow(field.type());
+      JClass typeAdapterFactory = model.ref(TypeAdapterFactory.class);
+      JClass jsonElement = model.ref(JsonElement.class);
+      try {
+        JDefinedClass adapterImpl = deserContainer._class(JMod.STATIC, "GsonTypeAdapter");
+        adapterImpl._implements(typeAdapterField);
+        
+        JFieldVar gsonField = adapterImpl.field(JMod.PRIVATE, gson, "gson");
+        JFieldVar typeField = adapterImpl.field(JMod.PRIVATE, typeTokenT, "type");
+        
+        JMethod adapterImplConstructor = adapterImpl.constructor(JMod.PUBLIC);
+        JVar gsonConstructorVar = adapterImplConstructor.param(gson, "gson");
+        adapterImplConstructor.body().assign(gsonField, gsonConstructorVar);
+        
+        JMethod adapterImplWrite = adapterImpl.method(JMod.PUBLIC, model.VOID, "write");
+        JVar writerVar = adapterImplWrite.param(model.ref(JsonWriter.class), "writer");
+        JVar valueVar = adapterImplWrite.param(field.type(), "value");
+        adapterImplWrite.body().add(gsonField.invoke("toJson").arg(valueVar).arg(typeField).arg(writerVar));
+        
+        JMethod adapterImplRead = adapterImpl.method(JMod.PUBLIC, typeT, "read");
+        JVar readerVar = adapterImplRead.param(model.ref(JsonReader.class), "reader");
+        JBlock readBody = adapterImplRead.body();
+        
+        // read from Gson as JsonElement.
+        JVar elementVar = readBody.decl(jsonElement, "element", gsonField.invoke("fromJson").arg(readerVar).arg(JExpr.dotclass(model.ref(Class.class).narrow(jsonElement))));
+        
+        // do type testing
+        
+        // read JsonElement to target type using Gson.
+        readBody._return(gsonField.invoke("fromJson").arg(elementVar).arg(typeField));
+        
+        JDefinedClass factoryImpl = deserContainer._class(JMod.PUBLIC|JMod.STATIC, "GsonTypeAdapterFactory");
+        factoryImpl._implements(typeAdapterFactory);
+        
+        JMethod createMethod = factoryImpl.method(JMod.PUBLIC, typeAdapterT, "create");
+        JVar gsonVar = createMethod.param(model.ref(Gson.class), "gson");
+        JVar typeToken = createMethod.param(model.ref(TypeToken.class).narrow(typeT), "typeToken");
+        
+        JBlock body = createMethod.body();
+        return factoryImpl;
+      } catch( Exception e ) {
+        throw new GenerationException("could not generate gson oneOf implementation", e);
+      }
+    }
 
+    static JDefinedClass innerClass( JDefinedClass clazz, int mods, String name ) {
+      try {
+        return clazz._class(mods, name);
+      } catch( JClassAlreadyExistsException cae ) {
+        return cae.getExistingClass();
+      }
+    }
 }
