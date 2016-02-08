@@ -113,7 +113,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
       if (propertyNode.has("oneOf")) {
         JClass deserializer = addOneOfDeserializer(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
         field.annotate(JsonDeserialize.class).param("using", deserializer);
-      }      
+      }
     }
 
     @Override
