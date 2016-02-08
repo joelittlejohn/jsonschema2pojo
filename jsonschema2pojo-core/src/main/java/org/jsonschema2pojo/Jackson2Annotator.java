@@ -154,10 +154,13 @@ public class Jackson2Annotator extends AbstractAnnotator {
       JsonNode oneOf = propertyNode.get("oneOf");
       String fieldName = field.name();
       if( !oneOf.isArray() ) throw new IllegalArgumentException("oneOf must contain an array");
-      String deserializerName = fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1)+"$Jackson2Deserializer";
+      
+      String deserContainerName = fieldName.substring(0, 1).toUpperCase()+fieldName.substring(1);
+      JDefinedClass deserContainer = innerClass(clazz, JMod.PUBLIC|JMod.STATIC, deserContainerName);
+
       JClass jsonDeserializer = model.ref(JsonDeserializer.class).narrow(field.type());
       try {
-        JDefinedClass fieldDeser = clazz._class(JMod.PUBLIC | JMod.STATIC, deserializerName);
+        JDefinedClass fieldDeser = deserContainer._class(JMod.PUBLIC | JMod.STATIC, "Jackson2Deserializer");
         fieldDeser._extends(jsonDeserializer);
         
         JMethod deserMethod = fieldDeser.method(JMod.PUBLIC, field.type(), "deserialize");
@@ -174,7 +177,6 @@ public class Jackson2Annotator extends AbstractAnnotator {
           JType optionType = ruleFactory.getSchemaRule().apply(fieldName+"Option"+i, oneOf.get(i), clazz.parentContainer(), currentSchema);
           // add a method to accept the option.
           JMethod acceptMethod = acceptMethod(fieldDeser, i, oneOf.get(i) );
-          // TODO: create a method for accepting the schema on the deserializer.
           
           // add code to deserialize with the type if the option is successful.
           JConditional ifAccepted = body._if(fieldDeser.staticInvoke(acceptMethod).arg(tree));
@@ -271,6 +273,14 @@ public class Jackson2Annotator extends AbstractAnnotator {
     
     static JVar valueNodeVar( JCodeModel model, JBlock body, JType type, JVar tree, String accessor ) {
       return body.decl(type, "value", ((JExpression)JExpr.cast(model.ref(ValueNode.class), tree)).invoke(accessor));
+    }
+    
+    static JDefinedClass innerClass( JDefinedClass clazz, int mods, String name ) {
+      try {
+        return clazz._class(mods, name);
+      } catch( JClassAlreadyExistsException cae ) {
+        return cae.getExistingClass();
+      }
     }
 
 }
