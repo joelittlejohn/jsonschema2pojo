@@ -96,7 +96,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
     }
 
     @Override
-    public void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+    public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         field.annotate(JsonProperty.class).param("value", propertyName);
         if (field.type().erasure().equals(field.type().owner().ref(Set.class))) {
             field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
@@ -106,11 +106,14 @@ public class Jackson2Annotator extends AbstractAnnotator {
             field.annotate(JsonView.class).param(
                 "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
         }
-        
-        if (propertyNode.has("oneOf")) {
-          JClass deserializer = addOneOfDeserializer(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
-          field.annotate(JsonDeserialize.class).param("using", deserializer);
-        }
+    }
+    
+    @Override
+    public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+      if (propertyNode.has("oneOf")) {
+        JClass deserializer = addOneOfDeserializer(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
+        field.annotate(JsonDeserialize.class).param("using", deserializer);
+      }      
     }
 
     @Override

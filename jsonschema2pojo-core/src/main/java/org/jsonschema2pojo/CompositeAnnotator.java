@@ -67,9 +67,9 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
+    public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
         for (Annotator annotator : annotators) {
-            annotator.propertyField(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
+            annotator.propertyDeserializer(ruleFactory, field, clazz, propertyName, propertyNode, currentSchema);
         }
     }
 

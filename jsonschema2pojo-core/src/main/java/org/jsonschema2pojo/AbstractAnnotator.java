@@ -42,11 +42,6 @@ public abstract class AbstractAnnotator implements Annotator {
     public void propertyField(JFieldVar field, JDefinedClass clazz,
             String propertyName, JsonNode propertyNode) {
     }
-    
-    @Override
-    public void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema) {
-      propertyField(field, clazz, propertyName, propertyNode);
-    }
 
     @Override
     public void propertyGetter(JMethod getter, String propertyName) {
@@ -83,6 +78,11 @@ public abstract class AbstractAnnotator implements Annotator {
 
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    }
+
+    @Override
+    public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
+        JsonNode propertyNode, Schema currentSchema) {
     }
 
 }

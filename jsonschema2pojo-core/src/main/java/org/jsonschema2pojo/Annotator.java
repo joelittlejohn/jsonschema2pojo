@@ -160,5 +160,6 @@ public interface Annotator {
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 
-    void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode, Schema currentSchema);
+    void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
+        JsonNode propertyNode, Schema currentSchema);
 }

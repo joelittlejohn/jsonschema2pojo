@@ -175,9 +175,8 @@ public class CustomAnnotatorIT {
         }
 
         @Override
-        public void propertyField(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
+        public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
             JsonNode propertyNode, Schema currentSchema) {
-          field.annotate(Deprecated.class);
         }
 
     }
