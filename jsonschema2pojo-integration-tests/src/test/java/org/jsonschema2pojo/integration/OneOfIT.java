@@ -34,12 +34,16 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
 @RunWith(Parameterized.class)
 public class OneOfIT {
   public static ObjectMapper mapper = new ObjectMapper();
+  public static Gson gson = new Gson();
   @Rule public Jsonschema2PojoRule rule = new Jsonschema2PojoRule();
   private String schema;
   private Supplier<Reader> input;
@@ -145,13 +149,34 @@ public class OneOfIT {
   }
   
   @Test
-  public void generationValid() throws ClassNotFoundException, IOException {
+  public void generationValidJackson2() throws ClassNotFoundException, IOException {
     ClassLoader loader = rule.generateAndCompile(schema, "com.example");
     
     Class<?> type = loader.loadClass(typeName);
     
-    try (Reader in = input.get()) {
+    Reader in = null;
+    try {
+      in = input.get();
       assertThat(mapper.readValue(in, type), matcher);
+    }
+    finally {
+      if( in != null ) in.close();
+    }
+  }
+  
+  @Test
+  public void generationValidGson() throws ClassNotFoundException, IOException {
+    ClassLoader loader = rule.generateAndCompile(schema, "com.example", config("annotationStyle", "gson"));
+    
+    Class<?> type = loader.loadClass(typeName);
+    
+    Reader in = null;
+    try {
+      in = input.get();
+      assertThat(gson.fromJson(in, type), matcher);
+    }
+    finally {
+      if( in != null ) in.close();
     }
   }
   

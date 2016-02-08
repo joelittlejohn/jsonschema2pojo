@@ -110,7 +110,9 @@ public class GsonAnnotator extends AbstractAnnotator {
         
         JMethod adapterImplConstructor = adapterImpl.constructor(JMod.PUBLIC);
         JVar gsonConstructorVar = adapterImplConstructor.param(gson, "gson");
+        JVar typeConstructorVar = adapterImplConstructor.param(typeTokenT, "type");
         adapterImplConstructor.body().assign(gsonField, gsonConstructorVar);
+        adapterImplConstructor.body().assign(typeField, typeConstructorVar);
         
         JMethod adapterImplWrite = adapterImpl.method(JMod.PUBLIC, model.VOID, "write");
         JVar writerVar = adapterImplWrite.param(model.ref(JsonWriter.class), "writer");
@@ -133,10 +135,11 @@ public class GsonAnnotator extends AbstractAnnotator {
         factoryImpl._implements(typeAdapterFactory);
         
         JMethod createMethod = factoryImpl.method(JMod.PUBLIC, typeAdapterT, "create");
+        createMethod.generify("T");
         JVar gsonVar = createMethod.param(model.ref(Gson.class), "gson");
-        JVar typeToken = createMethod.param(model.ref(TypeToken.class).narrow(typeT), "typeToken");
+        JVar typeTokenVar = createMethod.param(model.ref(TypeToken.class).narrow(typeT), "typeToken");
         
-        JBlock body = createMethod.body();
+        createMethod.body()._return(JExpr.cast(typeAdapterT, JExpr._new(adapterImpl).arg(gsonVar).arg(typeTokenVar)));
         return factoryImpl;
       } catch( Exception e ) {
         throw new GenerationException("could not generate gson oneOf implementation", e);
