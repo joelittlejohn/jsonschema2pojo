@@ -16,6 +16,14 @@
 
 package org.jsonschema2pojo;
 
+import static com.sun.codemodel.JExpr.FALSE;
+import static com.sun.codemodel.JExpr.TRUE;
+import static com.sun.codemodel.JExpr._new;
+import static com.sun.codemodel.JExpr._null;
+import static com.sun.codemodel.JExpr.cast;
+import static com.sun.codemodel.JExpr.invoke;
+import static com.sun.codemodel.JExpr.lit;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -183,13 +191,13 @@ public class Jackson2Annotator extends AbstractAnnotator {
           // in the if, try the parse, move on if it fails.
           JBlock ifAcceptedThen = ifAccepted._then();
           JClass typeRefClass = model.ref(TypeReference.class).narrow(optionType);
-          JVar typeRef = ifAcceptedThen.decl(typeRefClass, "typeRef", JExpr._new(model.anonymousClass(typeRefClass)));
+          JVar typeRef = ifAcceptedThen.decl(typeRefClass, "typeRef", _new(model.anonymousClass(typeRefClass)));
           ifAcceptedThen._return(
               codec.invoke("readValue")
                 .arg(codec.invoke("treeAsTokens").arg(tree))
                 .arg(typeRef));
         }
-        deserMethod.body()._return(JExpr._null());
+        deserMethod.body()._return(_null());
         
         return fieldDeser;
       } catch (JClassAlreadyExistsException e) {
@@ -206,7 +214,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
       
       JsonNode typeNode = optionNode.path("type");
       String type = typeNode.isMissingNode() ? "object" : typeNode.asText();
-      JVar token = body.decl(model.ref(JsonToken.class), "token", JExpr.invoke(tree, "asToken"));
+      JVar token = body.decl(model.ref(JsonToken.class), "token", invoke(tree, "asToken"));
       
       if( "string".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_STRING");
@@ -217,19 +225,19 @@ public class Jackson2Annotator extends AbstractAnnotator {
         if( !minLength.isMissingNode() || !maxLength.isMissingNode() ) {
           JVar value = valueNodeVar(model, body, model.ref(String.class), tree, "asText");
           if( !minLength.isMissingNode() ) {
-            body._if(value.invoke("length").lt(JExpr.lit(minLength.asInt())))._then()._return(JExpr.FALSE);
+            body._if(value.invoke("length").lt(lit(minLength.asInt())))._then()._return(FALSE);
           }
           if( !maxLength.isMissingNode() ) {
-            body._if(value.invoke("length").gt(JExpr.lit(maxLength.asInt())))._then()._return(JExpr.FALSE);
+            body._if(value.invoke("length").gt(lit(maxLength.asInt())))._then()._return(FALSE);
           }
         }
      
-        body._return(JExpr.TRUE);
+        body._return(TRUE);
       }
       else if( "boolean".equals(type)) {
         filterOtherTokens(model, body, token, "VALUE_TRUE", "VALUE_FALSE");
         
-        body._return(JExpr.TRUE);
+        body._return(TRUE);
       }
       else if( "integer".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_NUMBER_INT");
@@ -239,24 +247,24 @@ public class Jackson2Annotator extends AbstractAnnotator {
         if( !maximum.isMissingNode() || !minimum.isMissingNode() ) {
           JVar value = valueNodeVar(model, body, model.INT, tree, "asInt");
           if( !minimum.isMissingNode() ) {
-            body._if(value.lt(JExpr.lit(minimum.asInt())))._then()._return(JExpr.FALSE);
+            body._if(value.lt(lit(minimum.asInt())))._then()._return(FALSE);
           }
           if( !maximum.isMissingNode() ) {
-            body._if(value.gt(JExpr.lit(maximum.asInt())))._then()._return(JExpr.FALSE);
+            body._if(value.gt(lit(maximum.asInt())))._then()._return(FALSE);
           }
         }
               
-        body._return(JExpr.TRUE);
+        body._return(TRUE);
       }
       else if( "number".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_NUMBER_FLOAT");     
         
-        body._return(JExpr.TRUE);
+        body._return(TRUE);
       }
       else if( "array".equals(type) ) {
         filterOtherTokens(model, body, token, "START_ARRAY");               
         
-        body._return(JExpr.TRUE);
+        body._return(TRUE);
       }
       
       return acceptMethod;
@@ -268,11 +276,11 @@ public class Jackson2Annotator extends AbstractAnnotator {
         test = test.cand(model.ref(JsonToken.class).staticRef(type));
       }
       block._if(test)
-      ._then()._return(JExpr.FALSE);
+      ._then()._return(FALSE);
     }
     
     static JVar valueNodeVar( JCodeModel model, JBlock body, JType type, JVar tree, String accessor ) {
-      return body.decl(type, "value", ((JExpression)JExpr.cast(model.ref(ValueNode.class), tree)).invoke(accessor));
+      return body.decl(type, "value", ((JExpression)cast(model.ref(ValueNode.class), tree)).invoke(accessor));
     }
     
     static JDefinedClass innerClass( JDefinedClass clazz, int mods, String name ) {
