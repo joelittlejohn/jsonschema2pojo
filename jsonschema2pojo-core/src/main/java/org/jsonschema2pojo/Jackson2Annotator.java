@@ -199,7 +199,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
     
     JMethod acceptMethod(JDefinedClass deserClass, int optionIndex, JsonNode optionNode) {
       JCodeModel model = deserClass.owner();
-      JMethod acceptMethod = deserClass.method(JMod.PRIVATE|JMod.STATIC, model.BOOLEAN, "acceptOption"+optionIndex);
+      JMethod acceptMethod = deserClass.method(JMod.PRIVATE|JMod.STATIC, model.BOOLEAN, "isOption"+optionIndex);
       JVar tree = acceptMethod.param(model.ref(TreeNode.class), "tree");
       
       JBlock body = acceptMethod.body();
