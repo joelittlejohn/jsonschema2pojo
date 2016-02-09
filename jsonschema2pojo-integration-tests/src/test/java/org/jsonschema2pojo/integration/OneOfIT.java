@@ -54,13 +54,13 @@ public class OneOfIT {
   public static Collection<Object[]> parameters() {
     return Arrays.asList(new Object[][]{
       {
-        "simpleOneOfString",
+        "simpleOneOfInteger",
         "/schema/oneOf/oneOf.json",
         "com.example.OneOf",
         json("{\"stringOrInteger\": 1}"),
         hasProperty("stringOrInteger", equalTo(1))
       },{
-        "simpleOneOfInteger",
+        "simpleOneOfString",
         "/schema/oneOf/oneOf.json",
         "com.example.OneOf",
         json("{\"stringOrInteger\": \"1\"}"),
