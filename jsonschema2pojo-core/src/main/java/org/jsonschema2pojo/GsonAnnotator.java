@@ -19,15 +19,23 @@
  */
 package org.jsonschema2pojo;
 
+import static com.sun.codemodel.JExpr.FALSE;
+import static com.sun.codemodel.JExpr.TRUE;
+import static com.sun.codemodel.JExpr._new;
+import static com.sun.codemodel.JExpr.lit;
+
 import java.io.Writer;
 
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
 
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.annotations.Expose;
@@ -40,12 +48,14 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 /**
@@ -129,7 +139,18 @@ public class GsonAnnotator extends AbstractAnnotator {
         JVar elementVar = readBody.decl(jsonElement, "element", gsonField.invoke("fromJson").arg(readerVar).arg(JExpr.dotclass(jsonElement)));
         
         // do type testing
-        
+        for( int i = 0; i < oneOf.size(); i++ ) {
+          JType optionType = ruleFactory.getSchemaRule().apply(fieldName+"Option"+i, oneOf.get(i), clazz.parentContainer(), currentSchema);
+          JMethod acceptMethod = acceptMethod(adapterImpl, i, oneOf.get(i) );
+          JConditional ifAccepted = readBody._if(adapterImpl.staticInvoke(acceptMethod).arg(elementVar));
+          JBlock ifAcceptedThen = ifAccepted._then();
+          JClass typeRefClass = model.ref(TypeToken.class).narrow(optionType);
+          JVar typeRef = ifAcceptedThen.decl(typeRefClass, "typeRef", _new(model.anonymousClass(typeRefClass)));
+          ifAcceptedThen._return(
+              gsonField.invoke("fromJson")
+                .arg(elementVar)
+                .arg(typeRef.invoke("getType")));
+        }
         // read JsonElement to target type using Gson.
         readBody._return(gsonField.invoke("fromJson").arg(elementVar).arg(typeField.invoke("getType")));
         
@@ -147,6 +168,61 @@ public class GsonAnnotator extends AbstractAnnotator {
         throw new GenerationException("could not generate gson oneOf implementation", e);
       }
     }
+
+    static JMethod acceptMethod(JDefinedClass deserClass, int optionIndex, JsonNode optionNode) {
+      JCodeModel model = deserClass.owner();
+      JMethod acceptMethod = deserClass.method(JMod.PRIVATE|JMod.STATIC, model.BOOLEAN, "isOption"+optionIndex);
+      JVar jsonElementVar = acceptMethod.param(model.ref(JsonElement.class), "element");
+      
+      JBlock body = acceptMethod.body();
+      JsonNode typeNode = optionNode.path("type");
+      String type = typeNode.isMissingNode() ? "object" : typeNode.asText();
+      
+      if( "string".equals(type) ) {
+        JVar jsonPrimitive = filterNotPrimitive(model, body, jsonElementVar);
+        body._if(jsonPrimitive.invoke("isString").not())._then()._return(JExpr.FALSE);
+        
+        JsonNode minLength = optionNode.path("minLength");
+        JsonNode maxLength = optionNode.path("maxLength");        
+        if( !minLength.isMissingNode() || !maxLength.isMissingNode() ) {
+          JVar value = body.decl(model.ref(String.class), "value", jsonPrimitive.invoke("getAsString"));
+          if( !minLength.isMissingNode() ) {
+            body._if(value.invoke("length").lt(lit(minLength.asInt())))._then()._return(FALSE);
+          }
+          if( !maxLength.isMissingNode() ) {
+            body._if(value.invoke("length").gt(lit(maxLength.asInt())))._then()._return(FALSE);
+          }
+        }
+        body._return(JExpr.TRUE);
+      }
+      else if( "integer".equals(type) ) {
+        JVar jsonPrimitive = filterNotPrimitive(model, body, jsonElementVar);
+        body._if(jsonPrimitive.invoke("isNumber").not())._then()._return(JExpr.FALSE);
+        JsonNode minimum = optionNode.path("minimum");
+        JsonNode maximum = optionNode.path("maximum");        
+        if( !maximum.isMissingNode() || !minimum.isMissingNode() ) {
+          JVar value = body.decl(model.INT, "value", jsonPrimitive.invoke("getAsInt"));
+          if( !minimum.isMissingNode() ) {
+            body._if(value.lt(lit(minimum.asInt())))._then()._return(FALSE);
+          }
+          if( !maximum.isMissingNode() ) {
+            body._if(value.gt(lit(maximum.asInt())))._then()._return(FALSE);
+          }
+        }
+              
+        body._return(TRUE);      }
+      else {
+        body._return(JExpr.FALSE);
+      }
+      
+      return acceptMethod;
+    }
+    
+    static JVar filterNotPrimitive(JCodeModel model, JBlock body, JVar jsonElementVar) {
+      body._if(jsonElementVar.invoke("isJsonPrimitive").not())._then()._return(JExpr.FALSE);
+      return body.decl(model.ref(JsonPrimitive.class), "jsonPrimitive", jsonElementVar.invoke("getAsJsonPrimitive"));
+    }
+    
 
     static JDefinedClass innerClass( JDefinedClass clazz, int mods, String name ) {
       try {
