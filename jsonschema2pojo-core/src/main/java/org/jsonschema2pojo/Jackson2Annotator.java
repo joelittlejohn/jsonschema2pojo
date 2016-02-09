@@ -164,6 +164,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
 
       JClass jsonDeserializer = model.ref(JsonDeserializer.class).narrow(field.type());
       try {
+        
         JDefinedClass fieldDeser = deserContainer._class(JMod.PUBLIC | JMod.STATIC, "Jackson2Deserializer");
         fieldDeser._extends(jsonDeserializer);
         
@@ -229,8 +230,8 @@ public class Jackson2Annotator extends AbstractAnnotator {
       else if( "integer".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_NUMBER_INT");
         
-        new OneOfTemplates.IntegerFilterTemplate(optionNode, model, body) {
-          @Override public JExpression valueExpr() { return valueNodeValue(model, tree, "asInt");}
+        new OneOfTemplates.IntegerFilterTemplate(optionNode,optionIndex, model, deserClass, body) {
+          @Override public JExpression valueExpr() { return valueNodeValue(model, tree, "bigIntegerValue");}
         }.execute();
               
         body._return(TRUE);

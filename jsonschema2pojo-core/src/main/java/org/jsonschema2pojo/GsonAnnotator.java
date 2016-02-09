@@ -177,8 +177,8 @@ public class GsonAnnotator extends AbstractAnnotator {
       else if( "integer".equals(type) ) {
         final JVar jsonPrimitive = filterNotPrimitive(model, body, jsonElementVar);
         body._if(jsonPrimitive.invoke("isNumber").not())._then()._return(JExpr.FALSE);
-        new OneOfTemplates.IntegerFilterTemplate(optionNode, model, body) {
-          @Override public JExpression valueExpr() { return jsonPrimitive.invoke("getAsInt");}
+        new OneOfTemplates.IntegerFilterTemplate(optionNode, optionIndex, model, deserClass, body) {
+          @Override public JExpression valueExpr() { return jsonPrimitive.invoke("getAsBigInteger");}
         }.execute();
         body._return(TRUE);      }
       else {

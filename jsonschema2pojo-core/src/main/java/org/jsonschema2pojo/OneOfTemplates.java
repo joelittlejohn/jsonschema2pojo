@@ -19,6 +19,9 @@ package org.jsonschema2pojo;
 import static com.sun.codemodel.JExpr.FALSE;
 import static com.sun.codemodel.JExpr.lit;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +29,7 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
@@ -37,27 +41,49 @@ public class OneOfTemplates {
     private JsonNode optionNode;
     private JCodeModel model;
     private JBlock body;
+    private int optionIndex;
+    private JDefinedClass jclass;
   
-    public IntegerFilterTemplate(JsonNode optionNode, JCodeModel model, JBlock body ) {
+    public IntegerFilterTemplate(JsonNode optionNode, int optionIndex, JCodeModel model, JDefinedClass jclass, JBlock body ) {
       this.optionNode = optionNode;
+      this.optionIndex = optionIndex;
       this.model = model;
+      this.jclass = jclass;
       this.body = body;
     }
     public void execute() {
       JsonNode minimum = optionNode.path("minimum");
       JsonNode maximum = optionNode.path("maximum");     
       if( !maximum.isMissingNode() || !minimum.isMissingNode() ) {
-        JVar value = body.decl(model.INT, "value", valueExpr());
+        JVar value = body.decl(model.ref(BigInteger.class), "value", valueExpr());
         if( !minimum.isMissingNode() ) {
-          body._if(value.lt(lit(minimum.asInt())))._then()._return(FALSE);
+          JVar minimumField = bigIntegerConstant(model, jclass, "OPTION_"+optionIndex+"_MINIMUM", minimum);
+          body._if(minimumField.invoke("compareTo").arg(value).gt(lit(0)))._then()._return(FALSE);
         }
         if( !maximum.isMissingNode() ) {
-          body._if(value.gt(lit(maximum.asInt())))._then()._return(FALSE);
+          JVar maximumField = bigIntegerConstant(model, jclass, "OPTION_"+optionIndex+"_MAXIMUM", maximum);
+          body._if(maximumField.invoke("compareTo").arg(value).lt(lit(0)))._then()._return(FALSE);
         }
       }
     }
     
     public abstract JExpression valueExpr();
+  }
+  
+  static JVar bigIntegerConstant( JCodeModel model, JDefinedClass jclass, String name, JsonNode node ) {
+    return jclass.field(JMod.PUBLIC|JMod.STATIC|JMod.FINAL, model.ref(BigInteger.class), name, JExpr._new(model.ref(BigInteger.class)).arg(node.asText()));
+  }
+  
+  static Class<? extends Number> javaNumberType(JsonNode node) {
+    switch(node.numberType()) {
+    case BIG_DECIMAL: return BigDecimal.class;
+    case BIG_INTEGER: return BigInteger.class;
+    case DOUBLE: return Double.class;
+    case FLOAT: return Float.class;
+    case INT: return Integer.class;
+    case LONG: return Long.class;
+    default: throw new IllegalStateException("unknown number type.");
+    }
   }
 
   static abstract class StringFilterTemplate {
