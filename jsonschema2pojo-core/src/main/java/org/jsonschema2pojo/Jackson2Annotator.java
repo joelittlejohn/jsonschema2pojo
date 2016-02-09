@@ -22,10 +22,8 @@ import static com.sun.codemodel.JExpr._new;
 import static com.sun.codemodel.JExpr._null;
 import static com.sun.codemodel.JExpr.cast;
 import static com.sun.codemodel.JExpr.invoke;
-import static com.sun.codemodel.JExpr.lit;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -42,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -54,20 +51,16 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import com.google.gson.JsonElement;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
@@ -209,9 +202,9 @@ public class Jackson2Annotator extends AbstractAnnotator {
     }
     
     JMethod acceptMethod(JDefinedClass deserClass, int optionIndex, JsonNode optionNode) {
-      JCodeModel model = deserClass.owner();
+      final JCodeModel model = deserClass.owner();
       JMethod acceptMethod = deserClass.method(JMod.PRIVATE|JMod.STATIC, model.BOOLEAN, "isOption"+optionIndex);
-      JVar tree = acceptMethod.param(model.ref(TreeNode.class), "tree");
+      final JVar tree = acceptMethod.param(model.ref(TreeNode.class), "tree");
       
       JBlock body = acceptMethod.body();
       
@@ -221,19 +214,10 @@ public class Jackson2Annotator extends AbstractAnnotator {
       
       if( "string".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_STRING");
-        
-        // filter by min/max
-        JsonNode minLength = optionNode.path("minLength");
-        JsonNode maxLength = optionNode.path("maxLength");
-        if( !minLength.isMissingNode() || !maxLength.isMissingNode() ) {
-          JVar value = valueNodeVar(model, body, model.ref(String.class), tree, "asText");
-          if( !minLength.isMissingNode() ) {
-            body._if(value.invoke("length").lt(lit(minLength.asInt())))._then()._return(FALSE);
-          }
-          if( !maxLength.isMissingNode() ) {
-            body._if(value.invoke("length").gt(lit(maxLength.asInt())))._then()._return(FALSE);
-          }
-        }
+
+        new OneOfTemplates.StringFilterTemplate(optionNode, model, body) {
+          @Override public JExpression valueExpr() {return valueNodeValue(model, tree, "asText");}        
+        }.execute();
      
         body._return(TRUE);
       }
@@ -245,17 +229,9 @@ public class Jackson2Annotator extends AbstractAnnotator {
       else if( "integer".equals(type) ) {
         filterOtherTokens(model, body, token, "VALUE_NUMBER_INT");
         
-        JsonNode minimum = optionNode.path("minimum");
-        JsonNode maximum = optionNode.path("maximum");
-        if( !maximum.isMissingNode() || !minimum.isMissingNode() ) {
-          JVar value = valueNodeVar(model, body, model.INT, tree, "asInt");
-          if( !minimum.isMissingNode() ) {
-            body._if(value.lt(lit(minimum.asInt())))._then()._return(FALSE);
-          }
-          if( !maximum.isMissingNode() ) {
-            body._if(value.gt(lit(maximum.asInt())))._then()._return(FALSE);
-          }
-        }
+        new OneOfTemplates.IntegerFilterTemplate(optionNode, model, body) {
+          @Override public JExpression valueExpr() { return valueNodeValue(model, tree, "asInt");}
+        }.execute();
               
         body._return(TRUE);
       }
@@ -282,8 +258,8 @@ public class Jackson2Annotator extends AbstractAnnotator {
       ._then()._return(FALSE);
     }
     
-    static JVar valueNodeVar( JCodeModel model, JBlock body, JType type, JVar tree, String accessor ) {
-      return body.decl(type, "value", ((JExpression)cast(model.ref(ValueNode.class), tree)).invoke(accessor));
+    static JExpression valueNodeValue(JCodeModel model, JVar tree, String accessor ) {
+      return ((JExpression)cast(model.ref(ValueNode.class), tree)).invoke(accessor);
     }
     
     static JDefinedClass innerClass( JDefinedClass clazz, int mods, String name ) {
