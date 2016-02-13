@@ -11,6 +11,7 @@
     <link href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/bootstrap.min.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
     <script src="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/codemirror-compressed.js"></script>
     <script src="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/runmode.js"></script>
     <script src="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/index.js"></script>
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/codemirror.css">
     <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/eclipse.css">
     <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/index.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="canonical" href="http://www.jsonschema2pojo.org">
 
     <script type="text/javascript">
@@ -169,8 +171,8 @@
 
         <div class="row form-section">
           <div class="span6">
-            <button class="btn submit" id="preview-button" data-loading-text="Generating...">Preview</button>
-            <button class="btn submit" id="zip-button" data-loading-text="Generating...">Zip</button>
+            <button class="btn submit" id="preview-button" data-loading-text="Generating...">Preview <i class="fa fa-eye"></i></button>
+            <button class="btn submit" id="zip-button" data-loading-text="Generating...">Zip <i class="fa fa-file-archive-o"></i></button>
             <a id="download-zip-link" class="hide"></a>
           </div>
         </div>
@@ -179,6 +181,7 @@
       <div id="preview-modal" class="modal hide fade">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <button type="button" id="copy-button" class="btn submit" data-clipboard-target="#preview" style="float: right;">Copy to Clipboard <i class="fa fa-clipboard"></i></button>
           <h3>Preview</h3>
         </div>
         <div id="preview" class="modal-body CodeMirror" style="overflow: auto">
@@ -256,6 +259,8 @@
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+
+    new Clipboard("#copy-button");
   </script>
 
 </html>
