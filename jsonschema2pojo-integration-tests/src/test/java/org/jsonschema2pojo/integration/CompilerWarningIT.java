@@ -105,7 +105,7 @@ public class CompilerWarningIT {
   }
 
   public static List<Diagnostic<? extends JavaFileObject>> warnings(List<Diagnostic<? extends JavaFileObject>> all) {
-    List<Diagnostic<? extends JavaFileObject>> warnings = new ArrayList<>();
+    List<Diagnostic<? extends JavaFileObject>> warnings = new ArrayList<Diagnostic<? extends JavaFileObject>>();
     for( Diagnostic<? extends JavaFileObject> entry : all ) {
       if( entry.getKind() == Kind.WARNING ) {
         warnings.add(entry);
