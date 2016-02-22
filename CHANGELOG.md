@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.20
+* Regression: when a extending a schema with a redefinition of the same field, with methods should be generated only once ([#507](https://github.com/joelittlejohn/jsonschema2pojo/issues/507))
+* Unnecessary @SuppressWarnings java warnings after upgrade ([#498](https://github.com/joelittlejohn/jsonschema2pojo/issues/498))
+* Improved Android support via Gradle plugin (NOTE: Changes behaviour regarding output directory) ([#495](https://github.com/joelittlejohn/jsonschema2pojo/pull/495))
+
 ## 0.4.19
 * Add javaName schema property ([#499](https://github.com/joelittlejohn/jsonschema2pojo/pull/499))
 * Declare an enum without that "static" ([#496](https://github.com/joelittlejohn/jsonschema2pojo/issues/496))
