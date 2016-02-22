@@ -30,32 +30,30 @@ class JsonSchemaPlugin implements Plugin<Project> {
   public void apply(Project project) {
     project.extensions.create('jsonSchema2Pojo', JsonSchemaExtension)
 
-    project.afterEvaluate {
-      if (project.plugins.hasPlugin('java')) {
-        project.tasks.create('generateJsonSchema2Pojo', GenerateJsonSchemaJavaTask)
-      } else if (project.android) {
-        def config = project.jsonSchema2Pojo
-        def variants = null
-        if (project.android.hasProperty('applicationVariants')) {
-          variants = project.android.applicationVariants
-        } else if (project.android.hasProperty('libraryVariants')) {
-          variants = project.android.libraryVariants
-        } else {
-          throw new IllegalStateException('Android project must have applicationVariants or libraryVariants!')
-        }
-
-        variants.all { variant ->
-
-          GenerateJsonSchemaAndroidTask task = (GenerateJsonSchemaAndroidTask) project.task(type: GenerateJsonSchemaAndroidTask, "generateJsonSchema2PojoFor${variant.name.capitalize()}") {
-            source = config.source.collect { it }
-            outputDir = project.file("$project.buildDir/generated/source/js2p/$variant.flavorName/$variant.buildType.name/")
-          }
-
-          variant.registerJavaGeneratingTask(task, (File) task.outputDir)
-        }
+    if (project.plugins.hasPlugin('java')) {
+      project.tasks.create('generateJsonSchema2Pojo', GenerateJsonSchemaJavaTask)
+    } else if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
+      def config = project.jsonSchema2Pojo
+      def variants = null
+      if (project.android.hasProperty('applicationVariants')) {
+        variants = project.android.applicationVariants
+      } else if (project.android.hasProperty('libraryVariants')) {
+        variants = project.android.libraryVariants
       } else {
-        throw new GradleException('generateJsonSchema: Java or Android plugin required')
+        throw new IllegalStateException('Android project must have applicationVariants or libraryVariants!')
       }
+
+      variants.all { variant ->
+
+        GenerateJsonSchemaAndroidTask task = (GenerateJsonSchemaAndroidTask) project.task(type: GenerateJsonSchemaAndroidTask, "generateJsonSchema2PojoFor${variant.name.capitalize()}") {
+          source = config.source.collect { it }
+          outputDir = project.file("$project.buildDir/generated/source/js2p/$variant.flavorName/$variant.buildType.name/")
+        }
+
+        variant.registerJavaGeneratingTask(task, (File) task.outputDir)
+      }
+    } else {
+      throw new GradleException('generateJsonSchema: Java or Android plugin required')
     }
   }
 }
