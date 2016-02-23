@@ -52,10 +52,16 @@ public class Jsonschema2PojoRule implements TestRule {
     private File generateDir;
     private File compileDir;
     private boolean active = false;
+    private boolean captureDiagnostics = false;
     private boolean sourceDirInitialized = false;
     private boolean classesDirInitialized = false;
     private ClassLoader classLoader;
     private List<Diagnostic<? extends JavaFileObject>> diagnostics;
+
+    public Jsonschema2PojoRule captureDiagnostics() {
+      this.captureDiagnostics = true;
+      return this;
+    }
 
     /**
      * Gets the target directory for generate calls.
@@ -102,6 +108,7 @@ public class Jsonschema2PojoRule implements TestRule {
             public void evaluate() throws Throwable {
                 active = true;
                 diagnostics = new ArrayList<Diagnostic<? extends JavaFileObject>>();
+                boolean captureDiagnosticsStart = captureDiagnostics;
                 try {
                     File testRoot = methodNameDir(classNameDir(rootDirectory(), description.getClassName()),
                             description.getMethodName());
@@ -115,6 +122,7 @@ public class Jsonschema2PojoRule implements TestRule {
                     classLoader = null;
                     sourceDirInitialized = false;
                     classesDirInitialized = false;
+                    captureDiagnostics = captureDiagnosticsStart;
                     diagnostics = null;
                     active = false;
                 }
@@ -155,7 +163,8 @@ public class Jsonschema2PojoRule implements TestRule {
         if (classLoader != null) {
             throw new IllegalStateException("cannot recompile sources");
         }
-        classLoader = CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, new CapturingDiagnosticListener());
+        DiagnosticListener<JavaFileObject> diagnosticListener = captureDiagnostics ? new CapturingDiagnosticListener() : null;
+        classLoader = CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
         return classLoader;
     }
 

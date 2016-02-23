@@ -58,7 +58,7 @@ import static org.hamcrest.MatcherAssert.*;
  */
 @RunWith(Parameterized.class)
 public class CompilerWarningIT {
-  @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+  @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule().captureDiagnostics();
   
   @Parameters(name="{0}")
   public static Collection<Object[]> parameters() {
