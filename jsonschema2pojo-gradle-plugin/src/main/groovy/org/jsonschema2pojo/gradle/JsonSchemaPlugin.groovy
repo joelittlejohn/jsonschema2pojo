@@ -32,7 +32,7 @@ class JsonSchemaPlugin implements Plugin<Project> {
 
     if (project.plugins.hasPlugin('java')) {
       project.tasks.create('generateJsonSchema2Pojo', GenerateJsonSchemaJavaTask)
-    } else if (project.android) {
+    } else if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
       def config = project.jsonSchema2Pojo
       def variants = null
       if (project.android.hasProperty('applicationVariants')) {
