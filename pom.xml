@@ -281,6 +281,12 @@
                 <version>2.2.0</version>
             </dependency>
             <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.16.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.google.android</groupId>
                 <artifactId>android</artifactId>
                 <version>4.1.1.4</version>
