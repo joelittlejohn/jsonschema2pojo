@@ -224,6 +224,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return "";
     }
 
+    @Override
+    public boolean isUseBigDecimals() {
+        return false;
+    }
+
     /**
      * @return <code>false</code>
      */

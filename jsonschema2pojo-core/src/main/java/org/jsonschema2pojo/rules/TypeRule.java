@@ -18,6 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 import org.jsonschema2pojo.GenerationConfig;
@@ -163,7 +164,9 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      */
     private JType getNumberType(JCodeModel owner, JsonNode node, GenerationConfig config) {
 
-        if (config.isUseDoubleNumbers()) {
+        if (config.isUseBigDecimals()) {
+            return unboxIfNecessary(owner.ref(BigDecimal.class), config);
+        } else if (config.isUseDoubleNumbers()) {
             return unboxIfNecessary(owner.ref(Double.class), config);
         } else {
             return unboxIfNecessary(owner.ref(Float.class), config);

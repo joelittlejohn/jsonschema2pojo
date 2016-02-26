@@ -19,10 +19,12 @@ package org.jsonschema2pojo.integration.json;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -32,7 +34,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonTypesIT {
-    
+
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -54,6 +56,21 @@ public class JsonTypesIT {
         assertThat(generatedType.getMethod("getE").invoke(deserialisedValue), is(nullValue()));
 
     }
+
+    @Test
+    public void bigDecimalInExampleIsMappedToCorrectJavaType() throws Exception {
+
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example",
+          config("sourceType", "json", "useBigDecimals", true));
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
+
+        Object deserialisedValue = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/simpleTypes.json"), generatedType);
+
+        assertThat((BigDecimal) generatedType.getMethod("getC").invoke(deserialisedValue), is(new BigDecimal("12999999999999999999999.99")));
+    }
+
+
 
     @Test(expected = ClassNotFoundException.class)
     public void simpleTypeAtRootProducesNoJavaTypes() throws ClassNotFoundException {

@@ -172,6 +172,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useDoubleNumbers = true;
 
     /**
+     * Whether to use the java type <code>BigDecimal</code> instead of
+     * <code>float</code> (or {@link java.lang.Float})  when representing
+     * the JSON Schema type 'number'. Note that this configuration overrides
+     * <code>useDoubleNumbers</code>.
+     *
+     * @parameter expression="${jsonschema2pojo.useBigDecimals}"
+     *            default-value="false"
+     * @since TODO
+     */
+    private boolean useBigDecimals = false;
+
+    /**
      * Whether to include <code>hashCode</code> and <code>equals</code> methods
      * in generated Java types.
      *
@@ -438,10 +450,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.4.15
      */
     private boolean includeAccessors = true;
-    
+
     /**
      * The target version for generated source files.
-     * 
+     *
      * @parameter expression="${maven.compiler.target}"
      *            default-value="1.6"
      * @since 0.4.17
@@ -768,4 +780,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return timeType;
     }
 
+    @Override
+    public boolean isUseBigDecimals() {
+        return useBigDecimals;
+    }
 }
