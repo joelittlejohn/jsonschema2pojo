@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.21
+* Fix NullPointerException in Gradle plugin for Java (non-Android) projects ([#510](https://github.com/joelittlejohn/jsonschema2pojo/pull/510))
+
 ## 0.4.20
 * Regression: when a extending a schema with a redefinition of the same field, with methods should be generated only once ([#507](https://github.com/joelittlejohn/jsonschema2pojo/issues/507))
 * Unnecessary @SuppressWarnings java warnings after upgrade ([#498](https://github.com/joelittlejohn/jsonschema2pojo/issues/498))
