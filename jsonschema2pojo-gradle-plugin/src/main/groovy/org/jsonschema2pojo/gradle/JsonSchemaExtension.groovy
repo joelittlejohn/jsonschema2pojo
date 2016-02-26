@@ -56,6 +56,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String targetVersion
   boolean useCommonsLang3
   boolean useDoubleNumbers
+  boolean useBigDecimals
   boolean useJodaDates
   boolean useJodaLocalDates
   boolean useJodaLocalTimes
@@ -75,6 +76,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     propertyWordDelimiters = [] as char[]
     useLongIntegers = false
     useDoubleNumbers = true
+    useBigDecimals = false
     includeHashcodeAndEquals = true
     includeConstructors = false
     constructorsRequiredPropertiesOnly = false
@@ -144,6 +146,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |propertyWordDelimiters = ${Arrays.toString(propertyWordDelimiters)}
        |useLongIntegers = ${useLongIntegers}
        |useDoubleNumbers = ${useDoubleNumbers}
+       |useBigDecimals = ${useBigDecimals}
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}
        |includeConstructors = ${includeConstructors}
        |includeToString = ${includeToString}

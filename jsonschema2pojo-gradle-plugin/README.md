@@ -71,6 +71,10 @@ jsonSchema2Pojo {
   // Whether to use the java type double (or Double) instead of float (or Float) when representing
   // the JSON Schema type 'number'.
   useDoubleNumbers = true
+  
+  // Whether to use the java type BigDecimal when representing the JSON Schema type 'number'. Note
+  // that this configuration overrides useDoubleNumbers
+  useBigDecimals = false
 
   // Whether to include hashCode and equals methods in generated Java types.
   includeHashcodeAndEquals = true

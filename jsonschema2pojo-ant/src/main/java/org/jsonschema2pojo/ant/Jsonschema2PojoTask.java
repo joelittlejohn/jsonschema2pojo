@@ -79,6 +79,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useDoubleNumbers = true;
 
+    private boolean useBigDecimals = false;
+
     private boolean includeHashcodeAndEquals = true;
 
     private boolean includeToString = true;
@@ -120,7 +122,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeAdditionalProperties = true;
 
     private boolean includeAccessors = true;
-    
+
     private String targetVersion = "1.6";
 
     private boolean includeDynamicAccessors = false;
@@ -288,6 +290,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setUseDoubleNumbers(boolean useDoubleNumbers) {
         this.useDoubleNumbers = useDoubleNumbers;
+    }
+
+    /**
+     * Sets the 'useBigDecimals' property of this class
+     *
+     * @param useBigDecimals
+     *            Whether to use the java type <code>BigDecimal</code>
+     *            instead of <code>float</code> (or {@link java.lang.Float})
+     *            when representing the JSON Schema type 'number'. Note that
+     *            this overrides <code>useDoubleNumbers</code>.
+     */
+    public void setUseBigDecimals(boolean useBigDecimals) {
+        this.useBigDecimals = useBigDecimals;
     }
 
     /**
@@ -784,5 +799,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getTimeType() {
         return timeType;
+    }
+
+    @Override
+    public boolean isUseBigDecimals() {
+        return useBigDecimals;
     }
 }

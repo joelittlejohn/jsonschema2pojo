@@ -102,6 +102,17 @@ public interface GenerationConfig {
      */
     boolean isUseDoubleNumbers();
 
+
+    /**
+     * Gets the 'useBigDecimals' configuration option.
+     *
+     * @return Whether to use the java type <code>BigDecimal</code>
+     *         instead of <code>float</code> (or {@link java.lang.Float})
+     *         when representing the JSON Schema type 'number'. Note
+     *         that this configuration overrides <code>isUseDoubleNumbers</code>.
+     */
+    boolean isUseBigDecimals();
+
     /**
      * Gets the 'includeHashcodeAndEquals' configuration option.
      *
@@ -305,7 +316,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'targetVersion' configuration option.
-     * 
+     *
      *  @return The target version for generated source files.
      */
     String getTargetVersion();

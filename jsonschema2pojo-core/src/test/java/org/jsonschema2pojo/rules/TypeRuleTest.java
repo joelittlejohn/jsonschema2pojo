@@ -38,6 +38,8 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
+import java.math.BigDecimal;
+
 public class TypeRuleTest {
 
     private GenerationConfig config = mock(GenerationConfig.class);
@@ -127,6 +129,39 @@ public class TypeRuleTest {
 
         assertThat(result.fullName(), is("int"));
     }
+
+    @Test
+    public void applyGeneratesBigDecimal_1() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+
+        when(config.isUseBigDecimals()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(BigDecimal.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesBigDecimal_2() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "number");
+
+        //this shows that isUseBigDecimals overrides isUseDoubleNumbers
+        when(config.isUseDoubleNumbers()).thenReturn(true);
+        when(config.isUseBigDecimals()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(BigDecimal.class.getName()));
+    }
+
 
     @Test
     public void applyGeneratesIntegerUsingJavaTypeInteger() {
