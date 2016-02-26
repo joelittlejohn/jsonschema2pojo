@@ -87,6 +87,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         propertyAnnotations(nodeName, node, schema, field);
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
+        ruleFactory.getAnnotator().propertyDeserializer(ruleFactory, field, jclass, nodeName, node, schema);
 
         if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
             JMethod getter = addGetter(jclass, field, fieldName);

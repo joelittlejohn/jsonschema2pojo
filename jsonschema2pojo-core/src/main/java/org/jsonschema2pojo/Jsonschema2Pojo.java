@@ -52,8 +52,8 @@ public class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(GenerationConfig config) throws IOException {
-        Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
+        Annotator annotator = getAnnotator(config, ruleFactory);
 
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
@@ -136,7 +136,7 @@ public class Jsonschema2Pojo {
         f.delete();
     }
 
-    private static Annotator getAnnotator(GenerationConfig config) {
+    private static Annotator getAnnotator(GenerationConfig config, RuleFactory ruleFactory) {
         AnnotatorFactory factory = new AnnotatorFactory();
         return factory.getAnnotator(factory.getAnnotator(config.getAnnotationStyle()), factory.getAnnotator(config.getCustomAnnotator()));
     }

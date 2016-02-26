@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
@@ -76,6 +78,11 @@ public abstract class AbstractAnnotator implements Annotator {
 
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    }
+
+    @Override
+    public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
+        JsonNode propertyNode, Schema currentSchema) {
     }
 
 }

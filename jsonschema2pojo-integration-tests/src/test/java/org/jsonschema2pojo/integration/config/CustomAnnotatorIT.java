@@ -24,7 +24,9 @@ import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -170,6 +172,11 @@ public class CustomAnnotatorIT {
                 JDefinedClass clazz, String propertyName) {
             field.annotate(Deprecated.class);
 
+        }
+
+        @Override
+        public void propertyDeserializer(RuleFactory ruleFactory, JFieldVar field, JDefinedClass clazz, String propertyName,
+            JsonNode propertyNode, Schema currentSchema) {
         }
 
     }

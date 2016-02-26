@@ -369,4 +369,8 @@ public class RuleFactory {
         return new JavaNameRule();
     }
 
+    public Rule<JClassContainer, JType> getOneOfTypeRule() {
+        return new OneOfTypeRule(this);
+    }
+
 }

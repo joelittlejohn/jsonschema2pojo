@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "oneOfProperties",
+  "properties": {
+    "minLength": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20
+        },
+        {
+          "type": "string",
+          "format": "uri"
+        }
+      ]
+    },
+    "maxLength": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 20
+        },
+        {
+          "type": "string",
+          "format": "uri"
+        }
+      ]
+    }
+  }
+}

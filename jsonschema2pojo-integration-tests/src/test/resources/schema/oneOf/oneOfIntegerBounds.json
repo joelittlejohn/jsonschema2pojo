@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "oneOfProperties",
+  "properties": {
+    "minimum": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "javaType": "java.math.BigInteger",
+          "minimum": 9223372036854775808
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Long",
+          "minimum": 2147483648
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Integer",
+          "minimum": 32768
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Short",
+          "minimum": 128
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Byte"
+        }
+      ]
+    },
+    "maximum": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "javaType": "java.lang.Byte",
+          "maximum": 127
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Short",
+          "maximum": 32767
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Integer",
+          "maximum": 2147483647
+        },{
+          "type": "integer",
+          "javaType": "java.lang.Long",
+          "maximum": 9223372036854775807
+        },{
+          "type": "integer",
+          "javaType": "java.math.BigInteger"
+        }
+      ]
+    }
+  }
+}
