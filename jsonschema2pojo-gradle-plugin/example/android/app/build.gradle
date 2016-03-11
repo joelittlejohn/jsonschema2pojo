@@ -42,7 +42,7 @@ dependencies {
     // Required for @Generated annotation
     compile 'org.glassfish:javax.annotation:10.0-b28'
     // Required if generating Gson annotations
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.5'
     // Required if generating equals, hashCode, or toString methods
     compile 'commons-lang:commons-lang:2.6'
     // Required if generating JSR-303 annotations

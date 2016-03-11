@@ -48,7 +48,7 @@ public enum AnnotationStyle {
     JACKSON2,
 
     /**
-     * Gson 2.2.4
+     * Gson 2.x
      */
     GSON,
 
