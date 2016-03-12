@@ -18,12 +18,20 @@ package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.sun.codemodel.*;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JMod;
+
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
 import org.junit.Test;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
+
+import javax.validation.constraints.NotNull;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -46,7 +54,7 @@ public class RequiredArrayRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("fooBar");
 
-        rule.apply("Class", requiredNode, jclass, null);
+        rule.apply("Class", requiredNode, jclass, new Schema(null, requiredNode, requiredNode));
 
         JDocComment fooBarJavaDoc = jclass.fields().get("fooBar").javadoc();
         JDocComment fooJavaDoc = jclass.fields().get("foo").javadoc();
@@ -71,7 +79,7 @@ public class RequiredArrayRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("foo_bar");
 
-        rule.apply("Class", requiredNode, jclass, null);
+        rule.apply("Class", requiredNode, jclass, new Schema(null, requiredNode, requiredNode));
 
         Collection<JAnnotationUse> fooBarAnnotations = jclass.fields().get("fooBar").annotations();
         Collection<JAnnotationUse> fooAnnotations = jclass.fields().get("foo").annotations();

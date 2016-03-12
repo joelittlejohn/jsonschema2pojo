@@ -1,0 +1,29 @@
+{
+  "type" : "object",
+  "required" : [ "requiredPropertyWithJavaName", "requiredPropertyWithoutJavaName" ],
+  "properties" : {
+    "notRequiredPropertyWithJavaName" : {
+      "javaName" : "notRequiredJavaProperty",
+      "type" : "string"
+    },
+    "notRequiredPropertyWithoutJavaName" : {
+      "type" : "string"
+    },
+    "requiredPropertyWithJavaName" : {
+      "javaName" : "requiredJavaProperty",
+      "type" : "string"
+    },
+    "requiredPropertyWithoutJavaName" : {
+      "type" : "string"
+    },
+    "inlineRequiredPropertyWithJavaName" : {
+      "javaName" : "inlineRequiredJavaProperty",
+      "type" : "string",
+      "required" : true
+    },
+    "inlineRequiredPropertyWithoutJavaName" : {
+      "type" : "string",
+      "required" : true
+    }
+  }
+}
