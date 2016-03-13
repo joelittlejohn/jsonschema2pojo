@@ -87,6 +87,7 @@ jsonSchema2Pojo {
   //  - jackson2 (apply annotations from the Jackson 2.x library)
   //  - jackson1 (apply annotations from the Jackson 1.x library)
   //  - gson (apply annotations from the Gson library)
+  //  - moshi1 (apply annotations from the Moshi 1.x library)
   //  - none (apply no annotations at all)
   annotationStyle = 'jackson'
 

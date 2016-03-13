@@ -53,6 +53,14 @@ public enum AnnotationStyle {
     GSON,
 
     /**
+     * Moshi 1.x
+     *
+     * @see <
+     *      href="https://github.com/square/moshi">https://github.com/square/moshi</a>
+     */
+    MOSHI1,
+
+    /**
      * No-op style, adds no annotations at all.
      */
     NONE,
