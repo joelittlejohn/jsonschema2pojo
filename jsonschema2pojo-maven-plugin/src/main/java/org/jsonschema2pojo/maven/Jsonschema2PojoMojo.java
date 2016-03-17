@@ -345,8 +345,31 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean useJodaLocalTimes = false;
 
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format date-time to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.dateTimeType}"
+     * @since 0.4.22
+     */
     private String dateTimeType = null;
+
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format time (not date-time) to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.timeType}"
+     * @since 0.4.22
+     */
     private String timeType = null;
+
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format date (not date-time) to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.dateType}"
+     * @since 0.4.22
+     */
     private String dateType = null;
 
     /**
