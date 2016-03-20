@@ -145,6 +145,9 @@ public interface GenerationConfig {
      *         <li><code>gson</code> (apply annotations from the
      *         <a href="https://code.google.com/p/google-gson/">gson</a>
      *         library)</li>
+     *         <li><code>moshi1</code> (apply annotations from the
+     *         <a href="https://github.com/square/moshi">moshi</a>
+     *         library)</li>
      *         <li><code>none</code> (apply no annotations at all)</li>
      *         </ul>
      * @see AnnotatorFactory

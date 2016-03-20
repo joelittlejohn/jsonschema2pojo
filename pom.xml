@@ -53,6 +53,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <gradle.version>1.6</gradle.version>
         <gson.version>2.5</gson.version>
+        <moshi.version>1.1.0</moshi.version>
     </properties>
 
     <build>
@@ -295,6 +296,11 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.moshi</groupId>
+                <artifactId>moshi</artifactId>
+                <version>${moshi.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.javaparser</groupId>
