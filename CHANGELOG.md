@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.22
+* Adding date-time types to Maven plugin mojo configuration ([#531](https://github.com/joelittlejohn/jsonschema2pojo/pull/531))
+* Fix javaName breaking required properties ([#528](https://github.com/joelittlejohn/jsonschema2pojo/pull/528))
+* Add support for using BigDecimal to represent numbers ([#517](https://github.com/joelittlejohn/jsonschema2pojo/pull/517))
+* Jsonschema2pojoRule report problems to STDERR ([#513](https://github.com/joelittlejohn/jsonschema2pojo/pull/513))
+
 ## 0.4.21
 * Fix NullPointerException in Gradle plugin for Java (non-Android) projects ([#510](https://github.com/joelittlejohn/jsonschema2pojo/pull/510))
 
