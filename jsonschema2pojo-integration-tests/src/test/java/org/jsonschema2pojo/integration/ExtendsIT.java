@@ -107,19 +107,49 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("rawtypes")
     public void extendsBuilderMethods() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfAParent");
 
-        Method builderMethod = supertype.getDeclaredMethod("withParent", String.class);
-        assertNotNull("no withParent method", builderMethod);
+        checkBuilderMethod(subtype, supertype, "withParent");
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void builderMethodsOnChildWithProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("generateBuilders", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBParent");
+
+        checkBuilderMethod(type, supertype, "withParentProperty");
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void builderMethodsOnChildWithNoProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfBWithNoProperties.json", "com.example", config("generateBuilders", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfBWithNoProperties");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBWithNoPropertiesParent");
+
+        checkBuilderMethod(type, supertype, "withParentProperty");
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    static void checkBuilderMethod(Class type, Class supertype, String builderMethodName) throws Exception {
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        Method builderMethod = supertype.getDeclaredMethod(builderMethodName, String.class);
+        assertNotNull("Builder method not found on super type: " + builderMethodName, builderMethod);
         assertThat(builderMethod.getReturnType(), is(equalTo(supertype)));
 
-        Method builderMethodOverride = subtype.getDeclaredMethod("withParent", String.class);
-        assertNotNull("no withParent method", builderMethodOverride);
-        assertThat(builderMethodOverride.getReturnType(), is(equalTo(subtype)));
+        Method builderMethodOverride = type.getDeclaredMethod(builderMethodName, String.class);
+        assertNotNull("Builder method not overridden on type: " + builderMethodName, builderMethodOverride);
+        assertThat(builderMethodOverride.getReturnType(), is(equalTo(type)));
     }
+
 }

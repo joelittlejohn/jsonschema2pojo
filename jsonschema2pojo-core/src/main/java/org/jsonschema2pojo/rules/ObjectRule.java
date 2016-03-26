@@ -121,9 +121,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
         }
 
-        if (node.has("properties")) {
-            ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
-        }
+        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
 
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
