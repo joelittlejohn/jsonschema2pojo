@@ -115,7 +115,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
             return JExpr.lit(Double.parseDouble(node.asText()));
 
         } else if (fieldType.fullName().equals(BigDecimal.class.getName())) {
-            return JExpr.lit(Double.parseDouble(node.asText()));
+            return JExpr._new(fieldType).arg(JExpr.lit(node.asText()));
 
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
             return JExpr.lit(Boolean.parseBoolean(node.asText()));
