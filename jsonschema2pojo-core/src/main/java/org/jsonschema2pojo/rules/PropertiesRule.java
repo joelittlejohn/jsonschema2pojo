@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
 
@@ -53,6 +54,9 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+        if (node == null) {
+            node = JsonNodeFactory.instance.objectNode();
+        }
 
         for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
             String property = properties.next();
