@@ -55,7 +55,7 @@ public enum AnnotationStyle {
     /**
      * Moshi 1.x
      *
-     * @see <
+     * @see <a
      *      href="https://github.com/square/moshi">https://github.com/square/moshi</a>
      */
     MOSHI1,
