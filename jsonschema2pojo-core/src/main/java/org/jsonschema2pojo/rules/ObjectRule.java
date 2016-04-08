@@ -42,22 +42,14 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 import org.jsonschema2pojo.util.TypeUtil;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.io.DataOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import javax.annotation.Generated;
 
@@ -67,9 +59,6 @@ import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -87,33 +76,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         this.ruleFactory = ruleFactory;
         this.parcelableHelper = parcelableHelper;
     }
-
-    private static final Comparator<JClass> INTERFACE_COMPARATOR =
-    new Comparator<JClass>() {
-      public int compare(JClass object1, JClass object2) {
-        if (object1 == null && object2 == null) {
-          return 0;
-        }
-        if (object1 == null) {
-          return 1;
-        }
-        if (object2 == null) {
-          return -1;
-        }
-        final String name1 = object1.fullName();
-        final String name2 = object2.fullName();
-        if (name1 == null && name2 == null) {
-          return 0;
-        }
-        if (name1 == null) {
-          return 1;
-        }
-        if (name2 == null) {
-          return -1;
-        }
-        return name1.compareTo(name2);
-      }
-    };
 
     /**
      * Applies this schema rule to take the required code generation steps.
@@ -207,118 +169,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addCreator(jclass);
     }
 
-    private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) throws IOException {
-        TreeMap<String, JMethod> sortedMethods = new TreeMap<String, JMethod>();
-        while (methods.hasNext()) {
-            JMethod method = methods.next();
-            //Collect non-private methods
-            if ((method.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
-                sortedMethods.put(method.name(), method);
-            }
-        }
-        for (JMethod method : sortedMethods.values()) {
-            dataOutputStream.writeUTF(method.name());
-            dataOutputStream.writeInt(method.mods().getValue());
-            if (method.type() != null) {
-                dataOutputStream.writeUTF(method.type().fullName());
-            }
-            for (JVar param : method.params()) {
-                dataOutputStream.writeUTF(param.type().fullName());
-            }
-        }
-    }
-
-    private static void processDefinedClassForSerializableSupport(JDefinedClass jclass, DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(jclass.fullName());
-        dataOutputStream.writeInt(jclass.mods().getValue());
-
-        for (JTypeVar typeParam : jclass.typeParams()) {
-            dataOutputStream.writeUTF(typeParam.fullName());
-        }
-
-        //sorted
-        TreeMap<String, JDefinedClass> sortedClasses = new TreeMap<String, JDefinedClass>();
-        Iterator<JDefinedClass> classes = jclass.classes();
-        while (classes.hasNext()) {
-            JDefinedClass nestedClass = classes.next();
-            sortedClasses.put(nestedClass.fullName(), nestedClass);
-        }
-
-        for (JDefinedClass nestedClass : sortedClasses.values()) {
-            processDefinedClassForSerializableSupport(nestedClass, dataOutputStream);
-        }
-
-        //sorted
-        TreeSet<String> fieldNames = new TreeSet<String>(jclass.fields().keySet());
-        for (String fieldName : fieldNames) {
-            JFieldVar fieldVar = jclass.fields().get(fieldName);
-            //non private members
-            if ((fieldVar.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
-                processFieldVarForSerializableSupport(jclass.fields().get(fieldName), dataOutputStream);
-            }
-        }
-
-        Iterator<JClass> interfaces = jclass._implements();
-        List<JClass> interfacesList = new ArrayList<JClass>();
-        while (interfaces.hasNext()) {
-            JClass aInterface = interfaces.next();
-            interfacesList.add(aInterface);
-        }
-            
-        Collections.sort(interfacesList, INTERFACE_COMPARATOR);
-        for (JClass aInterface : interfacesList) {
-            dataOutputStream.writeUTF(aInterface.fullName());
-        }
-
-        //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
-        if (jclass._extends() != null) {
-            dataOutputStream.writeUTF(jclass._extends().fullName());
-        }
-
-        processMethodCollectionForSerializableSupport(jclass.methods().iterator(), dataOutputStream);
-        processMethodCollectionForSerializableSupport(jclass.constructors(), dataOutputStream);
-    }
-
-
-    private static void processFieldVarForSerializableSupport(JFieldVar fieldVar, DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeUTF(fieldVar.name());
-        dataOutputStream.writeInt(fieldVar.mods().getValue());
-        JType type = fieldVar.type();
-        dataOutputStream.writeUTF(type.fullName());
-    }
-    
-    private void addSerializableSupport(JDefinedClass jclass) {
-        jclass._implements(Serializable.class);
-
-        try {
-
-            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            final DataOutputStream      dataOutputStream      = new DataOutputStream(byteArrayOutputStream);
-
-            processDefinedClassForSerializableSupport(jclass, dataOutputStream);
-
-            dataOutputStream.flush();
-
-            final MessageDigest digest           = MessageDigest.getInstance("SHA");
-            final byte[]        digestBytes      = digest.digest(byteArrayOutputStream.toByteArray());
-            long                serialVersionUID = 0L;
-
-            for (int i = Math.min(digestBytes.length, 8) - 1; i >= 0; i--) {
-                serialVersionUID = serialVersionUID << 8 | (long)(digestBytes[i] & 0xff);
-            }
-
-            JFieldVar  serialUIDField = jclass.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, long.class, "serialVersionUID");
-            serialUIDField.init(JExpr.lit(serialVersionUID));
-
-        } catch (IOException exception) {
-            final InternalError internalError = new InternalError(exception.getMessage());
-            internalError.initCause(exception);
-            throw internalError;
-        } catch (NoSuchAlgorithmException exception) {
-            final RuntimeException securityException = new SecurityException(exception.getMessage());
-            securityException.initCause(exception);
-            throw securityException;
-        }
+    private static void addSerializableSupport(JDefinedClass jclass) {
+        SerializableHelper.addSerializableSupport(jclass);
     }
 
     /**
