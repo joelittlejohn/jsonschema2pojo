@@ -48,10 +48,12 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.io.DataOutputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -204,7 +206,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) {
-        TreeMap<String, JClass> sortedMethods = new TreeMap<String, JClass>();
+        TreeMap<String, JMethod> sortedMethods = new TreeMap<String, JMethod>();
         while (methods.hasNext()) {
             JMethod method = methods.next();
             //Collect non-private methods
@@ -235,12 +237,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
         for (JClass nestedClass : jclass.classes()) {
             sortedClasses.put(nestedClass.fullName(), nestedClass);
         }
-        for (JClass nestedClass : sortedClasses.values()) {
+        for (JDefinedClass nestedClass : sortedClasses.values()) {
             processDefinedClassForSerializableSupport(nestedClass, dataOutputStream);
         }
 
         //sorted
-        TreeSet<String> fieldNames = new TreeSet(jclass.fields().keySet());
+        TreeSet<String> fieldNames = new TreeSet<String>(jclass.fields().keySet());
         for (String fieldName : fieldNames) {
             JFieldVar fieldVar = jclass.fields().get(fieldName);
             //non private members
