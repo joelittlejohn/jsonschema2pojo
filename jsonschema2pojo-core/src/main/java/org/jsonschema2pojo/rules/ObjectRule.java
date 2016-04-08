@@ -245,12 +245,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             Iterator<JClass> interfaces = jclass._implements();
             List<JClass> interfacesList = new ArrayList<JClass>();
-            for (JClass interface : interfaces) {
-                interfacesList.add(interface);
+            for (JClass aInterface : interfaces) {
+                interfacesList.add(aInterface);
             }
             Collections.sort(interfacesList, INTERFACE_COMPARATOR);
-            for (JClass interface : interfacesList) {
-                dataOutputStream.writeUTF(interface.fullName());
+            for (JClass aInterface : interfacesList) {
+                dataOutputStream.writeUTF(aInterface.fullName());
             }
 
             //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
