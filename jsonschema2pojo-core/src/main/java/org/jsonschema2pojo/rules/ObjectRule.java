@@ -221,7 +221,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             dataOutputStream.writeInt(jclass.mods().getValue());
 
             for (JTypeVar typeParam : jclass.typeParams()) {
-                dataOutputStream.writeUTF(typeParam.fullName())
+                dataOutputStream.writeUTF(typeParam.fullName());
             }
 
             //sorted
@@ -238,7 +238,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             for (String fieldName : fieldNames) {
                 JFieldVar fieldVar = jclass.fields().get(fieldName);
                 //non private members
-                if (fieldVar.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
+                if ((fieldVar.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
                     processFieldVarForSerializableSupport(jclass.fields().get(fieldName), dataOutputStream);
                 }
             }
@@ -254,7 +254,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             }
 
             //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
-            if (jclass._extends()) {
+            if (jclass._extends() != null) {
                 dataOutputStream.writeUTF(jclass.extends().fullName());
             }
 
