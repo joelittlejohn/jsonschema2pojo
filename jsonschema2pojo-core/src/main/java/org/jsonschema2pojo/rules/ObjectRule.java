@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.io.DataOutputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -95,8 +96,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (object2 == null) {
           return -1;
         }
-        final String name1 = object1.getQualifiedName();
-        final String name2 = object2.getQualifiedName();
+        final String name1 = object1.fullName();
+        final String name2 = object2.fullName();
         if (name1 == null && name2 == null) {
           return 0;
         }
@@ -202,9 +203,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addCreator(jclass);
     }
 
-    private static void processMethodCollectionForSerializableSupport(Collection<JMethod> methods, DataOutputStream data) {
+    private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) {
         TreeMap<String, JClass> sortedMethods = new TreeMap<String, JClass>();
-        for (JMethod method : methods) {
+        while (methods.hasNext()) {
+            JMethod method = methods.next();
             //Collect non-private methods
             if ((method.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
                 sortedMethods.put(method.name(), method);
@@ -249,9 +251,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         Iterator<JClass> interfaces = jclass._implements();
         List<JClass> interfacesList = new ArrayList<JClass>();
-        for (JClass aInterface : interfaces) {
+        while (interfaces.hasNext()) {
+            JClass aInterface = interfaces.next();
             interfacesList.add(aInterface);
         }
+            
         Collections.sort(interfacesList, INTERFACE_COMPARATOR);
         for (JClass aInterface : interfacesList) {
             dataOutputStream.writeUTF(aInterface.fullName());
@@ -262,7 +266,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             dataOutputStream.writeUTF(jclass._extends().fullName());
         }
 
-        processMethodCollectionForSerializableSupport(jclass.methods(), dataOutputStream);
+        processMethodCollectionForSerializableSupport(jclass.methods().iterator(), dataOutputStream);
         processMethodCollectionForSerializableSupport(jclass.constructors(), dataOutputStream);
     }
 
@@ -276,8 +280,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
     
     private void addSerializableSupport(JDefinedClass jclass) {
         jclass._implements(Serializable.class);
-
-        final boolean isSerializable = psiClass.isInheritor(serializable, true);
 
         try {
 
