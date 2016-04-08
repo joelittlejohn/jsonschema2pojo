@@ -57,6 +57,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.io.DataOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.annotation.Generated;
 
@@ -206,7 +207,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addCreator(jclass);
     }
 
-    private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) {
+    private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) throws IOException {
         TreeMap<String, JMethod> sortedMethods = new TreeMap<String, JMethod>();
         while (methods.hasNext()) {
             JMethod method = methods.next();
@@ -225,7 +226,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private static void processDefinedClassForSerializableSupport(JDefinedClass jclass, DataOutputStream dataOutputStream) {
+    private static void processDefinedClassForSerializableSupport(JDefinedClass jclass, DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeUTF(jclass.fullName());
         dataOutputStream.writeInt(jclass.mods().getValue());
 
@@ -277,7 +278,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
 
-    private static void processFieldVarForSerializableSupport(JFieldVar fieldVar, DataOutputStream dataOutputStream) {
+    private static void processFieldVarForSerializableSupport(JFieldVar fieldVar, DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeUTF(fieldVar.name());
         dataOutputStream.writeInt(fieldVar.mods().getValue());
         JType type = fieldVar.type();
@@ -307,6 +308,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             JFieldVar  serialUIDField = jclass.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, long.class, "serialVersionUID");
             serialUIDField.init(JExpr.lit(serialVersionUID));
 
+        } catch (IOException exception) {
+            final InternalError internalError = new InternalError(exception.getMessage());
+            internalError.initCause(exception);
+            throw internalError;
         } catch (NoSuchAlgorithmException exception) {
             final RuntimeException securityException = new SecurityException(exception.getMessage());
             securityException.initCause(exception);
