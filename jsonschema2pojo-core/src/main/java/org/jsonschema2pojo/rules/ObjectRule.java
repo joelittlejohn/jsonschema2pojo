@@ -46,9 +46,13 @@ import org.jsonschema2pojo.util.TypeUtil;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.DataOutputStream;
+import java.io.ByteArrayOutputStream;
 
 import javax.annotation.Generated;
 
@@ -218,48 +222,48 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private static void processDefinedClassForSerializableSupport(JDefinedClass jclass, DataOutputStream dataOutputStream) {
         dataOutputStream.writeUTF(jclass.fullName());
-            dataOutputStream.writeInt(jclass.mods().getValue());
+        dataOutputStream.writeInt(jclass.mods().getValue());
 
-            for (JTypeVar typeParam : jclass.typeParams()) {
-                dataOutputStream.writeUTF(typeParam.fullName());
-            }
+        for (JTypeVar typeParam : jclass.typeParams()) {
+            dataOutputStream.writeUTF(typeParam.fullName());
+        }
 
-            //sorted
-            TreeMap<String, JClass> sortedClasses = new TreeMap<String, JClass>();
-            for (JClass nestedClass : jclass.classes()) {
-                sortedClasses.put(nestedClass.fullName(), nestedClass);
-            }
-            for (JClass nestedClass : sortedClasses.values()) {
-                processDefinedClassForSerializableSupport(nestedClass, dataOutputStream);
-            }
+        //sorted
+        TreeMap<String, JClass> sortedClasses = new TreeMap<String, JClass>();
+        for (JClass nestedClass : jclass.classes()) {
+            sortedClasses.put(nestedClass.fullName(), nestedClass);
+        }
+        for (JClass nestedClass : sortedClasses.values()) {
+            processDefinedClassForSerializableSupport(nestedClass, dataOutputStream);
+        }
 
-            //sorted
-            TreeSet<String> fieldNames = new TreeSet(jclass.fields().keySet());
-            for (String fieldName : fieldNames) {
-                JFieldVar fieldVar = jclass.fields().get(fieldName);
-                //non private members
-                if ((fieldVar.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
-                    processFieldVarForSerializableSupport(jclass.fields().get(fieldName), dataOutputStream);
-                }
+        //sorted
+        TreeSet<String> fieldNames = new TreeSet(jclass.fields().keySet());
+        for (String fieldName : fieldNames) {
+            JFieldVar fieldVar = jclass.fields().get(fieldName);
+            //non private members
+            if ((fieldVar.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
+                processFieldVarForSerializableSupport(jclass.fields().get(fieldName), dataOutputStream);
             }
+        }
 
-            Iterator<JClass> interfaces = jclass._implements();
-            List<JClass> interfacesList = new ArrayList<JClass>();
-            for (JClass aInterface : interfaces) {
-                interfacesList.add(aInterface);
-            }
-            Collections.sort(interfacesList, INTERFACE_COMPARATOR);
-            for (JClass aInterface : interfacesList) {
-                dataOutputStream.writeUTF(aInterface.fullName());
-            }
+        Iterator<JClass> interfaces = jclass._implements();
+        List<JClass> interfacesList = new ArrayList<JClass>();
+        for (JClass aInterface : interfaces) {
+            interfacesList.add(aInterface);
+        }
+        Collections.sort(interfacesList, INTERFACE_COMPARATOR);
+        for (JClass aInterface : interfacesList) {
+            dataOutputStream.writeUTF(aInterface.fullName());
+        }
 
-            //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
-            if (jclass._extends() != null) {
-                dataOutputStream.writeUTF(jclass._extends().fullName());
-            }
+        //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
+        if (jclass._extends() != null) {
+            dataOutputStream.writeUTF(jclass._extends().fullName());
+        }
 
-            processMethodCollectionForSerializableSupport(jclass.methods(), dataOutputStream);
-            processMethodCollectionForSerializableSupport(jclass.constructors(), dataOutputStream);
+        processMethodCollectionForSerializableSupport(jclass.methods(), dataOutputStream);
+        processMethodCollectionForSerializableSupport(jclass.constructors(), dataOutputStream);
     }
 
 
