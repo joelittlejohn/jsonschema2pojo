@@ -33,6 +33,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 import org.jsonschema2pojo.AnnotationStyle;
@@ -216,8 +217,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
         for (JMethod method : sortedMethods.values()) {
             dataOutputStream.writeUTF(method.name());
-            dataOutputStream.writeInt(method.mods());
-            dataOutputStream.writeUTF(method.type.fullName());
+            dataOutputStream.writeInt(method.mods().getValue());
+            dataOutputStream.writeUTF(method.type().fullName());
             for (JVar param : method.params()) {
                 dataOutputStream.writeUTF(param.type().fullName());
             }
@@ -233,10 +234,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         //sorted
-        TreeMap<String, JClass> sortedClasses = new TreeMap<String, JClass>();
-        for (JClass nestedClass : jclass.classes()) {
+        TreeMap<String, JDefinedClass> sortedClasses = new TreeMap<String, JDefinedClass>();
+        Iterator<JDefinedClass> classes = jclass.classes();
+        while (classes.hasNext()) {
+            JDefinedClass nestedClass = classes.next();
             sortedClasses.put(nestedClass.fullName(), nestedClass);
         }
+
         for (JDefinedClass nestedClass : sortedClasses.values()) {
             processDefinedClassForSerializableSupport(nestedClass, dataOutputStream);
         }
