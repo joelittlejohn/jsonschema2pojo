@@ -199,7 +199,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private static void processMethodCollectionForSerializableSupport(Collection<JMethod> methods, DataOutputStream data) {
-        TreeMap<String, JClass> sortedMethods = new TreeMap<>();
+        TreeMap<String, JClass> sortedMethods = new TreeMap<String, JClass>();
         for (JMethod method : methods) {
             //Collect non-private methods
             if ((method.mods().getValue() & JMod.PRIVATE) != JMod.PRIVATE) {
@@ -225,7 +225,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             }
 
             //sorted
-            TreeMap<String, JClass> sortedClasses = new TreeMap<>();
+            TreeMap<String, JClass> sortedClasses = new TreeMap<String, JClass>();
             for (JClass nestedClass : jclass.classes()) {
                 sortedClasses.put(nestedClass.fullName(), nestedClass);
             }
@@ -244,7 +244,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             }
 
             Iterator<JClass> interfaces = jclass._implements();
-            List<JClass> interfacesList = new ArrayList<>();
+            List<JClass> interfacesList = new ArrayList<JClass>();
             for (JClass interface : interfaces) {
                 interfacesList.add(interface);
             }
