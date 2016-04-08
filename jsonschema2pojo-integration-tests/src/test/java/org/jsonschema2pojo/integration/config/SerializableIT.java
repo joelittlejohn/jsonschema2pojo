@@ -46,4 +46,14 @@ public class SerializableIT {
         assertTrue("Beans should implement serializable when config is set", Serializable.class.isAssignableFrom(generatedType));
     }
 
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void beansCanIncludeConstructor() throws ClassNotFoundException, SecurityException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("serializable", true, "includeConstructors", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+
+        assertTrue("Beans should implement serializable when config is set", Serializable.class.isAssignableFrom(generatedType));
+    }
+
 }

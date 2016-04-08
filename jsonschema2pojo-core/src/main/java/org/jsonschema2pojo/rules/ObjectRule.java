@@ -219,7 +219,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         for (JMethod method : sortedMethods.values()) {
             dataOutputStream.writeUTF(method.name());
             dataOutputStream.writeInt(method.mods().getValue());
-            dataOutputStream.writeUTF(method.type().fullName());
+            if (method.type() != null) {
+                dataOutputStream.writeUTF(method.type().fullName());
+            }
             for (JVar param : method.params()) {
                 dataOutputStream.writeUTF(param.type().fullName());
             }
