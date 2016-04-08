@@ -255,7 +255,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             //we should probably serialize the parent class too! (but what if it has serialversionUID on it? that would be a field and would affect the serialversionUID!)
             if (jclass._extends() != null) {
-                dataOutputStream.writeUTF(jclass.extends().fullName());
+                dataOutputStream.writeUTF(jclass._extends().fullName());
             }
 
             processMethodCollectionForSerializableSupport(jclass.methods(), dataOutputStream);
