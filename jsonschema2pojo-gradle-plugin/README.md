@@ -155,3 +155,29 @@ This task will automatically run in a project where the `jsonSchema2Pojo` config
 It will invoke the jsonschema2pojo generator, make the compileJava task dependent of itself and add
 the `targetDirectory` to the main/java source set so the java compiler will find and compile the newly
 generated source files.
+
+## Developers
+
+It can be useful to build this project and try out changes in your existing gradle project.
+
+1. From the root, run `mvn clean install`. This will install JSONSchema2Pojo in your local maven repository.
+2. Include the local repo in your gradle file, and change your dependency to use the development version, (typically ending with '-SNAPSHOT' - you can find this in `pom.xml`). e.g:
+
+```groovy
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+
+    dependencies {
+        // this plugin
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.23-SNAPSHOT'
+        // add additional dependencies here if you wish to reference instead of generate them (see example directory)
+    }
+}
+
+repositories {
+    mavenLocal()
+}
+```
+
