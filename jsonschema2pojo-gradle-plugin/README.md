@@ -160,7 +160,7 @@ generated source files.
 
 It can be useful to build this project and try out changes in your existing gradle project.
 
-1. From the root, run `mvn clean install`. This will install JSONSchema2Pojo in your local maven repository.
+1. From the root, run `mvn clean install`. This will install jsonschema2pojo in your local maven repository.
 2. Include the local repo in your gradle file, and change your dependency to use the development version, (typically ending with '-SNAPSHOT' - you can find this in `pom.xml`). e.g:
 
 ```groovy
