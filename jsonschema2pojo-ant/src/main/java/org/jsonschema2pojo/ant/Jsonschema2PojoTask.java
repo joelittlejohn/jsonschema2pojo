@@ -550,6 +550,26 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'classNamePrefix' property of this class
+     *
+     * @param classNamePrefix
+     *            Whether to add a prefix to generated classes.
+     */
+    public void setClassNamePrefix(String classNamePrefix) {
+        this.classNamePrefix = classNamePrefix;
+    }
+
+    /**
+     * Sets the 'classNameSuffix' property of this class
+     *
+     * @param classNameSuffix
+     *            Whether to add a suffix to generated classes.
+     */
+    public void setClassNameSuffix(String classNameSuffix) {
+        this.classNameSuffix = classNameSuffix;
+    }
+
+    /**
      * Sets the 'includeAdditionalProperties' property of this class
      *
      * @param includeAdditionalProperties
