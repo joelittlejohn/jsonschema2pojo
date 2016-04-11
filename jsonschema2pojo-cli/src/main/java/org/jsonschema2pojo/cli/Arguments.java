@@ -141,6 +141,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-x", "--class-suffix" }, description = "Suffix for generated class.")
     private String classNameSuffix = "";
 
+    @Parameter(names = { "-fe", "--file-extensions" }, description = "The extensions that should be considered as standard filename extensions when creating java class names.")
+    private String fileExtensions = "";
+
     @Parameter(names = { "-D", "--disable-additional-properties" }, description = "Disable additional properties support on generated types, regardless of the input schema(s)")
     private boolean disableAdditionalProperties = false;
 
@@ -325,6 +328,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return defaultString(fileExtensions).split(" ");
     }
 
     @Override

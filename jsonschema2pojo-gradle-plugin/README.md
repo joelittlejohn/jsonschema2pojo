@@ -140,6 +140,9 @@ jsonSchema2Pojo {
   // Whether to add a suffix to generated classes.
   classNameSuffix = ""
 
+  // An array of strings that should be considered as file extensions and therefore not included in class names.
+  fileExtensions = [] as String[]
+
   // Whether to generate constructors or not.
   includeConstructors = false
   

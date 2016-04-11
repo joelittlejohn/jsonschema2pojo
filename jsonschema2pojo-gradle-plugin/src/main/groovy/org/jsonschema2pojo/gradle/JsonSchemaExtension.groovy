@@ -36,6 +36,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   AnnotationStyle annotationStyle
   String classNamePrefix
   String classNameSuffix
+  String[] fileExtensions
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
@@ -101,6 +102,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     initializeCollections = true
     classNamePrefix = ''
     classNameSuffix = ''
+    fileExtensions = [] as String[]
     includeAdditionalProperties = true
     includeAccessors = true
     targetVersion = '1.6'
@@ -171,6 +173,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |initializeCollections = ${initializeCollections}
        |classNamePrefix = ${classNamePrefix}
        |classNameSuffix = ${classNameSuffix}
+       |fileExtensions = ${Arrays.toString(fileExtensions)}
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
      """.stripMargin()

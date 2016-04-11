@@ -444,6 +444,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String classNameSuffix = "";
 
     /**
+     * The file extenations that should be considered as file name extensions,
+     * and therefore ignored, when creating Java class names.
+     *
+     * @parameter expression="${jsonschema2pojo.fileExtensions}"
+     *            default-value=""
+     * @since 0.4.23
+     */
+    private String[] fileExtensions = new String[] {};
+
+    /**
      * Whether to generate constructors or not
      *
      * @parameter expression="${jsonschema2pojo.includeConstructors}"
@@ -771,6 +781,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return fileExtensions;
     }
 
     @Override

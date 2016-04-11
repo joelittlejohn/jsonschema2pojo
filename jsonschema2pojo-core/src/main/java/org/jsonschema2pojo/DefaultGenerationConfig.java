@@ -233,6 +233,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     @Override
+    public String[] getFileExtensions() {
+        return new String[] {};
+    }
+
+    @Override
     public boolean isUseBigDecimals() {
         return false;
     }
