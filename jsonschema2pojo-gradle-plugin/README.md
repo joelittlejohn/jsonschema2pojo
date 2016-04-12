@@ -134,6 +134,15 @@ jsonSchema2Pojo {
   // Whether to initialize Set and List fields as empty collections, or leave them as null.
   initializeCollections = true
   
+  // Whether to add a prefix to generated classes.
+  classNamePrefix = ""
+
+  // Whether to add a suffix to generated classes.
+  classNameSuffix = ""
+
+  // Whether to generate constructors or not.
+  includeConstructors = false
+  
   // **EXPERIMENTAL** Whether to make the generated types Parcelable for Android
   parcelable = false
 }

@@ -274,14 +274,14 @@ public interface GenerationConfig {
     /**
      * Gets the 'getClassNamePrefix' configuration option.
      *
-     * @return Whether to initialize collections with empty instance or null.
+     * @return Whether to add a prefix to generated classes.
      */
     String getClassNamePrefix();
 
     /**
      * Gets the 'getClassNameSuffix' configuration option.
      *
-     * @return Whether to initialize collections with empty instance or null.
+     * @return Whether to add a suffix to generated classes.
      */
     String getClassNameSuffix();
 
