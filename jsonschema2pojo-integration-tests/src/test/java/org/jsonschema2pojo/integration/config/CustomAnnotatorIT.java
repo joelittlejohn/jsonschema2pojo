@@ -17,13 +17,15 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,11 +39,13 @@ import com.sun.codemodel.JMethod;
 
 public class CustomAnnotatorIT {
 
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void defaultCustomAnnotatorIsNoop() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "none")); // turn off core annotations
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -56,7 +60,7 @@ public class CustomAnnotatorIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void customAnnotatorIsAbleToAddCustomAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "none", // turn off core annotations
                         "customAnnotator", DeprecatingAnnotator.class.getName()));
 
@@ -73,7 +77,7 @@ public class CustomAnnotatorIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void customAnnotatorCanBeAppliedAlongsideCoreAnnotator() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("customAnnotator", DeprecatingAnnotator.class.getName()));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -93,7 +97,7 @@ public class CustomAnnotatorIT {
     public void invalidCustomAnnotatorClassCausesMojoException() {
 
         try {
-            generate("/schema/properties/primitiveProperties.json", "com.example", config("customAnnotator", "java.lang.String"));
+            schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example", config("customAnnotator", "java.lang.String"));
             fail();
         } catch (RuntimeException e) {
             assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));

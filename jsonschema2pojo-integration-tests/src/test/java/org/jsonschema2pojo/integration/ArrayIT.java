@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
@@ -30,19 +29,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ArrayIT {
 
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     private static Class<?> classWithArrayProperties;
 
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
+        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
 
         classWithArrayProperties = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 
@@ -199,7 +204,7 @@ public class ArrayIT {
 
     }
 
-    static abstract class PreserveOrder {
+    abstract class PreserveOrder {
         String annotationStyle;
 
         public PreserveOrder(String annotationStyle) {
@@ -207,7 +212,7 @@ public class ArrayIT {
         }
 
         public void test() throws Exception {
-            ClassLoader resultsClassLoader = generateAndCompile(
+            ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
                     "/schema/array/typeWithArrayProperties.json",
                     "com.example",
                     config("annotationStyle", annotationStyle));

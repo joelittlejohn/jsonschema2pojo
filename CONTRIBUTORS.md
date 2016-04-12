@@ -44,3 +44,15 @@
 * D Redreev
 * Ben Jefferies
 * blizznets
+* R Patrick
+* Denis Miorandi
+* P Wilder
+* Rakshith Rao (rakrao)
+* Lomig Megard
+* Rami Baksansky
+* Dimitrij Drus
+* Arno Puder
+* SpaceBison
+* Mike Woudenberg
+* Tobias Preuss
+* Max Myslyvtsev

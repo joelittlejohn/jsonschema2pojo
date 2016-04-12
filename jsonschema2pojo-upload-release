@@ -43,11 +43,9 @@ pushd $WORKING_DIR
 
     # download artifacts
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION-sources.jar
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.jar
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.bat
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-core/$VERSION/jsonschema2pojo-core-$VERSION-sources.jar
 
     # download dependencies for cli
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
@@ -63,6 +61,7 @@ pushd $WORKING_DIR
     # create the release archives
     pushd ..
         tar czf jsonschema2pojo-$VERSION.tar.gz jsonschema2pojo-$VERSION
+        zip -r jsonschema2pojo-$VERSION.zip jsonschema2pojo-$VERSION
     popd
 
     # clone gh-pages to update & add docs
@@ -138,11 +137,16 @@ pushd $WORKING_DIR
     RELEASE=$(curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -sX POST \
                   -d "{\"tag_name\":\"jsonschema2pojo-$VERSION\", \"name\":\"$VERSION\"}" \
                   "https://api.github.com/repos/joelittlejohn/jsonschema2pojo/releases")
-    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?name}/?name=jsonschema2pojo-$VERSION.tar.gz/")
-    RELEASE_PAGE=$(echo $RELEASE | jq -r .html_url)
+
+    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?.*}/?name=jsonschema2pojo-$VERSION.tar.gz/")
     curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -X POST \
         -H"Content-Type: application/x-tar" --data-binary @../jsonschema2pojo-$VERSION.tar.gz "$UPLOAD_URL" -o /dev/null
 
+    UPLOAD_URL=$(echo $RELEASE | jq -r .upload_url | sed "s/{?.*}/?name=jsonschema2pojo-$VERSION.zip/")
+    curl --user "$GITHUB_USERNAME:$GITHUB_PASSWORD" -X POST \
+         -H"Content-Type: application/zip" --data-binary @../jsonschema2pojo-$VERSION.zip "$UPLOAD_URL" -o /dev/null
+
+    RELEASE_PAGE=$(echo $RELEASE | jq -r .html_url)
 popd
 
 rm -rf $WORKING_DIR

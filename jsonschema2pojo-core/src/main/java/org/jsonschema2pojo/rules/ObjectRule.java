@@ -16,27 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Generated;
-
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.util.MakeUniqueClassName;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.TypeUtil;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,7 +35,30 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
-import android.os.Parcelable;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.MakeUniqueClassName;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.TypeUtil;
+
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Generated;
+
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -119,9 +122,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
         }
 
-        if (node.has("properties")) {
-            ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
-        }
+        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
 
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
@@ -187,10 +188,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             JsonNode propertyObj = property.getValue();
             if (onlyRequired) {
                 if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
-                    rtn.add(nameHelper.getPropertyName(property.getKey()));
+                    rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
                 }
             } else {
-                rtn.add((nameHelper.getPropertyName(property.getKey())));
+                rtn.add((nameHelper.getPropertyName(property.getKey(), property.getValue())));
             }
         }
         return rtn;
@@ -247,9 +248,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
             } else {
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, _package), ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, node, _package), ClassType.CLASS);
                 } else {
-                    newType = _package._class(getClassName(nodeName, _package));
+                    newType = _package._class(getClassName(nodeName, node, _package));
                 }
             }
         } catch (JClassAlreadyExistsException e) {
@@ -425,10 +426,29 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private String getClassName(String nodeName, JPackage _package) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
+    private String getClassName(String nodeName, JsonNode node, JPackage _package) {
+        String prefix = ruleFactory.getGenerationConfig().getClassNamePrefix();
+        String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
+        String fieldName = ruleFactory.getNameHelper().getFieldName(nodeName, node);
+        String capitalizedFieldName = capitalize(fieldName);
+        String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
+
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(fullFieldName);
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
         return makeUnique(normalizedName, _package);
+    }
+
+    private String createFullFieldName(String nodeName, String prefix, String suffix) {
+        String returnString = nodeName;
+        if (prefix != null) {
+            returnString = prefix + returnString;
+        }
+
+        if (suffix != null) {
+            returnString = returnString + suffix;
+        }
+
+        return returnString;
     }
 
     private String makeUnique(String className, JPackage _package) {

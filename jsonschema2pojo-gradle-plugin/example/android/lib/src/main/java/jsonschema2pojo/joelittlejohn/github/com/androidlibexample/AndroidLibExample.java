@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2014 Nokia
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,5 +16,15 @@
 
 package jsonschema2pojo.joelittlejohn.github.com.androidlibexample;
 
+import com.oosocial.clarityn.rest.clarityn.model.Entry_schema;
+import com.oosocial.clarityn.rest.clarityn.model.Storage;
+
 public final class AndroidLibExample {
+
+    public static void example() {
+        Entry_schema schema = new Entry_schema();
+        schema.setReadonly(false);
+        schema.setFstype(Entry_schema.Fstype.EXT_4);
+        schema.setStorage(new Storage());
+    }
 }

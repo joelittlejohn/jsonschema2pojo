@@ -17,14 +17,18 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class EmptyPackageNameIT {
+
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
     @Test
     public void shouldAllowEmptyPackageName() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/emptyPackageName", "",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/emptyPackageName", "",
                 config("includes", new String[] {}, "excludes", new String[] {}));
 
         resultsClassLoader.loadClass("LevelZeroType");

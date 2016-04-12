@@ -102,6 +102,17 @@ public interface GenerationConfig {
      */
     boolean isUseDoubleNumbers();
 
+
+    /**
+     * Gets the 'useBigDecimals' configuration option.
+     *
+     * @return Whether to use the java type <code>BigDecimal</code>
+     *         instead of <code>float</code> (or {@link java.lang.Float})
+     *         when representing the JSON Schema type 'number'. Note
+     *         that this configuration overrides <code>isUseDoubleNumbers</code>.
+     */
+    boolean isUseBigDecimals();
+
     /**
      * Gets the 'includeHashcodeAndEquals' configuration option.
      *
@@ -133,6 +144,9 @@ public interface GenerationConfig {
      *         Jackson 2.x</a> library)</li>
      *         <li><code>gson</code> (apply annotations from the
      *         <a href="https://code.google.com/p/google-gson/">gson</a>
+     *         library)</li>
+     *         <li><code>moshi1</code> (apply annotations from the
+     *         <a href="https://github.com/square/moshi">moshi</a>
      *         library)</li>
      *         <li><code>none</code> (apply no annotations at all)</li>
      *         </ul>
@@ -305,7 +319,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'targetVersion' configuration option.
-     * 
+     *
      *  @return The target version for generated source files.
      */
     String getTargetVersion();

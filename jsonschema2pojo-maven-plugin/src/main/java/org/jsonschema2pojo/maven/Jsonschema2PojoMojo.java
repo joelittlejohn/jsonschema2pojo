@@ -172,6 +172,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useDoubleNumbers = true;
 
     /**
+     * Whether to use the java type <code>BigDecimal</code> instead of
+     * <code>float</code> (or {@link java.lang.Float})  when representing
+     * the JSON Schema type 'number'. Note that this configuration overrides
+     * <code>useDoubleNumbers</code>.
+     *
+     * @parameter expression="${jsonschema2pojo.useBigDecimals}"
+     *            default-value="false"
+     * @since TODO
+     */
+    private boolean useBigDecimals = false;
+
+    /**
      * Whether to include <code>hashCode</code> and <code>equals</code> methods
      * in generated Java types.
      *
@@ -203,6 +215,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
      * <li><code>gson</code> (apply annotations from the
      * <a href="https://code.google.com/p/google-gson/">gson</a> library)</li>
+     * <li><code>moshi1</code> (apply annotations from the
+     * <a href="https://github.com/square/moshi">moshi 1.x</a> library)</li>
      * <li><code>none</code> (apply no annotations at all)</li>
      * </ul>
      *
@@ -287,7 +301,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * generating sources.
      *
      * @parameter expression="${jsonschema2pojo.removeOldOutput}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.3.7
      */
     private boolean removeOldOutput = false;
@@ -296,7 +310,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * The character encoding that should be used when writing the generated
      * Java source files.
      *
-     * @parameter expression="${jsonschema2pojo.outputEncoding}" default="UTF-8"
+     * @parameter expression="${jsonschema2pojo.outputEncoding}" default-value="UTF-8"
      * @since 0.4.0
      */
     private String outputEncoding = "UTF-8";
@@ -306,7 +320,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * {@link java.util.Date} when adding date type fields to generated Java
      * types.
      *
-     * @parameter expression="${jsonschema2pojo.useJodaDates}" default="false"
+     * @parameter expression="${jsonschema2pojo.useJodaDates}" default-value="false"
      * @since 0.4.0
      */
     private boolean useJodaDates = false;
@@ -317,7 +331,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Java types.
      *
      * @parameter expression="${jsonschema2pojo.useJodaLocalDates}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.4.9
      */
     private boolean useJodaLocalDates = false;
@@ -328,13 +342,36 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Java types.
      *
      * @parameter expression="${jsonschema2pojo.useJodaLocalTimes}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.4.9
      */
     private boolean useJodaLocalTimes = false;
 
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format date-time to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.dateTimeType}"
+     * @since 0.4.22
+     */
     private String dateTimeType = null;
+
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format time (not date-time) to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.timeType}"
+     * @since 0.4.22
+     */
     private String timeType = null;
+
+    /**
+     * What type to use instead of string when adding string type fields of
+     * format date (not date-time) to generated Java types.
+     *
+     * @parameter expression="${jsonschema2pojo.dateType}"
+     * @since 0.4.22
+     */
     private String dateType = null;
 
     /**
@@ -342,7 +379,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * imports when adding equals, hashCode and toString methods.
      *
      * @parameter expression="${jsonschema2pojo.useCommonsLang3}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.4.1
      */
     private boolean useCommonsLang3 = false;
@@ -351,7 +388,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for
      * Android development).
      *
-     * @parameter expression="${jsonschema2pojo.parcelable}" default="false"
+     * @parameter expression="${jsonschema2pojo.parcelable}" default-value="false"
      * @since 0.4.11
      */
     private boolean parcelable = false;
@@ -361,7 +398,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * them as <code>null</code>.
      *
      * @parameter expression="${jsonschema2pojo.initializeCollections}"
-     *            default="true"
+     *            default-value="true"
      * @since
      */
     private boolean initializeCollections = true;
@@ -391,7 +428,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String classNamePrefix = "";
 
     /**
-     * Whether to add a prefix to generated classes.
+     * Whether to add a suffix to generated classes.
      *
      * @parameter expression="${jsonschema2pojo.classNameSuffix}"
      * @since 0.4.6
@@ -402,7 +439,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to generate constructors or not
      *
      * @parameter expression="${jsonschema2pojo.includeConstructors}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.4.8
      */
     private boolean includeConstructors = false;
@@ -413,7 +450,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *
      * @parameter expression=
      *            "${jsonschema2pojo.constructorsRequiredPropertiesOnly}"
-     *            default="false"
+     *            default-value="false"
      * @since 0.4.8
      */
     private boolean constructorsRequiredPropertiesOnly = false;
@@ -424,7 +461,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * input schema(s).
      *
      * @parameter expression="${jsonschema2pojo.includeAdditionalProperties}"
-     *            default="true"
+     *            default-value="true"
      * @since 0.4.14
      */
     private boolean includeAdditionalProperties = true;
@@ -434,16 +471,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * create public fields instead.
      *
      * @parameter expression="${jsonschema2pojo.includeAccessors}"
-     *            default="true"
+     *            default-value="true"
      * @since 0.4.15
      */
     private boolean includeAccessors = true;
-    
+
     /**
      * The target version for generated source files.
-     * 
+     *
      * @parameter expression="${maven.compiler.target}"
-     *            default="1.6"
+     *            default-value="1.6"
      * @since 0.4.17
      */
     private String targetVersion = "1.6";
@@ -452,10 +489,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include dynamic getters, setters, and builders or to omit these methods.
      *
      * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
-     *            default="true"
+     *            default-value="false"
      * @since 0.4.17
      */
-    private boolean includeDynamicAccessors = true;
+    private boolean includeDynamicAccessors = false;
 
     /**
      * The project being built.
@@ -768,4 +805,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return timeType;
     }
 
+    @Override
+    public boolean isUseBigDecimals() {
+        return useBigDecimals;
+    }
 }

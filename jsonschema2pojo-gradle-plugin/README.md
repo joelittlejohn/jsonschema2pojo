@@ -71,6 +71,10 @@ jsonSchema2Pojo {
   // Whether to use the java type double (or Double) instead of float (or Float) when representing
   // the JSON Schema type 'number'.
   useDoubleNumbers = true
+  
+  // Whether to use the java type BigDecimal when representing the JSON Schema type 'number'. Note
+  // that this configuration overrides useDoubleNumbers
+  useBigDecimals = false
 
   // Whether to include hashCode and equals methods in generated Java types.
   includeHashcodeAndEquals = true
@@ -83,11 +87,12 @@ jsonSchema2Pojo {
   //  - jackson2 (apply annotations from the Jackson 2.x library)
   //  - jackson1 (apply annotations from the Jackson 1.x library)
   //  - gson (apply annotations from the Gson library)
+  //  - moshi1 (apply annotations from the Moshi 1.x library)
   //  - none (apply no annotations at all)
   annotationStyle = 'jackson'
 
   // A fully qualified class name, referring to a custom annotator class that implements
-  // org.jsonschema2pojo.NoopAnnotator and will be used in addition to the one chosen
+  // org.jsonschema2pojo.Annotator and will be used in addition to the one chosen
   // by annotationStyle. If you want to use the custom annotator alone, set annotationStyle to none.
   customAnnotator = 'org.jsonschema2pojo.NoopAnnotator'
 
@@ -150,3 +155,29 @@ This task will automatically run in a project where the `jsonSchema2Pojo` config
 It will invoke the jsonschema2pojo generator, make the compileJava task dependent of itself and add
 the `targetDirectory` to the main/java source set so the java compiler will find and compile the newly
 generated source files.
+
+## Developers
+
+It can be useful to build this project and try out changes in your existing gradle project.
+
+1. From the root, run `mvn clean install`. This will install jsonschema2pojo in your local maven repository.
+2. Include the local repo in your gradle file, and change your dependency to use the development version, (typically ending with '-SNAPSHOT' - you can find this in `pom.xml`). e.g:
+
+```groovy
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+
+    dependencies {
+        // this plugin
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.23-SNAPSHOT'
+        // add additional dependencies here if you wish to reference instead of generate them (see example directory)
+    }
+}
+
+repositories {
+    mavenLocal()
+}
+```
+

@@ -99,7 +99,9 @@ public class Inflector {
             .singular("(ess)$", "$1");
 
         builder.singular("men$", "man")
-            .plural("man$", "men");
+            .plural("man$", "men")
+            .singular("specimen", "specimen")
+            .plural("specimen", "specimens");
 
         builder.irregular("curve", "curves")
             .irregular("leaf", "leaves")

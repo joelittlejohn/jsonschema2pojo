@@ -38,6 +38,7 @@
             <li><code>JACKSON2</code> (apply annotations from the <a href="https://github.com/FasterXML/jackson-annotations">Jackson 2.x</a> library)</li>
             <li><code>JACKSON1</code> (apply annotations from the <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
             <li><code>GSON</code> (apply annotations from the <a href="https://code.google.com/p/google-gson//">Gson</a> library)</li>
+            <li><code>MOSHI1</code> (apply annotations from the <a href="https://github.com/square/moshi//">Moshi 1.x</a> library)</li>
             <li><code>NONE</code> (apply no annotations at all)</li>
           </ul>
         </td>
@@ -109,7 +110,7 @@
       <tr>
         <td valign="top">includeDynamicAccessors</td>
         <td valign="top">Whether to include dynamic getters, setters, and builders or to omit these methods.</td>
-        <td align="center" valign="top">No (default <code>true</code>)</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
         <td valign="top">includeConstructors</td>
@@ -207,6 +208,11 @@
         <td valign="top">useDoubleNumbers</td>
         <td valign="top">Whether to use the java type <code>double</code> (or <code>Double</code>) instead of <code>float</code> (or <code>Float</code>) when representing the JSON Schema type 'number'.</td>
         <td align="center" valign="top">No (default <code>true</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">useBigDecimals</td>
+        <td valign="top">Whether to use the java type <code>BigDecimal</code> instead of <code>float</code> (or <code>java.lang.Float</code>) when representing the JSON Schema type 'number'. Note that this overrides <code>useDoubleNumbers</code>.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
         <td valign="top">useJodaDates</td>

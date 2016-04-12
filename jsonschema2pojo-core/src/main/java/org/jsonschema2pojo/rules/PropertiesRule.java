@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.codemodel.*;
 import org.jsonschema2pojo.Schema;
 
@@ -53,6 +54,9 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+        if (node == null) {
+            node = JsonNodeFactory.instance.objectNode();
+        }
 
         for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
             String property = properties.next();
@@ -83,15 +87,18 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
         }
     }
 
-    private JMethod addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
-        JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
-        builder.annotate(Override.class);
-
-        JVar param = builder.param(parentParam.type(), parentParam.name());
-        JBlock body = builder.body();
-        body.invoke(JExpr._super(), parentBuilder).arg(param);
-        body._return(JExpr._this());
-
-        return builder;
+    private void addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
+        
+        if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
+        
+            JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
+            builder.annotate(Override.class);
+    
+            JVar param = builder.param(parentParam.type(), parentParam.name());
+            JBlock body = builder.body();
+            body.invoke(JExpr._super(), parentBuilder).arg(param);
+            body._return(JExpr._this());
+    
+        }
     }
 }

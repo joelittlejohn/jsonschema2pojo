@@ -17,14 +17,15 @@
 package org.jsonschema2pojo.integration.ref;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,12 +35,14 @@ import com.sun.codemodel.JPackage;
 
 public class FragmentRefIT {
 
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
     private static Class<?> fragmentRefsClass;
 
     @BeforeClass
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
+        ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
 
         fragmentRefsClass = fragmentRefsClassLoader.loadClass("com.example.FragmentRefs");
 

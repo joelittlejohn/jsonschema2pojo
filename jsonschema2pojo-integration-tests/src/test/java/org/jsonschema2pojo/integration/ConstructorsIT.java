@@ -17,7 +17,11 @@
 package org.jsonschema2pojo.integration;
 
 import com.sun.codemodel.JMod;
+
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -26,7 +30,6 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Enclosed.class)
@@ -38,8 +41,8 @@ public class ConstructorsIT {
                 modifier, modifier & modifiers);
     }
 
-    public static void assertHasOnlyDefaultConstructor(Class cls) {
-        Constructor[] constructors = cls.getConstructors();
+    public static void assertHasOnlyDefaultConstructor(Class<?> cls) {
+        Constructor<?>[] constructors = cls.getConstructors();
 
         assertEquals(constructors.length, 1);
 
@@ -47,39 +50,35 @@ public class ConstructorsIT {
                 0, constructors[0].getParameterTypes().length);
     }
 
-    public static Class generateAndLoadClass(String schemaPath, String packageName, String className, Map<String, Object> config) throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = generateAndCompile(schemaPath, packageName,
-                config);
-
-        return resultsClassLoader.loadClass(className);
-    }
-
     public static class AllPropertiesIT {
+        
+        @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
-        protected static Class typeWithRequired;
-        private static Class typeWithoutProperties;
+        protected static Class<?> typeWithRequired;
+        private static Class<?> typeWithoutProperties;
 
         //xxx there's a bit of duplication here in the name of performance; if we did this step as a Before method,
         //we could factor out a super class between AllPropertiesIT and RequiredOnlyIT... but it makes the tests run
         //more slowly
         @BeforeClass
-        @SuppressWarnings("unchecked")
         public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
 
             Map<String, Object> config = config("propertyWordDelimiters", "_",
                     "includeConstructors", true
             );
-            typeWithRequired = generateAndLoadClass(
+            classSchemaRule.generate(
                     "/schema/constructors/requiredPropertyConstructors.json",
                     "com.example",
-                    "com.example.RequiredPropertyConstructors",
                     config);
 
-            typeWithoutProperties = generateAndLoadClass(
+            classSchemaRule.generate(
                     "/schema/constructors/noPropertiesConstructor.json",
                     "com.example",
-                    "com.example.NoPropertiesConstructor",
                     config);
+
+            ClassLoader loader = classSchemaRule.compile();
+            typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
+            typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
         }
 
         @Test
@@ -87,7 +86,7 @@ public class ConstructorsIT {
             assertHasModifier(JMod.PUBLIC, getArgsConstructor().getModifiers(), "public");
 
         }
-        public Constructor getArgsConstructor() throws NoSuchMethodException {
+        public Constructor<?> getArgsConstructor() throws NoSuchMethodException {
             return typeWithRequired.getConstructor(String.class, Integer.class, Boolean.class, String.class, String.class);
         }
 
@@ -102,50 +101,53 @@ public class ConstructorsIT {
      */
     public static class RequiredOnlyIT  {
 
-        protected static Class typeWithRequired;
-        protected static Class typeWithoutRequired;
+        @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+        @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+        protected static Class<?> typeWithRequired;
+        protected static Class<?> typeWithoutRequired;
 
         @BeforeClass
-        @SuppressWarnings("unchecked")
         public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
 
             Map<String, Object> config = config("propertyWordDelimiters", "_",
                     "includeConstructors", true,
                     "constructorsRequiredPropertiesOnly", true
             );
-            typeWithRequired = generateAndLoadClass(
+            classSchemaRule.generate(
                     "/schema/constructors/requiredPropertyConstructors.json",
                     "com.example",
-                    "com.example.RequiredPropertyConstructors",
                     config);
 
-            typeWithoutRequired = generateAndLoadClass(
+            classSchemaRule.generate(
                     "/schema/constructors/noRequiredPropertiesConstructor.json",
                     "com.example",
-                    "com.example.NoRequiredPropertiesConstructor",
                     config);
+
+            ClassLoader classLoader = classSchemaRule.compile();
+            typeWithRequired = classLoader.loadClass("com.example.RequiredPropertyConstructors");
+            typeWithoutRequired = classLoader.loadClass("com.example.NoRequiredPropertiesConstructor");
         }
 
         @Test
         public void testCreatesPublicNoArgsConstructor() throws Exception {
-            Constructor constructor = typeWithRequired.getConstructor();
+            Constructor<?> constructor = typeWithRequired.getConstructor();
 
             assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
         }
 
         @Test
         public void testCreatesConstructorWithRequiredParams() throws Exception {
-            Constructor constructor = getArgsConstructor();
+            Constructor<?> constructor = getArgsConstructor();
 
             assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
         }
 
-        public Constructor getArgsConstructor() throws NoSuchMethodException {
+        public Constructor<?> getArgsConstructor() throws NoSuchMethodException {
             return typeWithRequired.getConstructor(String.class, Integer.class, Boolean.class);
         }
 
         @Test
-        @SuppressWarnings("unchecked")
         public void testConstructorAssignsFields() throws Exception {
             Object instance = getArgsConstructor().newInstance("type", 5, true);
 
@@ -162,13 +164,13 @@ public class ConstructorsIT {
         @Test
         public void testDoesntGenerateConstructorsWithoutConfig() throws Exception {
 
-            Class noConstructors = generateAndLoadClass(
+            Class<?> noConstructors = schemaRule.generateAndCompile(
                     "/schema/constructors/requiredPropertyConstructors.json",
                     "com.example",
-                    "com.example.RequiredPropertyConstructors",
                     config("propertyWordDelimiters", "_",
                             "includeConstructors", false
-                    ));
+                    ))
+                    .loadClass("com.example.RequiredPropertyConstructors");
             assertHasOnlyDefaultConstructor(noConstructors);
         }
     }

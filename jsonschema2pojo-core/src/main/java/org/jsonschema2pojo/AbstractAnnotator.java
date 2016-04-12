@@ -23,8 +23,8 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
 /**
- * A default implemenation of the Annotator interface that makes it easier to
- * plug in different Annotator implemenations.
+ * A default implementation of the Annotator interface that makes it easier to
+ * plug in different Annotator implementations.
  */
 public abstract class AbstractAnnotator implements Annotator {
 

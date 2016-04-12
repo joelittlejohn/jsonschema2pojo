@@ -1,0 +1,55 @@
+/**
+ * Copyright © 2010-2014 Nokia
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jsonschema2pojo.gradle
+
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.jsonschema2pojo.Jsonschema2Pojo
+
+/**
+ * Task that generates java source files for an Android project
+ */
+class GenerateJsonSchemaAndroidTask extends SourceTask {
+
+  /**
+   * The output directory.
+   */
+  @OutputDirectory
+  File outputDir
+
+  @TaskAction
+  def generate(IncrementalTaskInputs inputs) {
+
+    // If the whole thing isn't incremental, delete the build folder (if it exists)
+    if (!inputs.isIncremental() && outputDir.exists()) {
+      logger.debug("JsonSchema2Pojo generation is not incremental; deleting build folder and starting fresh!")
+      outputDir.deleteDir()
+    }
+
+    if (!outputDir.exists()) {
+      outputDir.mkdirs()
+    }
+
+    def configuration = project.jsonSchema2Pojo
+    configuration.targetDirectory = outputDir
+
+    logger.info 'Using this configuration:\n{}', configuration
+    Jsonschema2Pojo.generate(configuration)
+  }
+}

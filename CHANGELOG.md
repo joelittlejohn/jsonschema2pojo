@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.4.22
+* Adding date-time types to Maven plugin mojo configuration ([#531](https://github.com/joelittlejohn/jsonschema2pojo/pull/531))
+* Fix javaName breaking required properties ([#528](https://github.com/joelittlejohn/jsonschema2pojo/pull/528))
+* Add support for using BigDecimal to represent numbers ([#517](https://github.com/joelittlejohn/jsonschema2pojo/pull/517))
+* Jsonschema2pojoRule report problems to STDERR ([#513](https://github.com/joelittlejohn/jsonschema2pojo/pull/513))
+
+## 0.4.21
+* Fix NullPointerException in Gradle plugin for Java (non-Android) projects ([#510](https://github.com/joelittlejohn/jsonschema2pojo/pull/510))
+
+## 0.4.20
+* Regression: when a extending a schema with a redefinition of the same field, with methods should be generated only once ([#507](https://github.com/joelittlejohn/jsonschema2pojo/issues/507))
+* Unnecessary @SuppressWarnings java warnings after upgrade ([#498](https://github.com/joelittlejohn/jsonschema2pojo/issues/498))
+* Improved Android support via Gradle plugin (NOTE: Changes behaviour regarding output directory) ([#495](https://github.com/joelittlejohn/jsonschema2pojo/pull/495))
+
+## 0.4.19
+* Add javaName schema property ([#499](https://github.com/joelittlejohn/jsonschema2pojo/pull/499))
+* Declare an enum without that "static" ([#496](https://github.com/joelittlejohn/jsonschema2pojo/issues/496))
+* includeDynamicAccessors should default to false (don't include dynamic accessors by default) ([#482](https://github.com/joelittlejohn/jsonschema2pojo/pull/482))
+* Inflector - incorrect for word "specimen" ([#479](https://github.com/joelittlejohn/jsonschema2pojo/issues/479))
+* Allow JSON to be passed as a String to SchemaMapper ([#475](https://github.com/joelittlejohn/jsonschema2pojo/pull/475))
+* Prefix / Suffix support when javaType is not specified ([#465](https://github.com/joelittlejohn/jsonschema2pojo/pull/465))
+
+## 0.4.18
+* Added support for custom date-time, date, time classes. ([#469](https://github.com/joelittlejohn/jsonschema2pojo/pull/469))
+* Databases element of type array generated class name Databasis instead of Database ([#461](https://github.com/joelittlejohn/jsonschema2pojo/issues/461))
+
 ## 0.4.17
 * Covariant builders - copy builder methods from superclass, with narrow return type ([#455](https://github.com/joelittlejohn/jsonschema2pojo/issues/455))
 * Specify target JVM version ([#454](https://github.com/joelittlejohn/jsonschema2pojo/pull/454))

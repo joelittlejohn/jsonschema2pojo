@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.integration;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static java.lang.String.format;
@@ -32,7 +31,9 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.AbstractAnnotator;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -53,13 +54,14 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
 public class MediaIT {
+    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     private static Class<?> classWithMediaProperties;
     private static Class<byte[]> BYTE_ARRAY = byte[].class;
 
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
 
         classWithMediaProperties = resultsClassLoader.loadClass("com.example.MediaProperties");
     }

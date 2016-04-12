@@ -41,6 +41,8 @@ public class AnnotatorFactory {
                 return new Jackson1Annotator();
             case GSON:
                 return new GsonAnnotator();
+            case MOSHI1:
+                return new Moshi1Annotator();
             case NONE:
                 return new NoopAnnotator();
             default:

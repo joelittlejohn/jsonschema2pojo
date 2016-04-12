@@ -17,15 +17,15 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.apache.commons.lang3.StringUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.jsonschema2pojo.integration.util.Compiler.systemJavaCompiler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -34,10 +34,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.fest.util.Lists;
+import org.fest.util.Strings;
 import org.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -121,24 +128,32 @@ public class CodeGenerationHelper {
      */
     public static ClassLoader compile(File sourceDirectory) {
 
-        return compile(sourceDirectory, new ArrayList<String>(), new HashMap<String, Object>());
+        return compile(sourceDirectory, new ArrayList<File>(), new HashMap<String, Object>());
 
     }
     
-    public static ClassLoader compile(File sourceDirectory, List<String> classpath ) {
+    public static ClassLoader compile(File sourceDirectory, List<File> classpath ) {
         return compile(sourceDirectory, classpath, new HashMap<String, Object>());
     }
 
-    public static ClassLoader compile(File sourceDirectory, List<String> classpath, Map<String, Object> config) {
+    public static ClassLoader compile(File sourceDirectory, List<File> classpath, Map<String, Object> config) {
+      return compile(sourceDirectory, sourceDirectory, classpath, config);
+    }
+    
+    public static ClassLoader compile(File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config) {
+      return compile(systemJavaCompiler(), null, sourceDirectory, outputDirectory, classpath, config, null);
+    }
 
-        List<String> fullClasspath = new ArrayList<String>();
+    public static ClassLoader compile(JavaCompiler compiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config, DiagnosticListener<? super JavaFileObject> listener) {
+
+        List<File> fullClasspath = new ArrayList<File>();
         fullClasspath.addAll(classpath);
-        fullClasspath.add(System.getProperty("java.class.path"));
+        fullClasspath.addAll(CodeGenerationHelper.classpathToFileArray(System.getProperty("java.class.path")));
 
-        new Compiler().compile(sourceDirectory, join(fullClasspath, File.pathSeparatorChar), (String)config.get("targetVersion"));
+        new Compiler().compile(compiler, out, sourceDirectory, outputDirectory, fullClasspath, listener, (String)config.get("targetVersion"));
 
         try {
-            return URLClassLoader.newInstance(new URL[] { sourceDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());
+            return URLClassLoader.newInstance(new URL[] { outputDirectory.toURI().toURL() }, Thread.currentThread().getContextClassLoader());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -162,7 +177,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory, new ArrayList<String>(), configValues);
+        return compile(outputDirectory, new ArrayList<File>(), configValues);
 
     }
 
@@ -178,7 +193,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory, new ArrayList<String>(), configValues);
+        return compile(outputDirectory, new ArrayList<File>(), configValues);
 
     }
 
@@ -231,5 +246,18 @@ public class CodeGenerationHelper {
         }
 
         return values;
+    }
+
+    private static List<File> classpathToFileArray( String classpath ) {
+        List<File> files = Lists.newArrayList();
+        
+        if( Strings.isNullOrEmpty(classpath)) return files;
+        
+        String[] paths = classpath.split(Pattern.quote(File.pathSeparator));
+        for( String path : paths ) {
+            if( Strings.isNullOrEmpty(classpath) ) continue;
+            files.add(new File(path));
+        }
+        return files;
     }
 }

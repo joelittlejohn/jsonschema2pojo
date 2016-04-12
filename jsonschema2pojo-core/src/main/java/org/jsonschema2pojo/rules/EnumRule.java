@@ -16,24 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Generated;
-
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
@@ -52,6 +34,30 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Generated;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the "enum" schema rule.
@@ -122,7 +128,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
-        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC | JMod.STATIC;
+        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC;
 
         try {
             if (node.has("javaType")) {
@@ -140,7 +146,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 }
             } else {
                 try {
-                    return container._class(modifiers, getEnumName(nodeName, container), ClassType.ENUM);
+                    return container._class(modifiers, getEnumName(nodeName, node, container), ClassType.ENUM);
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }
@@ -224,11 +230,13 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
-    private String getEnumName(String nodeName, JClassContainer container) {
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(nodeName));
+    private String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
+        String fieldName = ruleFactory.getNameHelper().getFieldName(nodeName, node);
+        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
         return makeUnique(normalizedName, container);
     }
+
 
     private String makeUnique(String className, JClassContainer container) {
         boolean found = false;

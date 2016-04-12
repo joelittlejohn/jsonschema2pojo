@@ -16,18 +16,22 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class IncludeToStringIT {
+
+    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansIncludeToStringByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -39,7 +43,7 @@ public class IncludeToStringIT {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeToString", false));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeToString", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 

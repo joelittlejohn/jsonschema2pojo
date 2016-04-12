@@ -149,7 +149,8 @@ public interface Annotator {
      * annotators, this method will return <code>true</code>. Gson does not
      * support 'additional' property values (they are silently discarded at
      * deserialization time), hence for Gson annotators, this method would
-     * return <code>false</code>.
+     * return <code>false</code>. Moshi 1.x behaves similar to Gson and therefore
+     * returns <code>false</code>.
      * 
      * @return Whether this annotator has any way to support 'additional
      *         properties'.

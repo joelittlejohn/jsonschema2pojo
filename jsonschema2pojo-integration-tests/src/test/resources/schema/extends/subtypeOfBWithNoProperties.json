@@ -1,0 +1,6 @@
+{
+    "type": "object",
+    "extends": {
+        "$ref": "b.json"
+    }
+}

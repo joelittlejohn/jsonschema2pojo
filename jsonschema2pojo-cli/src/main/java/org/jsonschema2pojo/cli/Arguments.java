@@ -75,6 +75,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-f", "--float-numbers" }, description = "Use float (or Float) instead of double (or Double) when the JSON Schema type 'number' is encountered")
     private boolean useFloatNumbers = false;
 
+    @Parameter(names = { "-i", "--big-decimals" }, description = "Use BigDecimal instead of double (or Double) when the JSON Schema type 'number' is encountered. Note that this overrides useFloatNumbers/-f/--float-numbers")
+    private boolean useBigDecimals = false;
+
     @Parameter(names = { "-E", "--omit-hashcode-and-equals" }, description = "Omit hashCode and equals methods in the generated Java types")
     private boolean omitHashcodeAndEquals = false;
 
@@ -140,12 +143,12 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-da", "--disable-accessors" }, description = "Whether to omit getter/setter methods and create public fields instead.")
     private boolean disableAccessors = false;
-    
+
     @Parameter(names = { "-tv", "--target-version" }, description = "The target version for generated source files.")
     private String targetVersion = "1.6";
-    
-    @Parameter(names = { "-dda", "--disable-dynamic-accessors" }, description = "Disable dynamic getter, setter, and builder support on generated types.")
-    private boolean disableDynamicAccessors = false;
+
+    @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
+    private boolean includeDynamicAccessors = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -343,7 +346,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isIncludeDynamicAccessors() {
-        return !disableDynamicAccessors;
+        return includeDynamicAccessors;
     }
 
     @Override
@@ -361,4 +364,7 @@ public class Arguments implements GenerationConfig {
         return timeType;
     }
 
+    public boolean isUseBigDecimals() {
+        return useBigDecimals;
+    }
 }

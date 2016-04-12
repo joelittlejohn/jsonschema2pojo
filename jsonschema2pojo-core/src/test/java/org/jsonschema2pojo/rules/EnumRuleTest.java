@@ -16,12 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
@@ -32,6 +34,7 @@ import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,6 +58,7 @@ public class EnumRuleTest {
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
 
         Answer<String> firstArgAnswer = new FirstArgAnswer<String>();
+        when(nameHelper.getFieldName(anyString(), any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
 
