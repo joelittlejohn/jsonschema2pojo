@@ -129,6 +129,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-pl", "--parcelable" }, description = "**EXPERIMENTAL** Whether to make the generated types 'parcelable' (for Android development).")
     private boolean parcelable = false;
 
+    @Parameter(names = { "-sl", "--serializable" }, description = "Whether to make the generated types 'serializable'.")
+    private boolean serializable = false;
+
     @Parameter(names = { "-N", "--null-collections" }, description = "Initialize Set and List fields to null instead of an empty collection.")
     private boolean nullCollections = false;
 
@@ -293,6 +296,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isParcelable() {
         return parcelable;
+    }
+
+    @Override
+    public boolean isSerializable() {
+        return serializable;
     }
 
     protected void exit(int status) {
