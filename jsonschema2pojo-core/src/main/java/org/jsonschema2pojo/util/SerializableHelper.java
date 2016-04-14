@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.jsonschema2pojo.exception.GenerationException;
+
 public class SerializableHelper {
     private static final Comparator<JClass> INTERFACE_COMPARATOR =
     new Comparator<JClass>() {
@@ -168,13 +170,9 @@ public class SerializableHelper {
             serialUIDField.init(JExpr.lit(serialVersionUID));
 
         } catch (IOException exception) {
-            final InternalError internalError = new InternalError(exception.getMessage());
-            internalError.initCause(exception);
-            throw internalError;
+            throw new GenerationException("IOException while generating serialversionUID field while adding serializable support to class: " + jclass.fullName(), exception);
         } catch (NoSuchAlgorithmException exception) {
-            final RuntimeException securityException = new SecurityException(exception.getMessage());
-            securityException.initCause(exception);
-            throw securityException;
+            throw new GenerationException("SHA algorithm not found when trying to generate serialversionUID field while adding serializable support to class: " + jclass.fullName(), exception);
         }
     }
 }

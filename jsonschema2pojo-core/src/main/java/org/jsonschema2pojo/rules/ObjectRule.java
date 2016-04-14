@@ -154,7 +154,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
-            addSerializableSupport(jclass);
+            SerializableHelper.addSerializableSupport(jclass);
         }
 
         return jclass;
@@ -167,10 +167,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addWriteToParcel(jclass);
         parcelableHelper.addDescribeContents(jclass);
         parcelableHelper.addCreator(jclass);
-    }
-
-    private static void addSerializableSupport(JDefinedClass jclass) {
-        SerializableHelper.addSerializableSupport(jclass);
     }
 
     /**
