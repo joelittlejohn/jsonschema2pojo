@@ -257,6 +257,13 @@ public interface GenerationConfig {
     boolean isParcelable();
 
     /**
+     * Gets the 'serializable' configuration option.
+     *
+     * @return Whether to make the generated types 'serializable'
+     */
+    boolean isSerializable();
+
+    /**
      * Gets the file filter used to isolate the schema mapping files in the
      * source directories.
      *

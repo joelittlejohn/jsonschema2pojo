@@ -201,6 +201,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isSerializable() {
+        return false;
+    }
+
     @Override
     public FileFilter getFileFilter() {
         return new AllFileFilter();
