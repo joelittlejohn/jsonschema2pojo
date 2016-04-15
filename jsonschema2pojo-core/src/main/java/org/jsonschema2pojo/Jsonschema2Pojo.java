@@ -155,7 +155,7 @@ public class Jsonschema2Pojo {
                     extension = "." + extension;
                 }
                 if (fileName.endsWith(extension)) {
-                    fileName = fileName.substring(0, fileName.length() - extension.length());
+                    fileName = removeEnd(fileName, extension);
                     extensionRemoved = true;
                     break;
                 }
