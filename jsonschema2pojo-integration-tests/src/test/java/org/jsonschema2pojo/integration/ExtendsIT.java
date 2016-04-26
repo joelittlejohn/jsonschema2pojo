@@ -108,6 +108,36 @@ public class ExtendsIT {
 
     @Test
     @SuppressWarnings("rawtypes")
+    public void constructorHasParentsProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBParent");
+
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        assertNotNull("Parent constructor is missing", supertype.getConstructor(String.class));
+        assertNotNull("Constructor is missing", type.getConstructor(String.class, String.class));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void constructorHasParentsParentProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfB");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParent");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParentParent");
+
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
+        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
+        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, String.class, String.class));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
     public void extendsBuilderMethods() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
 
