@@ -9,9 +9,31 @@
             "items" : {
                 "$ref" : "#"
             }
+        },
+        "embeddedInSelf" : {
+            "$ref" : "#/definitions/embedded"
         }
     },
     "additionalProperties" : {
         "$ref" : "#"
+    },
+    "definitions" : {
+        "embedded" : {
+            "type" : "object",
+            "properties" : {
+                "embeddedProp" : {
+                    "$ref" : "#/definitions/embedded2"
+                }
+            }
+        },
+        "embedded2" : {
+            "type" : "object",
+            "properties" : {
+                "embeddedProp2" : {
+                    "$ref" : "#"
+                }
+            }
+        }
     }
+
 }
