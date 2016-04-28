@@ -72,7 +72,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
         String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
 
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
+        String pathToProperty;
+        if (schema.getId() == null || schema.getId().getFragment() == null) {
+            pathToProperty = "#properties/" + nodeName;
+        } else {
+            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
+        }
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, ruleFactory.getSchemaStore().create(schema, pathToProperty));
 
         node = resolveRefs(node, schema);
 
