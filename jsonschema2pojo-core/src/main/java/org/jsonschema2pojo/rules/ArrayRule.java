@@ -79,7 +79,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
         JType itemType;
         if (node.has("items")) {
             String pathToItems;
-            if (schema.getId().getFragment() == null) {
+            if (schema.getId() == null || schema.getId().getFragment() == null) {
                 pathToItems = "#items";
             } else {
                 pathToItems = "#" + schema.getId().getFragment() + "/items";
