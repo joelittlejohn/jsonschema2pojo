@@ -293,6 +293,13 @@ public interface GenerationConfig {
     String getClassNameSuffix();
 
     /**
+     * Gets the 'fileExtensions' configuration option.
+     *
+     * @return An array of strings that should be considered as file extensions and therefore not included in class names.
+     */
+    String[] getFileExtensions();
+
+    /**
      * Gets the 'includeConstructors' configuration option.
      *
      * @return Whether to generate constructors or not.

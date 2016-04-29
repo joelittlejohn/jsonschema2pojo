@@ -119,6 +119,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String classNameSuffix = "";
 
+    private String[] fileExtensions = new String[] {};
+
     private boolean constructorsRequiredPropertiesOnly = false;
 
     private boolean includeAdditionalProperties = true;
@@ -582,6 +584,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'fileExtensions' property of this class
+     *
+     * @param classNameSuffix
+     *            The array of strings that should be considered as file
+     *            extensions and therefore not included in class names.
+     */
+    public void setFileExtensions(String[] fileExtensions) {
+        this.fileExtensions = fileExtensions;
+    }
+
+    /**
      * Sets the 'includeAdditionalProperties' property of this class
      *
      * @param includeAdditionalProperties
@@ -791,6 +804,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return fileExtensions;
     }
 
     @Override
