@@ -74,6 +74,37 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private final RuleFactory ruleFactory;
     private final ParcelableHelper parcelableHelper;
 
+    private static class SchemaClassInfo {
+        private final Schema superSchema;
+        private final Schema classDefinitionSchema;
+        private final Schema classHierarchySchema;
+        private final JType superType;
+        private final String nodeName;
+
+        private JType getSuperType() {
+            if (this.superSchema != null) {
+                return this.superSchema.getJavaType();
+            }
+            return this.superType;
+        }
+
+        private SchemaClassInfo(Schema classHierarchySchema, Schema classDefinitionSchema, Schema superSchema, String nodeName) {
+            this.superSchema = superSchema;
+            this.classHierarchySchema = superSchema;
+            this.classDefinitionSchema = classDefinitionSchema;
+            this.superType = null;
+            this.nodeName = nodeName;
+        }
+
+        private SchemaClassInfo(Schema classHierarchySchema, Schema classDefinitionSchema, JType superType, String nodeName) {
+            this.superSchema = null;
+            this.classHierarchySchema = classHierarchySchema;
+            this.classDefinitionSchema = classDefinitionSchema;
+            this.superType = superType;
+            this.nodeName = nodeName;
+        }
+    }
+
     protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper) {
         this.ruleFactory = ruleFactory;
         this.parcelableHelper = parcelableHelper;
@@ -94,7 +125,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
 
-        JType superType = getSuperType(nodeName, node, _package, schema);
+        SchemaClassInfo schemaClassInfo = getSchemaClassInfo(nodeName, schema, _package);
+        Schema classDefinitionSchema = schemaClassInfo.classDefinitionSchema;
+        node = classDefinitionSchema.getContent();
+        JType superType = schemaClassInfo.getSuperType();
+
 
         if (superType.isPrimitive() || isFinal(superType)) {
             return superType;
@@ -117,14 +152,14 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, classDefinitionSchema);
         }
 
         if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, classDefinitionSchema);
         }
 
-        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
+        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, classDefinitionSchema);
 
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
@@ -134,12 +169,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }
 
-        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
+        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, classDefinitionSchema);
 
-        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
+        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), jclass, classDefinitionSchema);
 
         if (node.has("required")) {
-            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
+            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, classDefinitionSchema);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
@@ -152,7 +187,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
         
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            addConstructors(jclass, node, schema, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly());
+            addConstructors(nodeName, jclass, schemaClassInfo, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly(), _package);
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
@@ -206,17 +241,17 @@ public class ObjectRule implements Rule<JPackage, JType> {
     /**
      * Recursive, walks the schema tree and assembles a list of all properties of this schema's super schemas
      */
-    private LinkedHashSet<String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
-        Schema superTypeSchema = getSuperSchema(node, schema, true);
+    private LinkedHashSet<String> getSuperTypeConstructorPropertiesRecursive(SchemaClassInfo classInfo, boolean onlyRequired, JPackage jPackage) {
+        SchemaClassInfo superClassInfo = getSuperSchemaClassInfo(classInfo, jPackage);
 
-        if (superTypeSchema == null) {
+        if (superClassInfo == null) {
             return new LinkedHashSet<String>();
         }
 
-        JsonNode superSchemaNode = superTypeSchema.getContent();
+        JsonNode superSchemaNode = superClassInfo.classDefinitionSchema.getContent();
 
-        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, superTypeSchema, onlyRequired);
-        rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
+        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, superClassInfo.classDefinitionSchema, onlyRequired);
+        rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superClassInfo, onlyRequired, jPackage));
 
         return rtn;
     }
@@ -296,23 +331,25 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
+    private SchemaClassInfo getSuperSchemaClassInfo(SchemaClassInfo schemaClassInfo, JPackage jPackage) {
+        Schema superTypeSchema = schemaClassInfo.superSchema;
+        if (superTypeSchema == null) {
+            return null;
+        }
+
+        return getSchemaClassInfo(schemaClassInfo.nodeName + "Parent", superTypeSchema, jPackage);
+    }
+
+    private SchemaClassInfo getSchemaClassInfo(String nodeName, Schema schema, JPackage jPackage) {
+        JsonNode node = schema.getContent();
+
         if (node.has("extends") && node.has("extendsJavaClass")) {
             throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
         }
 
+        String parentNodeName = nodeName + "Parent";
+
         JType superType = jPackage.owner().ref(Object.class);
-        Schema superTypeSchema = getSuperSchema(node, schema, false);
-        if (superTypeSchema != null) {
-            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, superTypeSchema);
-        } else if (node.has("extendsJavaClass")) {
-            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
-        }
-
-        return superType;
-    }
-
-    private Schema getSuperSchema(JsonNode node, Schema schema, boolean followRefs) {
         if (node.has("extends")) {
             String path;
             if (schema.getId().getFragment() == null) {
@@ -323,13 +360,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             Schema superSchema = ruleFactory.getSchemaStore().create(schema, path);
 
-            if (followRefs) {
-                superSchema = resolveSchemaRefsRecursive(superSchema);
-            }
 
-            return superSchema;
+            //schema rule follows refs, so we do the same in order to get hold of a super schema that has a type associated, schemarule really ought to return this information
+            ruleFactory.getSchemaRule().apply(parentNodeName, node.get("extends"), jPackage, superSchema);
+            superSchema = resolveSchemaRefsRecursive(superSchema);
+
+            return new SchemaClassInfo(schema, schema, superSchema, nodeName);
+        } else if (node.has("extendsJavaClass")) {
+            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
         }
-        return null;
+        return new SchemaClassInfo(schema, schema, superType, nodeName);
     }
 
     private Schema resolveSchemaRefsRecursive(Schema schema) {
@@ -397,11 +437,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
         hashCode.annotate(Override.class);
     }
 
-    private void addConstructors(JDefinedClass jclass, JsonNode node, Schema schema, boolean onlyRequired) {
-
-        LinkedHashSet<String> classProperties = getConstructorProperties(node, schema, onlyRequired);
-        LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, schema, onlyRequired);
-
+    private void addConstructors(String nodeName, JDefinedClass jclass, SchemaClassInfo schemaClassInfo, boolean onlyRequired, JPackage jPackage) {
+        Schema classDefinitionSchema = schemaClassInfo.classDefinitionSchema;
+        LinkedHashSet<String> classProperties = getConstructorProperties(classDefinitionSchema.getContent(), classDefinitionSchema, onlyRequired);
+        LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(schemaClassInfo, onlyRequired, jPackage);
+        
         // no properties to put in the constructor => default constructor is good enough.
         if (classProperties.isEmpty() && combinedSuperProperties.isEmpty()) {
             return;

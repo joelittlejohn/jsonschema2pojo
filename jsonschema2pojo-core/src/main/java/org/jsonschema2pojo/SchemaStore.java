@@ -32,6 +32,14 @@ public class SchemaStore {
     protected FragmentResolver fragmentResolver = new FragmentResolver();
     protected ContentResolver contentResolver = new ContentResolver();
 
+    public SchemaStore() {
+
+    }
+
+    public SchemaStore(ContentResolver contentResolver) {
+        this.contentResolver = contentResolver;
+    }
+
     /**
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is

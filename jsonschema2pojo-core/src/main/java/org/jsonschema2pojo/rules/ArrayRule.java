@@ -78,7 +78,13 @@ public class ArrayRule implements Rule<JPackage, JClass> {
 
         JType itemType;
         if (node.has("items")) {
-            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), jpackage, schema);
+            String pathToItems;
+            if (schema.getId().getFragment() == null) {
+                pathToItems = "#items";
+            } else {
+                pathToItems = "#" + schema.getId().getFragment() + "/items";
+            }
+            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), jpackage, ruleFactory.getSchemaStore().create(schema, pathToItems));
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }
