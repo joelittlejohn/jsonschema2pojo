@@ -108,7 +108,7 @@ public class SchemaStore {
             }
         }
 
-        if (selfReferenceWithoutParentFile(parent, path)) {
+        if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
             schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getParentContent()));
             return schemas.get(id);
         }
