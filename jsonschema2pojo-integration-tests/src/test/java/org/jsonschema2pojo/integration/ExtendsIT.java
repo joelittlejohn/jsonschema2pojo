@@ -14,6 +14,7 @@ package org.jsonschema2pojo.integration;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.hamcrest.Matchers.*;
@@ -118,6 +119,18 @@ public class ExtendsIT {
 
         assertNotNull("Parent constructor is missing", supertype.getConstructor(String.class));
         assertNotNull("Constructor is missing", type.getConstructor(String.class, String.class));
+
+        Object typeInstance = type.getConstructor(String.class, String.class).newInstance("String1", "String2");
+
+        Field chieldField = type.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = supertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childProp, is(equalTo("String1")));
+        assertThat(parentProp, is(equalTo("String2")));
     }
 
     @Test
@@ -134,6 +147,22 @@ public class ExtendsIT {
         assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
         assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
         assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, String.class, String.class));
+
+        Object typeInstance = type.getConstructor(String.class, String.class, String.class).newInstance("String1", "String2", "String3");
+
+        Field chieldChildField = type.getDeclaredField("childChildProperty");
+        chieldChildField.setAccessible(true);
+        String childChildProp = (String)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo("String1")));
+        assertThat(childProp, is(equalTo("String2")));
+        assertThat(parentProp, is(equalTo("String3")));
     }
 
     @Test
@@ -150,6 +179,22 @@ public class ExtendsIT {
         assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
         assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
         assertNotNull("Constructor is missing", type.getDeclaredConstructor(Integer.class, String.class, String.class));
+
+        Object typeInstance = type.getConstructor(Integer.class, String.class, String.class).newInstance(5, "String2", "String3");
+
+        Field chieldChildField = type.getDeclaredField("childChildProperty");
+        chieldChildField.setAccessible(true);
+        int childChildProp = (int)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo(5)));
+        assertThat(childProp, is(equalTo("String2")));
+        assertThat(parentProp, is(equalTo("String3")));
     }
 
     @Test
