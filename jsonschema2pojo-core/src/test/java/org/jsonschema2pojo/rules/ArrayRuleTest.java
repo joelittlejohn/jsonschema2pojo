@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class ArrayRuleTest {
     private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
 
     @Test
-    public void arrayWithUniqueItemsProducesSet() {
+    public void arrayWithUniqueItemsProducesLinkedHashSet() {
         JCodeModel codeModel = new JCodeModel();
         JPackage jpackage = codeModel._package(getClass().getPackage().getName());
 
@@ -58,7 +58,7 @@ public class ArrayRuleTest {
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, mock(Schema.class));
 
         assertThat(propertyType, notNullValue());
-        assertThat(propertyType.erasure(), is(codeModel.ref(Set.class)));
+        assertThat(propertyType.erasure(), is(codeModel.ref(LinkedHashSet.class)));
         assertThat(propertyType.getTypeParameters().get(0).fullName(), is(Integer.class.getName()));
     }
 
