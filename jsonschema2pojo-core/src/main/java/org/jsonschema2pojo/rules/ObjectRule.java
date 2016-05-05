@@ -449,15 +449,27 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
+    private static JDefinedClass definedClassOrNullFromType(JType type)
+    {
+        if (type == null || type.isPrimitive())
+        {
+            return null;
+        }
+        JClass fieldClass = type.boxify();
+        JPackage jPackage = fieldClass._package();
+        return jPackage._getClass(fieldClass.name());
+    }
+
     /**
      * This is recursive with searchClassAndSuperClassesForField
      */
     private JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
         JClass superClass = jclass._extends();
-        if (superClass == null || !(superClass instanceof JDefinedClass)) {
+        JDefinedClass definedSuperClass = definedClassOrNullFromType(superClass);
+        if (definedSuperClass == null) {
             return null;
         }
-        return searchClassAndSuperClassesForField(property, (JDefinedClass)superClass);
+        return searchClassAndSuperClassesForField(property, definedSuperClass);
     }
 
     private JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
