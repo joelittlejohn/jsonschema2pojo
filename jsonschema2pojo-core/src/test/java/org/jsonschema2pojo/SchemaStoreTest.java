@@ -76,6 +76,20 @@ public class SchemaStoreTest {
     }
 
     @Test
+    public void createWithEmbeddedSelfRef() throws URISyntaxException {
+
+        URI schemaUri = getClass().getResource("/schema/embeddedRef.json").toURI();
+
+        SchemaStore schemaStore = new SchemaStore();
+        Schema topSchema = schemaStore.create(schemaUri);
+        Schema embeddedSchema = schemaStore.create(topSchema, "#/definitions/embedded");
+        Schema selfRefSchema = schemaStore.create(embeddedSchema, "#");
+
+        assertThat(topSchema, is(sameInstance(selfRefSchema)));
+
+    }
+
+    @Test
     public void createWithFragmentResolution() throws URISyntaxException {
 
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();

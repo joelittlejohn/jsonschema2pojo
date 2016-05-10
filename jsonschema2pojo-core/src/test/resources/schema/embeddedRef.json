@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "definitions" : {
+        "embedded" : {
+            "type" : "object"
+        }
+    }
+
+}

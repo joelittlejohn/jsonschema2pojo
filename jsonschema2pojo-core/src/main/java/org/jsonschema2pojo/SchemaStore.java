@@ -19,6 +19,7 @@ package org.jsonschema2pojo;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class SchemaStore {
             JsonNode content = contentResolver.resolve(removeFragment(id));
 
             if (id.toString().contains("#")) {
-                JsonNode childContent = fragmentResolver.resolve(content, '#' + substringAfter(id.toString(), "#"));
+                JsonNode childContent = fragmentResolver.resolve(content, '#' + id.getFragment());
                 schemas.put(id, new Schema(id, childContent, content));
             } else {
                 schemas.put(id, new Schema(id, content, content));
@@ -78,19 +79,40 @@ public class SchemaStore {
     @SuppressWarnings("PMD.UselessParentheses")
     public Schema create(Schema parent, String path) {
 
-        if (path.equals("#")) {
-            return parent;
+        if (!path.equals("#")) {
+            // if path is an empty string then resolving it below results in jumping up a level. e.g. "/path/to/file.json" becomes "/path/to"
+            path = stripEnd(path, "#?&/");
         }
-        
-        path = stripEnd(path, "#?&/");
+
+        // encode the fragment for any funny characters
+        if (path.contains("#")) {
+            String pathExcludingFragment = substringBefore(path, "#");
+            String fragment = substringAfter(path, "#");
+            URI fragmentURI;
+            try {
+                fragmentURI = new URI(null, null, fragment);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid fragment: " + fragment + " in path: " + path);
+            }
+            path = pathExcludingFragment + "#" + fragmentURI.getRawFragment();
+        }
 
         URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
 
-        if (selfReferenceWithoutParentFile(parent, path)) {
+        String stringId = id.toString();
+        if (stringId.endsWith("#")) {
+            try {
+                id = new URI(stripEnd(stringId, "#"));
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Bad path: " + stringId);
+            }
+        }
+
+        if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
             schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getParentContent()));
             return schemas.get(id);
         }
-        
+
         return create(id);
 
     }
