@@ -53,7 +53,7 @@
        :headers {"Content-Type" "text/html"}
        :body (str (.getMessage e))})
     (catch Exception e
-      (error "Failed to generate schema" e)
+      (error e "Failed to generate schema")
       {:status 500
        :headers {"Content-Type" "text/html"}
        :body "Internal server error :("})))
