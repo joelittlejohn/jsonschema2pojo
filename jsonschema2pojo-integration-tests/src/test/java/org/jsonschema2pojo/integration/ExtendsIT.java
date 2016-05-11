@@ -199,6 +199,38 @@ public class ExtendsIT {
 
     @Test
     @SuppressWarnings("rawtypes")
+    public void constructorDoesNotDuplicateArgsFromDuplicatedParentProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfC");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParent");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParentParent");
+
+        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class, Integer.class));
+        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, Boolean.class, Integer.class));
+        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, Integer.class, Boolean.class, Integer.class));
+
+        Object typeInstance = type.getConstructor(String.class, Integer.class, Boolean.class, Integer.class).newInstance("String1", 5, true, 6);
+
+        Field chieldChildField = type.getDeclaredField("duplicatedProp");
+        chieldChildField.setAccessible(true);
+        String childChildProp = (String)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("duplicatedProp");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("duplicatedProp");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo("String1")));
+        assertThat(childProp, is(equalTo("String1")));
+        assertThat(parentProp, is(equalTo("String1")));
+    }
+
+
+
+    @Test
+    @SuppressWarnings("rawtypes")
     public void extendsBuilderMethods() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
 

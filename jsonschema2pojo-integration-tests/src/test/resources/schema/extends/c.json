@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "properties": {
+        "duplicatedProp": {
+            "type": "string"
+        },
+        "cProp": {
+            "type": "integer"
+        }
+    }
+}
