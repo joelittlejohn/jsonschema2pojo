@@ -150,4 +150,29 @@ public class PropertiesIT {
         assertThat(valueAsJsonNode.path("class").asText(), is("a"));
 
     }
+
+    @Test
+    public void propertyNamesAreLowerCamelCase() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesAreUpperCamelCase.json", "com.example");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.UpperCase");
+
+        Object instance = generatedType.newInstance();
+
+        new PropertyDescriptor("property1", generatedType).getWriteMethod().invoke(instance, "1");
+        new PropertyDescriptor("propertyTwo", generatedType).getWriteMethod().invoke(instance, 2);
+        new PropertyDescriptor("propertyThreeWithSpace", generatedType).getWriteMethod().invoke(instance, "3");
+        new PropertyDescriptor("propertyFour", generatedType).getWriteMethod().invoke(instance, "4");
+
+        JsonNode jsonified = mapper.valueToTree(instance);
+
+        assertNotNull(generatedType.getDeclaredField("property1"));
+        assertNotNull(generatedType.getDeclaredField("propertyTwo"));
+        assertNotNull(generatedType.getDeclaredField("propertyThreeWithSpace"));
+        assertNotNull(generatedType.getDeclaredField("propertyFour"));
+
+        assertThat(jsonified.has("Property1"), is(true));
+        assertThat(jsonified.has("PropertyTwo"), is(true));
+        assertThat(jsonified.has(" PropertyThreeWithSpace"), is(true));
+        assertThat(jsonified.has("propertyFour"), is(true));
+    }
 }

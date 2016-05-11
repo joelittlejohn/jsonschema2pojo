@@ -67,6 +67,10 @@ public class NameHelper {
         return name;
     }
 
+    private String makeLowerCamelCase(String name) {
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
+    }
+
     /**
      * Convert jsonFieldName into the equivalent Java fieldname by replacing
      * illegal characters and normalizing it.
@@ -80,6 +84,7 @@ public class NameHelper {
 
         jsonFieldName = replaceIllegalCharacters(jsonFieldName);
         jsonFieldName = normalizeName(jsonFieldName);
+        jsonFieldName = makeLowerCamelCase(jsonFieldName);
 
         if (isKeyword(jsonFieldName)) {
             jsonFieldName = "_" + jsonFieldName;

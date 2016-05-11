@@ -2,10 +2,10 @@
     "type" : "object",
     "properties" : {
         "address" : {
-            "$ref" : "https://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.4/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/address.json"
+            "$ref" : "https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/address.json"
         },
         "refsToA" : {
-            "$ref" : "https://jsonschema2pojo.googlecode.com/git-history/jsonschema2pojo-0.3.4/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/refsToA.json"
+            "$ref" : "https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/refsToA.json"
         }
     }
 }
