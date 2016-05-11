@@ -1,0 +1,18 @@
+{
+  "type" : "object",
+  "javaType" : "com.example.UpperCase",
+  "properties" : {
+    "Property1" : {
+      "type" : "string"
+    },
+    "PropertyTwo" : {
+      "type" : "integer"
+    },
+    " PropertyThreeWithSpace" : {
+      "type" : "string"
+    },
+    "propertyFour" : {
+      "type" : "string"
+    }
+  }
+}
