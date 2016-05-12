@@ -1,0 +1,7 @@
+org.jsonschema2pojo
+org.jsonschema2pojo.ant
+org.jsonschema2pojo.cli
+org.jsonschema2pojo.exception
+org.jsonschema2pojo.maven
+org.jsonschema2pojo.rules
+org.jsonschema2pojo.util
