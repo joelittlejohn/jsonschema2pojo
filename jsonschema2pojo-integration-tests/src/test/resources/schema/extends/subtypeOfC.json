@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "extends": {
+        "$ref": "c.json"
+    },
+    "properties": {
+        "duplicatedProp": {
+            "type": "string"
+        },
+        "cSubtypeProp": {
+            "type": "boolean"
+        }
+    }
+}

@@ -14,6 +14,7 @@ package org.jsonschema2pojo.integration;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.hamcrest.Matchers.*;
@@ -105,6 +106,128 @@ public class ExtendsIT {
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
     }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void constructorHasParentsProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBParent");
+
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        assertNotNull("Parent constructor is missing", supertype.getConstructor(String.class));
+        assertNotNull("Constructor is missing", type.getConstructor(String.class, String.class));
+
+        Object typeInstance = type.getConstructor(String.class, String.class).newInstance("String1", "String2");
+
+        Field chieldField = type.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = supertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childProp, is(equalTo("String1")));
+        assertThat(parentProp, is(equalTo("String2")));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void constructorHasParentsParentProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfB");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParent");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParentParent");
+
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
+        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
+        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, String.class, String.class));
+
+        Object typeInstance = type.getConstructor(String.class, String.class, String.class).newInstance("String1", "String2", "String3");
+
+        Field chieldChildField = type.getDeclaredField("childChildProperty");
+        chieldChildField.setAccessible(true);
+        String childChildProp = (String)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo("String1")));
+        assertThat(childProp, is(equalTo("String2")));
+        assertThat(parentProp, is(equalTo("String3")));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void constructorHasParentsParentPropertiesInCorrectOrder() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfBDifferentType.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentType");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentTypeParent");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentTypeParentParent");
+
+        assertThat(type.getSuperclass(), is(equalTo(supertype)));
+
+        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
+        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
+        assertNotNull("Constructor is missing", type.getDeclaredConstructor(Integer.class, String.class, String.class));
+
+        Object typeInstance = type.getConstructor(Integer.class, String.class, String.class).newInstance(5, "String2", "String3");
+
+        Field chieldChildField = type.getDeclaredField("childChildProperty");
+        chieldChildField.setAccessible(true);
+        int childChildProp = (int)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("childProperty");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("parentProperty");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo(5)));
+        assertThat(childProp, is(equalTo("String2")));
+        assertThat(parentProp, is(equalTo("String3")));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void constructorDoesNotDuplicateArgsFromDuplicatedParentProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
+
+        Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfC");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParent");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParentParent");
+
+        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class, Integer.class));
+        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, Boolean.class, Integer.class));
+        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, Integer.class, Boolean.class, Integer.class));
+
+        Object typeInstance = type.getConstructor(String.class, Integer.class, Boolean.class, Integer.class).newInstance("String1", 5, true, 6);
+
+        Field chieldChildField = type.getDeclaredField("duplicatedProp");
+        chieldChildField.setAccessible(true);
+        String childChildProp = (String)chieldChildField.get(typeInstance);
+        Field chieldField = supertype.getDeclaredField("duplicatedProp");
+        chieldField.setAccessible(true);
+        String childProp = (String)chieldField.get(typeInstance);
+        Field parentField = superSupertype.getDeclaredField("duplicatedProp");
+        parentField.setAccessible(true);
+        String parentProp = (String)parentField.get(typeInstance);
+
+        assertThat(childChildProp, is(equalTo("String1")));
+        assertThat(childProp, is(equalTo("String1")));
+        assertThat(parentProp, is(equalTo("String1")));
+    }
+
+
 
     @Test
     @SuppressWarnings("rawtypes")

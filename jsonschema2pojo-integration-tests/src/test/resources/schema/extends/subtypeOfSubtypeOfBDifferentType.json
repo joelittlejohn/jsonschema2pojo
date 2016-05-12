@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "extends": {
+        "$ref": "subtypeOfB.json"
+    },
+    "properties": {
+        "childChildProperty": {
+            "type": "integer"
+        }
+    }
+}
