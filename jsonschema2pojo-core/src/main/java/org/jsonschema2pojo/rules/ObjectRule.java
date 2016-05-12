@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 
 import javax.annotation.Generated;
 
@@ -177,13 +179,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * @param node
      * @return
      */
-    private List<String> getConstructorProperties(JsonNode node, Schema schema, boolean onlyRequired) {
+    private LinkedHashSet<String> getConstructorProperties(JsonNode node, Schema schema, boolean onlyRequired) {
 
         if (!node.has("properties")) {
-            return new ArrayList<String>();
+            return new LinkedHashSet<String>();
         }
 
-        List<String> rtn = new ArrayList<String>();
+        LinkedHashSet<String> rtn = new LinkedHashSet<String>();
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
         for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
@@ -204,16 +206,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
     /**
      * Recursive, walks the schema tree and assembles a list of all properties of this schema's super schemas
      */
-    private List<String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
+    private LinkedHashSet<String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
         Schema superTypeSchema = getSuperSchema(node, schema, true);
 
         if (superTypeSchema == null) {
-            return new ArrayList<String>();
+            return new LinkedHashSet<String>();
         }
 
         JsonNode superSchemaNode = superTypeSchema.getContent();
 
-        List<String> rtn = getConstructorProperties(superSchemaNode, superTypeSchema, onlyRequired);
+        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, superTypeSchema, onlyRequired);
         rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
 
         return rtn;
@@ -397,8 +399,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addConstructors(JDefinedClass jclass, JsonNode node, Schema schema, boolean onlyRequired) {
 
-        List<String> classProperties = getConstructorProperties(node, schema, onlyRequired);
-        List<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, schema, onlyRequired);
+        LinkedHashSet<String> classProperties = getConstructorProperties(node, schema, onlyRequired);
+        LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, schema, onlyRequired);
 
         // no properties to put in the constructor => default constructor is good enough.
         if (classProperties.isEmpty() && combinedSuperProperties.isEmpty()) {
@@ -415,6 +417,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JInvocation superInvocation = constructorBody.invoke("super");
 
         Map<String, JFieldVar> fields = jclass.fields();
+        Map<String, JVar> classFieldParams = new HashMap<String, JVar>();
 
         for (String property : classProperties) {
             JFieldVar field = fields.get(property);
@@ -426,9 +429,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
             fieldsConstructor.javadoc().addParam(property);
             JVar param = fieldsConstructor.param(field.type(), field.name());
             constructorBody.assign(JExpr._this().ref(field), param);
+            classFieldParams.put(property, param);
         }
 
-        List<JType> superConstructorTypes = new ArrayList<JType>();
         List<JVar> superConstructorParams = new ArrayList<JVar>();
 
 
@@ -439,9 +442,14 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
             }
 
+            JVar param = classFieldParams.get(property);
+
+            if (param == null) {
+                param = fieldsConstructor.param(field.type(), field.name());
+            }
+
             fieldsConstructor.javadoc().addParam(property);
-            superConstructorParams.add(fieldsConstructor.param(field.type(), field.name()));
-            superConstructorTypes.add(field.type());
+            superConstructorParams.add(param);
         }
 
         for (JVar param : superConstructorParams) {
