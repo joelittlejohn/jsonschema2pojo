@@ -184,7 +184,7 @@ public class ExtendsIT {
 
         Field chieldChildField = type.getDeclaredField("childChildProperty");
         chieldChildField.setAccessible(true);
-        int childChildProp = (int)chieldChildField.get(typeInstance);
+        int childChildProp = (Integer)chieldChildField.get(typeInstance);
         Field chieldField = supertype.getDeclaredField("childProperty");
         chieldField.setAccessible(true);
         String childProp = (String)chieldField.get(typeInstance);
