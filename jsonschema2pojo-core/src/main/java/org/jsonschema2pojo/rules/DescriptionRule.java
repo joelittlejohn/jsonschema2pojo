@@ -23,7 +23,7 @@ import com.sun.codemodel.JDocCommentable;
 
 /**
  * Applies the "description" schema property.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
@@ -37,7 +37,7 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
      * <p>
      * When a description node is found and applied with this rule, the value of
      * the description is added as a class level JavaDoc comment.
-     * 
+     *
      * @param nodeName
      *            the name of the object to which this description applies
      * @param node

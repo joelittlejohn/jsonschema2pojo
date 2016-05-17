@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -69,6 +70,10 @@ public class Jackson2Annotator extends AbstractAnnotator {
         if (propertyNode.has("javaJsonView")) {
             field.annotate(JsonView.class).param(
                 "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+        }
+
+        if (propertyNode.has("description")) {
+            field.annotate(JsonPropertyDescription.class).param("value", propertyNode.asText());
         }
     }
 
