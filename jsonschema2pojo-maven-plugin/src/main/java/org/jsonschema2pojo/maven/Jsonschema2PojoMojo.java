@@ -420,7 +420,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String[] includes;
 
     /**
-     * List of file patterns to exclude.
+     * List of file patterns to exclude.  This only applies to the initial scan of
+     * the file system and will not prevent inclusion through a "$ref" in one of the
+     * schemas.
      *
      * @parameter
      * @since 0.4.3
