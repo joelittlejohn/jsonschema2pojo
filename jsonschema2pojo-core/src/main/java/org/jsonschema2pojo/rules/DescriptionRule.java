@@ -16,10 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
@@ -31,8 +28,6 @@ import com.sun.codemodel.JDocCommentable;
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
 public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
-
-    private static final String DESCRIPTION_ANNOTATION_VALUE = "value";
 
     protected DescriptionRule() {
     }
@@ -55,11 +50,9 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
     @Override
     public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
+
         javadoc.append(node.asText());
-        if (generatableType instanceof JFieldVar) {
-            JAnnotationUse annotationUse = ((JFieldVar) generatableType).annotate(JsonPropertyDescription.class);
-            annotationUse.param(DESCRIPTION_ANNOTATION_VALUE, node.asText());
-        }
+
         return javadoc;
     }
 
