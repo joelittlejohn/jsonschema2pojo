@@ -56,3 +56,6 @@
 * Mike Woudenberg
 * Tobias Preuss
 * Max Myslyvtsev
+* Thach Hoang
+* Sam Duke
+* Alex Macrae

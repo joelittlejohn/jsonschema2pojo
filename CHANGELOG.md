@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.23
+* Force lower camel case fields when using JSON ([#563](https://github.com/joelittlejohn/jsonschema2pojo/issues/563))
+* Fix broken embedded refs ([#560](https://github.com/joelittlejohn/jsonschema2pojo/pull/560))
+* Added file extensions config parameter ([#548](https://github.com/joelittlejohn/jsonschema2pojo/pull/548))
+* Overridden builders are not added to empty child class ([#538](https://github.com/joelittlejohn/jsonschema2pojo/issues/538))
+* Wrong default value for BigDecimal ([#535](https://github.com/joelittlejohn/jsonschema2pojo/issues/535))
+* Add Moshi 1.x annotation style ([#529](https://github.com/joelittlejohn/jsonschema2pojo/pull/529))
+* Zip of binary distribution of CLI ([#500](https://github.com/joelittlejohn/jsonschema2pojo/issues/500))
+* Add serializable as an optional/configurable option ([#404](https://github.com/joelittlejohn/jsonschema2pojo/issues/404))
+
 ## 0.4.22
 * Adding date-time types to Maven plugin mojo configuration ([#531](https://github.com/joelittlejohn/jsonschema2pojo/pull/531))
 * Fix javaName breaking required properties ([#528](https://github.com/joelittlejohn/jsonschema2pojo/pull/528))
