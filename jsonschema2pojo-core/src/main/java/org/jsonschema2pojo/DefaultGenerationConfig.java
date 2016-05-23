@@ -283,11 +283,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
-     * @return <code>true</code>
+     * @return <code>false</code>
      */
     @Override
     public boolean isIncludeDynamicAccessors() {
-        return true;
+        return false;
     }
 
     @Override
