@@ -63,6 +63,8 @@
       (boolean (Boolean/valueOf (params "includeadditionalproperties"))))
     (isIncludeConstructors []
       (boolean (Boolean/valueOf (params "includeconstructors"))))
+    (isIncludeDynamicAccessors []
+      false)
     (isParcelable []
       (boolean (Boolean/valueOf (params "parcelable"))))
     (getPropertyWordDelimiters []
