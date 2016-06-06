@@ -73,7 +73,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
         }
 
         if (propertyNode.has("description")) {
-            field.annotate(JsonPropertyDescription.class).param("value", propertyNode.asText());
+            field.annotate(JsonPropertyDescription.class).param("value", propertyNode.get("description").asText());
         }
     }
 

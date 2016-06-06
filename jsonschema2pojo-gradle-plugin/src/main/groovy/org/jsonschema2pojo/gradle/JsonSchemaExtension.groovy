@@ -47,6 +47,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
   boolean includeJsr303Annotations
+  boolean includeSwagger2Annotations
   boolean includeToString
   boolean initializeCollections
   String outputEncoding

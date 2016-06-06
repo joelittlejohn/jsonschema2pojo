@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.assertThat;
 
 public class RequiredArrayIT extends RequiredIT {
@@ -42,7 +43,7 @@ public class RequiredArrayIT extends RequiredIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        classSchemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example");
+        classSchemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example", config("includeSwagger2Annotations", true));
         File generatedJavaFile = classSchemaRule.generated("com/example/RequiredArray.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();

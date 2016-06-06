@@ -29,6 +29,7 @@ import com.sun.codemodel.JVar;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.swagger2.Swagger2AnnotationApplier;
 
 import static org.apache.commons.lang3.StringUtils.capitalize;
 
@@ -43,9 +44,11 @@ import static org.apache.commons.lang3.StringUtils.capitalize;
 public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private final RuleFactory ruleFactory;
+    private final Swagger2AnnotationApplier swagger2AnnotationApplier;
 
     protected PropertyRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
+        this.swagger2AnnotationApplier = new Swagger2AnnotationApplier(ruleFactory);
     }
 
     /**
@@ -111,6 +114,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         if (isObject(node) || isArray(node)) {
             ruleFactory.getValidRule().apply(nodeName, node, field, schema);
         }
+
+        swagger2AnnotationApplier.applyModelPropertyAnnotation(field, node, propertyName);
 
         return jclass;
     }
@@ -199,5 +204,4 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private String getGetterName(String propertyName, JType type, JsonNode node) {
         return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
     }
-
 }

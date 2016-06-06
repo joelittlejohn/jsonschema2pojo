@@ -137,6 +137,15 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+  /**
+   *
+   * @return <code>false</code>
+   */
+  @Override
+    public boolean isIncludeSwagger2Annotations() {
+        return false;
+    }
+
     /**
      * @return {@link SourceType#JSONSCHEMA}
      */

@@ -25,6 +25,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
@@ -44,6 +45,7 @@ public class EnumRuleTest {
     private Schema schema = mock(Schema.class);
     private NameHelper nameHelper = mock(NameHelper.class);
     private Annotator annotator = mock(Annotator.class);
+    private GenerationConfig generationConfig = mock(GenerationConfig.class);
     private RuleFactory ruleFactory = mock(RuleFactory.class);
 
     private EnumRule rule = new EnumRule(ruleFactory);
@@ -52,6 +54,7 @@ public class EnumRuleTest {
     public void wireUpConfig() {
         when(ruleFactory.getNameHelper()).thenReturn(nameHelper);
         when(ruleFactory.getAnnotator()).thenReturn(annotator);
+        when(ruleFactory.getGenerationConfig()).thenReturn(generationConfig);
     }
 
     @Test

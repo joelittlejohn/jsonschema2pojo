@@ -274,6 +274,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean includeJsr303Annotations = false;
 
+  /**
+   * @parameter expression="${jsonschema2pojo.includeSwagger2Annotations}"
+   *            default-value="false"
+   * @since 0.4.24
+   */
+  private boolean includeSwagger2Annotations = false;
+
     /**
      * The type of input documents that will be read
      * <p>
@@ -703,6 +710,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeSwagger2Annotations() {
+        return includeSwagger2Annotations;
     }
 
     @Override

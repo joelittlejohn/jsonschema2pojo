@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -41,7 +42,7 @@ public class RequiredIT {
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
 
-        classSchemaRule.generateAndCompile("/schema/required/required.json", "com.example");
+        classSchemaRule.generateAndCompile("/schema/required/required.json", "com.example", config("includeSwagger2Annotations", true));
         File generatedJavaFile = classSchemaRule.generated("com/example/Required.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();

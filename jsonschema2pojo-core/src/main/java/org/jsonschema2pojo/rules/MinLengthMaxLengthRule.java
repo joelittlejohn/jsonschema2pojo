@@ -22,18 +22,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
+import org.jsonschema2pojo.swagger2.Swagger2AnnotationApplier;
 
 public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
     
     private final RuleFactory ruleFactory;
-    
+    private final Swagger2AnnotationApplier swagger2AnnotationApplier;
+
     protected MinLengthMaxLengthRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
+        this.swagger2AnnotationApplier = new Swagger2AnnotationApplier(ruleFactory);
     }
     
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
-        
+        swagger2AnnotationApplier.changeModelPropertyAnnotationMaxLength(field, 333);
+
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
                 && (node.has("minLength") || node.has("maxLength"))) {
 

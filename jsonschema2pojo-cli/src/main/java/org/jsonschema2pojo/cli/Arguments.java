@@ -96,6 +96,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
 
+    @Parameter(names = { "-swagger2", "--swagger2-annotations" }, description = "Add Swagger2 annotations to generated Java types.")
+    private boolean includeSwagger2Annotations = false;
+
     @Parameter(names = { "-T", "--source-type" })
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
@@ -259,6 +262,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeSwagger2Annotations() {
+        return includeSwagger2Annotations;
     }
 
     @Override

@@ -181,6 +181,15 @@ public interface GenerationConfig {
     boolean isIncludeJsr303Annotations();
 
     /**
+     * Gets the 'includeSwagger2Annotations' configuration option.
+     *
+     * @return Whether to include
+     *         <a href="http://swagger.io">Swagger2</a>
+     *         annotations in generated Java types.
+     */
+    boolean isIncludeSwagger2Annotations();
+
+    /**
      * Gets the 'sourceType' configuration option.
      *
      * @return The type of input documents that will be read

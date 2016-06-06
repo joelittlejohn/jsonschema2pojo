@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -39,6 +40,8 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.swagger2.JsonNodeUtils;
+import org.jsonschema2pojo.swagger2.Swagger2AnnotationApplier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,9 +74,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     private static final String VALUE_FIELD_NAME = "value";
 
     private final RuleFactory ruleFactory;
+    private final Swagger2AnnotationApplier swagger2AnnotationApplier;
 
     protected EnumRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
+        this.swagger2AnnotationApplier = new Swagger2AnnotationApplier(ruleFactory);
     }
 
     /**
@@ -122,6 +127,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         addToString(_enum, valueField);
         addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"));
         addFactoryMethod(_enum);
+        swagger2AnnotationApplier.changeModelPropertyAnnotationAllowableValues(valueField, JsonNodeUtils.getElements(node.path("enum")));
 
         return _enum;
     }

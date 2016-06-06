@@ -54,6 +54,7 @@
         <gradle.version>1.6</gradle.version>
         <gson.version>2.5</gson.version>
         <moshi.version>1.1.0</moshi.version>
+        <io.swagger.swagger-annotations.version>1.5.8</io.swagger.swagger-annotations.version>
     </properties>
 
     <build>
@@ -373,6 +374,11 @@
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.9.11</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${io.swagger.swagger-annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt.core.compiler</groupId>

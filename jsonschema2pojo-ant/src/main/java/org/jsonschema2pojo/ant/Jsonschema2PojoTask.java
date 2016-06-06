@@ -93,6 +93,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr303Annotations = false;
 
+    private boolean includeSwagger2Annotations = false;
+
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
@@ -442,6 +444,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.includeJsr303Annotations = includeJsr303Annotations;
     }
 
+    public void setIncludeSwagger2Annotations(boolean includeSwagger2Annotations) {
+        this.includeSwagger2Annotations = includeSwagger2Annotations;
+    }
+
     /**
      * Sets the 'sourceType' property of this class
      *
@@ -716,6 +722,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeSwagger2Annotations() {
+        return includeSwagger2Annotations;
     }
 
     @Override

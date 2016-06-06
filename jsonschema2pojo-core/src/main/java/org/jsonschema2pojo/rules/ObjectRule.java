@@ -33,13 +33,13 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.swagger2.Swagger2AnnotationApplier;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
@@ -73,10 +73,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private final RuleFactory ruleFactory;
     private final ParcelableHelper parcelableHelper;
+    private final Swagger2AnnotationApplier swagger2AnnotationApplier;
 
     protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper) {
         this.ruleFactory = ruleFactory;
         this.parcelableHelper = parcelableHelper;
+        this.swagger2AnnotationApplier = new Swagger2AnnotationApplier(ruleFactory);
     }
 
     /**
@@ -111,6 +113,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         schema.setJavaTypeIfEmpty(jclass);
         addGeneratedAnnotation(jclass);
+        swagger2AnnotationApplier.applyModelAnnotation(jclass, node);
 
         if (node.has("deserializationClassProperty")) {
             addJsonTypeInfoAnnotation(jclass, node);
@@ -576,5 +579,4 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
         return false;
     }
-
 }
