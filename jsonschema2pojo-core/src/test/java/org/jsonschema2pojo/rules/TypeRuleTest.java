@@ -21,6 +21,10 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
+
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -28,17 +32,11 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
-
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-
-import java.math.BigDecimal;
 
 public class TypeRuleTest {
 
@@ -74,7 +72,7 @@ public class TypeRuleTest {
         objectNode.put("type", "string");
 
         TextNode formatNode = TextNode.valueOf("date-time");
-        objectNode.put("format", formatNode);
+        objectNode.set("format", formatNode);
 
         JType mockDateType = mock(JType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);

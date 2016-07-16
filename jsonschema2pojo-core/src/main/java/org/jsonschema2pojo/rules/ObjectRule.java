@@ -16,7 +16,28 @@
 
 package org.jsonschema2pojo.rules;
 
-import android.os.Parcelable;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
+
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Generated;
+
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,34 +54,9 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.SerializableHelper;
-import org.jsonschema2pojo.util.TypeUtil;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-
-import javax.annotation.Generated;
-
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import android.os.Parcelable;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -150,7 +146,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (ruleFactory.getGenerationConfig().isParcelable()) {
             addParcelSupport(jclass);
         }
-        
+
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
             addConstructors(jclass, node, schema, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly());
         }
@@ -260,7 +256,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
                 try {
                     _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    JClass existingClass = TypeUtil.resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
+                    JClass existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
 
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
@@ -388,7 +384,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         for (JFieldVar fieldVar : fields.values()) {
-            if( (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) continue;
+            if ((fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
+                continue;
+            }
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
         }
 
@@ -514,7 +512,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         for (JFieldVar fieldVar : fields.values()) {
-            if( (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC ) continue;
+            if ((fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
+                continue;
+            }
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
                     .arg(fieldVar)
                     .arg(rhsVar.ref(fieldVar.name()));

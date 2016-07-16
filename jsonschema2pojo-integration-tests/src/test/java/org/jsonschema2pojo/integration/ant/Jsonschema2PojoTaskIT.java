@@ -43,7 +43,7 @@ public class Jsonschema2PojoTaskIT {
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
 
-       invokeAntBuild("/ant/build.xml");
+        invokeAntBuild("/ant/build.xml");
 
         ClassLoader resultsClassLoader = schemaRule.compile(buildCustomClasspath());
 
