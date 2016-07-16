@@ -179,7 +179,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *
      * @parameter expression="${jsonschema2pojo.useBigDecimals}"
      *            default-value="false"
-     * @since TODO
+     * @since 0.4.22
      */
     private boolean useBigDecimals = false;
 
