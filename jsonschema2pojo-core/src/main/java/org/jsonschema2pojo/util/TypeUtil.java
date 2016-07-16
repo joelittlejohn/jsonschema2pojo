@@ -20,6 +20,9 @@ import java.util.List;
 
 import org.jsonschema2pojo.exception.GenerationException;
 
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassContainer;
+
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
 import japa.parser.ast.body.FieldDeclaration;
@@ -27,12 +30,10 @@ import japa.parser.ast.type.ClassOrInterfaceType;
 import japa.parser.ast.type.ReferenceType;
 import japa.parser.ast.type.Type;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JPackage;
-
 public class TypeUtil {
 
-    public static JClass resolveType(JPackage _package, String typeDefinition) {
+    public static JClass resolveType(JClassContainer _package, String typeDefinition) {
+
         try {
             FieldDeclaration fieldDeclaration = (FieldDeclaration) JavaParser.parseBodyDeclaration(typeDefinition + " foo;");
             ClassOrInterfaceType c = (ClassOrInterfaceType) fieldDeclaration.getType().getChildrenNodes().get(0);
@@ -43,20 +44,20 @@ public class TypeUtil {
         }
     }
 
-    private static JClass buildClass(JPackage _package, ClassOrInterfaceType c, int arrayCount) {
+    private static JClass buildClass(JClassContainer _package, ClassOrInterfaceType c, int arrayCount) {
         final String packagePrefix = (c.getScope() != null) ? c.getScope().toString() + "." : "";
-       
+
         JClass _class;
         try {
             _class = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(packagePrefix + c.getName()));
         } catch (ClassNotFoundException e) {
-            _class = _package.owner().ref(packagePrefix + c.getName());            
+            _class = _package.owner().ref(packagePrefix + c.getName());
         }
 
         for (int i=0; i<arrayCount; i++) {
             _class = _class.array();
         }
-        
+
         List<Type> typeArgs = c.getTypeArgs();
         if (typeArgs != null && typeArgs.size() > 0) {
             JClass[] genericArgumentClasses = new JClass[typeArgs.size()];
@@ -64,10 +65,10 @@ public class TypeUtil {
             for (int i=0; i<typeArgs.size(); i++) {
                 genericArgumentClasses[i] = buildClass(_package, (ClassOrInterfaceType) ((ReferenceType) typeArgs.get(i)).getType(), ((ReferenceType) typeArgs.get(i)).getArrayCount());
             }
-            
+
             _class = _class.narrow(genericArgumentClasses);
         }
-        
+
         return _class;
     }
 

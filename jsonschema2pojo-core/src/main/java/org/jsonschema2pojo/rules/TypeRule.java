@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -88,8 +89,13 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
             type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (node.has("javaType")) {
+            String typeName = node.path("javaType").asText();
 
-            type = getJavaType(node.path("javaType").asText(), jClassContainer.owner());
+            if (isPrimitive(typeName, jClassContainer.owner())) {
+                type = primitiveType(typeName, jClassContainer.owner());
+            } else {
+                type = resolveType(jClassContainer, typeName);
+            }
         } else if (propertyTypeName.equals("string")) {
 
             type = jClassContainer.owner().ref(String.class);
@@ -172,15 +178,6 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             return unboxIfNecessary(owner.ref(Float.class), config);
         }
 
-    }
-
-    private JType getJavaType(String javaTypeName, JCodeModel owner) {
-
-        if (isPrimitive(javaTypeName, owner)) {
-            return primitiveType(javaTypeName, owner);
-        } else {
-            return owner.ref(javaTypeName);
-        }
     }
 
 }

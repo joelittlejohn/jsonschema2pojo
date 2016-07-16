@@ -2,7 +2,7 @@
     "type" : "object",
     "properties" : {
         "a" : {
-            "type" : "object",
+            "type": "object",
             "javaType" : "java.util.Map<String,Integer>"
         },
         "b" : {
@@ -12,6 +12,9 @@
         "c" : {
             "type" : "object",
             "javaType" : "java.util.Map<String, String[][]>"
+        },
+        "d" : {
+            "javaType" : "java.util.Map<String,Double>"
         }
     }
 }
