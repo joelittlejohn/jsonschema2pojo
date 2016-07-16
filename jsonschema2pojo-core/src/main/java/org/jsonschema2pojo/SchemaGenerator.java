@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import org.jsonschema2pojo.exception.GenerationException;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 public class SchemaGenerator {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .enable(JsonParser.Feature.ALLOW_COMMENTS)
             .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     public ObjectNode schemaFromExample(URL example) {
@@ -71,9 +73,9 @@ public class SchemaGenerator {
         ObjectNode properties = OBJECT_MAPPER.createObjectNode();
         for (Iterator<String> iter = exampleObject.fieldNames(); iter.hasNext();) {
             String property = iter.next();
-            properties.put(property, schemaFromExample(exampleObject.get(property)));
+            properties.set(property, schemaFromExample(exampleObject.get(property)));
         }
-        schema.put("properties", properties);
+        schema.set("properties", properties);
 
         return schema;
     }
@@ -87,7 +89,7 @@ public class SchemaGenerator {
 
             JsonNode exampleItem = exampleArray.get(0).isObject() ? mergeArrayItems(exampleArray) : exampleArray.get(0);
 
-            schema.put("items", schemaFromExample(exampleItem));
+            schema.set("items", schemaFromExample(exampleItem));
         }
 
         return schema;
@@ -99,7 +101,7 @@ public class SchemaGenerator {
 
         for (JsonNode item : exampleArray) {
             if (item.isObject()) {
-                mergedItems.putAll((ObjectNode) item);
+                mergedItems.setAll((ObjectNode) item);
             }
         }
 

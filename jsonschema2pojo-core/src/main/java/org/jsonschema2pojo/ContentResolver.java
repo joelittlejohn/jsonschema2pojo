@@ -18,7 +18,6 @@ package org.jsonschema2pojo;
 
 import static java.util.Arrays.*;
 import static org.apache.commons.lang3.StringUtils.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,9 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +39,8 @@ public class ContentResolver {
 
     private static final Set<String> CLASSPATH_SCHEMES = new HashSet<String>(asList("classpath", "resource", "java"));
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-        .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+            .enable(JsonParser.Feature.ALLOW_COMMENTS)
+            .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 
     /**
      * Resolve a given URI to read its contents and parse the result as JSON.
@@ -50,7 +52,7 @@ public class ContentResolver {
      * <li>classpath/resource/java (all synonymous, used to resolve a schema
      * from the classpath)
      * </ul>
-     * 
+     *
      * @param uri
      *            the URI to read schema content from
      * @return the JSON tree found at the given URI
