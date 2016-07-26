@@ -182,6 +182,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         LinkedHashSet<String> rtn = new LinkedHashSet<String>();
+        LinkedHashSet<String> draft4RequiredProperties = new LinkedHashSet<String>();
+
+        // setup the set of required properties for draft4 style "required"
+        if (onlyRequired && node.has("required") && node.get("required").isArray()) {
+            for (Iterator<JsonNode> ri = node.get("required").elements(); ri.hasNext();) {
+                JsonNode required = ri.next();
+                draft4RequiredProperties.add(required.asText());
+            }
+        }
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
         for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
@@ -189,7 +198,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             JsonNode propertyObj = property.getValue();
             if (onlyRequired) {
+                // draft3 style
                 if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
+                    rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
+                }
+
+                // draft4 style
+                if (draft4RequiredProperties.contains(property.getKey())) {
                     rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
                 }
             } else {
