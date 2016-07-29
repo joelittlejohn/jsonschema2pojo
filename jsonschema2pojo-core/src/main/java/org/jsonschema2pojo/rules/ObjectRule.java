@@ -24,10 +24,12 @@ import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Generated;
 
@@ -182,6 +184,19 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         LinkedHashSet<String> rtn = new LinkedHashSet<String>();
+        Set<String> draft4RequiredProperties = new HashSet<String>();
+
+        // setup the set of required properties for draft4 style "required"
+        if (onlyRequired && node.has("required")) {
+            JsonNode requiredArray =  node.get("required");
+            if (requiredArray.isArray()) {
+                for (JsonNode requiredEntry: requiredArray) {
+                    if (requiredEntry.isTextual()) {
+                        draft4RequiredProperties.add(requiredEntry.asText());
+                    }
+                }
+            }
+        }
 
         NameHelper nameHelper = ruleFactory.getNameHelper();
         for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
@@ -189,11 +204,17 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             JsonNode propertyObj = property.getValue();
             if (onlyRequired) {
+                // draft3 style
                 if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
                     rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
                 }
+
+                // draft4 style
+                if (draft4RequiredProperties.contains(property.getKey())) {
+                    rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
+                }
             } else {
-                rtn.add((nameHelper.getPropertyName(property.getKey(), property.getValue())));
+                rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
             }
         }
         return rtn;

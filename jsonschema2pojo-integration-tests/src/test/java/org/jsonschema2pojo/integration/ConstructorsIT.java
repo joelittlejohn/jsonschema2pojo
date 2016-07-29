@@ -51,11 +51,11 @@ public class ConstructorsIT {
     }
 
     public static class AllPropertiesIT {
-        
         @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
         protected static Class<?> typeWithRequired;
         private static Class<?> typeWithoutProperties;
+        protected static Class<?> typeWithRequiredArray;
 
         //xxx there's a bit of duplication here in the name of performance; if we did this step as a Before method,
         //we could factor out a super class between AllPropertiesIT and RequiredOnlyIT... but it makes the tests run
@@ -76,18 +76,29 @@ public class ConstructorsIT {
                     "com.example",
                     config);
 
+            classSchemaRule.generate(
+                    "/schema/constructors/requiredArrayPropertyConstructors.json",
+                    "com.example",
+                    config);
+
             ClassLoader loader = classSchemaRule.compile();
             typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
             typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
+            typeWithRequiredArray = loader.loadClass("com.example.RequiredArrayPropertyConstructors");
         }
 
         @Test
         public void testGeneratesConstructorWithAllProperties() throws Exception {
-            assertHasModifier(JMod.PUBLIC, getArgsConstructor().getModifiers(), "public");
-
+            assertHasModifier(JMod.PUBLIC, getArgsConstructor(typeWithRequired).getModifiers(), "public");
         }
-        public Constructor<?> getArgsConstructor() throws NoSuchMethodException {
-            return typeWithRequired.getConstructor(String.class, Integer.class, Boolean.class, String.class, String.class);
+
+        @Test
+            public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getArgsConstructor(typeWithRequiredArray).getModifiers(), "public");
+        }
+
+        public Constructor<?> getArgsConstructor(Class<?> clazz) throws NoSuchMethodException {
+            return clazz.getConstructor(String.class, Integer.class, Boolean.class, String.class, String.class);
         }
 
         @Test
@@ -106,6 +117,7 @@ public class ConstructorsIT {
 
         protected static Class<?> typeWithRequired;
         protected static Class<?> typeWithoutRequired;
+        protected static Class<?> typeWithRequiredArray;
 
         @BeforeClass
         public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
@@ -124,9 +136,15 @@ public class ConstructorsIT {
                     "com.example",
                     config);
 
+            classSchemaRule.generate(
+                    "/schema/constructors/requiredArrayPropertyConstructors.json",
+                    "com.example",
+                    config);
+
             ClassLoader classLoader = classSchemaRule.compile();
             typeWithRequired = classLoader.loadClass("com.example.RequiredPropertyConstructors");
             typeWithoutRequired = classLoader.loadClass("com.example.NoRequiredPropertiesConstructor");
+            typeWithRequiredArray = classLoader.loadClass("com.example.RequiredArrayPropertyConstructors");
         }
 
         @Test
@@ -138,18 +156,25 @@ public class ConstructorsIT {
 
         @Test
         public void testCreatesConstructorWithRequiredParams() throws Exception {
-            Constructor<?> constructor = getArgsConstructor();
+            Constructor<?> constructor = getArgsConstructor(typeWithRequired);
 
             assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
         }
 
-        public Constructor<?> getArgsConstructor() throws NoSuchMethodException {
-            return typeWithRequired.getConstructor(String.class, Integer.class, Boolean.class);
+        @Test
+        public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
+            Constructor<?> constructor = getArgsConstructor(typeWithRequiredArray);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        public Constructor<?> getArgsConstructor(Class<?> clazz) throws NoSuchMethodException {
+            return clazz.getConstructor(String.class, Integer.class, Boolean.class);
         }
 
         @Test
         public void testConstructorAssignsFields() throws Exception {
-            Object instance = getArgsConstructor().newInstance("type", 5, true);
+            Object instance = getArgsConstructor(typeWithRequired).newInstance("type", 5, true);
 
             assertEquals("type", typeWithRequired.getMethod("getType").invoke(instance));
             assertEquals(5, typeWithRequired.getMethod("getId").invoke(instance));
