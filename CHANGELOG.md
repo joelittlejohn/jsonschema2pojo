@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.24
+* Support "required" keyword draft04 array-style when generating constuctors ([#599](https://github.com/joelittlejohn/jsonschema2pojo/pull/599))
+* Add feature to allow comments in schema files ([#589](https://github.com/joelittlejohn/jsonschema2pojo/issues/589))
+* javaType with generics does not apply correct imports when "type": "object" is omitted ([#582](https://github.com/joelittlejohn/jsonschema2pojo/issues/582))
+* Add @JsonPropertyDescription when "description" property present ([#571](https://github.com/joelittlejohn/jsonschema2pojo/pull/571))
+* Constructors are incompatible with extends keyword ([#555](https://github.com/joelittlejohn/jsonschema2pojo/issues/555))
+
 ## 0.4.23
 * Force lower camel case fields when using JSON ([#563](https://github.com/joelittlejohn/jsonschema2pojo/issues/563))
 * Fix broken embedded refs ([#560](https://github.com/joelittlejohn/jsonschema2pojo/pull/560))
@@ -7,7 +14,6 @@
 * Overridden builders are not added to empty child class ([#538](https://github.com/joelittlejohn/jsonschema2pojo/issues/538))
 * Wrong default value for BigDecimal ([#535](https://github.com/joelittlejohn/jsonschema2pojo/issues/535))
 * Add Moshi 1.x annotation style ([#529](https://github.com/joelittlejohn/jsonschema2pojo/pull/529))
-* Zip of binary distribution of CLI ([#500](https://github.com/joelittlejohn/jsonschema2pojo/issues/500))
 * Add serializable as an optional/configurable option ([#404](https://github.com/joelittlejohn/jsonschema2pojo/issues/404))
 
 ## 0.4.22

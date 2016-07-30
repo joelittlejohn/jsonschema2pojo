@@ -59,3 +59,6 @@
 * Thach Hoang
 * Sam Duke
 * Alex Macrae
+* Łukasz Grabski
+* Jens Teglhus Møller
+* Jonathan Landis
