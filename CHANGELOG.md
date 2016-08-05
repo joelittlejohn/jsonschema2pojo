@@ -114,6 +114,7 @@
 * Add ability to set prefixes/suffixes for generated classes ([#258](https://github.com/joelittlejohn/jsonschema2pojo/pull/258))
 
 ## 0.4.6
+* Support for @JsonTypeInfo in generated classes using deserializationClassProperty ([#235](https://github.com/joelittlejohn/jsonschema2pojo/issues/235)
 * ClassNotFoundException when attempting to use a custom annotator from a project dependency ([#256](https://github.com/joelittlejohn/jsonschema2pojo/issues/256))
 * Inflector incorrectly singularizes Address to Addres  ([#244](https://github.com/joelittlejohn/jsonschema2pojo/issues/244))
 * propertyWordDelimiters config is ignored ([#243](https://github.com/joelittlejohn/jsonschema2pojo/issues/243))
