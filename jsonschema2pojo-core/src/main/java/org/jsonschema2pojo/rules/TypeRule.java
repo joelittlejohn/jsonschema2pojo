@@ -59,12 +59,12 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      * <ul>
      * <li>"type":"any" =&gt; {@link java.lang.Object}
      * <li>"type":"array" =&gt; Either {@link java.util.Set} or
+     * {@link java.util.List}, see {@link ArrayRule}
      * <li>"type":"boolean" =&gt; <code>boolean</code>
      * <li>"type":"integer" =&gt; <code>int</code>
      * <li>"type":"null" =&gt; {@link java.lang.Object}
      * <li>"type":"number" =&gt; <code>double</code>
      * <li>"type":"object" =&gt; Generated type (see {@link ObjectRule})
-     * {@link java.util.List}, see {@link ArrayRule}
      * <li>"type":"string" =&gt; {@link java.lang.String} (or alternative based
      * on presence of "format", see {@link FormatRule})
      * </ul>

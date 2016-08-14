@@ -173,6 +173,23 @@ public class EnumIT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void enumWithNoValidCharactersForIdentifier() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithNoValidCharactersForIdentifier.json", "com.example");
+
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNoValidCharactersForIdentifier");
+
+        assertThat(enumClass.getEnumConstants()[0].name(), is("__EMPTY__"));
+        assertThat(enumClass.getEnumConstants()[1].name(), is("__EMPTY___"));
+        assertThat(enumClass.getEnumConstants()[2].name(), is("__EMPTY____"));
+
+        assertThat(enumClass.getEnumConstants()[0].toString(), is(":"));
+        assertThat(enumClass.getEnumConstants()[1].toString(), is("\u2265"));
+        assertThat(enumClass.getEnumConstants()[2].toString(), is("<"));
+    }
+
+    @Test
     public void multipleEnumArraysWithSameName() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");

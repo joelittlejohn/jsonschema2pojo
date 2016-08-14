@@ -41,6 +41,7 @@ import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -214,11 +215,16 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     private void addEnumConstants(JsonNode node, JDefinedClass _enum, JsonNode customNames) {
+        Collection<String> existingConstantNames = new ArrayList<String>();
         for (int i = 0; i < node.size(); i++) {
             JsonNode value = node.path(i);
 
             if (!value.isNull()) {
-                JEnumConstant constant = _enum.enumConstant(getConstantName(value.asText(), customNames.path(i).asText()));
+                String constantName = getConstantName(value.asText(), customNames.path(i).asText());
+                constantName = makeUnique(constantName, existingConstantNames);
+                existingConstantNames.add(constantName);
+
+                JEnumConstant constant = _enum.enumConstant(constantName);
                 constant.arg(JExpr.lit(value.asText()));
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
@@ -234,24 +240,26 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         String fieldName = ruleFactory.getNameHelper().getFieldName(nodeName, node);
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
-        return makeUnique(normalizedName, container);
+
+        Collection<String> existingClassNames = new ArrayList<String>();
+        for (Iterator<JDefinedClass> classes = container.classes(); classes.hasNext();) {
+            existingClassNames.add(classes.next().name());
+        }
+        return makeUnique(normalizedName, existingClassNames);
     }
 
-
-    private String makeUnique(String className, JClassContainer container) {
+    private String makeUnique(String name, Collection<String> existingNames) {
         boolean found = false;
-        Iterator<JDefinedClass> classes = container.classes();
-        while (classes.hasNext()) {
-            JDefinedClass aClass = classes.next();
-            if (className.equalsIgnoreCase(aClass.name())) {
+        for (String existingName : existingNames) {
+            if (name.equalsIgnoreCase(existingName)) {
                 found = true;
                 break;
             }
         }
         if (found) {
-            className = makeUnique(className + "_", container);
+            name = makeUnique(name + "_", existingNames);
         }
-        return className;
+        return name;
     }
 
     protected String getConstantName(String nodeName, String customName) {
