@@ -1,0 +1,8 @@
+{
+	"type" : "object",
+	"extends" : {
+		"type" : "object",
+		"additionalProperties" : false
+	},
+	"additionalProperties" : true
+}
