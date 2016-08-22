@@ -364,7 +364,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
-        if (this.ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
+        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
             String annotationName = node.get("deserializationClassProperty").asText();
             JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
             jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
@@ -388,9 +388,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addHashCode(JDefinedClass jclass) {
         Map<String, JFieldVar> fields = jclass.fields();
-        if (fields.isEmpty()) {
-            return;
-        }
 
         JMethod hashCode = jclass.method(JMod.PUBLIC, int.class, "hashCode");
 
@@ -400,7 +397,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JClass hashCodeBuilderClass = jclass.owner().ref(hashCodeBuilder);
         JInvocation hashCodeBuilderInvocation = JExpr._new(hashCodeBuilderClass);
 
-        if (!jclass._extends().name().equals("Object")) {
+        if (!jclass._extends().fullName().equals(Object.class.getName())) {
             hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("hashCode"));
         }
 
@@ -510,9 +507,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addEquals(JDefinedClass jclass) {
         Map<String, JFieldVar> fields = jclass.fields();
-        if (fields.isEmpty()) {
-            return;
-        }
 
         JMethod equals = jclass.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
@@ -528,7 +522,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
         JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
 
-        if (!jclass._extends().name().equals("Object")) {
+        if (!jclass._extends().fullName().equals(Object.class.getName())) {
             equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("equals").arg(otherObject));
         }
 

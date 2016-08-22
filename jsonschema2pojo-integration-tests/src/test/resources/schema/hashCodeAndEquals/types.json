@@ -1,0 +1,20 @@
+{
+	"type" : "object",
+	"properties" : {
+		"empty" : {
+			"type" : "object"
+		},
+		"extendsJavaType" : {
+			"type" : "object",
+			"extendsJavaClass" : "org.jsonschema2pojo.integration.config.IncludeHashCodeAndEqualsIT.Parent"
+		},
+		"extendsJavaTypeWithEquals" : {
+			"type" : "object",
+			"extendsJavaClass" : "org.jsonschema2pojo.integration.config.IncludeHashCodeAndEqualsIT.ParentWithEquals"
+		},
+		"extendsFalseObject" : {
+			"type" : "object",
+			"extendsJavaClass" : "org.jsonschema2pojo.integration.config.IncludeHashCodeAndEqualsIT.Object"
+		}
+	}
+}
