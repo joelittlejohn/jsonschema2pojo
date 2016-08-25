@@ -1,5 +1,5 @@
 {
-    "javaType" : "com.example.enums.EnumAsRoot",
+    "javaType" : "com.example.enums.DoubleEnumAsRoot",
     "type" : "number",
     "enum" : [1.0, 2.5, 3],
     "javaEnumNames" : ["One", "TwoAndAHalf", "Three"]
