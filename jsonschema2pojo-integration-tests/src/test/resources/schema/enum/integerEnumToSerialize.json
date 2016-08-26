@@ -1,0 +1,10 @@
+{
+    "javaType" : "com.example.enums.IntegerEnumToSerialize",
+    "properties" : {
+    	"testEnum" : { 
+    		"type" : "integer",
+		    "enum" : [1, 2, 3],
+		    "javaEnumNames" : ["One", "Two", "Three"]
+		}
+    }
+}

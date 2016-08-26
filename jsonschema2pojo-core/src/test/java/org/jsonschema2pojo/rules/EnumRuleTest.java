@@ -45,6 +45,7 @@ public class EnumRuleTest {
     private NameHelper nameHelper = mock(NameHelper.class);
     private Annotator annotator = mock(Annotator.class);
     private RuleFactory ruleFactory = mock(RuleFactory.class);
+    private TypeRule typeRule = mock(TypeRule.class);
 
     private EnumRule rule = new EnumRule(ruleFactory);
 
@@ -52,6 +53,7 @@ public class EnumRuleTest {
     public void wireUpConfig() {
         when(ruleFactory.getNameHelper()).thenReturn(nameHelper);
         when(ruleFactory.getAnnotator()).thenReturn(annotator);
+        when(ruleFactory.getTypeRule()).thenReturn(typeRule);
     }
 
     @Test
@@ -71,6 +73,10 @@ public class EnumRuleTest {
         ObjectNode enumNode = objectMapper.createObjectNode();
         enumNode.put("type", "string");
         enumNode.put("enum", arrayNode);
+        
+        // We're always a string for the purposes of this test
+        when(typeRule.apply("status", enumNode, jpackage, schema))
+            .thenReturn(jpackage.owner()._ref(String.class));
 
         JType result1 = rule.apply("status", enumNode, jpackage, schema);
         JType result2 = rule.apply("status", enumNode, jpackage, schema);

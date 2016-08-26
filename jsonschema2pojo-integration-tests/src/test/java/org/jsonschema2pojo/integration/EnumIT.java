@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -33,6 +34,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -79,7 +82,7 @@ public class EnumIT {
     @Test
     public void enumContainsWorkingAnnotatedSerializationMethod() throws NoSuchMethodException {
 
-        Method toString = enumClass.getMethod("toString");
+        Method toString = enumClass.getMethod("value");
 
         assertThat(enumClass.getEnumConstants()[0].toString(), is("one"));
         assertThat(enumClass.getEnumConstants()[1].toString(), is("secondOne"));
@@ -128,7 +131,33 @@ public class EnumIT {
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
 
     }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void intEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example");
+
+        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumAsRoot");
+
+        assertThat(rootEnumClass.isEnum(), is(true));
+        assertThat(rootEnumClass.getDeclaredMethod("fromValue", Integer.class), is(notNullValue()));
+        assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void doubleEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example");
+
+        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.DoubleEnumAsRoot");
+
+        assertThat(rootEnumClass.isEnum(), is(true));
+        assertThat(rootEnumClass.getDeclaredMethod("fromValue", Double.class), is(notNullValue()));
+        assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
+    }
+    
     @Test
     @SuppressWarnings("unchecked")
     public void enumWithEmptyStringAsValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -226,7 +255,65 @@ public class EnumIT {
         assertThat(jsonTree.get("enum_Property").isTextual(), is(true));
         assertThat(jsonTree.get("enum_Property").asText(), is("3"));
     }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void intEnumIsDeserializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JsonParseException, JsonMappingException, IOException {
 
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
+
+        // the schema for a valid instance
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize$TestEnum");
+        
+        // read the instance into the type
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object valueWithEnumProperty = objectMapper.readValue("{\"testEnum\" : 2}", typeWithEnumProperty);
+        
+        Method getEnumMethod = typeWithEnumProperty.getDeclaredMethod("getTestEnum");
+        Method getValueMethod = enumClass.getDeclaredMethod("value");
+        
+        // call getTestEnum on the value
+        assertThat(getEnumMethod, is(notNullValue()));
+        Object enumObject = getEnumMethod.invoke(valueWithEnumProperty);
+        
+        // assert that the object returned is a) a TestEnum, and b) calling .value() on it returns 2
+        // as per the json snippet above
+        assertThat(enumObject, IsInstanceOf.instanceOf(enumClass));
+        assertThat(getValueMethod, is(notNullValue()));
+        assertThat((Integer)getValueMethod.invoke(enumObject), is(2));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void intEnumIsSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JsonParseException, JsonMappingException, IOException, InstantiationException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
+
+        // the schema for a valid instance
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize$TestEnum");
+        
+        // create an instance
+        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Method enumSetter = typeWithEnumProperty.getMethod("setTestEnum", enumClass);
+        
+        // call setTestEnum(TestEnum.ONE)
+        enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[0]);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // write our instance out to json
+        String jsonString = objectMapper.writeValueAsString(valueWithEnumProperty);
+        JsonNode jsonTree = objectMapper.readTree(jsonString);
+
+        assertThat(jsonTree.size(), is(1));
+        assertThat(jsonTree.has("testEnum"), is(true));
+        assertThat(jsonTree.get("testEnum").isIntegralNumber(), is(true));
+        assertThat(jsonTree.get("testEnum").asInt(), is(1));
+    }
+
+    
     @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {

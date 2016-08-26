@@ -1,0 +1,6 @@
+{
+    "javaType" : "com.example.enums.IntegerEnumAsRoot",
+    "type" : "integer",
+    "enum" : [1, 2, 3],
+    "javaEnumNames" : ["One", "Two", "Three"]
+}
