@@ -66,6 +66,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String dateType
   String timeType
   boolean useLongIntegers
+  boolean useBigIntegers
   boolean usePrimitives
   FileFilter fileFilter
 
@@ -77,6 +78,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     targetPackage = ''
     propertyWordDelimiters = [] as char[]
     useLongIntegers = false
+    useBigIntegers = false
     useDoubleNumbers = true
     useBigDecimals = false
     includeHashcodeAndEquals = true
@@ -149,6 +151,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetPackage = ${targetPackage}
        |propertyWordDelimiters = ${Arrays.toString(propertyWordDelimiters)}
        |useLongIntegers = ${useLongIntegers}
+       |useBigIntegers = ${useBigIntegers}
        |useDoubleNumbers = ${useDoubleNumbers}
        |useBigDecimals = ${useBigDecimals}
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}

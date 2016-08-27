@@ -16,15 +16,15 @@
 
 package org.jsonschema2pojo.integration.json;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -58,10 +58,21 @@ public class JsonTypesIT {
     }
 
     @Test
-    public void bigDecimalInExampleIsMappedToCorrectJavaType() throws Exception {
+    public void integerIsMappedToBigInteger() throws Exception {
 
-        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example",
-          config("sourceType", "json", "useBigDecimals", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigIntegers", true));
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
+
+        Object deserialisedValue = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/simpleTypes.json"), generatedType);
+
+        assertThat((BigInteger) generatedType.getMethod("getB").invoke(deserialisedValue), is(new BigInteger("123")));
+    }
+
+    @Test
+    public void numberIsMappedToBigDecimal() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigDecimals", true));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
 
@@ -69,8 +80,6 @@ public class JsonTypesIT {
 
         assertThat((BigDecimal) generatedType.getMethod("getC").invoke(deserialisedValue), is(new BigDecimal("12999999999999999999999.99")));
     }
-
-
 
     @Test(expected = ClassNotFoundException.class)
     public void simpleTypeAtRootProducesNoJavaTypes() throws ClassNotFoundException {

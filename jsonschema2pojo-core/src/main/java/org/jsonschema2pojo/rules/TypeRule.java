@@ -20,7 +20,7 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
+import java.math.BigInteger;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
@@ -85,7 +85,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
         JType type;
 
-        if (propertyTypeName.equals("object") || (node.has("properties") && node.path("properties").size() > 0)) {
+        if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
             type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
         } else if (node.has("javaType")) {
@@ -127,8 +127,8 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
     private String getTypeName(JsonNode node) {
         if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0) {
-            for (Iterator<JsonNode> typeNames = node.get("type").iterator(); typeNames.hasNext();) {
-                String typeName = typeNames.next().asText();
+            for (JsonNode jsonNode : node.get("type")) {
+                String typeName = jsonNode.asText();
                 if (!typeName.equals("null")) {
                     return typeName;
                 }
@@ -155,9 +155,11 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      */
     private JType getIntegerType(JCodeModel owner, JsonNode node, GenerationConfig config) {
 
-        if (config.isUseLongIntegers() ||
-                (node.has("minimum") && node.get("minimum").isLong()) ||
-                (node.has("maximum") && node.get("maximum").isLong())) {
+        if (config.isUseBigIntegers()) {
+            return unboxIfNecessary(owner.ref(BigInteger.class), config);
+        } else if (config.isUseLongIntegers() ||
+                node.has("minimum") && node.get("minimum").isLong() ||
+                node.has("maximum") && node.get("maximum").isLong()) {
             return unboxIfNecessary(owner.ref(Long.class), config);
         } else {
             return unboxIfNecessary(owner.ref(Integer.class), config);

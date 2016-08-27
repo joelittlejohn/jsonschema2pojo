@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +81,18 @@ public class DefaultIT {
         Method getter = classWithDefaults.getMethod("getIntegerWithDefault");
 
         assertThat((Integer) getter.invoke(instance), is(equalTo(1337)));
+
+    }
+
+    @Test
+    public void integerPropertyHasCorrectDefaultBigIntegerValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
+        Class<?> c = resultsClassLoader.loadClass("com.example.Default");
+
+        Object instance = c.newInstance();
+        Method getter = c.getMethod("getIntegerWithDefault");
+        assertThat((BigInteger) getter.invoke(instance), is(equalTo(new BigInteger("1337"))));
 
     }
 

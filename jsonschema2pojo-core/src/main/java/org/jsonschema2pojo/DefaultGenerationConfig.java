@@ -237,6 +237,17 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return new String[] {};
     }
 
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isUseBigIntegers() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isUseBigDecimals() {
         return false;
