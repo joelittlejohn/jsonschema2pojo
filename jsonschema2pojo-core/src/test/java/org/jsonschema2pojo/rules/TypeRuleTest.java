@@ -22,6 +22,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
@@ -129,7 +130,39 @@ public class TypeRuleTest {
     }
 
     @Test
-    public void applyGeneratesBigDecimal_1() {
+    public void applyGeneratesBigInteger() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+
+        when(config.isUseBigIntegers()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(BigInteger.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesBigIntegerOverridingLong() {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "integer");
+
+        // isUseBigIntegers should override isUseLongIntegers
+        when(config.isUseBigIntegers()).thenReturn(true);
+        when(config.isUseLongIntegers()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, jpackage, null);
+
+        assertThat(result.fullName(), is(BigInteger.class.getName()));
+    }
+
+    @Test
+    public void applyGeneratesBigDecimal() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -144,7 +177,7 @@ public class TypeRuleTest {
     }
 
     @Test
-    public void applyGeneratesBigDecimal_2() {
+    public void applyGeneratesBigDecimalOverridingDouble() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 

@@ -72,10 +72,13 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
 
+    @Parameter(names = { "-bi", "--big-integers" }, description = "Use BigInteger instead of int (or Integer) when the JSON Schema type 'integer' is encountered. Note that this overrides -l/--long-integers")
+    private boolean useBigIntegers = false;
+
     @Parameter(names = { "-f", "--float-numbers" }, description = "Use float (or Float) instead of double (or Double) when the JSON Schema type 'number' is encountered")
     private boolean useFloatNumbers = false;
 
-    @Parameter(names = { "-i", "--big-decimals" }, description = "Use BigDecimal instead of double (or Double) when the JSON Schema type 'number' is encountered. Note that this overrides useFloatNumbers/-f/--float-numbers")
+    @Parameter(names = { "-i", "--big-decimals" }, description = "Use BigDecimal instead of double (or Double) when the JSON Schema type 'number' is encountered. Note that this overrides -f/--float-numbers")
     private boolean useBigDecimals = false;
 
     @Parameter(names = { "-E", "--omit-hashcode-and-equals" }, description = "Omit hashCode and equals methods in the generated Java types")
@@ -380,7 +383,14 @@ public class Arguments implements GenerationConfig {
         return timeType;
     }
 
+    @Override
+    public boolean isUseBigIntegers() {
+        return useBigIntegers;
+    }
+
+    @Override
     public boolean isUseBigDecimals() {
         return useBigDecimals;
     }
+
 }

@@ -161,6 +161,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useLongIntegers = false;
 
     /**
+     * Whether to use the java type {@link java.math.BigInteger} instead of
+     * <code>int</code> (or {@link java.lang.Integer}) when representing the
+     * JSON Schema type 'integer'. Note that this configuration overrides
+     * {@link #isUseLongIntegers()}.
+     *
+     * @parameter expression="${jsonschema2pojo.useBigIntegers}"
+     *            default-value="false"
+     * @since 0.4.25
+     */
+    private boolean useBigIntegers = false;
+
+    /**
      * Whether to use the java type <code>double</code> (or <code>Double</code>)
      * instead of <code>float</code> (or <code>Float</code>) when representing
      * the JSON Schema type 'number'.
@@ -172,10 +184,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useDoubleNumbers = true;
 
     /**
-     * Whether to use the java type <code>BigDecimal</code> instead of
-     * <code>float</code> (or {@link java.lang.Float})  when representing
-     * the JSON Schema type 'number'. Note that this configuration overrides
-     * <code>useDoubleNumbers</code>.
+     * Whether to use the java type {@link java.math.BigDecimal} instead of
+     * <code>float</code> (or {@link java.lang.Float}) when representing the
+     * JSON Schema type 'number'. Note that this configuration overrides
+     * {@link #isUseDoubleNumbers()}.
      *
      * @parameter expression="${jsonschema2pojo.useBigDecimals}"
      *            default-value="false"
@@ -836,7 +848,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
+    public boolean isUseBigIntegers() {
+        return useBigIntegers;
+    }
+
+    @Override
     public boolean isUseBigDecimals() {
         return useBigDecimals;
     }
+
 }

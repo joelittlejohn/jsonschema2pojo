@@ -93,6 +93,16 @@ public interface GenerationConfig {
     boolean isUseLongIntegers();
 
     /**
+     * Gets the 'useBigIntegers' configuration option.
+     *
+     * @return Whether to use the java type {@link java.math.BigInteger} instead
+     *         of <code>int</code> (or {@link java.lang.Integer}) when
+     *         representing the JSON Schema type 'integer'. Note that this
+     *         configuration overrides {@link #isUseLongIntegers()}.
+     */
+    boolean isUseBigIntegers();
+
+    /**
      * Gets the 'useDoubleNumbers' configuration option.
      *
      * @return Whether to use the java type <code>double</code> (or
@@ -106,10 +116,10 @@ public interface GenerationConfig {
     /**
      * Gets the 'useBigDecimals' configuration option.
      *
-     * @return Whether to use the java type <code>BigDecimal</code>
-     *         instead of <code>float</code> (or {@link java.lang.Float})
-     *         when representing the JSON Schema type 'number'. Note
-     *         that this configuration overrides <code>isUseDoubleNumbers</code>.
+     * @return Whether to use the java type {@link java.math.BigDecimal} instead
+     *         of <code>float</code> (or {@link java.lang.Float}) when
+     *         representing the JSON Schema type 'number'. Note that this
+     *         configuration overrides {@link #isUseDoubleNumbers()}.
      */
     boolean isUseBigDecimals();
 

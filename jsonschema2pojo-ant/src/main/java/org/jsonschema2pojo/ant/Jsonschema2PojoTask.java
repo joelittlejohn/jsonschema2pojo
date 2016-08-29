@@ -77,6 +77,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useLongIntegers;
 
+    private boolean useBigIntegers = false;
+
     private boolean useDoubleNumbers = true;
 
     private boolean useBigDecimals = false;
@@ -284,6 +286,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'useBigIntegers' property of this class.
+     *
+     * @param useBigIntegers
+     *            Whether to use the java type {@link java.math.BigInteger}
+     *            instead of <code>int</code> (or {@link java.lang.Integer})
+     *            when representing the JSON Schema type 'integer'. Note that
+     *            this configuration overrides {@link #isUseLongIntegers()}.
+     */
+    public void setUseBigIntegers(boolean useBigIntegers) {
+        this.useBigIntegers = useBigIntegers;
+    }
+
+    /**
      * Sets the 'useDoubleNumbers' property of this class
      *
      * @param useDoubleNumbers
@@ -300,10 +315,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'useBigDecimals' property of this class
      *
      * @param useBigDecimals
-     *            Whether to use the java type <code>BigDecimal</code>
+     *            Whether to use the java type {@link java.math.BigDecimal}
      *            instead of <code>float</code> (or {@link java.lang.Float})
      *            when representing the JSON Schema type 'number'. Note that
-     *            this overrides <code>useDoubleNumbers</code>.
+     *            this configuration overrides {@link #isUseDoubleNumbers()}.
      */
     public void setUseBigDecimals(boolean useBigDecimals) {
         this.useBigDecimals = useBigDecimals;
@@ -857,7 +872,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isUseBigIntegers() {
+        return useBigIntegers;
+    }
+
+    @Override
     public boolean isUseBigDecimals() {
         return useBigDecimals;
     }
+
 }
