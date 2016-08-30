@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.25
+* Supporting other primitives as backing types for enums ([#612](https://github.com/joelittlejohn/jsonschema2pojo/pull/612))
+* Generate hashCode and equals even without declared fields ([#611](https://github.com/joelittlejohn/jsonschema2pojo/pull/611))
+* Use unique enum constant names ([#609](https://github.com/joelittlejohn/jsonschema2pojo/pull/609))
+
 ## 0.4.24
 * Support "required" keyword draft04 array-style when generating constuctors ([#599](https://github.com/joelittlejohn/jsonschema2pojo/pull/599))
 * Add feature to allow comments in schema files ([#589](https://github.com/joelittlejohn/jsonschema2pojo/issues/589))
