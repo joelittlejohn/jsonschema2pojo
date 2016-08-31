@@ -20,7 +20,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.jsonschema2pojo.util.TypeUtil.*;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,11 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
-
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
@@ -83,11 +79,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * When this rule is applied for schemas of type object, the properties of
      * the schema are used to generate a new Java class and determine its
      * characteristics. See other implementers of {@link Rule} for details.
-     * <p>
-     * A new Java type will be created when this rule is applied, it is
-     * annotated as {@link Generated}, it is given <code>equals</code>,
-     * <code>hashCode</code> and <code>toString</code> methods and implements
-     * {@link Serializable}.
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
@@ -108,7 +99,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
-        addGeneratedAnnotation(jclass);
 
         if (node.has("deserializationClassProperty")) {
             addJsonTypeInfoAnnotation(jclass, node);
@@ -356,11 +346,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
             return resolveSchemaRefsRecursive(schema);
         }
         return schema;
-    }
-
-    private void addGeneratedAnnotation(JDefinedClass jclass) {
-        JAnnotationUse generated = jclass.annotate(Generated.class);
-        generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
     private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {

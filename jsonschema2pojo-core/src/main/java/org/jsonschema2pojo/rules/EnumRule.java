@@ -16,10 +16,25 @@
 
 package org.jsonschema2pojo.rules;
 
+import static java.util.Arrays.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -36,31 +51,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Generated;
-
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.containsOnly;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
-import static org.apache.commons.lang3.StringUtils.upperCase;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the "enum" schema rule.
@@ -119,7 +109,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         if (node.has("javaInterfaces")) {
             addInterfaces(_enum, node.get("javaInterfaces"));
         }
-        addGeneratedAnnotation(_enum);
         
         // copy our node; remove the javaType as it will throw off the TypeRule for our case
         ObjectNode typeNode = (ObjectNode)node.deepCopy();
@@ -285,11 +274,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
         }
-    }
-
-    private void addGeneratedAnnotation(JDefinedClass jclass) {
-        JAnnotationUse generated = jclass.annotate(Generated.class);
-        generated.param("value", SchemaMapper.class.getPackage().getName());
     }
 
     private String getEnumName(String nodeName, JsonNode node, JClassContainer container) {

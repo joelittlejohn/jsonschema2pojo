@@ -16,6 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -23,14 +31,6 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JType;
-
-import org.jsonschema2pojo.Schema;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Applies the "required" JSON schema rule.
@@ -86,8 +86,8 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private void updateGetterSetterJavaDoc(JDefinedClass jclass, List<String> requiredFieldMethods) {
-        for (Iterator methods = jclass.methods().iterator(); methods.hasNext(); ) {
-            JMethod method = (JMethod) methods.next();
+        for (Iterator<JMethod> methods = jclass.methods().iterator(); methods.hasNext();) {
+            JMethod method = methods.next();
             if (requiredFieldMethods.contains(method.name())) {
                 addJavaDoc(method);
             }
