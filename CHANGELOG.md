@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.26
+* Remove javax.annotation.Generated as it doesn't ship with Android ([#577](https://github.com/joelittlejohn/jsonschema2pojo/issues/577))
+
 ## 0.4.25
 * Supporting other primitives as backing types for enums ([#612](https://github.com/joelittlejohn/jsonschema2pojo/pull/612))
 * Generate hashCode and equals even without declared fields ([#611](https://github.com/joelittlejohn/jsonschema2pojo/pull/611))
