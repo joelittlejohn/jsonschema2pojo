@@ -134,8 +134,16 @@ public class JsonSchemaExtension implements GenerationConfig {
     customAnnotator = Class.forName(clazz, true, this.class.classLoader)
   }
 
+  public void setCustomAnnotator(Class clazz) {
+    customAnnotator = clazz
+  }
+
   public void setCustomRuleFactory(String clazz) {
     customRuleFactory = Class.forName(clazz, true, this.class.classLoader)
+  }
+
+  public void setCustomRuleFactory(Class clazz) {
+    customRuleFactory = clazz
   }
 
   public void setSourceType(String s) {
