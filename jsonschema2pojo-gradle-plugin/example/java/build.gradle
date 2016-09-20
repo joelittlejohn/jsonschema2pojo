@@ -1,3 +1,7 @@
+import org.jsonschema2pojo.SourceType
+import org.jsonschema2pojo.gradle.GenerateJsonSchemaJavaTask
+import org.jsonschema2pojo.gradle.JsonSchemaExtension
+
 apply plugin: 'java'
 apply plugin: 'jsonschema2pojo'
 
@@ -32,4 +36,13 @@ jsonSchema2Pojo {
   targetPackage = 'example'
   includeJsr303Annotations = true
   propertyWordDelimiters = ['_'] as char[]
+}
+
+task generateJsonSchema2PojoTwo(type: GenerateJsonSchemaJavaTask) {
+  configuration {
+    source = files("${project.sourceSets.main.output.resourcesDir}/json2")
+    targetPackage = 'example.json2'
+    propertyWordDelimiters = ['_', ' ', '-'] as char[]
+    sourceType = SourceType.JSON
+  }
 }
