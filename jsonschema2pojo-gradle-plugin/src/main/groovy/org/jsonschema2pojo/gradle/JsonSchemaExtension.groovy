@@ -76,7 +76,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     usePrimitives = false
     sourceFiles = []
     targetPackage = ''
-    propertyWordDelimiters = [] as char[]
+    propertyWordDelimiters = ['-', ' ', '_'] as char[]
     useLongIntegers = false
     useBigIntegers = false
     useDoubleNumbers = true
