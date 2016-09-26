@@ -63,3 +63,4 @@
 * Jens Teglhus Møller
 * Jonathan Landis
 * Jonathan Ogilvie
+* Sheridan C Rawlins

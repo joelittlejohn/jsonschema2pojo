@@ -1,9 +1,15 @@
 # Changelog
 
+## 0.4.27
+* Add ["-", " ", "_"] as default propertyWordDelimiters for Gradle plugin ([#625](https://github.com/joelittlejohn/jsonschema2pojo/pull/625))
+* Allow setting custom annotator and custom rule factory fields directly in Gradle ([#617](https://github.com/joelittlejohn/jsonschema2pojo/pull/617))
+* Deep-merge array items in example JSONs before generating schemas ([#423](https://github.com/joelittlejohn/jsonschema2pojo/issues/423))
+
 ## 0.4.26
 * Remove javax.annotation.Generated as it doesn't ship with Android ([#577](https://github.com/joelittlejohn/jsonschema2pojo/issues/577))
 
 ## 0.4.25
+* Add option to use BigInteger for JSON integer type ([#614](https://github.com/joelittlejohn/jsonschema2pojo/pull/614))
 * Supporting other primitives as backing types for enums ([#612](https://github.com/joelittlejohn/jsonschema2pojo/pull/612))
 * Generate hashCode and equals even without declared fields ([#611](https://github.com/joelittlejohn/jsonschema2pojo/pull/611))
 * Use unique enum constant names ([#609](https://github.com/joelittlejohn/jsonschema2pojo/pull/609))
