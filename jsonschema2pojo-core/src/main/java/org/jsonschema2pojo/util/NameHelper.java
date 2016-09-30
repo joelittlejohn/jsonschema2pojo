@@ -18,21 +18,24 @@ package org.jsonschema2pojo.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
-
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
+import java.util.Stack;
 
 import static java.lang.Character.isDigit;
 import static javax.lang.model.SourceVersion.isKeyword;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.StringUtils.remove;
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class NameHelper {
 
     public static final String ILLEGAL_CHARACTER_REGEX = "[^0-9a-zA-Z_$]";
 
     private final GenerationConfig generationConfig;
+
+    private final Stack<String> nodeContext = new Stack<String>();
 
     public NameHelper(GenerationConfig generationConfig) {
         this.generationConfig = generationConfig;
@@ -153,5 +156,47 @@ public class NameHelper {
         }
 
         return getterName;
+    }
+
+    /**
+     * Generates a class name prefix based on the current nodeContext
+     *
+     * @param prefix Any already defined class name prefix
+     * @param delimiter A delimiter separating the contextual parts of the class name prefix
+     *
+     * @return The class name prefix
+     */
+    public String getContextualClassPrefix(String prefix, String delimiter) {
+        if (nodeContext.size() > 0) {
+            prefix += (prefix.length() > 0 ? delimiter : "") + join(nodeContext, delimiter) + delimiter;
+        }
+        return prefix;
+    }
+
+    /**
+     * Generates a sub-package name based on the current nodeContext
+     *
+     * @return The sub-package name
+     */
+    public String getContextualSubPackage() {
+        return nodeContext.size() > 0 ? nodeContext.get(nodeContext.size() - 1).toLowerCase() : "";
+    }
+
+    /**
+     * Pushes a node to the nodeContext.
+     *
+     * @param nodeName The name of the node
+     */
+    public void pushToNodeContext(String nodeName) {
+        nodeContext.push(capitalize(capitalizeTrailingWords(nodeName)));
+    }
+
+    /**
+     * Gets and removes the lastly pushed node from the nodeContext.
+     *
+     * @return The name of the removed node
+     */
+    public String popFromNodeContext() {
+        return nodeContext.pop();
     }
 }

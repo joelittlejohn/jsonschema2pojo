@@ -96,6 +96,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetPackage = "";
 
     /**
+     * Whether to use contextual sub-packages or not.
+     *
+     * @parameter expression="${jsonschema2pojo.useContextualSubPackages}"
+     * @since 0.4.27
+     */
+    private boolean useContextualSubPackages = false;
+
+    /**
      * Whether to generate builder-style methods of the form
      * <code>withXxx(value)</code> (that return <code>this</code>), alongside
      * the standard, void-return setters.
@@ -466,6 +474,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String classNameSuffix = "";
 
     /**
+     * Whether to use contextual class names or not.
+     *
+     * @parameter expression="${jsonschema2pojo.useContextualClassNames}"
+     * @since 0.4.27
+     */
+    private boolean useContextualClassNames = false;
+
+    /**
+     * Defines the delimiter for the contextual part of class names.
+     *
+     * @parameter expression="${jsonschema2pojo.contextualClassNameDelimiter}"
+     * @since 0.4.27
+     */
+    private String contextualClassNameDelimiter = "";
+
+    /**
      * The file extenations that should be considered as file name extensions,
      * and therefore ignored, when creating Java class names.
      *
@@ -665,6 +689,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
+    public boolean isUseContextualSubPackages() {
+        return useContextualSubPackages;
+    }
+
+    @Override
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.toCharArray();
     }
@@ -808,6 +837,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public boolean isUseContextualClassNames() {
+        return useContextualClassNames;
+    }
+
+    @Override
+    public String getContextualClassNameDelimiter() {
+        return contextualClassNameDelimiter;
     }
 
     @Override

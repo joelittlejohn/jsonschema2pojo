@@ -71,6 +71,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String targetPackage;
 
+    private boolean useContextualSubPackages = false;
+
     private boolean skip;
 
     private char[] propertyWordDelimiters = new char[] { '-', ' ', '_' };
@@ -122,6 +124,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String classNamePrefix = "";
 
     private String classNameSuffix = "";
+
+    private boolean useContextualClassNames = false;
+
+    private String contextualClassNameDelimiter = "";
 
     private String[] fileExtensions = new String[] {};
 
@@ -695,6 +701,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isUseContextualSubPackages() {
+        return useContextualSubPackages;
+    }
+
+    @Override
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.clone();
     }
@@ -839,6 +850,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public boolean isUseContextualClassNames() {
+        return useContextualClassNames;
+    }
+
+    @Override
+    public String getContextualClassNameDelimiter() {
+        return contextualClassNameDelimiter;
     }
 
     @Override
