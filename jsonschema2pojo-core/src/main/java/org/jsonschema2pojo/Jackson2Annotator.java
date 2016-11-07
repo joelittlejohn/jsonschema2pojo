@@ -23,6 +23,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -124,4 +125,18 @@ public class Jackson2Annotator extends AbstractAnnotator {
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
         field.annotate(JsonIgnore.class);
     }
+
+	@Override
+	public void jsonFormat(JFieldVar field, JDefinedClass clazz,
+			String propertyName, JsonNode node) {
+		String customDateTimePattern = node.has("customDateTimePattern") == true ? node.get("customDateTimePattern").asText() : null;
+		String timezone = node.has("timezone") == true ? node.get("timezone").asText() : null;
+		if (customDateTimePattern != null) {
+			if (timezone != null){
+				field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", customDateTimePattern).param("timezone", timezone);
+			} else {
+				field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", customDateTimePattern);
+			}
+		}
+	}
 }

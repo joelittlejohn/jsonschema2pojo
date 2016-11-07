@@ -130,4 +130,10 @@ public class CompositeAnnotator implements Annotator {
         }
     }
 
+	@Override
+	public void jsonFormat(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
+		for (Annotator annotator : annotators) {
+            annotator.jsonFormat(field, clazz, propertyName, propertyNode);
+        }
+	}
 }

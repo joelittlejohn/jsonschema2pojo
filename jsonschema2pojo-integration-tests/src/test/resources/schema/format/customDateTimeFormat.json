@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "stringAsDateTime" : {
+            "type" : "string",
+            "format" : "date-time",
+            "customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            "timezone" : "PST"
+        },
+        "stringAsDateTime2" : {
+            "javaType" : "org.joda.time.DateTime",
+            "format" : "date-time",
+            "customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            "timezone" : "PST"
+        }
+    }
+}

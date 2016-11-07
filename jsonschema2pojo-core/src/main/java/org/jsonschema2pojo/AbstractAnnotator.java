@@ -95,4 +95,8 @@ public abstract class AbstractAnnotator implements Annotator {
         return generationConfig;
     }
 
+	@Override
+	public void jsonFormat(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node) {
+	}
+
 }
