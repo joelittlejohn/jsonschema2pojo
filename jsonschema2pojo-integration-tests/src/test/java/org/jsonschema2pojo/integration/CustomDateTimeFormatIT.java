@@ -1,21 +1,20 @@
 package org.jsonschema2pojo.integration;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -27,9 +26,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 @RunWith(Parameterized.class)
 public class CustomDateTimeFormatIT {
@@ -40,22 +38,20 @@ public class CustomDateTimeFormatIT {
     @Parameters(name="{0}")
     public static List<Object[]> data() {
         return asList(new Object[][] {
-                /* { propertyName, expectedType, expectedAnnotation, jsonValue, timezone, javaValue } */
-                { "stringAsDateTime", Date.class, JsonFormat.class, "2016-11-06", "PST", new Date(new GregorianCalendar(2016, 10, 06, 5, 0, 0).getTimeInMillis()) },
-                { "stringAsDateTime2", DateTime.class, JsonFormat.class, "2016-11-06", "PST", new DateTime(2016, 10, 06, 5, 0, 0) }});
+                /* { propertyName, expectedType, jsonValue, timezone, javaValue } */
+                { "stringAsDateTime", Date.class, "2016-11-06", "PST", new Date(new GregorianCalendar(2016, 10, 06, 5, 0, 0).getTimeInMillis()) },
+                { "stringAsDateTime2", DateTime.class, "2016-11-06", "PST", new DateTime(2016, 10, 06, 5, 0, 0) }});
     }
 
     private String propertyName;
     private Class<?> expectedType;
-    private Class<?> expectedAnnotation;
     private Object jsonValue;
     private String timezone;
     private Object javaValue;
 
-    public CustomDateTimeFormatIT(String propertyName, Class<?> expectedType, Class<?> expectedAnnotation, Object jsonValue, String timezone, Object javaValue) {
+    public CustomDateTimeFormatIT(String propertyName, Class<?> expectedType, Object jsonValue, String timezone, Object javaValue) {
         this.propertyName = propertyName;
         this.expectedType = expectedType;
-        this.expectedAnnotation = expectedAnnotation;
         this.jsonValue = jsonValue;
         this.timezone = timezone;
         this.javaValue = javaValue;
@@ -80,11 +76,13 @@ public class CustomDateTimeFormatIT {
     }
     
     @Test
-    public void formatValueProducesExpectedAnnotation() throws NoSuchFieldException, SecurityException {
+    public void formatValueProducesExpectedAnnotation() throws NoSuchFieldException, SecurityException, InstantiationException, IllegalAccessException {
 
     	Field field = classWithFormattedProperties.getDeclaredField(propertyName);
     	
-    	assertEquals(expectedAnnotation, field.getDeclaredAnnotation(JsonFormat.class).annotationType());
+    	JsonFormat expected = field.getAnnotation(JsonFormat.class);
+    	
+    	assertThat(expected, notNullValue());
     }
 
     /*
