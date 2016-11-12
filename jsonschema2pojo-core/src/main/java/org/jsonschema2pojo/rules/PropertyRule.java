@@ -130,6 +130,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         if (node.has("required")) {
             ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
+        } else {
+            ruleFactory.getNotRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
         }
     }
 

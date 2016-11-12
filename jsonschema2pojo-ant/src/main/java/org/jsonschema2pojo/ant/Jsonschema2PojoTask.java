@@ -95,6 +95,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr303Annotations = false;
 
+    private boolean includeJsr305Annotations = false;
+
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
@@ -458,6 +460,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'includeJsr303Annotations' property of this class
+     *
+     * @param includeJsr305Annotations
+     *            Whether to include
+     *            <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a>
+     *            annotations (for schema rules like Nullable, NonNull, etc) in
+     *            generated Java types.
+     */
+    public void setIncludeJsr305Annotations(boolean includeJsr305Annotations) {
+        this.includeJsr305Annotations = includeJsr305Annotations;
+    }
+
+    /**
      * Sets the 'sourceType' property of this class
      *
      * @param sourceType
@@ -731,6 +746,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeJsr305Annotations() {
+        return includeJsr305Annotations;
     }
 
     @Override

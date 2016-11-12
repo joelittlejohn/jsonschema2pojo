@@ -99,6 +99,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
 
+    @Parameter(names = { "-305", "--jsr305-annotations" }, description = "Add JSR-305 annotations to generated Java types.")
+    private boolean includeJsr305Annotations = false;
+
     @Parameter(names = { "-T", "--source-type" })
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
@@ -262,6 +265,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeJsr305Annotations() {
+        return includeJsr305Annotations;
     }
 
     @Override

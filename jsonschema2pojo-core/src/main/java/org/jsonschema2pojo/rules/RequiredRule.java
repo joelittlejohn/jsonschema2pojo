@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo.rules;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -71,6 +73,16 @@ public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
             if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
                     && generatableType instanceof JFieldVar) {
                 ((JFieldVar) generatableType).annotate(NotNull.class);
+            }
+
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
+                    && generatableType instanceof JFieldVar) {
+                ((JFieldVar) generatableType).annotate(Nonnull.class);
+            }
+        } else {
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
+                    && generatableType instanceof JFieldVar) {
+                ((JFieldVar) generatableType).annotate(Nullable.class);
             }
         }
 

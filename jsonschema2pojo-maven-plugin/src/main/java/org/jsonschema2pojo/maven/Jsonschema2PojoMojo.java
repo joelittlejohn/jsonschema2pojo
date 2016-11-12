@@ -287,6 +287,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeJsr303Annotations = false;
 
     /**
+     * Whether to include
+     * <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a> annotations
+     * (for schema rules like Nullable, NonNull, etc) in generated Java types.
+     * @since 0.4.8
+     */
+    private boolean includeJsr305Annotations = false;
+
+    /**
      * The type of input documents that will be read
      * <p>
      * Supported values:
@@ -717,6 +725,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeJsr305Annotations() {
+        return includeJsr305Annotations;
     }
 
     @Override
