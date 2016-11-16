@@ -9,7 +9,11 @@ describes the rules and their effect on generated Java types.
 This plugin is hosted on the Maven Central Repository. All actions are logged at the `info` level.
 
 ```groovy
-apply plugin: 'java' // Not needed in Android Projects
+// Use the java plugin 
+apply plugin: 'java' 
+// In Android Projects use 
+apply plugin: 'com.android.application'
+
 apply plugin: 'jsonschema2pojo'
 
 buildscript {
