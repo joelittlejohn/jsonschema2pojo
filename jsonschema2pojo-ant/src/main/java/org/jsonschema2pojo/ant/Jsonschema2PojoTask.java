@@ -95,6 +95,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr303Annotations = false;
 
+    private boolean includeAndroidSupportAnnotations = false;
+
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
@@ -458,6 +460,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'includeAndroidSupportAnnotations' property of this class
+     *
+     * @param includeAndroidSupportAnnotations
+     *            Whether to include android support annotations
+     *            (for schema rules like NonNull, Size, etc) in
+     *            generated Java types.
+     */
+    public void setIncludeAndroidSupportAnnotations(boolean includeAndroidSupportAnnotations) {
+        this.includeAndroidSupportAnnotations = includeAndroidSupportAnnotations;
+    }
+
+    /**
      * Sets the 'sourceType' property of this class
      *
      * @param sourceType
@@ -731,6 +745,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
+    }
+
+    @Override
+    public boolean isIncludeAndroidSupportAnnotations() {
+        return includeAndroidSupportAnnotations;
     }
 
     @Override

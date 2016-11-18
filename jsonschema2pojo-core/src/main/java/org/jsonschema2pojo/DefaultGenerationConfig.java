@@ -138,6 +138,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeAndroidSupportAnnotations() {
+        return false;
+    }
+
+    /**
      * @return {@link SourceType#JSONSCHEMA}
      */
     @Override

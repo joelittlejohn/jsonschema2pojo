@@ -48,6 +48,20 @@ public class MinItemsMaxItemsRule implements Rule<JFieldVar, JFieldVar> {
             }
         }
 
+        if (ruleFactory.getGenerationConfig().isIncludeAndroidSupportAnnotations()
+                && (node.has("minItems") || node.has("maxItems"))) {
+
+            JAnnotationUse annotation = field.annotate(android.support.annotation.Size.class);
+
+            if (node.has("minItems")) {
+                annotation.param("min", node.get("minItems").asInt());
+            }
+
+            if (node.has("maxItems")) {
+                annotation.param("max", node.get("maxItems").asInt());
+            }
+        }
+
         return field;
     }
 

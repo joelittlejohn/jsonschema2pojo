@@ -150,6 +150,22 @@
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
+
+        <tr>
+            <td valign="top">includeAndroidSupportAnnotations</td>
+            <td valign="top">Whether to include android support annotations (for schema rules like NonNull, Size, etc) in generated Java types.
+                <p>
+                    Schema rules and the annotation they produce:
+                <ul>
+                    <li>minItems,maxItems = <code>@Size</code>
+                    <li>minLength,maxLength = <code>@Size</code>
+                    <li>required = <code>@NonNull</code>
+                </ul>
+            </td>
+            <td align="center" valign="top">No (default <code>false</code>)</td>
+        </tr>
+        <tr>
+
         <td valign="top">includeToString</td>
         <td valign="top">Whether to use include a <code>toString</code> method in generated Java types.</td>
         <td align="center" valign="top">No (default <code>true</code>)</td>
