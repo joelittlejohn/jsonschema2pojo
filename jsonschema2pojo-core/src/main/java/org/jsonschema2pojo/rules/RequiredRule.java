@@ -19,6 +19,7 @@ package org.jsonschema2pojo.rules;
 import javax.validation.constraints.NotNull;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
@@ -76,6 +77,11 @@ public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
             if(ruleFactory.getGenerationConfig().isIncludeAndroidSupportAnnotations()
                     && generatableType instanceof JFieldVar){
                 ((JFieldVar) generatableType).annotate(NonNull.class);
+            }
+        }else{
+            if(ruleFactory.getGenerationConfig().isIncludeAndroidSupportAnnotations()
+                    && generatableType instanceof JFieldVar){
+                ((JFieldVar) generatableType).annotate(Nullable.class);
             }
         }
 
