@@ -47,6 +47,19 @@ public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
                 annotation.param("max", node.get("maxLength").asInt());
             }
         }
+        if (ruleFactory.getGenerationConfig().isIncludeAndroidSupportAnnotations()
+                && (node.has("minLength") || node.has("maxLength"))) {
+
+            JAnnotationUse annotation = field.annotate(android.support.annotation.Size.class);
+
+            if (node.has("minLength")) {
+                annotation.param("min", node.get("minLength").asInt());
+            }
+
+            if (node.has("maxLength")) {
+                annotation.param("max", node.get("maxLength").asInt());
+            }
+        }
 
         return field;
     }

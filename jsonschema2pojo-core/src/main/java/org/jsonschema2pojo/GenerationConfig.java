@@ -190,6 +190,17 @@ public interface GenerationConfig {
      */
     boolean isIncludeJsr303Annotations();
 
+
+    /**
+     * Gets the 'includeAndroidSupportAnnotations' configuration option.
+     *
+     * @return Whether to include android support
+     *         annotations (for schema rules like NonNull, Size, etc) in
+     *         generated Java types.
+     */
+
+    boolean isIncludeAndroidSupportAnnotations();
+
     /**
      * Gets the 'sourceType' configuration option.
      *
