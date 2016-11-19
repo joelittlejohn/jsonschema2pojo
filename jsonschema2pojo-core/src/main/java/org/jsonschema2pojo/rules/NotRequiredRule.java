@@ -23,6 +23,7 @@ import com.sun.codemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 
 /**
  * Applies the "required" schema rule.
@@ -63,6 +64,19 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocComment> {
     @Override
     public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
+
+        // Since NotRequiredRule is executed for all fields that do not have "required" present,
+        // we need to recognize whether the field is part of the RequiredArrayRule.
+        JsonNode requiredArray = schema.getContent().get("required");
+
+        if (requiredArray != null) {
+            for (Iterator<JsonNode> iterator = requiredArray.elements(); iterator.hasNext(); ) {
+                String requiredArrayItem = iterator.next().asText();
+                if (nodeName.equals(requiredArrayItem)) {
+                    return javadoc;
+                }
+            }
+        }
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
                 && generatableType instanceof JFieldVar) {

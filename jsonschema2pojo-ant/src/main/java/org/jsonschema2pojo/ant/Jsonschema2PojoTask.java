@@ -460,7 +460,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'includeJsr303Annotations' property of this class
+     * Sets the 'includeJsr305Annotations' property of this class
      *
      * @param includeJsr305Annotations
      *            Whether to include

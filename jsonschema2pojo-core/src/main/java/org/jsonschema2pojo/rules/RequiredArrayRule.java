@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 import org.jsonschema2pojo.Schema;
@@ -76,6 +77,10 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
                 addNotNullAnnotation(field);
             }
 
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()) {
+                addNonnullAnnotation(field);
+            }
+
             requiredFieldMethods.add(getGetterName(fieldName, field.type(), node));
             requiredFieldMethods.add(getSetterName(fieldName, node));
         }
@@ -98,6 +103,9 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
         field.annotate(NotNull.class);
     }
 
+    private void addNonnullAnnotation(JFieldVar field) {
+        field.annotate(Nonnull.class);
+    }
 
     private void addJavaDoc(JDocCommentable docCommentable) {
         JDocComment javadoc = docCommentable.javadoc();
