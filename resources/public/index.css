@@ -35,8 +35,9 @@ div.span2 {
 #preview-modal {
     width: 60%;
     height: 80%;
-    margin-left: -30%;
-    margin-top: -25%;
+    margin: 0;
+    top: 10%;
+    left: 20%;
 }
 
 #preview {
