@@ -64,9 +64,13 @@
     (isIncludeConstructors []
       (boolean (Boolean/valueOf (params "includeconstructors"))))
     (isIncludeDynamicAccessors []
-      false)
+      (boolean (Boolean/valueOf (params "includedynamicaccessors"))))
     (isParcelable []
       (boolean (Boolean/valueOf (params "parcelable"))))
+    (isSerializable []
+      (boolean (Boolean/valueOf (params "serializable"))))
+    (isInitializeCollections []
+      (boolean (Boolean/valueOf (params "initializecollections"))))
     (getPropertyWordDelimiters []
       (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []
