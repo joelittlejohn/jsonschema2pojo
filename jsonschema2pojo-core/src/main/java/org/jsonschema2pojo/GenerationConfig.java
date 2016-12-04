@@ -191,6 +191,16 @@ public interface GenerationConfig {
     boolean isIncludeJsr303Annotations();
 
     /**
+     * Gets the 'includeJsr305Annotations' configuration option.
+     *
+     * @return Whether to include
+     *         <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a>
+     *         annotations (for schema rules like Nullable, NonNull, etc) in
+     *         generated Java types.
+     */
+    boolean isIncludeJsr305Annotations();
+
+    /**
      * Gets the 'sourceType' configuration option.
      *
      * @return The type of input documents that will be read

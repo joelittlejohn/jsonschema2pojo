@@ -150,6 +150,18 @@
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
+        <td valign="top">includeJsr305Annotations</td>
+        <td valign="top">Whether to include <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a> annotations (for defect detection) in generated Java types.
+          <p>
+          Schema rules and the annotation they produce:
+          <ul>
+            <li>required = <code>@NonNull</code>
+          </ul>
+          A Java field which is required will have the <code>@NonNull</code> added, and <code>@Nullable</code> on all other fields.
+        </td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+      </tr>
+      <tr>
         <td valign="top">includeToString</td>
         <td valign="top">Whether to use include a <code>toString</code> method in generated Java types.</td>
         <td align="center" valign="top">No (default <code>true</code>)</td>
