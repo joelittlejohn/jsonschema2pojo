@@ -18,11 +18,13 @@ package org.jsonschema2pojo.integration.config;
 
 import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -283,6 +285,27 @@ public class IncludeJsr303AnnotationsIT {
         validArrayInstance = createInstanceWithPropertyValue(validArrayType, "refarray", objectArrayList);
 
         assertNumberOfConstraintViolationsOn(validArrayInstance, is(1));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void jsr303AnnotionsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example", config("includeJsr303Annotations", true));
+
+        Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
+        Object parent = parentType.newInstance();
+
+        Class subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
+        Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9.0D);
+        Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11.0D);
+
+        Method setter = parentType.getMethod("setAdditionalProperty", String.class, subPropertyType);
+
+        setter.invoke(parent, "maximum", validSubPropertyInstance);
+        assertNumberOfConstraintViolationsOn(parent, is(0));
+
+        setter.invoke(parent, "maximum", invalidSubPropertyInstance);
+        assertNumberOfConstraintViolationsOn(parent, is(1));
     }
 
     private static void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {

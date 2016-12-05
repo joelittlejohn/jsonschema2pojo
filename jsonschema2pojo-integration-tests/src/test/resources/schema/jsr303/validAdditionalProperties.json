@@ -1,0 +1,12 @@
+{
+    "type" : "object",
+    "additionalProperties" : {
+        "properties" : {
+            "maximum" : {
+                "type" : "number",
+                "maximum" : 9.9
+            }
+        },
+        "additionalProperties" : false
+    }
+}
