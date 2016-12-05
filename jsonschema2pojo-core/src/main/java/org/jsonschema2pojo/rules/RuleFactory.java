@@ -16,6 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
+
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
@@ -24,14 +32,6 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -65,17 +65,17 @@ public class RuleFactory {
 
     /**
      * Create a rule factory with the default generation config options.
-     * 
+     *
      * @see DefaultGenerationConfig
      */
     public RuleFactory() {
-        this(new DefaultGenerationConfig(), new Jackson2Annotator(), new SchemaStore());
+        this(new DefaultGenerationConfig(), new Jackson2Annotator(new DefaultGenerationConfig()), new SchemaStore());
     }
 
     /**
      * Provides a rule instance that should be applied when an "array"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "array" declaration.
      */
     public Rule<JPackage, JClass> getArrayRule() {
@@ -85,7 +85,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "description"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "description" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getDescriptionRule() {
@@ -95,7 +95,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when an "enum"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "enum" declaration.
      */
     public Rule<JClassContainer, JType> getEnumRule() {
@@ -105,7 +105,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "format"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "format" declaration.
      */
     public Rule<JType, JType> getFormatRule() {
@@ -115,7 +115,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when an "object"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
@@ -133,7 +133,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "properties"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "properties" declaration.
      */
     public Rule<JDefinedClass, JDefinedClass> getPropertiesRule() {
@@ -144,7 +144,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration (child of the "properties" declaration) is found in the
      * schema.
-     * 
+     *
      * @return a schema rule that can handle a property declaration.
      */
     public Rule<JDefinedClass, JDefinedClass> getPropertyRule() {
@@ -154,7 +154,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "required"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "required" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getRequiredRule() {
@@ -175,7 +175,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied to a node to find its
      * equivalent Java type. Typically invoked for properties, arrays, etc for
      * which a Java type must be found/generated.
-     * 
+     *
      * @return a schema rule that can find/generate the relevant Java type for a
      *         given schema node.
      */
@@ -186,7 +186,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when an
      * "additionalProperties" declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "additionalProperties"
      *         declaration.
      */
@@ -197,7 +197,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "title"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "title" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getTitleRule() {
@@ -207,7 +207,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a schema declaration
      * is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle a schema declaration.
      */
     public Rule<JClassContainer, JType> getSchemaRule() {
@@ -218,7 +218,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema to assign any appropriate default
      * value to that property.
-     * 
+     *
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getDefaultRule() {
@@ -229,7 +229,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any minimum/maximum
      * validation on that property
-     * 
+     *
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinimumMaximumRule() {
@@ -240,7 +240,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any size validation
      * (minItems/maxItems) on that property
-     * 
+     *
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
@@ -251,7 +251,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any size validation
      * (minLength/maxLength) on that property
-     * 
+     *
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinLengthMaxLengthRule() {
@@ -261,7 +261,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "pattern"
      * declaration is found in the schema for a property.
-     * 
+     *
      * @return a schema rule that can handle the "pattern" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getPatternRule() {
@@ -272,7 +272,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema which itself contains properties, to
      * assign validation of the properties within that property
-     * 
+     *
      * @return a schema rule that can handle the "default" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getValidRule() {
@@ -282,7 +282,7 @@ public class RuleFactory {
     /**
      * Gets the configuration options that will influence the java code
      * generated by rules created by this factory.
-     * 
+     *
      * @return A configuration object containing all configuration property
      *         values.
      */
@@ -293,7 +293,7 @@ public class RuleFactory {
     /**
      * The generation config options for type generation. These config options
      * will influence the java code generated by rules created by this factory.
-     * 
+     *
      * @param generationConfig
      *            Generation config
      */
@@ -306,7 +306,7 @@ public class RuleFactory {
      * Gets the annotator that will in apply annotations to the generated code
      * to allow correct serialization and deserialization, according to the
      * chosen annotation style.
-     * 
+     *
      * @return an annotator that can annotate various code constructs for JSON
      *         support
      */
@@ -317,7 +317,7 @@ public class RuleFactory {
     /**
      * The annotator used to mark up Java types with any annotations that are
      * required to build JSON compatible types
-     * 
+     *
      * @param annotator
      *            the annotator
      */
@@ -327,7 +327,7 @@ public class RuleFactory {
 
     /**
      * Gets the store that finds and saves JSON schemas
-     * 
+     *
      * @return a store that finds and caches schema objects during type
      *         generation.
      */
@@ -337,7 +337,7 @@ public class RuleFactory {
 
     /**
      * The object used by this factory to get and store schemas
-     * 
+     *
      * @param schemaStore
      *            schema store
      */
@@ -348,7 +348,7 @@ public class RuleFactory {
     /**
      * Gets the name helper that is used to generate normalized Class and field
      * names.
-     * 
+     *
      * @return a name helper instance that can be used to normalize Class and
      *         field names.
      */
@@ -359,7 +359,7 @@ public class RuleFactory {
     /**
      * Provides a rule instance that should be applied when a "media"
      * declaration is found in the schema.
-     * 
+     *
      * @return a schema rule that can handle the "media" declaration.
      */
     public Rule<JType, JType> getMediaRule() {

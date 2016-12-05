@@ -563,7 +563,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         }
 
         try {
-            new AnnotatorFactory().getAnnotator(getCustomAnnotator());
+            new AnnotatorFactory(this).getAnnotator(getCustomAnnotator());
         } catch (IllegalArgumentException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }

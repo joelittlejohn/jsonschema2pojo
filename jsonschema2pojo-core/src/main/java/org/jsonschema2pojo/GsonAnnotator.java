@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.jsonschema2pojo;
 
@@ -33,11 +33,15 @@ import com.sun.codemodel.JFieldVar;
  * are able to preserve the original format. Use this in conjunction with
  * {@link GenerationConfig#getPropertyWordDelimiters} to filter out underscores
  * or other unwanted delimiters but still marshal/unmarshal the same content.
- * 
+ *
  * @see <a
  *      href="https://code.google.com/p/google-gson/">https://code.google.com/p/google-gson/</a>
  */
 public class GsonAnnotator extends AbstractAnnotator {
+
+    public GsonAnnotator(GenerationConfig generationConfig) {
+        super(generationConfig);
+    }
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
