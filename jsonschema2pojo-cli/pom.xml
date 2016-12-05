@@ -50,7 +50,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <classpathPrefix>lib/</classpathPrefix>
+                            <classpathPrefix>./</classpathPrefix>
                             <addClasspath>true</addClasspath>
                             <mainClass>org.jsonschema2pojo.cli.Jsonschema2PojoCLI</mainClass>
                         </manifest>
