@@ -50,6 +50,7 @@ pushd $WORKING_DIR
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
     mvn dependency:copy-dependencies -DincludeScope=runtime
     mv target/lib .
+    mv jsonschema2pojo-cli-$VERSION.jar lib
     rm -r target pom.xml
 
     # do some shuffling for cleaner script names
