@@ -17,10 +17,11 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,6 +31,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -84,6 +86,14 @@ public class AnnotationStyleIT {
         assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
         assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
         assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+    }
+
+    @Test
+    public void annotationStyleJackson2ProducesJsonPropertyDescription() throws Exception {
+        Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
+
+        Field field = generatedType.getDeclaredField("description");
+        assertThat(field.getAnnotation(JsonPropertyDescription.class).value(), is("A description for this property"));
     }
 
     @Test
