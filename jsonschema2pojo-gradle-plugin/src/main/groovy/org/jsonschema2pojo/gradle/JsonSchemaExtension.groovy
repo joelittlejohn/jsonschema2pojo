@@ -188,6 +188,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |classNamePrefix = ${classNamePrefix}
        |classNameSuffix = ${classNameSuffix}
        |fileExtensions = ${Arrays.toString(fileExtensions)}
+       |includeAccessors = ${includeAccessors}
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
      """.stripMargin()
