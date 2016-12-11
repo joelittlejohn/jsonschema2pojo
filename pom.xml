@@ -10,7 +10,7 @@
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>0.4.28-SNAPSHOT</version>
+    <version>0.4.29-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
@@ -279,7 +279,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.7.0</version>
+                <version>2.7.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
@@ -297,6 +297,12 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.squareup.moshi</groupId>
                 <artifactId>moshi</artifactId>
@@ -372,7 +378,7 @@
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.11</version>
+                <version>1.9.13</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt.core.compiler</groupId>

@@ -39,10 +39,14 @@ import com.sun.codemodel.JMethod;
 
 /**
  * Annotates generated Java types using the Jackson 1.x mapping annotations.
- * 
+ *
  * @see <a href="http://jackson.codehaus.org/">http://jackson.codehaus.org/</a>
  */
 public class Jackson1Annotator extends AbstractAnnotator {
+
+    public Jackson1Annotator(GenerationConfig generationConfig) {
+        super(generationConfig);
+    }
 
     @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
@@ -67,7 +71,7 @@ public class Jackson1Annotator extends AbstractAnnotator {
 
         if (propertyNode.has("javaJsonView")) {
             field.annotate(JsonView.class).param(
-                "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+                    "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
         }
     }
 

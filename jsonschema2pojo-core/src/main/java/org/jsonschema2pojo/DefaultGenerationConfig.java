@@ -137,6 +137,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    @Override
+    public boolean isIncludeJsr305Annotations() {
+        return false;
+    }
+
     /**
      * @return {@link SourceType#JSONSCHEMA}
      */

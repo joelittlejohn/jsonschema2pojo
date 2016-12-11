@@ -16,16 +16,25 @@
 
 package org.jsonschema2pojo;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Factory object for creating {@link Annotator}s for all the supported
  * annotation styles.
  */
 public class AnnotatorFactory {
 
+    private final GenerationConfig generationConfig;
+
+    public AnnotatorFactory(GenerationConfig generationConfig) {
+        this.generationConfig = generationConfig;
+    }
+
     /**
      * Create a new {@link Annotator} that can create annotations according to
      * the given style.
-     * 
+     *
      * @param style
      *            the annotation style that dictates what kind of annotations
      *            are required.
@@ -36,13 +45,13 @@ public class AnnotatorFactory {
         switch (style) {
             case JACKSON:
             case JACKSON2:
-                return new Jackson2Annotator();
+                return new Jackson2Annotator(generationConfig);
             case JACKSON1:
-                return new Jackson1Annotator();
+                return new Jackson1Annotator(generationConfig);
             case GSON:
-                return new GsonAnnotator();
+                return new GsonAnnotator(generationConfig);
             case MOSHI1:
-                return new Moshi1Annotator();
+                return new Moshi1Annotator(generationConfig);
             case NONE:
                 return new NoopAnnotator();
             default:
@@ -53,7 +62,7 @@ public class AnnotatorFactory {
 
     /**
      * Create a new custom {@link Annotator} from the given class.
-     * 
+     *
      * @param clazz
      *            A class implementing {@link Annotator}.
      * @return an instance of the given annotator type
@@ -65,7 +74,14 @@ public class AnnotatorFactory {
         }
 
         try {
-            return clazz.newInstance();
+            try {
+                Constructor<? extends Annotator> constructor = clazz.getConstructor(GenerationConfig.class);
+                return constructor.newInstance(generationConfig);
+            } catch (NoSuchMethodException e) {
+                return clazz.newInstance();
+            }
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         } catch (InstantiationException e) {
             throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         } catch (IllegalAccessException e) {
@@ -73,7 +89,7 @@ public class AnnotatorFactory {
         }
 
     }
-    
+
     public CompositeAnnotator getAnnotator( Annotator... annotators ) {
         return new CompositeAnnotator(annotators);
     }

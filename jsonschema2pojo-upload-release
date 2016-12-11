@@ -50,12 +50,14 @@ pushd $WORKING_DIR
     wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
     mvn dependency:copy-dependencies -DincludeScope=runtime
     mv target/lib .
+    mv jsonschema2pojo-cli-$VERSION.jar lib
     rm -r target pom.xml
 
     # do some shuffling for cleaner script names
-    mv jsonschema2pojo-cli-$VERSION.bat jsonschema2pojo.bat
-    mv jsonschema2pojo-cli-$VERSION.sh jsonschema2pojo
-    chmod +x jsonschema2pojo
+    mkdir bin
+    mv jsonschema2pojo-cli-$VERSION.bat bin/jsonschema2pojo.bat
+    mv jsonschema2pojo-cli-$VERSION.sh bin/jsonschema2pojo
+    chmod +x bin/jsonschema2pojo
 
     # create the release archives
     pushd ..

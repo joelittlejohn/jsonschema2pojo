@@ -9,6 +9,11 @@ describes the rules and their effect on generated Java types.
 This plugin is hosted on the Maven Central Repository. All actions are logged at the `info` level.
 
 ```groovy
+// Use the java plugin 
+apply plugin: 'java' 
+// In Android Projects use 
+apply plugin: 'com.android.application'
+
 apply plugin: 'jsonschema2pojo'
 
 buildscript {
@@ -155,6 +160,12 @@ jsonSchema2Pojo {
 
   // Whether to make the generated types Serializable
   serializable = false
+
+  // Whether to include getters/setters or to omit these accessor methods and create public fields instead.
+  includeAccessors = true
+
+  // Whether to include dynamic getters, setters, and builders or to omit these methods.
+  includeDynamicAccessors = false
 }
 ```
 

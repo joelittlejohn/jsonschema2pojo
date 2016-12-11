@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.28
+* Adding support for JSR-305 annotations ([#645](https://github.com/joelittlejohn/jsonschema2pojo/pull/645))
+* additionalProperties getter method is missing @Valid annotation. ([#503](https://github.com/joelittlejohn/jsonschema2pojo/issues/503))
+* Zip of binary distribution of CLI ([#500](https://github.com/joelittlejohn/jsonschema2pojo/issues/500))
+
 ## 0.4.27
 * Add ["-", " ", "_"] as default propertyWordDelimiters for Gradle plugin ([#625](https://github.com/joelittlejohn/jsonschema2pojo/pull/625))
 * Allow setting custom annotator and custom rule factory fields directly in Gradle ([#617](https://github.com/joelittlejohn/jsonschema2pojo/pull/617))

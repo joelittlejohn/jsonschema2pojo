@@ -33,6 +33,10 @@ import com.sun.codemodel.JFieldVar;
  */
 public class Moshi1Annotator extends AbstractAnnotator {
 
+    public Moshi1Annotator(GenerationConfig generationConfig) {
+        super(generationConfig);
+    }
+
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         field.annotate(Json.class).param("name", propertyName);
