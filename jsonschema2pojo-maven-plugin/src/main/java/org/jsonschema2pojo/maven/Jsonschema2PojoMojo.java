@@ -542,6 +542,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @readonly
      */
     private MavenProject project;
+    
+    /**
+     * Whether the fields of type `date-type` have the `@JsonFormat` annotation 
+     * with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS`
+     * and timezone set to default value of `UTC`
+     *
+     * @parameter expression="${jsonschema2pojo.formatDateTime}"
+     *            default-value="false"
+     * @since 0.4.29
+     */
+    private boolean formatDateTime = false;
 
     private FileFilter fileFilter = new AllFileFilter();
 
@@ -869,5 +880,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isUseBigDecimals() {
         return useBigDecimals;
     }
+
+	@Override
+	public boolean isFormatDateTime() {
+		return formatDateTime;
+	}
 
 }

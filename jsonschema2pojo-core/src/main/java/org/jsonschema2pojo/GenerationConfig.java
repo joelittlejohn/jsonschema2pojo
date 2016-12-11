@@ -412,5 +412,13 @@ public interface GenerationConfig {
      *         date-time) to generated Java types.
      */
     String getTimeType();
+    
+    /**
+     * Gets the `formatDateTime` configuration option 
+     *
+     * @return Whether the fields of type `date-type` have the `@JsonFormat` annotation 
+     *         with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSSZ` 
+     */
+    boolean isFormatDateTime();
 
 }

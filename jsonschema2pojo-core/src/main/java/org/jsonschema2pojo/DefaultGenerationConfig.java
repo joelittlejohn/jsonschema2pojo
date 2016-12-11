@@ -320,4 +320,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getTimeType() {
         return null;
     }
+
+	@Override
+	public boolean isFormatDateTime() {
+		return false;
+	}
 }

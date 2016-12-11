@@ -46,9 +46,11 @@ import com.sun.codemodel.JMethod;
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
 public class Jackson2Annotator extends AbstractAnnotator {
-
+    private GenerationConfig generationConfig;
+    
     public Jackson2Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
+        this.generationConfig = generationConfig;
     }
 
     @Override
@@ -126,17 +128,28 @@ public class Jackson2Annotator extends AbstractAnnotator {
         field.annotate(JsonIgnore.class);
     }
 
-	@Override
-	public void jsonFormat(JFieldVar field, JDefinedClass clazz,
-			String propertyName, JsonNode node) {
-		String customDateTimePattern = node.has("customDateTimePattern") == true ? node.get("customDateTimePattern").asText() : null;
-		String timezone = node.has("timezone") == true ? node.get("timezone").asText() : null;
-		if (customDateTimePattern != null) {
-			if (timezone != null){
-				field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", customDateTimePattern).param("timezone", timezone);
-			} else {
-				field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", customDateTimePattern);
-			}
-		}
-	}
+    @Override
+    public void jsonFormat(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node) {
+        boolean formatDateTime = generationConfig.isFormatDateTime();
+        String iso8601DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+        String customDateTimePattern = node.has("customDateTimePattern") == true ? node.get("customDateTimePattern").asText() : null;
+        String timezone = node.has("customTimezone") == true ? node.get("customTimezone").asText() : "UTC";
+        
+        String pattern = null;
+        
+        // If formatDateTime has been set in the configuration, annotate all date-time fields with iso8601 format
+        if (formatDateTime == true) {
+            pattern = iso8601DateTimeFormat;
+        }
+        
+        // If a custom pattern has been provide, use this to override the iso8601 format
+        if (customDateTimePattern != null) {
+            pattern = customDateTimePattern;
+        }
+        
+        if (pattern != null) {
+            field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern).param("timezone", timezone);
+        }
+    
+    }
 }
