@@ -150,8 +150,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-fe", "--file-extensions" }, description = "The extensions that should be considered as standard filename extensions when creating java class names.")
     private String fileExtensions = "";
 
-    @Parameter(names = { "-D", "--disable-additional-properties" }, description = "Disable additional properties support on generated types, regardless of the input schema(s)")
-    private boolean disableAdditionalProperties = false;
+    @Parameter(names = { "-D", "--enable-additional-properties" }, description = "Enable additional properties support on generated types, regardless of the input schema(s)")
+    private boolean isIncludeAdditionalProperties = false;
 
     @Parameter(names = { "-da", "--disable-accessors" }, description = "Whether to omit getter/setter methods and create public fields instead.")
     private boolean disableAccessors = false;
@@ -358,7 +358,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isIncludeAdditionalProperties() {
-        return disableAdditionalProperties;
+        return isIncludeAdditionalProperties;
     }
 
     @Override
