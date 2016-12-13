@@ -130,4 +130,10 @@ public class CompositeAnnotator implements Annotator {
         }
     }
 
+	@Override
+	public void dateField(JFieldVar field, JsonNode propertyNode) {
+		for (Annotator annotator : annotators) {
+            annotator.dateField(field, propertyNode);
+        }
+	}
 }

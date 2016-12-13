@@ -160,6 +160,20 @@ public interface Annotator {
      *         properties'.
      */
     boolean isAdditionalPropertiesSupported();
+    
+    /**
+     * Add the <code>@JsonFormat</code> annotation to mark a java.util.Date field
+     * 
+     * @param field
+     *            the field that contains data that will be serialized
+     * @param clazz
+     *            the owner of the field (class to which the field belongs)
+     * @param propertyName
+     *            the name of the JSON property that this field represents
+     * @param propertyNode
+     *            the schema node defining this property
+     */
+    void dateField(JFieldVar field, JsonNode node);
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 }

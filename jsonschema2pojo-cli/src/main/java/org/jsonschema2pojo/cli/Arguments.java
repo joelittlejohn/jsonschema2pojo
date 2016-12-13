@@ -161,7 +161,10 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;
-
+    
+    @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
+    private boolean formatDateTimes = false;
+    
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -399,6 +402,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseBigDecimals() {
         return useBigDecimals;
+    }
+
+    @Override
+    public boolean isFormatDateTimes() {
+        return formatDateTimes;
     }
 
 }

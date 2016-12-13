@@ -95,4 +95,8 @@ public abstract class AbstractAnnotator implements Annotator {
         return generationConfig;
     }
 
+    @Override
+    public void dateField(JFieldVar field, JsonNode node) {
+    }
+
 }
