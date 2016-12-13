@@ -173,7 +173,7 @@ public interface Annotator {
      * @param propertyNode
      *            the schema node defining this property
      */
-    void jsonFormat(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node);
+    void dateField(JFieldVar field, JsonNode node);
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 }

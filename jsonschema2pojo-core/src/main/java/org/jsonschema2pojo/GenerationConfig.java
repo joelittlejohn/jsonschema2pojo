@@ -416,9 +416,9 @@ public interface GenerationConfig {
     /**
      * Gets the `formatDateTime` configuration option 
      *
-     * @return Whether the fields of type `date-type` have the `@JsonFormat` annotation 
-     *         with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSSZ` 
+     * @return Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation 
+     *         with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code> 
      */
-    boolean isFormatDateTime();
+    boolean isFormatDateTimes();
 
 }

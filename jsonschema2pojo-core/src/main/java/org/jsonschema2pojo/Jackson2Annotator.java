@@ -46,11 +46,9 @@ import com.sun.codemodel.JMethod;
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
 public class Jackson2Annotator extends AbstractAnnotator {
-    private GenerationConfig generationConfig;
     
     public Jackson2Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
-        this.generationConfig = generationConfig;
     }
 
     @Override
@@ -129,11 +127,11 @@ public class Jackson2Annotator extends AbstractAnnotator {
     }
 
     @Override
-    public void jsonFormat(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node) {
-        boolean formatDateTime = generationConfig.isFormatDateTime();
+    public void dateField(JFieldVar field, JsonNode node) {
+        boolean formatDateTime = getGenerationConfig().isFormatDateTimes();
         String iso8601DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-        String customDateTimePattern = node.has("customDateTimePattern") == true ? node.get("customDateTimePattern").asText() : null;
-        String timezone = node.has("customTimezone") == true ? node.get("customTimezone").asText() : "UTC";
+        String customDateTimePattern = node.has("customDateTimePattern") ? node.get("customDateTimePattern").asText() : null;
+        String timezone = node.has("customTimezone") ? node.get("customTimezone").asText() : "UTC";
         
         String pattern = null;
         

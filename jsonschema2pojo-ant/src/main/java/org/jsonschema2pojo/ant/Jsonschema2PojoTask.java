@@ -141,7 +141,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String dateType = null;
     
-    private boolean formatDateTime = false;
+    private boolean formatDateTimes = false;
 
 
     /**
@@ -672,15 +672,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
     
     /**
-     * Sets the 'formatDateTime' property of this class
+     * Sets the 'formatDateTimes' property of this class
      *
-     * @param formatDateTime
-     *            Whether the fields of type `date-type` have the `@JsonFormat` annotation 
-     *            with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` 
+     * @param formatDateTimes
+     *            Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation 
+     *            with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSS</code> 
      *            and timezone set to default value of `UTC`
      */
-    public void setFormatDateTime(boolean formatDateTime) {
-        this.formatDateTime = formatDateTime;
+    public void setFormatDateTime(boolean formatDateTimes) {
+        this.formatDateTimes = formatDateTimes;
     }
 
     @Override
@@ -916,8 +916,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isFormatDateTime() {
-        return formatDateTime;
+    public boolean isFormatDateTimes() {
+        return formatDateTimes;
     }
 
 }

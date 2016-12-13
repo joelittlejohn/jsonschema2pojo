@@ -322,7 +322,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
 	@Override
-	public boolean isFormatDateTime() {
+	public boolean isFormatDateTimes() {
 		return false;
 	}
 }

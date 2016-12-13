@@ -139,10 +139,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
     
     private void formatAnnotation(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node) {
-    	String format = node.has("format") == true ? node.get("format").asText() : null;
-    	if ("date-time".equalsIgnoreCase(format)) {
-    		ruleFactory.getAnnotator().jsonFormat(field, clazz, propertyName, node);
-    	}
+        String format = node.path("format").asText();
+        if ("date-time".equalsIgnoreCase(format)) {
+            ruleFactory.getAnnotator().dateField(field, node);
+        }
     }
 
     private JsonNode resolveRefs(JsonNode node, Schema parent) {

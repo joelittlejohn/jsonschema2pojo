@@ -173,8 +173,7 @@ public class CustomAnnotatorIT {
         }
 
 		@Override
-		public void jsonFormat(JFieldVar field, JDefinedClass clazz,
-				String propertyName, JsonNode propertyNode) {
+		public void dateField(JFieldVar field, JsonNode propertyNode) {
 			field.annotate(Deprecated.class);
 		}
 

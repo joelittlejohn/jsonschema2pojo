@@ -70,7 +70,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useBigIntegers
   boolean usePrimitives
   FileFilter fileFilter
-  boolean formatDateTime
+  boolean formatDateTimes
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -112,7 +112,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeAccessors = true
     targetVersion = '1.6'
     includeDynamicAccessors = false
-    formatDateTime = false
+    formatDateTimes = false
   }
 
   @Override
@@ -193,12 +193,12 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeAccessors = ${includeAccessors}
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
-       |formatDateTime = ${formatDateTime}
+       |formatDateTimes = ${formatDateTimes}
      """.stripMargin()
   }
   
-  public boolean isFormatDateTime() {
-    return formatDateTime;
+  public boolean isFormatDateTimes() {
+    return formatDateTimes;
   }
   
 }
