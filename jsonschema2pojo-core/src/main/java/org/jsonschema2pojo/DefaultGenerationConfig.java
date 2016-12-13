@@ -321,8 +321,8 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return null;
     }
 
-	@Override
-	public boolean isFormatDateTimes() {
-		return false;
-	}
+   @Override
+   public boolean isFormatDateTimes() {
+      return false;
+   }
 }

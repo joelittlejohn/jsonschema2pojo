@@ -1,8 +1,8 @@
 {
-	"type" : "object",
-	"extends" : {
-		"type" : "object",
-		"additionalProperties" : false
-	},
-	"additionalProperties" : true
+   "type" : "object",
+   "extends" : {
+      "type" : "object",
+      "additionalProperties" : false
+   },
+   "additionalProperties" : true
 }

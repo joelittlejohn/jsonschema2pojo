@@ -95,9 +95,9 @@ public class SchemaMapperTest {
 
     @Test
     public void generateCreatesSchemaFromExampleJSONAsStringInput() throws IOException {
-    	
-    	String jsonContent = new Scanner(this.getClass().getResourceAsStream("/example-json/user.json")).useDelimiter("\\Z").next();
-    	
+       
+       String jsonContent = new Scanner(this.getClass().getResourceAsStream("/example-json/user.json")).useDelimiter("\\Z").next();
+       
         ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
@@ -119,12 +119,12 @@ public class SchemaMapperTest {
         verify(mockSchemaRule).apply(eq("User"), eq(schemaNode), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
-	}
+   }
     
     @Test
     public void generateCreatesSchemaFromSchemaAsStringInput() throws IOException {
 
-    	String schemaContent = new Scanner(this.getClass().getResourceAsStream("/schema/address.json")).useDelimiter("\\Z").next();
+       String schemaContent = new Scanner(this.getClass().getResourceAsStream("/schema/address.json")).useDelimiter("\\Z").next();
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
@@ -142,5 +142,5 @@ public class SchemaMapperTest {
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.getValue(), is(notNullValue()));
         
-	}
+   }
 }

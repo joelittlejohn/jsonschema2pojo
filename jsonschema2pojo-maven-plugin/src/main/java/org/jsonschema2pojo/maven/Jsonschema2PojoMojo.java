@@ -881,9 +881,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return useBigDecimals;
     }
 
-	@Override
-	public boolean isFormatDateTimes() {
-		return formatDateTimes;
-	}
+   @Override
+   public boolean isFormatDateTimes() {
+      return formatDateTimes;
+   }
 
 }
