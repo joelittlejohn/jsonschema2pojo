@@ -157,7 +157,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "required" declaration.
      */
-    public Rule<JDocCommentable, JDocComment> getRequiredRule() {
+    public Rule<JDocCommentable, JDocCommentable> getRequiredRule() {
         return new RequiredRule(this);
     }
 
@@ -167,7 +167,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "required" declaration.
      */
-    public Rule<JDocCommentable, JDocComment> getNotRequiredRule() {
+    public Rule<JDocCommentable, JDocCommentable> getNotRequiredRule() {
         return new NotRequiredRule(this);
     }
 

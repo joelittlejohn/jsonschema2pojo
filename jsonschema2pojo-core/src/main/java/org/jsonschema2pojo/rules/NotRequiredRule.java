@@ -16,14 +16,15 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JFieldVar;
-import org.jsonschema2pojo.Schema;
+import java.util.Iterator;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
+
+import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JFieldVar;
 
 /**
  * Applies the "required" schema rule.
@@ -31,7 +32,7 @@ import java.util.Iterator;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class NotRequiredRule implements Rule<JDocCommentable, JDocComment> {
+public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
 
     /**
      * Text added to JavaDoc to indicate that a field is not required
@@ -62,8 +63,7 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocComment> {
      *         not required.
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
-        JDocComment javadoc = generatableType.javadoc();
+    public JDocCommentable apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
 
         // Since NotRequiredRule is executed for all fields that do not have "required" present,
         // we need to recognize whether the field is part of the RequiredArrayRule.
@@ -73,17 +73,17 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocComment> {
             for (Iterator<JsonNode> iterator = requiredArray.elements(); iterator.hasNext(); ) {
                 String requiredArrayItem = iterator.next().asText();
                 if (nodeName.equals(requiredArrayItem)) {
-                    return javadoc;
+                    return generatableType;
                 }
             }
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
                 && generatableType instanceof JFieldVar) {
-            javadoc.append(NOT_REQUIRED_COMMENT_TEXT);
+            generatableType.javadoc().append(NOT_REQUIRED_COMMENT_TEXT);
             ((JFieldVar) generatableType).annotate(Nullable.class);
         }
 
-        return javadoc;
+        return generatableType;
     }
 }

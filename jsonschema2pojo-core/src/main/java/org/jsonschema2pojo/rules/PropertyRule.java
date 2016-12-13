@@ -16,6 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
@@ -26,11 +31,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
-
-import static org.apache.commons.lang3.StringUtils.capitalize;
 
 
 /**
@@ -166,9 +166,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type(), node));
 
-        // add @returns
-        getter.javadoc().addReturn().append("The " + ruleFactory.getNameHelper().getPropertyName(jsonPropertyName, node));
-
         JBlock body = getter.body();
         body._return(field);
 
@@ -177,9 +174,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName, node));
-
-        // add @param
-        setter.javadoc().addParam(ruleFactory.getNameHelper().getPropertyName(jsonPropertyName, node)).append("The " + jsonPropertyName);
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();

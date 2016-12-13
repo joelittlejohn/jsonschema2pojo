@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JDocCommentable;
 
 public class RequiredRuleTest {
 
@@ -42,11 +42,11 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
 
-        JDocComment result = rule.apply("fooBar", descriptionNode, jclass, null);
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
 
-        assertThat(result, sameInstance(jclass.javadoc()));
-        assertThat(result.size(), is(1));
-        assertThat((String) result.get(0), is(RequiredRule.REQUIRED_COMMENT_TEXT));
+        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
+        assertThat(result.javadoc().size(), is(1));
+        assertThat((String) result.javadoc().get(0), is("\n(Required)"));
 
     }
 
@@ -58,10 +58,10 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
 
-        JDocComment result = rule.apply("fooBar", descriptionNode, jclass, null);
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
 
-        assertThat(result, sameInstance(jclass.javadoc()));
-        assertThat(result.size(), is(0));
+        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
+        assertThat(result.javadoc().size(), is(0));
     }
 
 }

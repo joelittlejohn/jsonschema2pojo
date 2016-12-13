@@ -20,24 +20,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
-import com.sun.codemodel.JDocComment;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 
 /**
  * Applies the "required" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
-
-    /**
-     * Text added to JavaDoc to indicate that a field is required
-     */
-    public static final String REQUIRED_COMMENT_TEXT = "\n(Required)";
+public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
 
     private final RuleFactory ruleFactory;
 
@@ -50,7 +45,7 @@ public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
      * <p>
      * The required rule simply adds a note to the JavaDoc comment to mark a
      * property as required.
-     * 
+     *
      * @param nodeName
      *            the name of the schema node for which this "required" rule has
      *            been added
@@ -64,11 +59,10 @@ public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
      *         required.
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
-        JDocComment javadoc = generatableType.javadoc();
+    public JDocCommentable apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
 
         if (node.asBoolean()) {
-            javadoc.append(REQUIRED_COMMENT_TEXT);
+            generatableType.javadoc().append("\n(Required)");
 
             if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
                     && generatableType instanceof JFieldVar) {
@@ -86,6 +80,6 @@ public class RequiredRule implements Rule<JDocCommentable, JDocComment> {
             }
         }
 
-        return javadoc;
+        return generatableType;
     }
 }

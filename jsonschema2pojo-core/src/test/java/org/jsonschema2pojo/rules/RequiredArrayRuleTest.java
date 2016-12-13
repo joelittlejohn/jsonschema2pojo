@@ -61,7 +61,7 @@ public class RequiredArrayRuleTest {
 
 
         assertThat(fooBarJavaDoc.size(), is(1));
-        assertThat((String) fooBarJavaDoc.get(0), is(RequiredRule.REQUIRED_COMMENT_TEXT));
+        assertThat((String) fooBarJavaDoc.get(0), is("\n(Required)"));
 
         assertThat(fooJavaDoc.size(), is(0));
     }
