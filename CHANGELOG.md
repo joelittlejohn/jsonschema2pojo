@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.29
+* Fix include additional properties set incorrectly by CLI ([#660](https://github.com/joelittlejohn/jsonschema2pojo/pull/660))
+* Remove useless and empty Javadoc ([#659](https://github.com/joelittlejohn/jsonschema2pojo/issues/659))
+* @JsonPropertyDescription annotation does not properly extract description from schema ([#655](https://github.com/joelittlejohn/jsonschema2pojo/issues/655))
+
 ## 0.4.28
 * Adding support for JSR-305 annotations ([#645](https://github.com/joelittlejohn/jsonschema2pojo/pull/645))
 * additionalProperties getter method is missing @Valid annotation. ([#503](https://github.com/joelittlejohn/jsonschema2pojo/issues/503))
