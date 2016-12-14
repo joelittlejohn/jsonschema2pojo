@@ -25,7 +25,7 @@
     (.toByteArray code-as-bytes)))
 
 (defn- annotator [config]
-  (.. (AnnotatorFactory.)
+  (.. (AnnotatorFactory. config)
       (getAnnotator (.getAnnotationStyle config))))
 
 (defn- generate-java-types [input classname config code-model]
