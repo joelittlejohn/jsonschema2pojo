@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -164,6 +165,15 @@ public class DefaultIT {
     }
 
     @Test
+    public void uriPropertyHasCorrectDefaultValue() throws Exception {
+
+        Object instance = classWithDefaults.newInstance();
+        Method getter = classWithDefaults.getMethod("getUriWithDefault");
+        assertThat((URI) getter.invoke(instance), is(URI.create("http://example.com")));
+
+    }
+
+    @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void enumPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 
@@ -229,6 +239,25 @@ public class DefaultIT {
 
         // list should be mutable
         assertThat(defaultList.add("anotherString"), is(true));
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void arrayPropertyHasCorrectDefaultUriValues() throws Exception {
+
+        Object instance = classWithDefaults.newInstance();
+        Method getter = classWithDefaults.getMethod("getArrayWithUriDefault");
+        assertThat(getter.invoke(instance), is(instanceOf(List.class)));
+
+        List<URI> defaultList = (List<URI>) getter.invoke(instance);
+
+        assertThat(defaultList.size(), is(2));
+        assertThat(defaultList.get(0), is(equalTo(URI.create("http://example.com/p/1"))));
+        assertThat(defaultList.get(1), is(equalTo(URI.create("http://example.com/p/2"))));
+
+        // list should be mutable
+        assertThat(defaultList.add(URI.create("")), is(true));
 
     }
 
