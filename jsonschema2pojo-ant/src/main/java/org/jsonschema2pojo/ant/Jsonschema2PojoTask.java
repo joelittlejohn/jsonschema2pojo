@@ -35,14 +35,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.URLProtocol;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -88,6 +81,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeToString = true;
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
 
@@ -417,6 +412,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'inclusionLevel' property of this class
+     *
+     * @param inclusionLevel
+     * The level of inclusion for Jackson2 and Jackson2 serializator.
+     */
+    public void setInclusionLevel(InclusionLevel inclusionLevel) {
+        this.inclusionLevel = inclusionLevel;
+    }
+
+    /**
      * Sets the 'customAnnotator' property of this class
      *
      * @param customAnnotator
@@ -618,7 +623,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     /**
      * Sets the 'fileExtensions' property of this class
      *
-     * @param classNameSuffix
+     * @param fileExtensions
      *            The array of strings that should be considered as file
      *            extensions and therefore not included in class names.
      */
@@ -745,6 +750,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public InclusionLevel getInclusionLevel() {
+        return inclusionLevel;
     }
 
     @Override

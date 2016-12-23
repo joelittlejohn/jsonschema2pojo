@@ -46,9 +46,35 @@ import com.sun.codemodel.JMethod;
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
 public class Jackson2Annotator extends AbstractAnnotator {
-    
+
+    private JsonInclude.Include inclusionLevel = JsonInclude.Include.NON_NULL;
+
     public Jackson2Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
+        switch (generationConfig.getInclusionLevel()) {
+            case ALWAYS:
+                inclusionLevel = JsonInclude.Include.ALWAYS;
+                break;
+            case NON_ABSENT:
+                inclusionLevel = JsonInclude.Include.NON_ABSENT;
+                break;
+            case NON_DEFAULT:
+                inclusionLevel = JsonInclude.Include.NON_DEFAULT;
+                break;
+            case NON_EMPTY:
+                inclusionLevel = JsonInclude.Include.NON_EMPTY;
+                break;
+            case NON_NULL:
+                inclusionLevel = JsonInclude.Include.NON_NULL;
+                break;
+            case USE_DEFAULTS:
+                inclusionLevel = JsonInclude.Include.USE_DEFAULTS;
+                break;
+            default:
+                inclusionLevel = JsonInclude.Include.NON_NULL;
+                break;
+        }
+
     }
 
     @Override
@@ -62,7 +88,7 @@ public class Jackson2Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
-        clazz.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
+        clazz.annotate(JsonInclude.class).param("value", inclusionLevel);
     }
 
     @Override
