@@ -19,6 +19,7 @@ import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
+import org.jsonschema2pojo.InclusionLevel
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.rules.RuleFactory
@@ -34,6 +35,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   File targetDirectory
   String targetPackage
   AnnotationStyle annotationStyle
+  InclusionLevel inclusionLevel
   String classNamePrefix
   String classNameSuffix
   String[] fileExtensions
@@ -88,6 +90,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     constructorsRequiredPropertiesOnly = false
     includeToString = true
     annotationStyle = AnnotationStyle.JACKSON
+    inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
     customRuleFactory = RuleFactory.class
     includeJsr303Annotations = false
@@ -134,6 +137,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
   }
 
+  public void setInclusionLevel(String level) {
+    inclusionLevel = InclusionLevel.valueOf(level.toUpperCase())
+  }
+
   public void setCustomAnnotator(String clazz) {
     customAnnotator = Class.forName(clazz, true, this.class.classLoader)
   }
@@ -170,6 +177,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeConstructors = ${includeConstructors}
        |includeToString = ${includeToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
+       |inclusionLevel = ${inclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}
        |includeJsr303Annotations = ${includeJsr303Annotations}

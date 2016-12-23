@@ -30,7 +30,6 @@ import com.sun.codemodel.JType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,10 +144,6 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         } else if (fieldType.fullName().equals(float.class.getName())) {
             return JExpr.lit(Float.parseFloat(node.asText()));
-
-        } else if (fieldType.fullName().equals(URI.class.getName())) {
-            JInvocation invokeCreate = fieldType.owner().ref(URI.class).staticInvoke("create");
-            return invokeCreate.arg(JExpr.lit(node.asText()));
 
         } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
 

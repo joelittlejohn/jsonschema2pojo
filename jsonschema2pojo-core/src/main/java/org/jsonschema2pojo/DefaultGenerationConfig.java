@@ -117,6 +117,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return {@link InclusionLevel#NON_NULL}
+     */
+    public InclusionLevel getInclusionLevel() { return InclusionLevel.NON_NULL; }
+
+    /**
      * {@link NoopAnnotator}
      */
     @Override

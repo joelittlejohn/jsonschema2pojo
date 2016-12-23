@@ -46,11 +46,6 @@
             "format" : "utc-millisec",
             "default" : 123456789
         },
-        "uriWithDefault" : {
-            "type" : "string",
-            "format": "uri",
-            "default": "http://example.com"
-        },
         "enumWithDefault" : {
             "type" : "string",
             "enum" : ["one", "two", "three"],
@@ -62,14 +57,6 @@
                 "type" : "string"
             },
             "default" : ["one", "two", "three"]
-        },
-        "arrayWithUriDefault" : {
-            "type" : "array",
-            "items" : {
-                "type" : "string",
-                "format": "uri"
-            },
-            "default" : ["http://example.com/p/1", "http://example.com/p/2"]
         },
         "arrayWithEmptyDefault" : {
             "type" : "array",
