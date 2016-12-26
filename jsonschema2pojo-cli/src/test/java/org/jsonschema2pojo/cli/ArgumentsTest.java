@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import org.jsonschema2pojo.InclusionLevel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,8 @@ public class ArgumentsTest {
     public void parseRecognisesValidArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target", "--package", "mypackage",
-                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors"
+                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors",
+                "--inclusion-level", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -63,12 +65,13 @@ public class ArgumentsTest {
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
         assertThat(args.isIncludeDynamicAccessors(), is(true));
+        assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
     @Test
     public void parseRecognisesShorthandArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida"
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-il", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -80,6 +83,7 @@ public class ArgumentsTest {
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
         assertThat(args.isIncludeDynamicAccessors(), is(true));
+        assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
     @Test
