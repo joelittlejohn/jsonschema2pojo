@@ -165,7 +165,7 @@ public interface GenerationConfig {
     AnnotationStyle getAnnotationStyle();
 
     /**
-     * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializators.
+     * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
      *
      * @return Level of inclusion to set in the generated Java types.
      *      <p>

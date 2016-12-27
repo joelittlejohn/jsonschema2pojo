@@ -18,7 +18,7 @@ package org.jsonschema2pojo;
 
 /**
  * The level of inclusion to be set for generated java types (to control level of inclusion in case of Jackson1 or
- * Jackson2 serializator). Each level will have its own set of mapping annotations.
+ * Jackson2 serializers). Each level will have its own set of mapping annotations.
  *
  * @see <a href="http://fasterxml.github.io/jackson-annotations/javadoc/2.7/com/fasterxml/jackson/annotation/JsonInclude.Include.html" >JsonInclude.Include</a>
  */

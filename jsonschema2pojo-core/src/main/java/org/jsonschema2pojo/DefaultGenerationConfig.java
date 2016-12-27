@@ -26,8 +26,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 /**
  * A generation config that returns default values for all behavioural options.
  */
-public class
-DefaultGenerationConfig implements GenerationConfig {
+public class DefaultGenerationConfig implements GenerationConfig {
 
     /**
      * @return <code>false</code>

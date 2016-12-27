@@ -32,7 +32,15 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.jsonschema2pojo.*;
+import org.jsonschema2pojo.AllFileFilter;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.AnnotatorFactory;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.InclusionLevel;
+import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -232,7 +240,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String annotationStyle = "jackson2";
 
     /**
-     * The Level of inclusion to set in the generated Java types for Jackson1 and Jackson2 serializators.
+     * The Level of inclusion to set in the generated Java types for Jackson1 and Jackson2 serializers.
      *      <p>
      *          Supported values
      *          <ul>
