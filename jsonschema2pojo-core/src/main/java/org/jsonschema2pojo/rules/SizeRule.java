@@ -16,29 +16,28 @@
 
 package org.jsonschema2pojo.rules;
 
-import javax.validation.constraints.Pattern;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JFieldVar;
+import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.AnnotationHelper;
 
-public class PatternRule implements Rule<JFieldVar, JFieldVar> {
+import javax.validation.constraints.Size;
 
-    private RuleFactory ruleFactory;
+public class SizeRule implements Rule<JFieldVar, JFieldVar> {
 
-    public PatternRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
-    }
+	private final RuleFactory ruleFactory;
 
-    @Override
-    public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
+	protected SizeRule(RuleFactory ruleFactory) {
+		this.ruleFactory = ruleFactory;
+	}
 
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
-            AnnotationHelper.annotateField(Pattern.class, node, field, "regexp");
-        }
+	@Override
+	public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
 
-        return field;
-    }
+		if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+			AnnotationHelper.annotateField(Size.class, node, field, null);
+		}
 
+		return field;
+	}
 }

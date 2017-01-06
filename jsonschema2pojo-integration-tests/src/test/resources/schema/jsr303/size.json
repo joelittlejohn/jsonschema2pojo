@@ -1,0 +1,33 @@
+{
+  "type" : "object",
+  "properties" : {
+    "min" : {
+      "type" : "string",
+      "size": {
+        "min": 1
+      }
+    },
+    "max" : {
+      "type" : "string",
+      "size": {
+        "max": 2
+      }
+    },
+    "minMax": {
+      "type" : "string",
+      "size": {
+        "min": 1,
+        "max": 2,
+        "message": "custom error message"
+      }
+    },
+    "minMaxCustomMessage": {
+      "type" : "string",
+      "size": {
+        "min": 1,
+        "max": 2,
+        "message": "custom error message"
+      }
+    }
+  }
+}
