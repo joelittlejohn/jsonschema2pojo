@@ -55,6 +55,16 @@
         <td align="center" valign="top">No (default <code>""</code>)</td>
       </tr>
       <tr>
+        <td valign="top">useContextualClassNames</td>
+        <td valign="top">Whether to use contextual class names for nested properties.</td>
+        <td align="center" valign="top">No (default (<code>false</code>)</td>
+      </tr>
+      <tr>
+        <td valign="top">contextualClassNameDelimiter</td>
+        <td valign="top">Defines the delimiter for the contextual part of class names.</td>
+        <td align="center" valign="top"><code>No (default <code>""</code>)</code></td>
+      </tr>
+      <tr>
         <td valign="top">fileExtensions</td>
         <td valign="top">A string containing file extensions that should be considered full extensions and therefore ignored when generating classnames.</td>
         <td align="center" valign="top">No (default <code>""</code> (none))</td>
@@ -220,6 +230,11 @@
         <td valign="top">targetPackage</td>
         <td valign="top">Package name used for generated Java classes (for types where a fully qualified name has not been supplied in the schema using the 'javaType' property).</td>
         <td align="center" valign="top">No</td>
+      </tr>
+      <tr>
+        <td valign="top">useContextualSubPackages</td>
+        <td valign="top">Whether to use contextual package names for nested properties.</td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
       <tr>
         <td valign="top">useCommonsLang3</td>

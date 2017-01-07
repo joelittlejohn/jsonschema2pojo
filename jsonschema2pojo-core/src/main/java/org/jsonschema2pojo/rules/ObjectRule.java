@@ -29,14 +29,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
@@ -53,7 +51,6 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
 import android.os.Parcelable;
 
 /**
@@ -248,8 +245,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
      *             current map of classes to be generated.
      */
     private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
-
         JDefinedClass newType;
+
+        if (ruleFactory.getGenerationConfig().isUseContextualSubPackages() && ruleFactory.getNameHelper().getContextualSubPackage().length() > 0) {
+            _package = _package.subPackage(ruleFactory.getNameHelper().getContextualSubPackage());
+        }
 
         try {
             boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
@@ -540,8 +540,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
         String fieldName = ruleFactory.getNameHelper().getFieldName(nodeName, node);
         String capitalizedFieldName = capitalize(fieldName);
+        if (ruleFactory.getGenerationConfig().isUseContextualClassNames()) {
+            prefix = ruleFactory.getNameHelper().getContextualClassPrefix(
+                    prefix,
+                    ruleFactory.getGenerationConfig().getContextualClassNameDelimiter()
+            );
+        }
         String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
-
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(fullFieldName);
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
         return makeUnique(normalizedName, _package);

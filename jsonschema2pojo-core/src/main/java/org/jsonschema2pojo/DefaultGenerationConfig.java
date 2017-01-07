@@ -69,6 +69,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isUseContextualSubPackages() {
+        return false;
+    }
+
+    /**
      * @return an empty array (i.e. no word delimiters)
      */
     @Override
@@ -234,6 +242,22 @@ public class DefaultGenerationConfig implements GenerationConfig {
 
     @Override
     public String getClassNameSuffix() {
+        return "";
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isUseContextualClassNames() {
+        return false;
+    }
+
+    /**
+     * @return <code>""</code>
+     */
+    @Override
+    public String getContextualClassNameDelimiter() {
         return "";
     }
 

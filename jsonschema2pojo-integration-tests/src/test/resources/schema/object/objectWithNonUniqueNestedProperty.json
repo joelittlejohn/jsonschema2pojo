@@ -1,0 +1,26 @@
+{
+  "type" : "object",
+  "properties" : {
+    "firstProperty" : {
+      "type" : "object",
+      "properties": {
+        "someProperty" : {
+          "type" : "string"
+        }
+      }
+    },
+    "secondProperty" : {
+      "type" : "object",
+      "properties" : {
+        "firstProperty" : {
+          "type" : "object",
+          "properties" : {
+            "someProperty" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

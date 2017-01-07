@@ -75,6 +75,13 @@ public interface GenerationConfig {
     String getTargetPackage();
 
     /**
+     * Gets the 'useContextualSubPackages' configuration option.
+     *
+     * @return Whether to use contextual sub-packages or not.
+     */
+    boolean isUseContextualSubPackages();
+
+    /**
      * Gets the 'propertyWordDelimiters' configuration option.
      *
      * @return an array of characters that should act as word delimiters when
@@ -311,6 +318,20 @@ public interface GenerationConfig {
      * @return Whether to add a suffix to generated classes.
      */
     String getClassNameSuffix();
+
+    /**
+     * Gets the 'useContextualClassNames' configuration option.
+     *
+     * @return Whethet to use contextual class names or not.
+     */
+    boolean isUseContextualClassNames();
+
+    /**
+     * Gets the 'contextualClassNameDelimiter' configuration options.
+     *
+     * @return The delimiter separating the contextual parts of class names.
+     */
+    String getContextualClassNameDelimiter();
 
     /**
      * Gets the 'fileExtensions' configuration option.

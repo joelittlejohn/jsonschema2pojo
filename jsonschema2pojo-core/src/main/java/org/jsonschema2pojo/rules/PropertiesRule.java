@@ -54,6 +54,8 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+        ruleFactory.getNameHelper().pushToNodeContext(nodeName);
+
         if (node == null) {
             node = JsonNodeFactory.instance.objectNode();
         }
@@ -71,7 +73,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         ruleFactory.getAnnotator().propertyOrder(jclass, node);
-
+        ruleFactory.getNameHelper().popFromNodeContext();
         return jclass;
     }
 
@@ -101,4 +103,5 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
     
         }
     }
+
 }

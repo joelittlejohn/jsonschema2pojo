@@ -33,9 +33,12 @@ public class JsonSchemaExtension implements GenerationConfig {
   Iterable<File> sourceFiles
   File targetDirectory
   String targetPackage
+  boolean useContextualSubPackages
   AnnotationStyle annotationStyle
   String classNamePrefix
   String classNameSuffix
+  boolean useContextualClassNames
+  String contextualClassNameDelimiter
   String[] fileExtensions
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory

@@ -48,6 +48,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-p", "--package" }, description = "A java package used for generated types")
     private String targetPackage;
 
+    @Parameter(names = { "-cp", "--contextual-sub-packages" }, description = "Use contextual package names for sub-property classes.")
+    private boolean useContextualSubPackages = false;
+
     @Parameter(names = { "-t", "--target" }, description = "The target directory into which generated types will be written", required = true)
     private File targetDirectory;
 
@@ -147,6 +150,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-x", "--class-suffix" }, description = "Suffix for generated class.")
     private String classNameSuffix = "";
 
+    @Parameter(names = { "-cc", "--contextual-class-names" }, description = "Use contextual names for sub-property classes.")
+    private boolean useContextualClassNames = false;
+
+    @Parameter(names = { "-ccd", "--contextual-class-name-delimiter" }, description = "Defines the delimiter for the contextual part of class names.")
+    private String contextualClassNameDelimiter = "";
+
     @Parameter(names = { "-fe", "--file-extensions" }, description = "The extensions that should be considered as standard filename extensions when creating java class names.")
     private String fileExtensions = "";
 
@@ -213,6 +222,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getTargetPackage() {
         return targetPackage;
+    }
+
+    @Override
+    public boolean isUseContextualSubPackages() {
+        return useContextualSubPackages;
     }
 
     @Override
@@ -342,6 +356,16 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getClassNameSuffix() {
         return classNameSuffix;
+    }
+
+    @Override
+    public boolean isUseContextualClassNames() {
+        return useContextualClassNames;
+    }
+
+    @Override
+    public String getContextualClassNameDelimiter() {
+        return contextualClassNameDelimiter;
     }
 
     @Override
