@@ -134,7 +134,7 @@ public class FormatRule implements Rule<JType, JType> {
         String type=ruleFactory.getGenerationConfig().getDateTimeType();
         if (!isEmpty(type)){
             try {
-                Class<?> clazz=Class.forName(type);
+                Class<?> clazz=Thread.currentThread().getContextClassLoader().loadClass(type);
                 return clazz;
             }
             catch (ClassNotFoundException e) {
@@ -148,7 +148,7 @@ public class FormatRule implements Rule<JType, JType> {
         String type=ruleFactory.getGenerationConfig().getDateType();
         if (!isEmpty(type)){
             try {
-                Class<?> clazz=Class.forName(type);
+                Class<?> clazz=Thread.currentThread().getContextClassLoader().loadClass(type);
                 return clazz;
             }
             catch (ClassNotFoundException e) {
@@ -162,7 +162,7 @@ public class FormatRule implements Rule<JType, JType> {
         String type=ruleFactory.getGenerationConfig().getTimeType();
         if (!isEmpty(type)){
             try {
-                Class<?> clazz=Class.forName(type);
+                Class<?> clazz=Thread.currentThread().getContextClassLoader().loadClass(type);
                 return clazz;
             }
             catch (ClassNotFoundException e) {
