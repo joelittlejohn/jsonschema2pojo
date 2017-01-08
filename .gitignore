@@ -1,27 +1,14 @@
-# Git derived files #
-*.orig
+*.class
 
-# Eclipse files #
-.classpath
-.settings
-.project
-.metadata
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
 
-# Maven derived files #
-target/
-apidocs
-
-# Gradle derived files #
-build/
-.gradle
-
-# IntelliJ files #
 .idea
-*.iml
 
-# Scratch files
-.#*
-.*.swp
+# Package Files #
+*.jar
+*.war
+*.ear
 
-# Mac files #
-.DS_Store
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

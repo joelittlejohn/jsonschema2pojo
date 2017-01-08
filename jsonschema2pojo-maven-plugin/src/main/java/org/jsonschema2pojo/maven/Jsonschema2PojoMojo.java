@@ -32,14 +32,7 @@ import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.AnnotatorFactory;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -237,6 +230,25 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.3.1
      */
     private String annotationStyle = "jackson2";
+
+    /**
+     * The Level of inclusion to set in the generated Java types for Jackson1 and Jackson2 serializators.
+     *      <p>
+     *          Supported values
+     *          <ul>
+     *              <li><code>ALWAYS</code></li>
+     *              <li><code>NON_ABSENT</code></li>
+     *              <li><code>NON_DEFAULT</code></li>
+     *              <li><code>NON_EMPTY</code></li>
+     *              <li><code>NON_NULL</code></li>
+     *              <li><code>USE_DEFAULTS</code></li>
+     *          </ul>
+     *      </p>
+     *
+     * @parameter expression="${jsonschema2pojo.inclusionLevel}"
+     *            default-value="NON_NULL"
+     */
+    private String inclusionLevel = "NON_NULL";
 
     /**
      * A fully qualified class name, referring to a custom annotator class that
@@ -704,6 +716,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
     }
+
+    @Override
+    public InclusionLevel getInclusionLevel() { return InclusionLevel.valueOf(inclusionLevel.toUpperCase()); }
 
     @Override
     @SuppressWarnings("unchecked")

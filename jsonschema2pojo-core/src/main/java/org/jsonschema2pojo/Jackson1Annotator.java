@@ -44,8 +44,19 @@ import com.sun.codemodel.JMethod;
  */
 public class Jackson1Annotator extends AbstractAnnotator {
 
+    private JsonSerialize.Inclusion inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+
     public Jackson1Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
+        switch (generationConfig.getInclusionLevel()) {
+            case ALWAYS: inclusionLevel = JsonSerialize.Inclusion.ALWAYS;
+            case NON_ABSENT: inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+            case NON_DEFAULT: inclusionLevel = JsonSerialize.Inclusion.NON_DEFAULT;
+            case NON_EMPTY: inclusionLevel = JsonSerialize.Inclusion.NON_EMPTY;
+            case NON_NULL: inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+            case USE_DEFAULTS: inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+            default: inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+        }
     }
 
     @Override
@@ -59,7 +70,7 @@ public class Jackson1Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyInclusion(JDefinedClass clazz, JsonNode schema) {
-        clazz.annotate(JsonSerialize.class).param("include", JsonSerialize.Inclusion.NON_NULL);
+        clazz.annotate(JsonSerialize.class).param("include", inclusionLevel);
     }
 
     @Override

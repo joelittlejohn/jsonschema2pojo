@@ -54,7 +54,6 @@ public class Jsonschema2Pojo {
     public static void generate(GenerationConfig config) throws IOException {
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
-
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
 
