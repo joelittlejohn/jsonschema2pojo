@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.maven;
 
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -327,6 +327,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean removeOldOutput = false;
 
     /**
+     * If false, then the output is first compared to what is already present in
+     * the target directory, if it is the same then no file is written.
+     *
+     * @parameter expression="${jsonschema2pojo.overwriteEvenIfUnchanged}"
+     *            default-value="true"
+     * @since 0.4.30
+     */
+    private boolean overwriteEvenIfUnchanged = true;
+
+    /**
      * The character encoding that should be used when writing the generated
      * Java source files.
      *
@@ -542,9 +552,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @readonly
      */
     private MavenProject project;
-    
+
     /**
-     * Whether the fields of type `date-time` have the `@JsonFormat` annotation 
+     * Whether the fields of type `date-time` have the `@JsonFormat` annotation
      * with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS`
      * and timezone set to default value of `UTC`
      *
@@ -751,6 +761,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public boolean isOverwriteEvenIfUnchanged() {
+        return overwriteEvenIfUnchanged;
     }
 
     @Override

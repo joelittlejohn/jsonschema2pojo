@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.cli;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -108,6 +108,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-R", "--remove-old-output" }, description = "Whether to empty the target directory before generation occurs, to clear out all source files that have been generated previously (indiscriminately deletes all files and folders).")
     private boolean removeOldOutput = false;
 
+    @Parameter(names = { "--overwrite-even-if-unchanged" }, description = "If false, then do not write file to target if it is not different from the file that is already there.")
+    private boolean overwriteEvenIfUnchanged = true;
+
     @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files.")
     private String outputEncoding = "UTF-8";
 
@@ -161,10 +164,10 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;
-    
+
     @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
-    
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -283,6 +286,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public boolean isOverwriteEvenIfUnchanged() {
+        return overwriteEvenIfUnchanged;
     }
 
     @Override

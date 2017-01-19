@@ -226,6 +226,16 @@ public interface GenerationConfig {
     boolean isRemoveOldOutput();
 
     /**
+     * Gets the 'overwriteEvenIfUnchanged' configuration option.
+     * Defaults to 'true'
+     *
+     * @return If false, then the output of a schema is first compared with
+     *         what is already in the target directory. If the same, then
+     *         nothing is written. If true, then the old behaviour is used.
+     */
+    boolean isOverwriteEvenIfUnchanged();
+
+    /**
      * Gets the 'outputEncoding' configuration option.
      *
      * @return The character encoding that should be used when writing the
@@ -412,12 +422,12 @@ public interface GenerationConfig {
      *         date-time) to generated Java types.
      */
     String getTimeType();
-    
+
     /**
-     * Gets the `formatDateTime` configuration option 
+     * Gets the `formatDateTime` configuration option
      *
-     * @return Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation 
-     *         with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code> 
+     * @return Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation
+     *         with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>
      */
     boolean isFormatDateTimes();
 

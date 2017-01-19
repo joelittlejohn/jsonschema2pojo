@@ -16,7 +16,9 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,6 +81,10 @@ public class Jsonschema2Pojo {
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
             CodeWriter sourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
             CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
+            if (!config.isOverwriteEvenIfUnchanged()) {
+                sourcesWriter = new CachingCodeWriter(config, sourcesWriter);
+                resourcesWriter = new CachingCodeWriter(config, resourcesWriter);
+            }
             codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());

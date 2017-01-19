@@ -16,7 +16,8 @@
 
 package org.jsonschema2pojo.ant;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -103,6 +104,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean removeOldOutput = false;
 
+    private boolean overwriteEvenIfUnchanged = true;
+
     private String outputEncoding = "UTF-8";
 
     private boolean useJodaDates = false;
@@ -140,7 +143,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String timeType = null;
 
     private String dateType = null;
-    
+
     private boolean formatDateTimes = false;
 
 
@@ -506,6 +509,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'overwriteEvenIfUnchanged' property of this class
+     *
+     * @param overwriteEvenIfUnchanged
+     *            If false, then the output is first compared to what is already
+     *            in the target directory and only written to if changed.
+     *            Default is true
+     */
+    public void setOverwriteEvenIfUnchanged(boolean overwriteEvenIfUnchanged) {
+        this.overwriteEvenIfUnchanged = overwriteEvenIfUnchanged;
+    }
+
+    /**
      * Sets the 'outputEncoding' property of this class
      *
      * @param outputEncoding
@@ -670,13 +685,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setIncludeDynamicAccessors(boolean includeDynamicAccessors) {
         this.includeDynamicAccessors = includeDynamicAccessors;
     }
-    
+
     /**
      * Sets the 'formatDateTimes' property of this class
      *
      * @param formatDateTimes
-     *            Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation 
-     *            with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSS</code> 
+     *            Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation
+     *            with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSS</code>
      *            and timezone set to default value of `UTC`
      */
     public void setFormatDateTime(boolean formatDateTimes) {
@@ -798,6 +813,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+
+    @Override
+    public boolean isOverwriteEvenIfUnchanged() {
+        return overwriteEvenIfUnchanged;
     }
 
     @Override

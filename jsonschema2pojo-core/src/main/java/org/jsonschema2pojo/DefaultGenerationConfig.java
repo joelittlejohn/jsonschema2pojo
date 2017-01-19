@@ -166,6 +166,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    @Override
+    public boolean isOverwriteEvenIfUnchanged() {
+        return true;
+    }
+
     /**
      * @return false
      */

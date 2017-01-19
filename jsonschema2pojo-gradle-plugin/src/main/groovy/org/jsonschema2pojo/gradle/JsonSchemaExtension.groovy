@@ -15,9 +15,9 @@
  */
 package org.jsonschema2pojo.gradle
 
+import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
-import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceType
@@ -55,6 +55,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean serializable
   char[] propertyWordDelimiters
   boolean removeOldOutput
+  boolean overwriteEvenIfUnchanged
   SourceType sourceType
   String targetVersion
   boolean useCommonsLang3
@@ -196,9 +197,9 @@ public class JsonSchemaExtension implements GenerationConfig {
        |formatDateTimes = ${formatDateTimes}
      """.stripMargin()
   }
-  
+
   public boolean isFormatDateTimes() {
     return formatDateTimes;
   }
-  
+
 }
