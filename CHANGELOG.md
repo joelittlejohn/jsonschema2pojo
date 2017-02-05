@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.30
+* Cannot use custom date,time types from external dependencies in maven/ant plugins ([#673](https://github.com/joelittlejohn/jsonschema2pojo/issues/673))
+* Jackson inclusion option ([#671](https://github.com/joelittlejohn/jsonschema2pojo/pull/671))
+* Support URI format properties with a default value using URI.create ([#664](https://github.com/joelittlejohn/jsonschema2pojo/issues/664))
+
 ## 0.4.29
 * Fix include additional properties set incorrectly by CLI ([#660](https://github.com/joelittlejohn/jsonschema2pojo/pull/660))
 * Remove useless and empty Javadoc ([#659](https://github.com/joelittlejohn/jsonschema2pojo/issues/659))
