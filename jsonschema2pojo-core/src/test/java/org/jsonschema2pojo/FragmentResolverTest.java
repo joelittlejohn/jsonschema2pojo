@@ -34,9 +34,9 @@ public class FragmentResolverTest {
 
         ObjectNode root = new ObjectMapper().createObjectNode();
 
-        root.put("child1", root.objectNode());
-        root.put("child2", root.objectNode());
-        root.put("child3", root.objectNode());
+        root.set("child1", root.objectNode());
+        root.set("child2", root.objectNode());
+        root.set("child3", root.objectNode());
 
         assertThat((ObjectNode) resolver.resolve(root, "#"), is(sameInstance(root)));
 
@@ -51,25 +51,25 @@ public class FragmentResolverTest {
         ObjectNode b = root.objectNode();
         ObjectNode c = root.objectNode();
 
-        root.put("a", a);
-        root.put("b", b);
-        root.put("c", c);
+        root.set("a", a);
+        root.set("b", b);
+        root.set("c", c);
 
         ObjectNode x = root.objectNode();
         ObjectNode y = root.objectNode();
         ObjectNode z = root.objectNode();
 
-        a.put("x", x);
-        a.put("y", y);
-        a.put("z", z);
+        a.set("x", x);
+        a.set("y", y);
+        a.set("z", z);
 
         ObjectNode _0 = root.objectNode();
         ObjectNode _1 = root.objectNode();
         ObjectNode _2 = root.objectNode();
 
-        z.put("0", _0);
-        z.put("1", _1);
-        z.put("2", _2);
+        z.set("0", _0);
+        z.set("1", _1);
+        z.set("2", _2);
 
         assertThat((ObjectNode) resolver.resolve(root, "#/a"), is(sameInstance(a)));
         assertThat((ObjectNode) resolver.resolve(root, "#/b"), is(sameInstance(b)));
@@ -91,7 +91,7 @@ public class FragmentResolverTest {
         ObjectNode root = new ObjectMapper().createObjectNode();
 
         ArrayNode a = root.arrayNode();
-        root.put("a", a);
+        root.set("a", a);
 
         a.add(root.objectNode());
         a.add(root.objectNode());
@@ -132,7 +132,7 @@ public class FragmentResolverTest {
         ObjectNode root = new ObjectMapper().createObjectNode();
 
         ArrayNode a = root.arrayNode();
-        root.put("a", a);
+        root.set("a", a);
 
         resolver.resolve(root, "#/a/b");
 

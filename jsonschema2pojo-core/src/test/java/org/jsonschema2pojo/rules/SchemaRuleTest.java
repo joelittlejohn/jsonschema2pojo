@@ -24,14 +24,14 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaStore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -78,7 +78,7 @@ public class SchemaRuleTest {
         ObjectNode schemaContent = new ObjectMapper().createObjectNode();
         ObjectNode enumNode = schemaContent.objectNode();
         enumNode.put("type", "string");
-        schemaContent.put("enum", enumNode);
+        schemaContent.set("enum", enumNode);
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 

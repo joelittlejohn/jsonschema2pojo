@@ -16,13 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
@@ -32,12 +30,13 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 public class EnumRuleTest {
 
@@ -72,11 +71,11 @@ public class EnumRuleTest {
         arrayNode.add("closed");
         ObjectNode enumNode = objectMapper.createObjectNode();
         enumNode.put("type", "string");
-        enumNode.put("enum", arrayNode);
-        
+        enumNode.set("enum", arrayNode);
+
         // We're always a string for the purposes of this test
         when(typeRule.apply("status", enumNode, jpackage, schema))
-            .thenReturn(jpackage.owner()._ref(String.class));
+        .thenReturn(jpackage.owner()._ref(String.class));
 
         JType result1 = rule.apply("status", enumNode, jpackage, schema);
         JType result2 = rule.apply("status", enumNode, jpackage, schema);
@@ -86,6 +85,7 @@ public class EnumRuleTest {
     }
 
     private static class FirstArgAnswer<T> implements Answer<T> {
+        @SuppressWarnings("unchecked")
         @Override
         public T answer(InvocationOnMock invocation) throws Throwable {
             Object[] args = invocation.getArguments();

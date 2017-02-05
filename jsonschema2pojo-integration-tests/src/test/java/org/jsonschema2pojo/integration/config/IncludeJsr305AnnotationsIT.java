@@ -16,20 +16,21 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.lang.reflect.Field;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.File;
-import java.lang.reflect.Field;
-
-import static org.hamcrest.Matchers.not;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.*;
 
 public class IncludeJsr305AnnotationsIT {
 
@@ -52,6 +53,7 @@ public class IncludeJsr305AnnotationsIT {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void jsr305NonnullAnnotationIsAddedForSchemaRuleRequired() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/required.json", "com.example",
@@ -67,6 +69,7 @@ public class IncludeJsr305AnnotationsIT {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void jsr305NullableAnnotationIsAddedByDefault() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/required.json", "com.example",
                 config("includeJsr305Annotations", true));
@@ -83,6 +86,7 @@ public class IncludeJsr305AnnotationsIT {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void jsr305RequiredArrayIsTakenIntoConsideration() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example",
                 config("includeJsr305Annotations", true));

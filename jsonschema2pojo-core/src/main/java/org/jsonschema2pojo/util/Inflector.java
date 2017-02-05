@@ -33,10 +33,6 @@ import java.util.regex.Pattern;
  */
 public class Inflector {
 
-    // Pfft, can't think of a better name, but this is needed to avoid the price of initializing the pattern on each call.
-    private static final Pattern UNDERSCORE_PATTERN_1 = Pattern.compile("([A-Z]+)([A-Z][a-z])");
-    private static final Pattern UNDERSCORE_PATTERN_2 = Pattern.compile("([a-z\\d])([A-Z])");
-
     private final List<RuleAndReplacement> plurals;
     private final List<RuleAndReplacement> singulars;
     private final List<String> uncountables;
@@ -120,16 +116,6 @@ public class Inflector {
         return instance;
     }
 
-    private String underscore(String camelCasedWord) {
-
-        // Regexes in Java are fucking stupid...
-        String underscoredWord = UNDERSCORE_PATTERN_1.matcher(camelCasedWord).replaceAll("$1_$2");
-        underscoredWord = UNDERSCORE_PATTERN_2.matcher(underscoredWord).replaceAll("$1_$2");
-        underscoredWord = underscoredWord.replace('-', '_').toLowerCase();
-
-        return underscoredWord;
-    }
-
     public String pluralize(String word) {
         if (uncountables.contains(word.toLowerCase())) {
             return word;
@@ -158,16 +144,6 @@ public class Inflector {
         return word;
     }
 
-    private String tableize(String className) {
-        return pluralize(underscore(className));
-    }
-
-    private String tableize(Class<?> klass) {
-        // Strip away package name - we only want the 'base' class name.
-        String className = klass.getName().replace(klass.getPackage().getName() + ".", "");
-        return tableize(className);
-    }
-
     public static Builder builder()
     {
         return new Builder();
@@ -175,22 +151,16 @@ public class Inflector {
 
     // Ugh, no open structs in Java (not-natively at least).
     private static class RuleAndReplacement {
-        private final String rule;
         private final String replacement;
         private final Pattern pattern;
 
         public RuleAndReplacement(String rule, String replacement) {
-            this.rule = rule;
             this.replacement = replacement;
             this.pattern = Pattern.compile(rule, Pattern.CASE_INSENSITIVE);
         }
 
         public String getReplacement() {
             return replacement;
-        }
-
-        public String getRule() {
-            return rule;
         }
 
         public Pattern getPattern() {

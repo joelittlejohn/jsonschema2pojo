@@ -24,14 +24,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -52,8 +53,8 @@ public class ArrayRuleTest {
         itemsNode.put("type", "integer");
 
         ObjectNode propertyNode = mapper.createObjectNode();
-        propertyNode.put("uniqueItems", true);
-        propertyNode.put("items", itemsNode);
+        propertyNode.set("uniqueItems", BooleanNode.TRUE);
+        propertyNode.set("items", itemsNode);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, mock(Schema.class));
 
@@ -73,8 +74,8 @@ public class ArrayRuleTest {
         itemsNode.put("type", "number");
 
         ObjectNode propertyNode = mapper.createObjectNode();
-        propertyNode.put("uniqueItems", false);
-        propertyNode.put("items", itemsNode);
+        propertyNode.set("uniqueItems", BooleanNode.FALSE);
+        propertyNode.set("items", itemsNode);
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
@@ -98,8 +99,8 @@ public class ArrayRuleTest {
         itemsNode.put("type", "number");
 
         ObjectNode propertyNode = mapper.createObjectNode();
-        propertyNode.put("uniqueItems", false);
-        propertyNode.put("items", itemsNode);
+        propertyNode.set("uniqueItems", BooleanNode.FALSE);
+        propertyNode.set("items", itemsNode);
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
@@ -124,8 +125,8 @@ public class ArrayRuleTest {
         itemsNode.put("type", "boolean");
 
         ObjectNode propertyNode = mapper.createObjectNode();
-        propertyNode.put("uniqueItems", false);
-        propertyNode.put("items", itemsNode);
+        propertyNode.set("uniqueItems", BooleanNode.FALSE);
+        propertyNode.set("items", itemsNode);
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/defaultArray"));

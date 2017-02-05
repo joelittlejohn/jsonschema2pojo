@@ -16,21 +16,24 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertThat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class InclusionLevelIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @Rule
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelAlways() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -43,6 +46,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonAbsent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -55,6 +59,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -67,6 +72,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonEmpty() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -79,6 +85,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonNull() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -91,6 +98,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelUseDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -103,6 +111,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNotSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -130,6 +139,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelNonAbsent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -144,6 +154,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelNonDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -158,6 +169,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelNonEmpty() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -172,6 +184,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelNonNull() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -186,6 +199,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelUseDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
@@ -200,6 +214,7 @@ public class InclusionLevelIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson1InclusionLevelNotSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",

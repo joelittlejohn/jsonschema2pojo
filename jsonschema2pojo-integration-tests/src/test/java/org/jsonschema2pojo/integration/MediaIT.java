@@ -16,10 +16,10 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static java.lang.String.format;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -132,30 +133,30 @@ public class MediaIT {
 
         assertThat("unencoded setter has return type void", setter.getReturnType(), equalToType(Void.TYPE));
     }
-    
+
     @Test
     public void shouldCreateUriFieldWithUriFormat() throws SecurityException, NoSuchFieldException {
         Field field = classWithMediaProperties.getDeclaredField("withUriFormat");
 
         assertThat("withUriFormat field has type URI", field.getType(), equalToType(URI.class));
     }
-    
+
     @Test
     public void shouldHandleUnencodedDefault() throws Exception {
         Method getter = classWithMediaProperties.getDeclaredMethod("getUnencodedWithDefault");
-        
+
         Object object = new ObjectMapper().readValue("{}", classWithMediaProperties);
         String value = (String)getter.invoke(object);
 
         assertThat("unencodedWithDefault has the default value",
                 value, equalTo("default value"));
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void shouldReasonablyHandleBase64Default() throws Exception {
         Method getter = classWithMediaProperties.getDeclaredMethod("getBase64WithDefault");
-        
+
         Object object = new ObjectMapper().readValue("{}", classWithMediaProperties);
         byte[] value = (byte[])getter.invoke(object);
 
@@ -163,12 +164,12 @@ public class MediaIT {
         // we get null or the default.  Users should not depend on the functionality in
         // this situation, as it is unsupported.
         assertThat("base64WithDefault is null or the default value",
-                value, 
+                value,
                 anyOf(
-                        nullValue(), 
+                        nullValue(),
                         equalTo(new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00})));
     }
-    
+
     @Test
     public void shouldRoundTripBase64Field() throws Exception {
         roundTripAssertions(
@@ -177,7 +178,7 @@ public class MediaIT {
                 "//APAA==",
                 new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00});
     }
-    
+
     @Test
     public void shouldRoundTripUnencodedField() throws Exception {
         roundTripAssertions(
@@ -186,7 +187,7 @@ public class MediaIT {
                 "some text",
                 "some text");
     }
-    
+
     @Test
     public void shouldRoundTripQuotedPrintableField() throws Exception {
         roundTripAssertions(
@@ -195,12 +196,11 @@ public class MediaIT {
                 "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"",
                 "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes("UTF-8"));
     }
-    
+
     @Test
     public void shouldRoundTripQuotedPrintableFieldWithNoFieldVisibility() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibilityChecker(
-                mapper.getVisibilityChecker().withFieldVisibility(Visibility.NONE));
+        mapper.setVisibility(mapper.getVisibilityChecker().withFieldVisibility(Visibility.NONE));
 
         roundTripAssertions(
                 new ObjectMapper(),
@@ -208,7 +208,7 @@ public class MediaIT {
                 "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"",
                 "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes("UTF-8"));
     }
-    
+
     /**
      * Returns a matcher that tests for equality to the specified type.
      * @param type the type to check.
@@ -216,11 +216,11 @@ public class MediaIT {
      */
     @SuppressWarnings("rawtypes")
     public static Matcher<Class> equalToType( Class<?> type ) {
-      return equalTo((Class)type);
+        return equalTo((Class)type);
     }
-    
+
     public static void roundTripAssertions( ObjectMapper objectMapper, String propertyName, String jsonValue, Object javaValue) throws Exception {
-     
+
         ObjectNode node = objectMapper.createObjectNode();
         node.put(propertyName, jsonValue);
 
@@ -234,10 +234,10 @@ public class MediaIT {
 
         assertThat(jsonVersion.get(propertyName).asText(), is(equalTo(jsonValue)));
     }
-    
+
     /**
      * An example annotator that supports the quoted printable encoding, from RFC 2045.
-     * 
+     *
      * @author Christian Trimble
      * @see <a href="http://tools.ietf.org/html/rfc2045#section-6.7">Quoted-Printable Content-Transfer-Encoding, Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</a>
      */
@@ -252,33 +252,32 @@ public class MediaIT {
         @Override
         public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
             if( isQuotedPrintableProperty(propertyNode) ) {
-                field.annotate(JsonSerialize.class)
-                  .param(USING, QuotedPrintableSerializer.class)
-                  .param(INCLUDE, JsonSerialize.Inclusion.NON_NULL);
+                field.annotate(JsonSerialize.class).param(USING, QuotedPrintableSerializer.class);
+                field.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
                 field.annotate(JsonDeserialize.class).param(USING, QuotedPrintableDeserializer.class);
             }
         }
-        
+
         private static boolean isQuotedPrintableProperty( JsonNode propertyNode ) {
             return propertyNode.has(TYPE) &&
                     STRING.equals(propertyNode.get(TYPE).asText()) &&
-            propertyNode.has(MEDIA) && 
-            isQuotedPrintable(propertyNode.get(MEDIA));
-            
+                    propertyNode.has(MEDIA) &&
+                    isQuotedPrintable(propertyNode.get(MEDIA));
+
         }
-        
+
         private static boolean isQuotedPrintable( JsonNode mediaNode ) {
             return mediaNode.has(BINARY_ENCODING) &&
                     QUOTED_PRINTABLE.equalsIgnoreCase(mediaNode.get(BINARY_ENCODING).asText());
         }
-        
+
     }
-    
+
     public static class QuotedPrintableSerializer
-      extends StdSerializer<byte[]>
-      {
+    extends StdSerializer<byte[]>
+    {
         private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
-        
+
         public QuotedPrintableSerializer() {
             super(byte[].class);
         }
@@ -287,15 +286,15 @@ public class MediaIT {
         public void serialize(byte[] value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
             jgen.writeString(new String(codec.encode(value), "UTF-8"));
         }
-        
-      }
+
+    }
 
     @SuppressWarnings("serial")
     public static class QuotedPrintableDeserializer
-      extends StdDeserializer<byte[]>
-      {
+    extends StdDeserializer<byte[]>
+    {
         private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
-          
+
         public QuotedPrintableDeserializer() {
             super(byte[].class);
         }
@@ -308,7 +307,7 @@ public class MediaIT {
                 throw new IOException(format("could not decode quoted string in %s", jp.getCurrentName()), e);
             }
         }
-        
-      }
+
+    }
 
 }

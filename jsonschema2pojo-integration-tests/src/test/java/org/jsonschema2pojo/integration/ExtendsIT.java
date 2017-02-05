@@ -12,13 +12,13 @@
  */
 package org.jsonschema2pojo.integration;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
-
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
@@ -78,17 +78,17 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsEquals() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example2");
-        
+
         Class generatedType = resultsClassLoader.loadClass("com.example2.SubtypeOfSubtypeOfA");
         Object instance = generatedType.newInstance();
         Object instance2 = generatedType.newInstance();
 
         new PropertyDescriptor("parent", generatedType).getWriteMethod().invoke(instance, "1");
-        new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance, "2");        
-        
+        new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance, "2");
+
         new PropertyDescriptor("parent", generatedType).getWriteMethod().invoke(instance2, "not-equal");
         new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance2, "2");
-        
+
         assertFalse(instance.equals(instance2));
     }
 
@@ -108,7 +108,7 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsProperties() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("includeConstructors", true));
 
@@ -134,7 +134,7 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsParentProperties() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
 
@@ -166,7 +166,7 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsParentPropertiesInCorrectOrder() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfBDifferentType.json", "com.example", config("includeConstructors", true));
 
@@ -198,7 +198,7 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorDoesNotDuplicateArgsFromDuplicatedParentProperties() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
 
