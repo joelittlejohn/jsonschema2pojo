@@ -28,6 +28,7 @@ import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -89,6 +90,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    @Parameter(names = {"-il", "--inclusion-level"})
+    private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
     @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " + "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none", converter = ClassConverter.class)
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
@@ -253,6 +257,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public InclusionLevel getInclusionLevel() {
+        return inclusionLevel;
     }
 
     @Override
