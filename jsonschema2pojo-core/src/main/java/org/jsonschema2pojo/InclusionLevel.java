@@ -31,9 +31,13 @@ public enum InclusionLevel {
     ALWAYS,
 
     /**
-     * Value that indicates that properties are included unless their value is: null "absent" value of a referential
-     * type (like Java 8 `Optional`, or {link java.utl.concurrent.atomic.AtomicReference}); that is, something that
-     * would not deference to a non-null value.
+     * Value that indicates that properties are included unless their value is:
+     * <ul>
+     * <li>null
+     * <li>"absent" value of a referential type (like Java 8 `Optional`, or
+     * {link java.utl.concurrent.atomic.AtomicReference}); that is, something
+     * that would not deference to a non-null value.
+     * </ul>
      * Valid only for jackson2, for Jackson1 NON_NUL is used.
      */
     NON_ABSENT,
@@ -57,8 +61,9 @@ public enum InclusionLevel {
     NON_NULL,
 
     /**
-     * Pseudo-value used to indicate that the higher-level defaults make sense, to avoid overriding inclusion value.
-     * Valid only for jackson2, for Jackson1 NON_NUL is used.
+     * Pseudo-value used to indicate that the higher-level defaults make sense,
+     * to avoid overriding inclusion value. Valid only for jackson2, for
+     * Jackson1 NON_NULL is used.
      */
     USE_DEFAULTS,
 }

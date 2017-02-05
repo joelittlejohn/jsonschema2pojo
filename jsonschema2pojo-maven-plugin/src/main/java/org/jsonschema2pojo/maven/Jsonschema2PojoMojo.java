@@ -240,18 +240,19 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String annotationStyle = "jackson2";
 
     /**
-     * The Level of inclusion to set in the generated Java types for Jackson1 and Jackson2 serializers.
-     *      <p>
-     *          Supported values
-     *          <ul>
-     *              <li><code>ALWAYS</code></li>
-     *              <li><code>NON_ABSENT</code></li>
-     *              <li><code>NON_DEFAULT</code></li>
-     *              <li><code>NON_EMPTY</code></li>
-     *              <li><code>NON_NULL</code></li>
-     *              <li><code>USE_DEFAULTS</code></li>
-     *          </ul>
-     *      </p>
+     * The Level of inclusion to set in the generated Java types for Jackson1
+     * and Jackson2 serializers.
+     * <p>
+     * Supported values
+     * <ul>
+     * <li><code>ALWAYS</code></li>
+     * <li><code>NON_ABSENT</code></li>
+     * <li><code>NON_DEFAULT</code></li>
+     * <li><code>NON_EMPTY</code></li>
+     * <li><code>NON_NULL</code></li>
+     * <li><code>USE_DEFAULTS</code></li>
+     * </ul>
+     * </p>
      *
      * @parameter expression="${jsonschema2pojo.inclusionLevel}"
      *            default-value="NON_NULL"
@@ -310,6 +311,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include
      * <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a> annotations
      * (for schema rules like Nullable, NonNull, etc) in generated Java types.
+     *
      * @since 0.4.8
      */
     private boolean includeJsr305Annotations = false;
@@ -350,7 +352,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * The character encoding that should be used when writing the generated
      * Java source files.
      *
-     * @parameter expression="${jsonschema2pojo.outputEncoding}" default-value="UTF-8"
+     * @parameter expression="${jsonschema2pojo.outputEncoding}"
+     *            default-value="UTF-8"
      * @since 0.4.0
      */
     private String outputEncoding = "UTF-8";
@@ -360,7 +363,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * {@link java.util.Date} when adding date type fields to generated Java
      * types.
      *
-     * @parameter expression="${jsonschema2pojo.useJodaDates}" default-value="false"
+     * @parameter expression="${jsonschema2pojo.useJodaDates}"
+     *            default-value="false"
      * @since 0.4.0
      */
     private boolean useJodaDates = false;
@@ -428,7 +432,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for
      * Android development).
      *
-     * @parameter expression="${jsonschema2pojo.parcelable}" default-value="false"
+     * @parameter expression="${jsonschema2pojo.parcelable}"
+     *            default-value="false"
      * @since 0.4.11
      */
     private boolean parcelable = false;
@@ -460,9 +465,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String[] includes;
 
     /**
-     * List of file patterns to exclude.  This only applies to the initial scan of
-     * the file system and will not prevent inclusion through a "$ref" in one of the
-     * schemas.
+     * List of file patterns to exclude. This only applies to the initial scan
+     * of the file system and will not prevent inclusion through a "$ref" in one
+     * of the schemas.
      *
      * @parameter
      * @since 0.4.3
@@ -539,14 +544,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * The target version for generated source files.
      *
-     * @parameter expression="${maven.compiler.target}"
-     *            default-value="1.6"
+     * @parameter expression="${maven.compiler.target}" default-value="1.6"
      * @since 0.4.17
      */
     private String targetVersion = "1.6";
 
     /**
-     * Whether to include dynamic getters, setters, and builders or to omit these methods.
+     * Whether to include dynamic getters, setters, and builders or to omit
+     * these methods.
      *
      * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
      *            default-value="false"
@@ -562,11 +567,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @readonly
      */
     private MavenProject project;
-    
+
     /**
-     * Whether the fields of type `date-time` have the `@JsonFormat` annotation 
-     * with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS`
-     * and timezone set to default value of `UTC`
+     * Whether the fields of type `date-time` have the `@JsonFormat` annotation
+     * with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and
+     * timezone set to default value of `UTC`
      *
      * @parameter expression="${jsonschema2pojo.formatDateTimes}"
      *            default-value="false"
@@ -726,7 +731,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public InclusionLevel getInclusionLevel() { return InclusionLevel.valueOf(inclusionLevel.toUpperCase()); }
+    public InclusionLevel getInclusionLevel() {
+        return InclusionLevel.valueOf(inclusionLevel.toUpperCase());
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -904,9 +911,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return useBigDecimals;
     }
 
-   @Override
-   public boolean isFormatDateTimes() {
-      return formatDateTimes;
-   }
+    @Override
+    public boolean isFormatDateTimes() {
+        return formatDateTimes;
+    }
 
 }

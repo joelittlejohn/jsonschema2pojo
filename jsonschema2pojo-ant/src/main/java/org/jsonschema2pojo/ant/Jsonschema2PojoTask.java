@@ -143,7 +143,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String timeType = null;
 
     private String dateType = null;
-    
+
     private boolean formatDateTimes = false;
 
 
@@ -423,7 +423,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'inclusionLevel' property of this class
      *
      * @param inclusionLevel
-     * The level of inclusion for Jackson2 and Jackson2 serializer.
+     *            The level of inclusion for Jackson1 and Jackson2 serializer.
      */
     public void setInclusionLevel(InclusionLevel inclusionLevel) {
         this.inclusionLevel = inclusionLevel;
@@ -683,13 +683,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setIncludeDynamicAccessors(boolean includeDynamicAccessors) {
         this.includeDynamicAccessors = includeDynamicAccessors;
     }
-    
+
     /**
      * Sets the 'formatDateTimes' property of this class
      *
      * @param formatDateTimes
-     *            Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation 
-     *            with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSS</code> 
+     *            Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation
+     *            with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSS</code>
      *            and timezone set to default value of `UTC`
      */
     public void setFormatDateTime(boolean formatDateTimes) {
