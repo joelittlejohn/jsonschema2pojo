@@ -167,7 +167,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * @param node
      * @return
      */
-    private LinkedHashSet<String> getConstructorProperties(JsonNode node, Schema schema, boolean onlyRequired) {
+    private LinkedHashSet<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
 
         if (!node.has("properties")) {
             return new LinkedHashSet<String>();
@@ -222,7 +222,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JsonNode superSchemaNode = superTypeSchema.getContent();
 
-        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, superTypeSchema, onlyRequired);
+        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, onlyRequired);
         rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
 
         return rtn;
@@ -400,7 +400,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     private void addConstructors(JDefinedClass jclass, JsonNode node, Schema schema, boolean onlyRequired) {
 
-        LinkedHashSet<String> classProperties = getConstructorProperties(node, schema, onlyRequired);
+        LinkedHashSet<String> classProperties = getConstructorProperties(node, onlyRequired);
         LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, schema, onlyRequired);
 
         // no properties to put in the constructor => default constructor is good enough.

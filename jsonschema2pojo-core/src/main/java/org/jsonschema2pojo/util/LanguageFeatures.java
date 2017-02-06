@@ -16,25 +16,22 @@
 
 package org.jsonschema2pojo.util;
 
-import org.jsonschema2pojo.GenerationConfig;
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 
 import java.util.Collection;
 
-public class LanguageFeatures {
-    
-    public static final Collection<String> LESS_THAN_8 
-      = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6", "1.7", "7");
-    public static final Collection<String> LESS_THAN_7 
-      = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6");
-    public static final Collection<String> LESS_THAN_6 
-      = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5");
+import org.jsonschema2pojo.GenerationConfig;
 
-  public static boolean canUseJava7( GenerationConfig config ) {
-      return !LESS_THAN_7.contains(config.getTargetVersion());
-  }
-  
-  public static boolean canUseJava8( GenerationConfig config ) {
-      return !LESS_THAN_8.contains(config.getTargetVersion());
-   }
+public class LanguageFeatures {
+
+    private static final Collection<String> LESS_THAN_8 = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6", "1.7", "7");
+    private static final Collection<String> LESS_THAN_7 = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6");
+
+    public static boolean canUseJava7(GenerationConfig config) {
+        return !LESS_THAN_7.contains(config.getTargetVersion());
+    }
+
+    public static boolean canUseJava8(GenerationConfig config) {
+        return !LESS_THAN_8.contains(config.getTargetVersion());
+    }
 }

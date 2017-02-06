@@ -25,37 +25,34 @@ import com.sun.codemodel.JType;
  * <p>
  * Applies the "media" hyper schema rule.
  * </p>
- * 
+ *
  * @see <a href="http://json-schema.org/latest/json-schema-hypermedia.html#rfc.section.4.3">
  *   Section 4.3 media, JSON Hyper-Schema: Hypertext definitions for JSON Schema</a>
- * 
+ *
  * @author Christian Trimble
  * @since 0.4.2
  */
 public class MediaRule implements Rule<JType, JType> {
 
-    public static final String BINARY_ENCODING = "binaryEncoding";
-
-    protected RuleFactory ruleFactory;
+    private static final String BINARY_ENCODING = "binaryEncoding";
 
     /**
      * <p>
      * Constructs a new media rule.
      * </p>
-     * 
+     *
      * @param ruleFactory the rule factory that created this rule.
      * @since 0.4.2
      */
-    protected MediaRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+    protected MediaRule() {
     }
 
     /**
      * <p>
      * Applies this schema rule.
      * </p>
-     * 
-     * @param nodeName 
+     *
+     * @param nodeName
      *            the name of the property.
      * @param mediaNode
      *            the media node

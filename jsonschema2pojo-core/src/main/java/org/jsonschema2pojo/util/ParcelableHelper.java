@@ -20,7 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable.Creator;
 import com.sun.codemodel.*;
 import static org.jsonschema2pojo.util.Models.*;
-
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class ParcelableHelper {
 
@@ -76,7 +76,7 @@ public class ParcelableHelper {
                 createFromParcel.body()
                         .invoke(in, "readList")
                         .arg(instance.ref(f))
-                        .arg(JExpr.direct(getGenericType(f.type()) + ".class.getClassLoader()"));
+                        .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
              } else {
                 createFromParcel.body().assign(
                         instance.ref(f),
@@ -91,26 +91,9 @@ public class ParcelableHelper {
         createFromParcel.body()._return(instance);
     }
 
-    private String getGenericType(JType jType) {
-        if (jType.erasure().name().equals("List")) {
-            final String typeName = jType.fullName();
-            int start = 0;
-            int end = typeName.length();
-
-            for (int i = 0; i < typeName.length(); ++i) {
-                switch (typeName.charAt(i)) {
-                    case '<':
-                        start = i;
-                        break;
-                    case '>':
-                        end = i;
-                        break;
-                }
-            }
-            // plus one for excluding '<'
-            return typeName.substring(start+1, end);
-        }
-        return jType.erasure().name();
+    private String getListType(JType jType) {
+        final String typeName = jType.fullName();
+        return substringBeforeLast(substringAfter(typeName, "<"), ">");
     }
 
 }

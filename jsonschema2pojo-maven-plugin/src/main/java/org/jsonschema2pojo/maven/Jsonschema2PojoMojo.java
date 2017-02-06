@@ -588,6 +588,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
+    @SuppressWarnings("PMD.UselessParentheses")
     public void execute() throws MojoExecutionException {
 
         addProjectDependenciesToClasspath();

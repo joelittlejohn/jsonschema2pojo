@@ -78,11 +78,11 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         int accessModifier = ruleFactory.getGenerationConfig().isIncludeAccessors() ? JMod.PRIVATE : JMod.PUBLIC;
         JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
-        
+
         propertyAnnotations(nodeName, node, schema, field);
-        
-        formatAnnotation(field, jclass, nodeName, node);
-        
+
+        formatAnnotation(field, node);
+
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
@@ -137,8 +137,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getNotRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
         }
     }
-    
-    private void formatAnnotation(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode node) {
+
+    private void formatAnnotation(JFieldVar field, JsonNode node) {
         String format = node.path("format").asText();
         if ("date-time".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().dateField(field, node);

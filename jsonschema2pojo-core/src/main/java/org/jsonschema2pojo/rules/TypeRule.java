@@ -101,7 +101,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(String.class);
         } else if (propertyTypeName.equals("number")) {
 
-            type = getNumberType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
+            type = getNumberType(jClassContainer.owner(), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("integer")) {
 
             type = getIntegerType(jClassContainer.owner(), node, ruleFactory.getGenerationConfig());
@@ -170,7 +170,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     /**
      * Returns the JType for a number field. Handles type lookup and unboxing.
      */
-    private JType getNumberType(JCodeModel owner, JsonNode node, GenerationConfig config) {
+    private JType getNumberType(JCodeModel owner, GenerationConfig config) {
 
         if (config.isUseBigDecimals()) {
             return unboxIfNecessary(owner.ref(BigDecimal.class), config);

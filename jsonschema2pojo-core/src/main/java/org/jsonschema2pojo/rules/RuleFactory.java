@@ -363,7 +363,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "media" declaration.
      */
     public Rule<JType, JType> getMediaRule() {
-        return new MediaRule(this);
+        return new MediaRule();
     }
 
     /**

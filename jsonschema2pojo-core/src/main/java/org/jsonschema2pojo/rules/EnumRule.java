@@ -64,7 +64,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     private static final String VALUE_FIELD_NAME = "value";
 
     private final RuleFactory ruleFactory;
-    
+
     protected EnumRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
@@ -109,35 +109,33 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         if (node.has("javaInterfaces")) {
             addInterfaces(_enum, node.get("javaInterfaces"));
         }
-        
+
         // copy our node; remove the javaType as it will throw off the TypeRule for our case
         ObjectNode typeNode = (ObjectNode)node.deepCopy();
         typeNode.remove("javaType");
 
         // If type is specified on the enum, get a type rule for it.  Otherwise, we're a string.
         // (This is different from the default of Object, which is why we don't do this for every case.)
-        JType backingType = node.has("type") ? 
+        JType backingType = node.has("type") ?
                 ruleFactory.getTypeRule().apply(nodeName, typeNode, container, schema) :
-                container.owner().ref(String.class);
-        
-        JFieldVar valueField = addValueField(_enum, backingType);
-        
-        // override toString only if we have a sensible string to return
-        if(isString(backingType)){
-            addToString(_enum, valueField);
-        }
-        
-        addValueMethod(_enum, valueField);
-        
-        addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
-        addFactoryMethod(_enum, backingType);
+                    container.owner().ref(String.class);
 
-        return _enum;
+                JFieldVar valueField = addValueField(_enum, backingType);
+
+                // override toString only if we have a sensible string to return
+                if(isString(backingType)){
+                    addToString(_enum, valueField);
+                }
+
+                addValueMethod(_enum, valueField);
+
+                addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
+                addFactoryMethod(_enum, backingType);
+
+                return _enum;
     }
 
     private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
-
-        int modifiers = container.isPackage() ? JMod.PUBLIC : JMod.PUBLIC;
 
         try {
             if (node.has("javaType")) {
@@ -155,7 +153,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 }
             } else {
                 try {
-                    return container._class(modifiers, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    return container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }
@@ -184,7 +182,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         if(!isString(backingType)){
             expr = expr.plus(JExpr.lit(""));
         }
-        
+
         illegalArgumentException.arg(expr);
         _if._then()._throw(illegalArgumentException);
         _if._else()._return(constant);
@@ -227,21 +225,21 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         if(!isString(valueField.type())){
             toReturn = toReturn.plus(JExpr.lit(""));
         }
-        
+
         body._return(toReturn);
 
         toString.annotate(Override.class);
     }
-    
+
     private void addValueMethod(JDefinedClass _enum, JFieldVar valueField) {
         JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
 
         JBlock body = fromValue.body();
         body._return(JExpr._this().ref(valueField));
-        
+
         ruleFactory.getAnnotator().enumValueMethod(fromValue);
     }
-    
+
     private boolean isString(JType type){
         return type.fullName().equals(String.class.getName());
     }
@@ -257,18 +255,17 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 existingConstantNames.add(constantName);
 
                 JEnumConstant constant = _enum.enumConstant(constantName);
-                
-                String typeName = type.unboxify().fullName(); 
+
+                String typeName = type.unboxify().fullName();
                 if(typeName.equals("int")){ // integer
-                    constant.arg(JExpr.lit(value.intValue()));   
+                    constant.arg(JExpr.lit(value.intValue()));
                 } else if(typeName.equals("long")){ // integer-as-long
                     constant.arg(JExpr.lit(value.longValue()));
                 } else if(typeName.equals("double")){ // number
                     constant.arg(JExpr.lit(value.doubleValue()));
                 } else if(typeName.equals("boolean")){ // boolean
-                    constant.arg(JExpr.lit(value.booleanValue()));    
-                } else { // string, null, array, object?  
-                    // only string should really be valid here... TODO throw error?
+                    constant.arg(JExpr.lit(value.booleanValue()));
+                } else {
                     constant.arg(JExpr.lit(value.asText()));
                 }
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());

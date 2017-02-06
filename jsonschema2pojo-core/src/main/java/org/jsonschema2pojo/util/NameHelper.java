@@ -16,17 +16,15 @@
 
 package org.jsonschema2pojo.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
+import static java.lang.Character.*;
+import static javax.lang.model.SourceVersion.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
-import static java.lang.Character.isDigit;
-import static javax.lang.model.SourceVersion.isKeyword;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.containsAny;
-import static org.apache.commons.lang3.StringUtils.remove;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JType;
 
 public class NameHelper {
 
@@ -68,13 +66,13 @@ public class NameHelper {
     }
 
     private String makeLowerCamelCase(String name) {
-        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
+        return toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
     /**
      * Convert jsonFieldName into the equivalent Java fieldname by replacing
      * illegal characters and normalizing it.
-     * 
+     *
      * @param jsonFieldName
      * @param node
      * @return
@@ -99,7 +97,7 @@ public class NameHelper {
 
     /**
      * Generate setter method name for property.
-     * 
+     *
      * @param propertyName
      * @param node
      * @return
@@ -125,7 +123,7 @@ public class NameHelper {
      * @return
      */
     public String getFieldName(String propertyName, JsonNode node) {
-        
+
         if (node != null && node.has("javaName")) {
             propertyName = node.get("javaName").textValue();
         }
@@ -135,7 +133,7 @@ public class NameHelper {
 
     /**
      * Generate getter method name for property.
-     * 
+     *
      * @param propertyName
      * @param type
      * @param node
