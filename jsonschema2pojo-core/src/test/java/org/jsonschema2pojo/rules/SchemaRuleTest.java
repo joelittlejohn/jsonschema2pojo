@@ -24,8 +24,10 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.SourceType;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -55,9 +57,13 @@ public class SchemaRuleTest {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
+        final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
+        when(mockGenerationConfig.isCustomSeparatorCharacters()).thenReturn("#/.");
+
         TypeRule mockTypeRule = mock(TypeRule.class);
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
         when(mockRuleFactory.getSchemaStore()).thenReturn(new SchemaStore());
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
 
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
@@ -106,10 +112,14 @@ public class SchemaRuleTest {
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema schema = schemaStore.create(schemaUri);
+        Schema schema = schemaStore.create(schemaUri, "#/.");
         schema.setJavaType(previouslyGeneratedType);
 
+        final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
+        when(mockGenerationConfig.isCustomSeparatorCharacters()).thenReturn("#/.");
+
         when(mockRuleFactory.getSchemaStore()).thenReturn(schemaStore);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
 
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());

@@ -168,6 +168,9 @@ public class Arguments implements GenerationConfig {
     
     @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
+
+    @Parameter(names = {"-csc", "--custom-separator-characters"}, description = "Separators characters to be used to split JSON Pointers ($ref).")
+    private String customSeparatorCharacters = "#/.";
     
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -416,6 +419,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public String isCustomSeparatorCharacters() {
+        return customSeparatorCharacters;
     }
 
 }

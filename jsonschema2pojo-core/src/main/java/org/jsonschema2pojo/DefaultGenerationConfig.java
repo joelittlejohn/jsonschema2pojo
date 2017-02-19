@@ -332,4 +332,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
    public boolean isFormatDateTimes() {
       return false;
    }
+
+    /**
+     * @return "#/."
+     */
+    @Override
+    public String isCustomSeparatorCharacters() {
+        return "#/.";
+    }
 }

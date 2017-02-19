@@ -36,7 +36,7 @@ public class SchemaStoreTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = new SchemaStore().create(schemaUri);
+        Schema schema = new SchemaStore().create(schemaUri, "#/.");
 
         assertThat(schema, is(notNullValue()));
         assertThat(schema.getId(), is(equalTo(schemaUri)));
@@ -51,8 +51,8 @@ public class SchemaStoreTest {
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(addressSchemaUri);
-        Schema enumSchema = schemaStore.create(addressSchema, "enum.json");
+        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
+        Schema enumSchema = schemaStore.create(addressSchema, "enum.json", "#/.");
 
         String expectedUri = removeEnd(addressSchemaUri.toString(), "address.json") + "enum.json";
 
@@ -68,8 +68,8 @@ public class SchemaStoreTest {
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(schemaUri);
-        Schema selfRefSchema = schemaStore.create(addressSchema, "#");
+        Schema addressSchema = schemaStore.create(schemaUri, "#/.");
+        Schema selfRefSchema = schemaStore.create(addressSchema, "#", "#/.");
 
         assertThat(addressSchema, is(sameInstance(selfRefSchema)));
 
@@ -81,9 +81,9 @@ public class SchemaStoreTest {
         URI schemaUri = getClass().getResource("/schema/embeddedRef.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema topSchema = schemaStore.create(schemaUri);
-        Schema embeddedSchema = schemaStore.create(topSchema, "#/definitions/embedded");
-        Schema selfRefSchema = schemaStore.create(embeddedSchema, "#");
+        Schema topSchema = schemaStore.create(schemaUri, "#/.");
+        Schema embeddedSchema = schemaStore.create(topSchema, "#/definitions/embedded", "#/.");
+        Schema selfRefSchema = schemaStore.create(embeddedSchema, "#", "#/.");
 
         assertThat(topSchema, is(sameInstance(selfRefSchema)));
 
@@ -95,8 +95,8 @@ public class SchemaStoreTest {
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(addressSchemaUri);
-        Schema innerSchema = schemaStore.create(addressSchema, "#/properties/post-office-box");
+        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
+        Schema innerSchema = schemaStore.create(addressSchema, "#/properties/post-office-box", "#/.");
 
         String expectedUri = addressSchemaUri.toString() + "#/properties/post-office-box";
 
@@ -114,9 +114,9 @@ public class SchemaStoreTest {
 
         SchemaStore schemaStore = new SchemaStore();
 
-        Schema schema1 = schemaStore.create(schemaUri);
+        Schema schema1 = schemaStore.create(schemaUri, "#/.");
 
-        Schema schema2 = schemaStore.create(schemaUri);
+        Schema schema2 = schemaStore.create(schemaUri, "#/.");
 
         assertThat(schema1, is(sameInstance(schema2)));
 
@@ -130,7 +130,7 @@ public class SchemaStoreTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = new SchemaStore().create(schemaUri);
+        Schema schema = new SchemaStore().create(schemaUri, "#/.");
 
         schema.setJavaTypeIfEmpty(firstClass);
         assertThat(schema.getJavaType(), is(equalTo(firstClass)));

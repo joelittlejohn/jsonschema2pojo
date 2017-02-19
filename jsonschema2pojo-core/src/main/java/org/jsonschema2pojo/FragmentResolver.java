@@ -26,9 +26,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class FragmentResolver {
 
-    public JsonNode resolve(JsonNode tree, String path) {
+    public JsonNode resolve(JsonNode tree, String path, String separatorChars) {
 
-        return resolve(tree, new ArrayList<String>(asList(split(path, "#/."))));
+        return resolve(tree, new ArrayList<String>(asList(split(path, separatorChars))));
 
     }
 

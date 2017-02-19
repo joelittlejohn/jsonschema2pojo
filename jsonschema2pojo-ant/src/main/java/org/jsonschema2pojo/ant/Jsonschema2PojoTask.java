@@ -146,6 +146,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean formatDateTimes = false;
 
+    private String customSeparatorCharacters = "#/.";
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -696,6 +697,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.formatDateTimes = formatDateTimes;
     }
 
+    /**
+     * Sets the 'customSeparatorCharacters' property of this class
+     *
+     * @param customSeparatorCharacters Separators characters to be used to split JSON Pointers ($ref).
+     */
+    public void setCustomSeparatorCharacters(String customSeparatorCharacters) {
+        this.customSeparatorCharacters = customSeparatorCharacters;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -938,4 +948,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return formatDateTimes;
     }
 
+    @Override
+    public String isCustomSeparatorCharacters() {
+        return customSeparatorCharacters;
+    }
 }

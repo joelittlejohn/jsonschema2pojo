@@ -441,4 +441,11 @@ public interface GenerationConfig {
      */
     boolean isFormatDateTimes();
 
+    /**
+     * Gets the `customSeparatorCharacters` configuration option.
+     *
+     * @return The separator characters to be used to split JSON Pointers.
+     */
+    String isCustomSeparatorCharacters();
+
 }

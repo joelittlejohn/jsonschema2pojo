@@ -56,7 +56,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
-            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText());
+            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().isCustomSeparatorCharacters());
             schemaNode = schema.getContent();
 
             if (schema.isGenerated()) {

@@ -579,6 +579,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean formatDateTimes = false;
 
+    /**
+     * Separators characters to be used to split JSON Pointers ($ref).
+     *
+     * @parameter expression="${jsonschema2pojo.customSeparatorCharacters}" default-value="#/."
+     * @since 0.4.31
+     */
+    private String customSeparatorCharacters = "#/.";
+
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
@@ -915,6 +923,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public String isCustomSeparatorCharacters() {
+        return customSeparatorCharacters;
     }
 
 }

@@ -41,14 +41,14 @@ public class SchemaStore {
      *            the id of the schema being created
      * @return a schema object containing the contents of the given path
      */
-    public synchronized Schema create(URI id) {
+    public synchronized Schema create(URI id, String separatorChars) {
 
         if (!schemas.containsKey(id)) {
 
             JsonNode content = contentResolver.resolve(removeFragment(id));
 
             if (id.toString().contains("#")) {
-                JsonNode childContent = fragmentResolver.resolve(content, '#' + id.getFragment());
+                JsonNode childContent = fragmentResolver.resolve(content, '#' + id.getFragment(), separatorChars);
                 schemas.put(id, new Schema(id, childContent, content));
             } else {
                 schemas.put(id, new Schema(id, content, content));
@@ -77,7 +77,7 @@ public class SchemaStore {
      * @return a schema object containing the contents of the given path
      */
     @SuppressWarnings("PMD.UselessParentheses")
-    public Schema create(Schema parent, String path) {
+    public Schema create(Schema parent, String path, String separatorChars) {
 
         if (!path.equals("#")) {
             // if path is an empty string then resolving it below results in jumping up a level. e.g. "/path/to/file.json" becomes "/path/to"
@@ -109,11 +109,11 @@ public class SchemaStore {
         }
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
-            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getParentContent()));
+            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path, separatorChars), parent.getParentContent()));
             return schemas.get(id);
         }
 
-        return create(id);
+        return create(id, separatorChars);
 
     }
 
