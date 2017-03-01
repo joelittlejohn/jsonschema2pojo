@@ -52,6 +52,8 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("squid"), is("squid"));
         assertThat(Inflector.getInstance().singularize("mattress"), is("mattress"));
         assertThat(Inflector.getInstance().singularize("address"), is("address"));
+        assertThat(Inflector.getInstance().singularize("status"), is("status"));
+        assertThat(Inflector.getInstance().singularize("EntityStatus"), is("EntityStatus"));
 
         assertThat(Inflector.getInstance().singularize("men"), is("man"));
         assertThat(Inflector.getInstance().singularize("women"), is("woman"));
@@ -62,6 +64,8 @@ public class InflectorTest {
 
         assertThat(Inflector.getInstance().pluralize("mattress"), is("mattresses"));
         assertThat(Inflector.getInstance().pluralize("address"), is("addresses"));
+        assertThat(Inflector.getInstance().pluralize("status"), is("status"));
+        assertThat(Inflector.getInstance().pluralize("EntityStatus"), is("EntityStatus"));
 
     }
 
