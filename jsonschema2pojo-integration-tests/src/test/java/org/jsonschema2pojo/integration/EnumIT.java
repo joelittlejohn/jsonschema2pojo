@@ -224,8 +224,8 @@ public class EnumIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");
 
         resultsClassLoader.loadClass("com.example.MultipleEnumArraysWithSameName");
-        resultsClassLoader.loadClass("com.example.Status");
-        resultsClassLoader.loadClass("com.example.Status_");
+        resultsClassLoader.loadClass("com.example.ObjectStatus");
+        resultsClassLoader.loadClass("com.example.ObjectStatus_");
     }
 
     @Test
