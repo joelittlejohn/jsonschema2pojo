@@ -66,7 +66,9 @@ public class Inflector {
             .plural("(matr|vert|ind)ix|ex$", "$1ices")
             .plural("([m|l])ouse$", "$1ice")
             .plural("(ox)$", "$1en")
-            .plural("(quiz)$", "$1zes");
+            .plural("man$", "men")
+            .plural("(quiz)$", "$1zes")
+            .plural("specimen", "specimens");
 
         builder.singular("s$", "")
             .singular("(n)ews$", "$1ews")
@@ -92,12 +94,10 @@ public class Inflector {
             .singular("(vert|ind)ices$", "$1ex")
             .singular("(matr)ices$", "$1ix")
             .singular("(quiz)zes$", "$1")
-            .singular("(ess)$", "$1");
-
-        builder.singular("men$", "man")
-            .plural("man$", "men")
+            .singular("(ess)$", "$1")
+            .singular("men$", "man")
             .singular("specimen", "specimen")
-            .plural("specimen", "specimens");
+            .singular("status$", "status");
 
         builder.irregular("curve", "curves")
             .irregular("leaf", "leaves")

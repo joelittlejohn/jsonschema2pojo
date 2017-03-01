@@ -59,6 +59,8 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("children"), is("child"));
 
         assertThat(Inflector.getInstance().singularize("s"), is("s"));
+        assertThat(Inflector.getInstance().singularize("status"), is("status"));
+        assertThat(Inflector.getInstance().singularize("statuses"), is("status"));
 
         assertThat(Inflector.getInstance().pluralize("mattress"), is("mattresses"));
         assertThat(Inflector.getInstance().pluralize("address"), is("addresses"));
