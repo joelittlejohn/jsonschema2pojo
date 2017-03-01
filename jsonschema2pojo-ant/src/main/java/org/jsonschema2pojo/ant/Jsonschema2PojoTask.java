@@ -146,7 +146,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean formatDateTimes = false;
 
-    private String customSeparatorCharacters = "#/.";
+    private String refFragmentPathDelimiters = "#/.";
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -698,12 +698,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'customSeparatorCharacters' property of this class
+     * Sets the 'refFragmentPathDelimiters' property of this class
      *
-     * @param customSeparatorCharacters Separators characters to be used to split JSON Pointers ($ref).
+     * @param refFragmentPathDelimiters A string containing any characters that should act as path delimiters when
+     *                                  resolving $ref fragments. By default, #, / and . are used in an attempt
+     *                                  to support JSON Pointer and JSON Path.
      */
-    public void setCustomSeparatorCharacters(String customSeparatorCharacters) {
-        this.customSeparatorCharacters = customSeparatorCharacters;
+    public void setRefFragmentPathDelimiters(String refFragmentPathDelimiters) {
+        this.refFragmentPathDelimiters = refFragmentPathDelimiters;
     }
 
     @Override
@@ -949,7 +951,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public String isCustomSeparatorCharacters() {
-        return customSeparatorCharacters;
+    public String getRefFragmentPathDelimiters() {
+        return refFragmentPathDelimiters;
     }
 }

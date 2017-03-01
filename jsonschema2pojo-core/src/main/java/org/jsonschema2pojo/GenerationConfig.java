@@ -442,10 +442,11 @@ public interface GenerationConfig {
     boolean isFormatDateTimes();
 
     /**
-     * Gets the `customSeparatorCharacters` configuration option.
+     * Gets the `refFragmentPathDelimiters` configuration option.
      *
-     * @return The separator characters to be used to split JSON Pointers.
+     * @return A string containing any characters that should act as path delimiters when resolving $ref fragments.
+     *         By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
      */
-    String isCustomSeparatorCharacters();
+    String getRefFragmentPathDelimiters();
 
 }

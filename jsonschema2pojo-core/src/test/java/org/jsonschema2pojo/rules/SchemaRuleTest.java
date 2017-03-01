@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.SourceType;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -58,7 +57,7 @@ public class SchemaRuleTest {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
-        when(mockGenerationConfig.isCustomSeparatorCharacters()).thenReturn("#/.");
+        when(mockGenerationConfig.getRefFragmentPathDelimiters()).thenReturn("#/.");
 
         TypeRule mockTypeRule = mock(TypeRule.class);
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
@@ -116,7 +115,7 @@ public class SchemaRuleTest {
         schema.setJavaType(previouslyGeneratedType);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
-        when(mockGenerationConfig.isCustomSeparatorCharacters()).thenReturn("#/.");
+        when(mockGenerationConfig.getRefFragmentPathDelimiters()).thenReturn("#/.");
 
         when(mockRuleFactory.getSchemaStore()).thenReturn(schemaStore);
         when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);

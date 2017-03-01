@@ -337,7 +337,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return "#/."
      */
     @Override
-    public String isCustomSeparatorCharacters() {
+    public String getRefFragmentPathDelimiters() {
         return "#/.";
     }
 }

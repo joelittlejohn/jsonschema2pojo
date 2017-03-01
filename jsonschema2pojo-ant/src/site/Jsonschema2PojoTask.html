@@ -409,8 +409,9 @@
         <td align="center" valign="top">No (default <code>false</code>)</td>
     </tr>
     <tr>
-        <td valign="top">customSeparatorCharacters</td>
-        <td valign="top">Separators characters to be used to split JSON Pointers ($ref).
+        <td valign="top">refFragmentPathDelimiters</td>
+        <td valign="top">A string containing any characters that should act as path delimiters when resolving $ref
+            fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
         </td>
         <td align="center" valign="top">No (default <code>#/.</code>)</td>
     </tr>

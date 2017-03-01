@@ -169,8 +169,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
 
-    @Parameter(names = {"-csc", "--custom-separator-characters"}, description = "Separators characters to be used to split JSON Pointers ($ref).")
-    private String customSeparatorCharacters = "#/.";
+    @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
+    private String refFragmentPathDelimiters = "#/.";
     
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -422,8 +422,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public String isCustomSeparatorCharacters() {
-        return customSeparatorCharacters;
+    public String getRefFragmentPathDelimiters() {
+        return refFragmentPathDelimiters;
     }
 
 }

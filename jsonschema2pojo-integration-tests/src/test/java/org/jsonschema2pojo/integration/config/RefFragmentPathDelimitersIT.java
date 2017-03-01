@@ -20,22 +20,18 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertThat;
 
-public class CustomSeparatorCharactersIT {
+public class RefFragmentPathDelimitersIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void defaultCustomSeparatorCharactersIsStandard() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void refFragmentPathDelimitersUsedInAPropertyIsReadSuccessfully() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nonStandardRef.json", "com.example",
-                config("customSeparatorCharacters", "#/"));
+                config("refFragmentPathDelimiters", "#/"));
 
-        assertThat(resultsClassLoader.loadClass("com.example.Foo").getName(), is("com.example.Foo"));
-        assertThat(resultsClassLoader.loadClass("com.example.Bar").getName(), is("com.example.Bar"));
+        resultsClassLoader.loadClass("com.example.Foo");
     }
-
 }
