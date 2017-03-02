@@ -1,0 +1,19 @@
+{
+  "type" : "object",
+  "properties" : {
+    "foo" : {
+      "$ref" : "#/definitions/com.example.Foo"
+    }
+  },
+  "additionalProperties" : false,
+  "definitions" : {
+    "com.example.Foo" : {
+      "type" : "object",
+      "properties" : {
+        "bar" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

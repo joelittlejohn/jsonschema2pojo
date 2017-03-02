@@ -73,6 +73,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean usePrimitives
   FileFilter fileFilter
   boolean formatDateTimes
+  String refFragmentPathDelimiters
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -116,6 +117,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     targetVersion = '1.6'
     includeDynamicAccessors = false
     formatDateTimes = false
+    refFragmentPathDelimiters = "#/."
   }
 
   @Override
@@ -201,11 +203,12 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
        |formatDateTimes = ${formatDateTimes}
+       |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
      """.stripMargin()
   }
   
   public boolean isFormatDateTimes() {
     return formatDateTimes;
   }
-  
+
 }

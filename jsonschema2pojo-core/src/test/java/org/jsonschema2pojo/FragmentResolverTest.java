@@ -38,7 +38,7 @@ public class FragmentResolverTest {
         root.set("child2", root.objectNode());
         root.set("child3", root.objectNode());
 
-        assertThat((ObjectNode) resolver.resolve(root, "#"), is(sameInstance(root)));
+        assertThat((ObjectNode) resolver.resolve(root, "#", "#/."), is(sameInstance(root)));
 
     }
 
@@ -71,17 +71,17 @@ public class FragmentResolverTest {
         z.set("1", _1);
         z.set("2", _2);
 
-        assertThat((ObjectNode) resolver.resolve(root, "#/a"), is(sameInstance(a)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/b"), is(sameInstance(b)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/c"), is(sameInstance(c)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a", "#/."), is(sameInstance(a)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/b", "#/."), is(sameInstance(b)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/c", "#/."), is(sameInstance(c)));
 
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/x"), is(sameInstance(x)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/y"), is(sameInstance(y)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/z"), is(sameInstance(z)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/x", "#/."), is(sameInstance(x)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/y", "#/."), is(sameInstance(y)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/z", "#/."), is(sameInstance(z)));
 
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/0"), is(sameInstance(_0)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/1"), is(sameInstance(_1)));
-        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/2"), is(sameInstance(_2)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/0", "#/."), is(sameInstance(_0)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/1", "#/."), is(sameInstance(_1)));
+        assertThat((ObjectNode) resolver.resolve(root, "#/a/z/2", "#/."), is(sameInstance(_2)));
 
     }
 
@@ -97,9 +97,9 @@ public class FragmentResolverTest {
         a.add(root.objectNode());
         a.add(root.objectNode());
 
-        assertThat(resolver.resolve(root, "#/a/0"), is(sameInstance(a.get(0))));
-        assertThat(resolver.resolve(root, "#/a/1"), is(sameInstance(a.get(1))));
-        assertThat(resolver.resolve(root, "#/a/2"), is(sameInstance(a.get(2))));
+        assertThat(resolver.resolve(root, "#/a/0", "#/."), is(sameInstance(a.get(0))));
+        assertThat(resolver.resolve(root, "#/a/1", "#/."), is(sameInstance(a.get(1))));
+        assertThat(resolver.resolve(root, "#/a/2", "#/."), is(sameInstance(a.get(2))));
 
     }
 
@@ -111,9 +111,9 @@ public class FragmentResolverTest {
         root.add(root.objectNode());
         root.add(root.objectNode());
 
-        assertThat(resolver.resolve(root, "#/0"), is(sameInstance(root.get(0))));
-        assertThat(resolver.resolve(root, "#/1"), is(sameInstance(root.get(1))));
-        assertThat(resolver.resolve(root, "#/2"), is(sameInstance(root.get(2))));
+        assertThat(resolver.resolve(root, "#/0", "#/."), is(sameInstance(root.get(0))));
+        assertThat(resolver.resolve(root, "#/1", "#/."), is(sameInstance(root.get(1))));
+        assertThat(resolver.resolve(root, "#/2", "#/."), is(sameInstance(root.get(2))));
 
     }
 
@@ -122,7 +122,7 @@ public class FragmentResolverTest {
 
         ObjectNode root = new ObjectMapper().createObjectNode();
 
-        resolver.resolve(root, "#/a/b/c");
+        resolver.resolve(root, "#/a/b/c", "#/.");
 
     }
 
@@ -134,7 +134,7 @@ public class FragmentResolverTest {
         ArrayNode a = root.arrayNode();
         root.set("a", a);
 
-        resolver.resolve(root, "#/a/b");
+        resolver.resolve(root, "#/a/b", "#/.");
 
     }
 

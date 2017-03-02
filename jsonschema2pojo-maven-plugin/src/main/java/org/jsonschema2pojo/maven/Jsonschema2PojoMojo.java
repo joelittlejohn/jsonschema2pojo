@@ -579,6 +579,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean formatDateTimes = false;
 
+    /**
+     * A string containing any characters that should act as path delimiters when resolving $ref fragments.
+     * By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
+     *
+     * @parameter expression="${jsonschema2pojo.refFragmentPathDelimiters}" default-value="#/."
+     * @since 0.4.31
+     */
+    private String refFragmentPathDelimiters = "#/.";
+
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
@@ -915,6 +924,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public String getRefFragmentPathDelimiters() {
+        return refFragmentPathDelimiters;
     }
 
 }

@@ -146,6 +146,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean formatDateTimes = false;
 
+    private String refFragmentPathDelimiters = "#/.";
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -696,6 +697,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.formatDateTimes = formatDateTimes;
     }
 
+    /**
+     * Sets the 'refFragmentPathDelimiters' property of this class
+     *
+     * @param refFragmentPathDelimiters A string containing any characters that should act as path delimiters when
+     *                                  resolving $ref fragments. By default, #, / and . are used in an attempt
+     *                                  to support JSON Pointer and JSON Path.
+     */
+    public void setRefFragmentPathDelimiters(String refFragmentPathDelimiters) {
+        this.refFragmentPathDelimiters = refFragmentPathDelimiters;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -938,4 +950,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return formatDateTimes;
     }
 
+    @Override
+    public String getRefFragmentPathDelimiters() {
+        return refFragmentPathDelimiters;
+    }
 }

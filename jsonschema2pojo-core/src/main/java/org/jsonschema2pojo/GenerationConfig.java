@@ -441,4 +441,12 @@ public interface GenerationConfig {
      */
     boolean isFormatDateTimes();
 
+    /**
+     * Gets the `refFragmentPathDelimiters` configuration option.
+     *
+     * @return A string containing any characters that should act as path delimiters when resolving $ref fragments.
+     *         By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
+     */
+    String getRefFragmentPathDelimiters();
+
 }

@@ -39,16 +39,18 @@ public class SchemaStore {
      * 
      * @param id
      *            the id of the schema being created
+     * @param refFragmentPathDelimiters A string containing any characters
+     *                                  that should act as path delimiters when resolving $ref fragments.
      * @return a schema object containing the contents of the given path
      */
-    public synchronized Schema create(URI id) {
+    public synchronized Schema create(URI id, String refFragmentPathDelimiters) {
 
         if (!schemas.containsKey(id)) {
 
             JsonNode content = contentResolver.resolve(removeFragment(id));
 
             if (id.toString().contains("#")) {
-                JsonNode childContent = fragmentResolver.resolve(content, '#' + id.getFragment());
+                JsonNode childContent = fragmentResolver.resolve(content, '#' + id.getFragment(), refFragmentPathDelimiters);
                 schemas.put(id, new Schema(id, childContent, content));
             } else {
                 schemas.put(id, new Schema(id, content, content));
@@ -74,10 +76,12 @@ public class SchemaStore {
      *            the relative path of this schema (will be used to create a
      *            complete URI by resolving this path against the parent
      *            schema's id)
+     * @param refFragmentPathDelimiters A string containing any characters
+     *                                  that should act as path delimiters when resolving $ref fragments.
      * @return a schema object containing the contents of the given path
      */
     @SuppressWarnings("PMD.UselessParentheses")
-    public Schema create(Schema parent, String path) {
+    public Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
 
         if (!path.equals("#")) {
             // if path is an empty string then resolving it below results in jumping up a level. e.g. "/path/to/file.json" becomes "/path/to"
@@ -109,11 +113,11 @@ public class SchemaStore {
         }
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
-            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path), parent.getParentContent()));
+            schemas.put(id, new Schema(id, fragmentResolver.resolve(parent.getParentContent(), path, refFragmentPathDelimiters), parent.getParentContent()));
             return schemas.get(id);
         }
 
-        return create(id);
+        return create(id, refFragmentPathDelimiters);
 
     }
 

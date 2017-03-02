@@ -328,7 +328,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 path = "#" + schema.getId().getFragment() + "/extends";
             }
 
-            Schema superSchema = ruleFactory.getSchemaStore().create(schema, path);
+            Schema superSchema = ruleFactory.getSchemaStore().create(schema, path, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
 
             if (followRefs) {
                 superSchema = resolveSchemaRefsRecursive(superSchema);
@@ -342,7 +342,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private Schema resolveSchemaRefsRecursive(Schema schema) {
         JsonNode schemaNode = schema.getContent();
         if (schemaNode.has("$ref")) {
-            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText());
+            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
             return resolveSchemaRefsRecursive(schema);
         }
         return schema;
