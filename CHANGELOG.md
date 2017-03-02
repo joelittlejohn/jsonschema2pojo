@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.31
+* List property called "status" has items with type "Statu" ([#695](https://github.com/joelittlejohn/jsonschema2pojo/issues/695))
+
 ## 0.4.30
 * Cannot use custom date,time types from external dependencies in maven/ant plugins ([#673](https://github.com/joelittlejohn/jsonschema2pojo/issues/673))
 * Jackson inclusion option ([#671](https://github.com/joelittlejohn/jsonschema2pojo/pull/671))
@@ -9,6 +12,7 @@
 * Fix include additional properties set incorrectly by CLI ([#660](https://github.com/joelittlejohn/jsonschema2pojo/pull/660))
 * Remove useless and empty Javadoc ([#659](https://github.com/joelittlejohn/jsonschema2pojo/issues/659))
 * @JsonPropertyDescription annotation does not properly extract description from schema ([#655](https://github.com/joelittlejohn/jsonschema2pojo/issues/655))
+* Support @JsonFormat annotation for date-time fields ([#643](https://github.com/joelittlejohn/jsonschema2pojo/pull/643))
 
 ## 0.4.28
 * Adding support for JSR-305 annotations ([#645](https://github.com/joelittlejohn/jsonschema2pojo/pull/645))
