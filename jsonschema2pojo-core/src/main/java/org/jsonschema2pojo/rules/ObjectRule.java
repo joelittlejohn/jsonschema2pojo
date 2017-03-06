@@ -259,6 +259,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
+                JClass existingClass;
+
+                try {
+                    _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
+                    existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
+
+                    throw new ClassAlreadyExistsException(existingClass);
+                } catch (ClassNotFoundException e) {
+
+                }
 
                 int index = fqn.lastIndexOf(".") + 1;
                 if (index >= 0 && index < fqn.length()) {
@@ -266,16 +276,18 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
 
                 try {
+
                     _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    JClass existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
+                    existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
 
                     throw new ClassAlreadyExistsException(existingClass);
                 } catch (ClassNotFoundException e) {
-                    if (usePolymorphicDeserialization) {
-                        newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
-                    } else {
-                        newType = _package.owner()._class(fqn);
-                    }
+
+                }
+                if (usePolymorphicDeserialization) {
+                    newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
+                } else {
+                    newType = _package.owner()._class(fqn);
                 }
             } else {
                 if (usePolymorphicDeserialization) {
