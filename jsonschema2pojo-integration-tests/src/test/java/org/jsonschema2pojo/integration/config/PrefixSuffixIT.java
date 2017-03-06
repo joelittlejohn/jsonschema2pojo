@@ -39,6 +39,14 @@ public class PrefixSuffixIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
         resultsClassLoader.loadClass("com.example.AbstractPrimitiveProperties");
     }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void customClassPrefixExistingClass() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesJavaType.json",
+                "com.example", config("classNamePrefix", "SomePrefix"));
+        resultsClassLoader.loadClass("org.jsonschema2pojo.SomePrefixNoopAnnotator");
+    }
     
     @Test
     public void noCapsCustomClassPrefix() throws ClassNotFoundException{
@@ -130,4 +138,5 @@ public class PrefixSuffixIT {
                 "com.example", config("classNamePrefix", "Prefix", "classNameSuffix","Suffix"));
         resultsClassLoader.loadClass("com.example.PrefixPrimitivePropertiesNoJavaTypeSuffix");
     }
+
 }
