@@ -41,7 +41,6 @@ public class MediaRule implements Rule<JType, JType> {
      * Constructs a new media rule.
      * </p>
      *
-     * @param ruleFactory the rule factory that created this rule.
      * @since 0.4.2
      */
     protected MediaRule() {

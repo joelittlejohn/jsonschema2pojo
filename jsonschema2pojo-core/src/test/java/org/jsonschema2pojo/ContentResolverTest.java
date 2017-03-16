@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2010-2014 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
+import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.util.LocalHttpServerBuilder;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,18 +43,35 @@ public class ContentResolverTest {
         URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json"); 
         resolver.resolve(uriWithUnrecognisedProtocol);
     }
-    
+
+    private static LocalHttpServerBuilder.Server server = null;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception{
+        server = LocalHttpServerBuilder.createServer(
+                LocalHttpServerBuilder.context("/address", "application/json", "utf-8",
+                        IOUtils.toByteArray(ContentResolverTest.class.getResourceAsStream("/schema/address.json")))
+        );
+        server.startInRange(1024, 100);
+    }
+
+    @AfterClass
+    public static void  afterClass() throws Exception{
+        if(server!=null)
+            server.close();
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void brokenLinkCausesIllegalArgumentException() {
 
-        URI brokenHttpUri = URI.create("http://json-schema.org/address123123213"); 
+        URI brokenHttpUri = URI.create("http://localhost:" + server.getPort() + "/sserdda");
         resolver.resolve(brokenHttpUri);
     }
     
     @Test
     public void httpLinkIsResolvedToContent() {
 
-        URI httpUri = URI.create("http://json-schema.org/address");
+        URI httpUri = URI.create("http://localhost:" + server.getPort() + "/address");
         JsonNode uriContent = resolver.resolve(httpUri);
         
         assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
