@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/address404.json"
+  },
+  "response": {
+    "status": 404,
+    "body": "File not found",
+    "headers": {
+      "Content-Type": "plain/test"
+    }
+  }
+}
