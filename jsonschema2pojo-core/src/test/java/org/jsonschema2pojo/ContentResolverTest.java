@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2010-2014 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,8 @@
 
 package org.jsonschema2pojo;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,36 +25,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 public class ContentResolverTest {
 
-    private ContentResolver resolver = new ContentResolver(); 
+    private ContentResolver resolver = new ContentResolver();
     
     @Test(expected=IllegalArgumentException.class)
     public void wrongProtocolCausesIllegalArgumentException() {
 
         URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json"); 
         resolver.resolve(uriWithUnrecognisedProtocol);
-    }
-    
-    @Test(expected=IllegalArgumentException.class)
-    public void brokenLinkCausesIllegalArgumentException() {
-
-        URI brokenHttpUri = URI.create("http://json-schema.org/address123123213"); 
-        resolver.resolve(brokenHttpUri);
-    }
-    
-    @Test
-    public void httpLinkIsResolvedToContent() {
-
-        URI httpUri = URI.create("http://json-schema.org/address");
-        JsonNode uriContent = resolver.resolve(httpUri);
-        
-        assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
     }
 
     @Test

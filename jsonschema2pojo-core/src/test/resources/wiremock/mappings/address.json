@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/address.json"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\n\"description\" : \"An Address following the convention of http://microformats.org/wiki/hcard\",\n\"type\" : \"object\",\n\"properties\" : {\n\"post-office-box\" : { \"type\" : \"string\" },\n\"extended-address\" : { \"type\" : \"string\" },\n\"street-address\" : { \"type\":\"string\" },\n\"locality\" : { \"type\" : \"string\", \"required\" : true },\n\"region\" : { \"type\" : \"string\", \"required\" : true },\n\"postal-code\" : { \"type\" : \"string\" },\n\"country-name\" : { \"type\" : \"string\", \"required\" : true }\n},\n\"dependencies\" : {\n\"post-office-box\" : \"street-address\",\n\"extended-address\" : \"street-address\",\n\"street-address\" : \"region\",\n\"locality\" : \"region\",\n\"region\" : \"country-name\"}\n}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

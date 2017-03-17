@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/address500.json"
+  },
+  "response": {
+    "status": 500,
+    "body": "Server error",
+    "headers": {
+      "Content-Type": "plain/test"
+    }
+  }
+}
