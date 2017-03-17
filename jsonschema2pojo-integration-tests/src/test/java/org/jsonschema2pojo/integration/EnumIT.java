@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 import org.hamcrest.core.IsInstanceOf;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.jsonschema2pojo.rules.EnumRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -95,7 +96,7 @@ public class EnumIT {
     @Test
     public void enumContainsWorkingAnnotatedDeserializationMethod() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
-        Method fromValue = enumClass.getMethod("fromValue", String.class);
+        Method fromValue = enumClass.getMethod(EnumRule.FROM_VALUE_METHOD_NAME, String.class);
 
         assertThat((Enum) fromValue.invoke(enumClass, "one"), is(sameInstance(enumClass.getEnumConstants()[0])));
         assertThat((Enum) fromValue.invoke(enumClass, "secondOne"), is(sameInstance(enumClass.getEnumConstants()[1])));
@@ -108,7 +109,7 @@ public class EnumIT {
     @Test
     public void enumDeserializationMethodRejectsInvalidValues() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
-        Method fromValue = enumClass.getMethod("fromValue", String.class);
+        Method fromValue = enumClass.getMethod(EnumRule.FROM_VALUE_METHOD_NAME, String.class);
 
         try {
             fromValue.invoke(enumClass, "something invalid");
@@ -141,7 +142,7 @@ public class EnumIT {
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumAsRoot");
 
         assertThat(rootEnumClass.isEnum(), is(true));
-        assertThat(rootEnumClass.getDeclaredMethod("fromValue", Integer.class), is(notNullValue()));
+        assertThat(rootEnumClass.getDeclaredMethod(EnumRule.FROM_VALUE_METHOD_NAME, Integer.class), is(notNullValue()));
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
     }
 
@@ -154,7 +155,7 @@ public class EnumIT {
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.DoubleEnumAsRoot");
 
         assertThat(rootEnumClass.isEnum(), is(true));
-        assertThat(rootEnumClass.getDeclaredMethod("fromValue", Double.class), is(notNullValue()));
+        assertThat(rootEnumClass.getDeclaredMethod(EnumRule.FROM_VALUE_METHOD_NAME, Double.class), is(notNullValue()));
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
     }
     
