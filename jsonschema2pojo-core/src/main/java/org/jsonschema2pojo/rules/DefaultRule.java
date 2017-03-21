@@ -27,6 +27,8 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,11 +40,12 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.GenerationException;
 
 /**
  * Applies the "enum" schema rule.
@@ -152,7 +155,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
 
-            return getDefaultEnum(fieldType, node);
+            return getDefaultEnum((JDefinedClass)fieldType, node);
 
         } else {
             return JExpr._null();
@@ -243,11 +246,35 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
     }
 
-    private JExpression getDefaultEnum(JType fieldType, JsonNode node) {
+    private JType getParameterType(JDefinedClass fieldType, String methodName){
 
-        JInvocation invokeFromValue = ((JClass) fieldType).staticInvoke("fromValue");
-        invokeFromValue.arg(node.asText());
+        for (JMethod method : fieldType.methods()) {
+            if (EnumRule.FROM_VALUE_METHOD_NAME.equals(method.name())
+                    && (method.mods().getValue() & JMod.PUBLIC) == JMod.PUBLIC
+                    && (method.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
+                final JType[] type = method.listParamTypes();
+                if (type.length != 1)
+                    throw new GenerationException("Factory method '" + EnumRule.FROM_VALUE_METHOD_NAME + "' should has only one parameter in " + fieldType);
+                return type[0].unboxify();
+            }
+        }
+        throw new GenerationException("Factory method '" + EnumRule.FROM_VALUE_METHOD_NAME + "' is not found in " + fieldType);
 
+    }
+
+    private JExpression getDefaultEnum(JDefinedClass fieldType, JsonNode node) {
+
+        JInvocation invokeFromValue = fieldType.staticInvoke(EnumRule.FROM_VALUE_METHOD_NAME);
+        JType paramType = getParameterType(fieldType, EnumRule.FROM_VALUE_METHOD_NAME).unboxify();
+        if (paramType == paramType.owner().INT) {
+            invokeFromValue.arg(JExpr.lit(node.asInt()));
+        } else if (paramType == paramType.owner().DOUBLE) {
+            invokeFromValue.arg(JExpr.lit(node.asDouble()));
+        } else if (paramType == paramType.owner().BOOLEAN) {
+            invokeFromValue.arg(JExpr.lit(node.asBoolean()));
+        } else {
+            invokeFromValue.arg(node.asText());
+        }
         return invokeFromValue;
 
     }
