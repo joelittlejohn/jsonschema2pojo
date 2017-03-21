@@ -72,3 +72,5 @@
 * Brian Bohl
 * Vladimir Alekseenko
 * Andrés P
+* David Tanner
+* Roman Solodovnichenko

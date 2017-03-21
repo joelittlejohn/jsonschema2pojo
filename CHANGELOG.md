@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.32
+* org.jsonschema2pojo.ContentResolverTest require internet connection ([#704](https://github.com/joelittlejohn/jsonschema2pojo/issues/704))
+* Add option to specify custom fragment path delimiters ([#697](https://github.com/joelittlejohn/jsonschema2pojo/pull/697))
+* javaType doesn't work while setting  classNamePrefix = "SomePrefix" ([#650](https://github.com/joelittlejohn/jsonschema2pojo/issues/650))
+
 ## 0.4.31
 * List property called "status" has items with type "Statu" ([#695](https://github.com/joelittlejohn/jsonschema2pojo/issues/695))
 
