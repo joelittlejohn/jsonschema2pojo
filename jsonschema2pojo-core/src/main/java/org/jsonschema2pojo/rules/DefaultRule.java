@@ -137,7 +137,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
             return newDateTime;
 
         } else if (fieldType.fullName().equals(LocalDate.class.getName()) ||
-                   fieldType.fullName().equals(LocalTime.class.getName())) {
+                fieldType.fullName().equals(LocalTime.class.getName())) {
 
             JInvocation stringParseableTypeInstance = JExpr._new(fieldType);
             stringParseableTypeInstance.arg(JExpr.lit(node.asText()));
@@ -255,7 +255,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
                 final JType[] type = method.listParamTypes();
                 if (type.length != 1)
                     throw new GenerationException("Factory method '" + EnumRule.FROM_VALUE_METHOD_NAME + "' should has only one parameter in " + fieldType);
-                return type[0].unboxify();
+                return type[0];
             }
         }
         throw new GenerationException("Factory method '" + EnumRule.FROM_VALUE_METHOD_NAME + "' is not found in " + fieldType);
