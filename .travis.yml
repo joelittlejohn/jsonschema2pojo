@@ -1,0 +1,6 @@
+language: clojure
+script: lein check
+branches:
+  only:
+    - gh-pages
+    - /.*/
