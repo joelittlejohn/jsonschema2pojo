@@ -444,6 +444,52 @@
                <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-base</artifactId>
+                <version>4.1.2_r1_rc</version>
+                <classifier>real</classifier>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-kxml2</artifactId>
+                <version>4.1.2_r1_rc</version>
+                <classifier>real</classifier>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-policy</artifactId>
+                <version>4.1.2_r1_rc</version>
+                <classifier>real</classifier>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-luni</artifactId>
+                <version>4.1.2_r1_rc</version>
+                <classifier>real</classifier>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-res</artifactId>
+                <version>4.1.2_r1_rc</version>
+                <classifier>real</classifier>
+                <type>jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ccil.cowan.tagsoup</groupId>
+                <artifactId>tagsoup</artifactId>
+                <version>1.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>1.1.0</version>
