@@ -76,12 +76,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //List matcher
         factories.put(
-                new Matcher() {
-                    @Override
-                    public boolean isMatched(JType fieldType, JsonNode node) {
-                        return fieldType.fullName().startsWith(List.class.getName());
-                    }
-                },
+                new ClassNamePrefixMatcher(List.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -91,12 +86,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //Set matcher
         factories.put(
-                new Matcher() {
-                    @Override
-                    public boolean isMatched(JType fieldType, JsonNode node) {
-                        return fieldType.fullName().startsWith(Set.class.getName());
-                    }
-                },
+                new ClassNamePrefixMatcher(Set.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -106,7 +96,13 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //String matcher
         factories.put(
-                new ObjectMatcher(String.class.getName()),
+                new Matcher(){
+                    @Override
+                    public boolean isMatched(JType fieldType, JsonNode node) {
+                        return node != null
+                                && fieldType.unboxify().fullName().equals(String.class.getName());
+                    }
+                },
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -116,7 +112,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //int matcher
         factories.put(
-                new ObjectMatcher(int.class.getName()),
+                new ClassNameMatcher(int.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -126,7 +122,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //BigInteger matcher
         factories.put(
-                new ObjectMatcher(BigInteger.class.getName()),
+                new ClassNameMatcher(BigInteger.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -136,7 +132,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //double matcher
         factories.put(
-                new ObjectMatcher(double.class.getName()),
+                new ClassNameMatcher(double.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -146,7 +142,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //BigDecimal matcher
         factories.put(
-                new ObjectMatcher(BigDecimal.class.getName()),
+                new ClassNameMatcher(BigDecimal.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -156,7 +152,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //boolean matcher
         factories.put(
-                new ObjectMatcher(boolean.class.getName()),
+                new ClassNameMatcher(boolean.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -166,7 +162,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //DateTime matcher
         factories.put(
-                new ObjectMatcher(getDateTimeType().getName()),
+                new ClassNameMatcher(getDateTimeType().getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -179,7 +175,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //LocalDate matcher
         factories.put(
-                new ObjectMatcher(LocalDate.class.getName()),
+                new ClassNameMatcher(LocalDate.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -189,7 +185,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //LocalTime matcher
         factories.put(
-                new ObjectMatcher(LocalTime.class.getName()),
+                new ClassNameMatcher(LocalTime.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -199,7 +195,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //long matcher
         factories.put(
-                new ObjectMatcher(long.class.getName()),
+                new ClassNameMatcher(long.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -209,7 +205,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //float matcher
         factories.put(
-                new ObjectMatcher(float.class.getName()),
+                new ClassNameMatcher(float.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -219,7 +215,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         );
         //URI matcher
         factories.put(
-                new ObjectMatcher(URI.class.getName()),
+                new ClassNameMatcher(URI.class.getName()),
                 new Factory() {
                     @Override
                     public JExpression build(JType fieldType, JsonNode node) {
@@ -269,10 +265,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         return stringParseableTypeInstance;
     }
 
-    private static class ObjectMatcher implements Matcher{
+    private class ClassNameMatcher implements Matcher{
         private final String className;
 
-        private ObjectMatcher(String className) {
+        private ClassNameMatcher(String className) {
             this.className = className;
         }
 
@@ -280,6 +276,19 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         public boolean isMatched(JType fieldType, JsonNode node) {
             return node != null && isNotEmpty(node.asText())
                     && fieldType.unboxify().fullName().equals(className);
+        }
+    }
+
+    private class ClassNamePrefixMatcher implements Matcher{
+        private final String className;
+
+        private ClassNamePrefixMatcher(String className) {
+            this.className = className;
+        }
+
+        @Override
+        public boolean isMatched(JType fieldType, JsonNode node) {
+            return fieldType.fullName().startsWith(className);
         }
     }
 
