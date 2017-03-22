@@ -1,0 +1,11 @@
+{
+    "javaType" : "com.example.enums.BooleanEnumToSerialize",
+    "properties" : {
+       "testEnum" : { 
+          "type" : "boolean",
+          "enum" : [true, false],
+          "javaEnumNames" : ["ONE", "ZERO"],
+          "default": true
+      }
+    }
+}

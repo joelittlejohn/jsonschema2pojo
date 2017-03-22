@@ -62,6 +62,7 @@ import com.sun.codemodel.JVar;
 public class EnumRule implements Rule<JClassContainer, JType> {
 
     private static final String VALUE_FIELD_NAME = "value";
+    public static final String FROM_VALUE_METHOD_NAME = "fromValue";
 
     private final RuleFactory ruleFactory;
 
@@ -166,8 +167,8 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     private void addFactoryMethod(JDefinedClass _enum, JType backingType) {
         JFieldVar quickLookupMap = addQuickLookupMap(_enum, backingType);
 
-        JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
-        JVar valueParam = fromValue.param(backingType, "value");
+        JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, FROM_VALUE_METHOD_NAME);
+        JVar valueParam = fromValue.param(backingType, VALUE_FIELD_NAME);
 
         JBlock body = fromValue.body();
         JVar constant = body.decl(_enum, "constant");
@@ -200,7 +201,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         JForEach forEach = _enum.init().forEach(_enum, "c", JExpr.invoke("values"));
         JInvocation put = forEach.body().invoke(lookupMap, "put");
-        put.arg(forEach.var().ref("value"));
+        put.arg(forEach.var().ref(VALUE_FIELD_NAME));
         put.arg(forEach.var());
 
         return lookupMap;
@@ -232,7 +233,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     private void addValueMethod(JDefinedClass _enum, JFieldVar valueField) {
-        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
+        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), VALUE_FIELD_NAME);
 
         JBlock body = fromValue.body();
         body._return(JExpr._this().ref(valueField));
