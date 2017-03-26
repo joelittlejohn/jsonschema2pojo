@@ -18,12 +18,14 @@ package org.jsonschema2pojo.integration;
 
 import static java.lang.reflect.Modifier.*;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.hamcrest.core.IsInstanceOf;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -147,7 +149,20 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void doubleEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void intEnumAtRootCreatesBigIntegerBackedEnum() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example", config("useBigIntegers", true));
+
+        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumAsRoot");
+
+        assertThat(rootEnumClass.isEnum(), is(true));
+        assertThat(rootEnumClass.getDeclaredMethod("fromValue", BigInteger.class), is(notNullValue()));
+        assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void doubleEnumAtRootCreatesDoubleBackedEnum() throws Exception {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example");
 
@@ -158,6 +173,19 @@ public class EnumIT {
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
     }
     
+    @Test
+    @SuppressWarnings("unchecked")
+    public void doubleEnumAtRootCreatesBigDecimalBackedEnum() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example", config("useBigDecimals", true));
+
+        Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.DoubleEnumAsRoot");
+
+        assertThat(rootEnumClass.isEnum(), is(true));
+        assertThat(rootEnumClass.getDeclaredMethod("fromValue", BigDecimal.class), is(notNullValue()));
+        assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void enumWithEmptyStringAsValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {

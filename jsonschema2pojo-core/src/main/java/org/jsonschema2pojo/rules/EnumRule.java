@@ -255,19 +255,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 existingConstantNames.add(constantName);
 
                 JEnumConstant constant = _enum.enumConstant(constantName);
-
-                String typeName = type.unboxify().fullName();
-                if(typeName.equals("int")){ // integer
-                    constant.arg(JExpr.lit(value.intValue()));
-                } else if(typeName.equals("long")){ // integer-as-long
-                    constant.arg(JExpr.lit(value.longValue()));
-                } else if(typeName.equals("double")){ // number
-                    constant.arg(JExpr.lit(value.doubleValue()));
-                } else if(typeName.equals("boolean")){ // boolean
-                    constant.arg(JExpr.lit(value.booleanValue()));
-                } else {
-                    constant.arg(JExpr.lit(value.asText()));
-                }
+                constant.arg(DefaultRule.getDefaultValue(type, value));
                 ruleFactory.getAnnotator().enumConstant(constant, value.asText());
             }
         }

@@ -56,6 +56,16 @@
             "enum" : ["one", "two", "three"],
             "default" : "two"
         },
+        "integerEnumWithDefault" : {
+            "type" : "integer",
+            "enum" : [1, 2, 3],
+            "default" : 2
+        },
+        "numberEnumWithDefault" : {
+            "type" : "number",
+            "enum" : [1.2, 2.3, 3.14],
+            "default" : 2.3
+        },
         "arrayWithDefault" : {
             "type" : "array",
             "items" : {
