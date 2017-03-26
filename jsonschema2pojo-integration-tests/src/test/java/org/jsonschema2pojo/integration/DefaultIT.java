@@ -98,6 +98,23 @@ public class DefaultIT {
     }
 
     @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void integerEnumPropertyHasCorrectDefaultBigIntegerValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
+        Class<?> c = resultsClassLoader.loadClass("com.example.Default");
+
+        Object instance = c.newInstance();
+        Class<Enum> enumClass = (Class<Enum>) c.getClassLoader().loadClass("com.example.Default$IntegerEnumWithDefault");
+        Method getter = c.getMethod("getIntegerEnumWithDefault");
+
+        Enum e = (Enum) getter.invoke(instance);
+        assertThat(e, is(equalTo(enumClass.getEnumConstants()[1])));
+        assertThat((BigInteger) e.getClass().getMethod("value").invoke(e), is(equalTo(new BigInteger("2"))));
+
+    }
+
+    @Test
     public void numberPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
@@ -117,6 +134,23 @@ public class DefaultIT {
         Object instance = c.newInstance();
         Method getter = c.getMethod("getNumberWithDefault");
         assertThat((BigDecimal) getter.invoke(instance), is(equalTo(new BigDecimal("1.337"))));
+
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void numberEnumPropertyHasCorrectDefaultBigDecimalValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
+        Class<?> c = resultsClassLoader.loadClass("com.example.Default");
+
+        Object instance = c.newInstance();
+        Class<Enum> enumClass = (Class<Enum>) c.getClassLoader().loadClass("com.example.Default$NumberEnumWithDefault");
+        Method getter = c.getMethod("getNumberEnumWithDefault");
+
+        Enum e = (Enum) getter.invoke(instance);
+        assertThat(e, is(equalTo(enumClass.getEnumConstants()[1])));
+        assertThat((BigDecimal) e.getClass().getMethod("value").invoke(e), is(equalTo(new BigDecimal("2.3"))));
 
     }
 
@@ -184,6 +218,34 @@ public class DefaultIT {
         Method getter = classWithDefaults.getMethod("getEnumWithDefault");
 
         assertThat((Enum) getter.invoke(instance), is(equalTo(enumClass.getEnumConstants()[1])));
+
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void integerEnumPropertyHasCorrectDefaultValue() throws Exception {
+
+        Object instance = classWithDefaults.newInstance();
+        Class<Enum> enumClass = (Class<Enum>) classWithDefaults.getClassLoader().loadClass("com.example.Default$IntegerEnumWithDefault");
+        Method getter = classWithDefaults.getMethod("getIntegerEnumWithDefault");
+
+        Enum e = (Enum) getter.invoke(instance);
+        assertThat(e, is(equalTo(enumClass.getEnumConstants()[1])));
+        assertThat((Integer) e.getClass().getMethod("value").invoke(e), is(equalTo(2)));
+
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void numberEnumPropertyHasCorrectDefaultValue() throws Exception {
+
+        Object instance = classWithDefaults.newInstance();
+        Class<Enum> enumClass = (Class<Enum>) classWithDefaults.getClassLoader().loadClass("com.example.Default$NumberEnumWithDefault");
+        Method getter = classWithDefaults.getMethod("getNumberEnumWithDefault");
+
+        Enum e = (Enum) getter.invoke(instance);
+        assertThat(e, is(equalTo(enumClass.getEnumConstants()[1])));
+        assertThat((Double) e.getClass().getMethod("value").invoke(e), is(equalTo(2.3D)));
 
     }
 

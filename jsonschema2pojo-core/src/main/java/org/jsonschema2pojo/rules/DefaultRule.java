@@ -16,6 +16,24 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
@@ -28,24 +46,8 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import static org.apache.commons.lang3.StringUtils.*;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.jsonschema2pojo.Schema;
-
 /**
- * Applies the "enum" schema rule.
+ * Applies the "default" schema rule.
  *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
@@ -103,7 +105,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         return field;
     }
 
-    private JExpression getDefaultValue(JType fieldType, JsonNode node) {
+    static JExpression getDefaultValue(JType fieldType, JsonNode node) {
 
         fieldType = fieldType.unboxify();
 
@@ -125,7 +127,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
             return JExpr.lit(Boolean.parseBoolean(node.asText()));
 
-        } else if (fieldType.fullName().equals(getDateTimeType().getName())) {
+        } else if (fieldType.fullName().equals(DateTime.class.getName()) || fieldType.fullName().equals(Date.class.getName())) {
             long millisecs = parseDateToMillisecs(node.asText());
 
             JInvocation newDateTime = JExpr._new(fieldType);
@@ -133,8 +135,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
             return newDateTime;
 
-        } else if (fieldType.fullName().equals(LocalDate.class.getName()) ||
-                   fieldType.fullName().equals(LocalTime.class.getName())) {
+        } else if (fieldType.fullName().equals(LocalDate.class.getName()) || fieldType.fullName().equals(LocalTime.class.getName())) {
 
             JInvocation stringParseableTypeInstance = JExpr._new(fieldType);
             stringParseableTypeInstance.arg(JExpr.lit(node.asText()));
@@ -159,10 +160,6 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         }
 
-    }
-
-    private Class<?> getDateTimeType() {
-        return ruleFactory.getGenerationConfig().isUseJodaDates() ? DateTime.class : Date.class;
     }
 
     /**
@@ -243,16 +240,21 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
     }
 
-    private JExpression getDefaultEnum(JType fieldType, JsonNode node) {
+    /**
+     * @see EnumRule
+     */
+    private static JExpression getDefaultEnum(JType fieldType, JsonNode node) {
 
-        JInvocation invokeFromValue = ((JClass) fieldType).staticInvoke("fromValue");
-        invokeFromValue.arg(node.asText());
+        JDefinedClass enumClass = (JDefinedClass) fieldType;
+        JType backingType = enumClass.fields().get("value").type();
+        JInvocation invokeFromValue = enumClass.staticInvoke("fromValue");
+        invokeFromValue.arg(getDefaultValue(backingType, node));
 
         return invokeFromValue;
 
     }
 
-    private long parseDateToMillisecs(String valueAsText) {
+    private static long parseDateToMillisecs(String valueAsText) {
 
         try {
             return Long.parseLong(valueAsText);
