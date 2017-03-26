@@ -297,4 +297,38 @@ public class CustomDateTimeFormatIT {
         // Assert that when the class is serialized, the date object is serialized as expected 
         assertEquals("2016-11-06", jsonVersion.get("customFormatCustomTZ").asText());
     }
+
+    /**
+     * This tests the class generated when formatDateTimes config option is set to TRUE
+     * The field should have @JsonFormat annotation with iso8601 date pattern
+     * It also tests the serialization and deserialization process
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCustomDateWhenFormatDateTimesConfigIsTrue() throws Exception {
+        Field field = classWhenConfigIsTrue.getDeclaredField("customDateFormat");
+        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
+
+        assertThat(annotation, notNullValue());
+        // Assert that the patterns match
+        assertEquals("yyyy-MM-dd", annotation.pattern());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("customDateFormat", "2016-11-06");
+
+        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsTrue);
+
+        Method getter = new PropertyDescriptor("customDateFormat", classWhenConfigIsTrue).getReadMethod();
+
+        // Assert that the Date object in the deserialized class is as expected
+        assertEquals("2016-11-06", getter.invoke(pojo).toString());
+
+        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
+
+        // Assert that when the class is serialized, the date object is serialized as expected
+        assertEquals("2016-11-06", jsonVersion.get("customDateFormat").asText());
+    }
 }
