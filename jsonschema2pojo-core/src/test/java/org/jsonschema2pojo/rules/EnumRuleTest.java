@@ -19,7 +19,6 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.Annotator;
@@ -27,6 +26,7 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -59,7 +59,7 @@ public class EnumRuleTest {
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
 
         Answer<String> firstArgAnswer = new FirstArgAnswer<String>();
-        when(nameHelper.getFieldName(anyString(), any(JsonNode.class))).thenAnswer(firstArgAnswer);
+        when(nameHelper.getFieldName(anyString(), Matchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
 
