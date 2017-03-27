@@ -5,6 +5,11 @@
             "type" : "string",
             "format" : "date-time"
         },
+        "defaultFormatCustomTZ" : {
+            "type" : "string",
+            "format" : "date-time",
+            "customTimezone" : "PST"
+        },
         "customFormatDefaultTZ" : {
             "type" : "string",
             "format" : "date-time",
@@ -13,7 +18,7 @@
         "customFormatCustomTZ" : {
             "type" : "string",
             "format" : "date-time",
-            "customDateTimePattern" : "yyyy-MM-dd",
+            "customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss",
             "customTimezone" : "PST"
         },
         "defaultFormatDate" : {

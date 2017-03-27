@@ -17,295 +17,122 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
- * This test utilizes the json schema customDateTimeFormat.json located in src/test/resources/schema/format/
- *
- * It generates 2 classes located in target/jsonschema2pojo/CustomDateTimeFoormatIT/
- * 1. com.example.config_true.CustomDateTimeFormat - generated with config option formatDateTimes set to True
- * 2. com.example.config_false.CustomDateTimeFormat - generated with config option formatDateTimes set to False
- *
- * The data used here is tightly coupled with the schema defined in customDateTimeFormat.json
- * Any modifications here must be synced up with the json schema and vice versa
- *
- * @author shrpurohit
- *
- */
 public class CustomDateTimeFormatIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @ClassRule
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
-    private static Class<?> classWhenConfigIsTrue;
-    private static Class<?> classWhenConfigIsFalse;
+    private static Class<?> classWhenFormatDatesTrue;
+    private static Class<?> classWhenFormatDatesFalse;
 
-    private static SimpleDateFormat dateTimeMilliSecFormatter;
-    private static SimpleDateFormat dateTimeFormatter;
-    private static SimpleDateFormat dateFormatter;
-
-    /**
-     * We are going to generate the same class twice:
-     * Once with the configuration option formatDateTimes set to TRUE
-     * Once with the configuration option formatDateTimes set to FALSE
-     *
-     * @throws ClassNotFoundException
-     * @throws IOException
-     */
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
-        // The SimpleDateFormat instances created and configured here are based on the json schema defined in customDateTimeFormat.json
-        dateTimeMilliSecFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        dateTimeMilliSecFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
+                "dateType", "java.util.Date",
+                "formatDateTimes", Boolean.TRUE,
+                "formatDates", Boolean.TRUE));
 
-        dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("PST"));
-
-        Map<String, Object> configValues = new HashMap<String, Object>();
-
-        // Generate class with config option formatDateTimes = TRUE
-        configValues.put("dateType", "java.util.Date");
-        configValues.put("formatDateTimes", Boolean.TRUE);
-        configValues.put("formatDates", Boolean.TRUE);
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", configValues);
-
-        // Generate class with config option formatDateTimes = FALSE
-        configValues.put("formatDateTimes", Boolean.FALSE);
-        configValues.put("formatDates", Boolean.FALSE);
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", configValues);
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config(
+                "dateType", "java.util.Date",
+                "formatDateTimes", Boolean.FALSE,
+                "formatDates", Boolean.FALSE));
 
         ClassLoader loader = classSchemaRule.compile();
 
-        // Class generated when formatDateTimes = TRUE in configuration
-        classWhenConfigIsTrue = loader.loadClass("com.example.config_true.CustomDateTimeFormat");
-        // Class generated when formatDateTimes = FALSE in configuration
-        classWhenConfigIsFalse = loader.loadClass("com.example.config_false.CustomDateTimeFormat");
+        classWhenFormatDatesTrue = loader.loadClass("com.example.config_true.CustomDateTimeFormat");
+        classWhenFormatDatesFalse = loader.loadClass("com.example.config_false.CustomDateTimeFormat");
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to TRUE
-     * The field should have @JsonFormat annotation with iso8601 date time pattern and UTC timezone
-     * It also tests the serialization and deserialization process
-     *
-     * @throws Exception
-     */
     @Test
     public void testDefaultWhenFormatDateTimesConfigIsTrue() throws Exception {
-        Field field = classWhenConfigIsTrue.getDeclaredField("defaultFormat");
-        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
 
-        assertThat(annotation, notNullValue());
-        // Assert that the patterns match
-        assertEquals("yyyy-MM-dd'T'HH:mm:ss.SSS", annotation.pattern());
-        // Assert that the timezones match
-        assertEquals("UTC", annotation.timezone());
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final String json = new ObjectMapper().writeValueAsString(instance);
 
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("defaultFormat", "2016-11-06T00:00:00.000");
-
-        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsTrue);
-
-        Method getter = new PropertyDescriptor("defaultFormat", classWhenConfigIsTrue).getReadMethod();
-
-        // Assert that the Date object in the deserialized class is as expected
-        assertEquals(dateTimeMilliSecFormatter.parse("2016-11-06T00:00:00.000").toString(), getter.invoke(pojo).toString());
-
-        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
-
-        // Assert that when the class is serialized, the date object is serialized as expected
-        assertEquals("2016-11-06T00:00:00.000", jsonVersion.get("defaultFormat").asText());
+        assertThat(json, is("{\"defaultFormat\":\"2001-09-09T01:46:39.999Z\"}"));
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to TRUE
-     * The field should have @JsonFormat annotation with pattern defined in json schema and UTC timezone
-     * It also tests the serialization and deserialization process
-     *
-     * @throws Exception
-     */
+    @Test
+    public void testDefaultWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
+
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setDefaultFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormatCustomTZ\":\"2001-09-08T18:46:39.999-07:00\"}"));
+    }
+
     @Test
     public void testCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
-        Field field = classWhenConfigIsTrue.getDeclaredField("customFormatDefaultTZ");
-        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatDefaultTZ", Date.class).invoke(instance, new Date(999999999999L));
 
-        assertThat(annotation, notNullValue());
-        // Assert that the patterns match
-        assertEquals("yyyy-MM-dd'T'HH:mm:ss", annotation.pattern());
-        // Assert that the timezones match
-        assertEquals("UTC", annotation.timezone());
+        final String json = new ObjectMapper().writeValueAsString(instance);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("customFormatDefaultTZ", "2016-11-06T00:00:00");
-
-        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsTrue);
-
-        Method getter = new PropertyDescriptor("customFormatDefaultTZ", classWhenConfigIsTrue).getReadMethod();
-
-        // Assert that the Date object in the deserialized class is as expected
-        assertEquals(dateTimeFormatter.parse("2016-11-06T00:00:00").toString(), getter.invoke(pojo).toString());
-
-        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
-
-        // Assert that when the class is serialized, the date object is serialized as expected
-        assertEquals("2016-11-06T00:00:00", jsonVersion.get("customFormatDefaultTZ").asText());
+        assertThat(json, is("{\"customFormatDefaultTZ\":\"2001-09-09T01:46:39\"}"));
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to TRUE
-     * The field should have @JsonFormat annotation with pattern and timezone defined in json schema
-     * It also tests the serialization and deserialization process
-     *
-     * @throws Exception
-     */
     @Test
     public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
-        Field field = classWhenConfigIsTrue.getDeclaredField("customFormatCustomTZ");
-        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
-        assertThat(annotation, notNullValue());
-        // Assert that the patterns match
-        assertEquals("yyyy-MM-dd", annotation.pattern());
-        // Assert that the timezones match
-        assertEquals("PST", annotation.timezone());
+        final String json = new ObjectMapper().writeValueAsString(instance);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("PST"));
-
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("customFormatCustomTZ", "2016-11-06");
-
-        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsTrue);
-
-        Method getter = new PropertyDescriptor("customFormatCustomTZ", classWhenConfigIsTrue).getReadMethod();
-
-        // Assert that the Date object in the deserialized class is as expected
-        assertEquals(dateFormatter.parse("2016-11-06").toString(), getter.invoke(pojo).toString());
-
-        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
-
-        // Assert that when the class is serialized, the date object is serialized as expected
-        assertEquals("2016-11-06", jsonVersion.get("customFormatCustomTZ").asText());
+        assertThat(json, is("{\"customFormatCustomTZ\":\"2001-09-08T18:46:39\"}"));
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to FALSE
-     * The field should not have @JsonFormat annotation
-     *
-     * @throws Exception
-     */
     @Test
     public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception{
-        Field field = classWhenConfigIsFalse.getDeclaredField("defaultFormat");
-        // Verify that no annotation is generated
-        assertEquals(Boolean.FALSE, field.isAnnotationPresent(JsonFormat.class));
+        final Object instance = classWhenFormatDatesFalse.newInstance();
+        classWhenFormatDatesFalse.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormat\":999999999999}"));
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to FALSE
-     * The field should have @JsonFormat annotation with pattern defined in json schema and UTC timezone
-     * It also tests the serialization and deserialization process
-     *
-     * @throws Exception
-     */
     @Test
     public void testCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsFalse() throws Exception {
-        Field field = classWhenConfigIsFalse.getDeclaredField("customFormatDefaultTZ");
-        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
+        final Object instance = classWhenFormatDatesFalse.newInstance();
+        classWhenFormatDatesFalse.getMethod("setCustomFormatDefaultTZ", Date.class).invoke(instance, new Date(999999999999L));
 
-        assertThat(annotation, notNullValue());
-        // Assert that the patterns match
-        assertEquals("yyyy-MM-dd'T'HH:mm:ss", annotation.pattern());
-        // Assert that the timezones match
-        assertEquals("UTC", annotation.timezone());
+        final String json = new ObjectMapper().writeValueAsString(instance);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("customFormatDefaultTZ", "2016-11-06T00:00:00");
-
-        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsFalse);
-
-        Method getter = new PropertyDescriptor("customFormatDefaultTZ", classWhenConfigIsFalse).getReadMethod();
-
-        // Assert that the Date object in the deserialized class is as expected
-        assertEquals(dateTimeFormatter.parse("2016-11-06T00:00:00").toString(), getter.invoke(pojo).toString());
-
-        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
-
-        // Assert that when the class is serialized, the date object is serialized as expected
-        assertEquals("2016-11-06T00:00:00", jsonVersion.get("customFormatDefaultTZ").asText());
+        assertThat(json, is("{\"customFormatDefaultTZ\":\"2001-09-09T01:46:39\"}"));
     }
 
-    /**
-     * This tests the class generated when formatDateTimes config option is set to FALSE
-     * The field should have @JsonFormat annotation with pattern and timezone defined in json schema
-     * It also tests the serialization and deserialization process
-     *
-     * @throws Exception
-     */
     @Test
     public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsFalse() throws Exception {
-        Field field = classWhenConfigIsFalse.getDeclaredField("customFormatCustomTZ");
-        JsonFormat annotation = field.getAnnotation(JsonFormat.class);
+        final Object instance = classWhenFormatDatesFalse.newInstance();
+        classWhenFormatDatesFalse.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
-        assertThat(annotation, notNullValue());
-        // Assert that the patterns match
-        assertEquals("yyyy-MM-dd", annotation.pattern());
-        // Assert that the timezones match
-        assertEquals("PST", annotation.timezone());
+        final String json = new ObjectMapper().writeValueAsString(instance);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("PST"));
-
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("customFormatCustomTZ", "2016-11-06");
-
-        Object pojo = objectMapper.treeToValue(node, classWhenConfigIsFalse);
-
-        Method getter = new PropertyDescriptor("customFormatCustomTZ", classWhenConfigIsFalse).getReadMethod();
-
-        // Assert that the Date object in the deserialized class is as expected
-        assertEquals(dateFormatter.parse("2016-11-06").toString(), getter.invoke(pojo).toString());
-
-        JsonNode jsonVersion = objectMapper.valueToTree(pojo);
-
-        // Assert that when the class is serialized, the date object is serialized as expected
-        assertEquals("2016-11-06", jsonVersion.get("customFormatCustomTZ").asText());
+        assertThat(json, is("{\"customFormatCustomTZ\":\"2001-09-08T18:46:39\"}"));
     }
 
     @Test
     public void testDefaultWhenFormatDatesConfigIsTrue() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenConfigIsTrue.newInstance();
-        classWhenConfigIsTrue.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
 
@@ -314,8 +141,8 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatDatesConfigIsFalse() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenConfigIsFalse.newInstance();
-        classWhenConfigIsFalse.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
+        final Object instance = classWhenFormatDatesFalse.newInstance();
+        classWhenFormatDatesFalse.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
 
@@ -324,8 +151,8 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDatePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenConfigIsTrue.newInstance();
-        classWhenConfigIsTrue.getMethod("setCustomFormatCustomDate", Date.class).invoke(instance, new Date(999999999999L));
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
 

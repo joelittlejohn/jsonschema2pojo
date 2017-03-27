@@ -47,7 +47,7 @@ import com.sun.codemodel.JMethod;
  */
 public class Jackson2Annotator extends AbstractAnnotator {
 
-    private static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    private static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
     private static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
 
     private JsonInclude.Include inclusionLevel = JsonInclude.Include.NON_NULL;
