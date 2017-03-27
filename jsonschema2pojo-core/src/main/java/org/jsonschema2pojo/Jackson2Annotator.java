@@ -161,6 +161,8 @@ public class Jackson2Annotator extends AbstractAnnotator {
         String pattern = null;
         if (node.has("customDatePattern")) {
             pattern = node.get("customDatePattern").asText();
+        } else if (node.has("customPattern")) {
+            pattern = node.get("customPattern").asText();
         } else if (getGenerationConfig().isFormatDates()) {
             pattern = ISO_8601_DATE_FORMAT;
         }
@@ -177,6 +179,8 @@ public class Jackson2Annotator extends AbstractAnnotator {
         String pattern = null;
         if (node.has("customDateTimePattern")) {
             pattern = node.get("customDateTimePattern").asText();
+        } else if (node.has("customPattern")) {
+            pattern = node.get("customPattern").asText();
         } else if (getGenerationConfig().isFormatDateTimes()) {
             pattern = ISO_8601_DATETIME_FORMAT;
         }
