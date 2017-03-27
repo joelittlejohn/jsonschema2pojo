@@ -119,6 +119,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     /**
      * @return {@link InclusionLevel#NON_NULL}
      */
+    @Override
     public InclusionLevel getInclusionLevel() {
         return InclusionLevel.NON_NULL;
     }
@@ -328,10 +329,21 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return null;
     }
 
-   @Override
-   public boolean isFormatDateTimes() {
-      return false;
-   }
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isFormatDateTimes() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isFormatDates() {
+        return false;
+    }
 
     /**
      * @return "#/."

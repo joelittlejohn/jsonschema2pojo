@@ -580,6 +580,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean formatDateTimes = false;
 
     /**
+     * Whether the fields of type `date` have the `@JsonFormat` annotation
+     * with pattern set to the default value of `yyyy-MM-dd`.
+     *
+     * @parameter expression="${jsonschema2pojo.formatDates}"
+     *            default-value="false"
+     * @since 0.4.33
+     */
+    private boolean formatDates = false;
+
+    /**
      * A string containing any characters that should act as path delimiters when resolving $ref fragments.
      * By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
      *
@@ -924,6 +934,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public boolean isFormatDates() {
+        return formatDates;
     }
 
     @Override

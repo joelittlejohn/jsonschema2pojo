@@ -165,13 +165,16 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;
-    
+
+    @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd`")
+    private boolean formatDates = false;
+
     @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
 
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
-    
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -419,6 +422,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public boolean isFormatDates() {
+        return formatDates;
     }
 
     @Override

@@ -72,6 +72,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useBigIntegers
   boolean usePrimitives
   FileFilter fileFilter
+  boolean formatDates
   boolean formatDateTimes
   String refFragmentPathDelimiters
 
@@ -116,6 +117,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeAccessors = true
     targetVersion = '1.6'
     includeDynamicAccessors = false
+    formatDates = false
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
   }
@@ -202,6 +204,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeAccessors = ${includeAccessors}
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
+       |formatDates = ${formatDates}
        |formatDateTimes = ${formatDateTimes}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
      """.stripMargin()

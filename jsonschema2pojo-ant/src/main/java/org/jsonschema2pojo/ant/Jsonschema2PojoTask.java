@@ -146,6 +146,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean formatDateTimes = false;
 
+    private boolean formatDates = false;
+
     private String refFragmentPathDelimiters = "#/.";
 
     /**
@@ -698,6 +700,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'formatDates' property of this class
+     *
+     * @param formatDates
+     *            Whether the fields of type <code>date</code> have the <code>@JsonFormat</code> annotation
+     *            with pattern set to the default value of <code>yyyy-MM-dd</code>.
+     */
+    public void setFormatDates(boolean formatDates) {
+        this.formatDates = formatDates;
+    }
+
+    /**
      * Sets the 'refFragmentPathDelimiters' property of this class
      *
      * @param refFragmentPathDelimiters A string containing any characters that should act as path delimiters when
@@ -948,6 +961,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isFormatDateTimes() {
         return formatDateTimes;
+    }
+
+    @Override
+    public boolean isFormatDates() {
+        return formatDates;
     }
 
     @Override

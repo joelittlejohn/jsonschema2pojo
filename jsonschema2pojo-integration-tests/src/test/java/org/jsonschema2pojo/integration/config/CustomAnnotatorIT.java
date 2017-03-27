@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
@@ -172,11 +172,15 @@ public class CustomAnnotatorIT {
 
         }
 
-      @Override
-      public void dateField(JFieldVar field, JsonNode propertyNode) {
-         field.annotate(Deprecated.class);
-      }
+        @Override
+        public void dateField(JFieldVar field, JsonNode propertyNode) {
+            field.annotate(Deprecated.class);
+        }
 
+        @Override
+        public void dateTimeField(JFieldVar field, JsonNode propertyNode) {
+            field.annotate(Deprecated.class);
+        }
     }
 
 }

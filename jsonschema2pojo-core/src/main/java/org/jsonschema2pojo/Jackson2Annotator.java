@@ -47,6 +47,9 @@ import com.sun.codemodel.JMethod;
  */
 public class Jackson2Annotator extends AbstractAnnotator {
 
+    private static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    private static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
+
     private JsonInclude.Include inclusionLevel = JsonInclude.Include.NON_NULL;
 
     public Jackson2Annotator(GenerationConfig generationConfig) {
@@ -154,26 +157,32 @@ public class Jackson2Annotator extends AbstractAnnotator {
 
     @Override
     public void dateField(JFieldVar field, JsonNode node) {
-        boolean formatDateTime = getGenerationConfig().isFormatDateTimes();
-        String iso8601DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-        String customDateTimePattern = node.has("customDateTimePattern") ? node.get("customDateTimePattern").asText() : null;
-        String timezone = node.has("customTimezone") ? node.get("customTimezone").asText() : "UTC";
-        
+
         String pattern = null;
-        
-        // If formatDateTime has been set in the configuration, annotate all date-time fields with iso8601 format
-        if (formatDateTime == true) {
-            pattern = iso8601DateTimeFormat;
+        if (node.has("customDatePattern")) {
+            pattern = node.get("customDatePattern").asText();
+        } else if (getGenerationConfig().isFormatDates()) {
+            pattern = ISO_8601_DATE_FORMAT;
         }
-        
-        // If a custom pattern has been provide, use this to override the iso8601 format
-        if (customDateTimePattern != null) {
-            pattern = customDateTimePattern;
+
+        if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
+            field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern);
         }
-        
-        if (pattern != null) {
+    }
+
+    @Override
+    public void dateTimeField(JFieldVar field, JsonNode node) {
+        String timezone = node.has("customTimezone") ? node.get("customTimezone").asText() : "UTC";
+
+        String pattern = null;
+        if (node.has("customDateTimePattern")) {
+            pattern = node.get("customDateTimePattern").asText();
+        } else if (getGenerationConfig().isFormatDateTimes()) {
+            pattern = ISO_8601_DATETIME_FORMAT;
+        }
+
+        if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
             field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern).param("timezone", timezone);
         }
-    
     }
 }

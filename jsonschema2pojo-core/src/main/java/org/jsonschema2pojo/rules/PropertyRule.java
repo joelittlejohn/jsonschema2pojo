@@ -141,6 +141,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private void formatAnnotation(JFieldVar field, JsonNode node) {
         String format = node.path("format").asText();
         if ("date-time".equalsIgnoreCase(format)) {
+            ruleFactory.getAnnotator().dateTimeField(field, node);
+        } else if ("date".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().dateField(field, node);
         }
     }

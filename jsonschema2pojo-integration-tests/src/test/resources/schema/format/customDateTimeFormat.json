@@ -15,6 +15,15 @@
             "format" : "date-time",
             "customDateTimePattern" : "yyyy-MM-dd",
             "customTimezone" : "PST"
+        },
+        "defaultFormatDate" : {
+            "type" : "string",
+            "format" : "date"
+        },
+        "customFormatCustomDate" : {
+            "type" : "string",
+            "format" : "date",
+            "customDatePattern" : "dd-MM-yyyy"
         }
     }
 }

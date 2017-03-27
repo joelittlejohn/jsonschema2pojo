@@ -33,7 +33,7 @@ public class CompositeAnnotator implements Annotator {
     /**
      * Create a new composite annotator, made up of a given set of child
      * annotators.
-     * 
+     *
      * @param annotators
      *            The annotators that will be called whenever this annotator is
      *            called. The child annotators provided will called in the order
@@ -129,6 +129,13 @@ public class CompositeAnnotator implements Annotator {
             annotator.additionalPropertiesField(field, clazz, propertyName);
         }
     }
+
+   @Override
+   public void dateTimeField(JFieldVar field, JsonNode propertyNode) {
+      for (Annotator annotator : annotators) {
+            annotator.dateTimeField(field, propertyNode);
+        }
+   }
 
    @Override
    public void dateField(JFieldVar field, JsonNode propertyNode) {

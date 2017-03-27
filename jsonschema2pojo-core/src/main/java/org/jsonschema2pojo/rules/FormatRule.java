@@ -16,6 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
+import static java.lang.String.*;
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
@@ -30,12 +33,10 @@ import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static java.lang.String.format;
 
 /**
  * Applies the "format" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
  */
@@ -68,7 +69,7 @@ public class FormatRule implements Rule<JType, JType> {
      * <li>"format":"uuid" =&gt; {@link java.util.UUID}
      * <li>other (unrecognised format) =&gt; baseType
      * </ul>
-     * 
+     *
      * @param nodeName
      *            the name of the node to which this format is applied
      * @param node
