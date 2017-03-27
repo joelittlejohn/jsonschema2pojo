@@ -74,6 +74,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   FileFilter fileFilter
   boolean formatDates
   boolean formatDateTimes
+  String customDatePattern
+  String customDateTimePattern
   String refFragmentPathDelimiters
 
   public JsonSchemaExtension() {
@@ -206,6 +208,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeDynamicAccessors = ${includeDynamicAccessors}
        |formatDates = ${formatDates}
        |formatDateTimes = ${formatDateTimes}
+       |customDatePattern = ${customDatePattern}
+       |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
      """.stripMargin()
   }

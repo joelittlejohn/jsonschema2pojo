@@ -125,13 +125,13 @@ public class Arguments implements GenerationConfig {
     private boolean useJodaLocalTimes = false;
 
     @Parameter(names = { "-dtt", "--datetime-class" }, description = "Specify datetime class")
-    private String dateTimeType = null;
+    private String dateTimeType;
 
     @Parameter(names = { "-tt", "--time-class" }, description = "Specify time class")
-    private String timeType = null;
+    private String timeType;
 
     @Parameter(names = { "-dt", "--date-class" }, description = "Specify date class")
-    private String dateType = null;
+    private String dateType;
 
     @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
     private boolean useCommonsLang3 = false;
@@ -166,11 +166,17 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;
 
-    @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd`")
+    @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` are formatted during serialization with a default pattern of `yyyy-MM-dd`")
     private boolean formatDates = false;
 
-    @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` have the `@JsonFormat` annotation with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and timezone set to default value of `UTC`")
+    @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` are formatted during serialization with a default pattern of `yyyy-MM-dd'T'HH:mm:ss.SSSZ` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
+
+    @Parameter(names = { "-dp", "--date-pattern" }, description = "A custom pattern to use when formatting date fields during serialization")
+    private String customDatePattern;
+
+    @Parameter(names = { "-dtp", "--date-time-pattern" }, description = "A custom pattern to use when formatting date-time fields during serialization")
+    private String customDateTimePattern;
 
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
@@ -432,6 +438,16 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
+    }
+
+    @Override
+    public String getCustomDatePattern() {
+        return customDatePattern;
+    }
+
+    @Override
+    public String getCustomDateTimePattern() {
+        return customDateTimePattern;
     }
 
 }

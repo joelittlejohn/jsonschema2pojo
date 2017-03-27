@@ -112,7 +112,6 @@ public interface GenerationConfig {
      */
     boolean isUseDoubleNumbers();
 
-
     /**
      * Gets the 'useBigDecimals' configuration option.
      *
@@ -156,8 +155,7 @@ public interface GenerationConfig {
      *         <a href="https://code.google.com/p/google-gson/">gson</a>
      *         library)</li>
      *         <li><code>moshi1</code> (apply annotations from the
-     *         <a href="https://github.com/square/moshi">moshi</a>
-     *         library)</li>
+     *         <a href="https://github.com/square/moshi">moshi</a> library)</li>
      *         <li><code>none</code> (apply no annotations at all)</li>
      *         </ul>
      * @see AnnotatorFactory
@@ -168,17 +166,17 @@ public interface GenerationConfig {
      * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
      *
      * @return Level of inclusion to set in the generated Java types.
-     *      <p>
-     *          Supported values
-     *          <ul>
-     *              <li><code>ALWAYS</code></li>
-     *              <li><code>NON_ABSENT</code></li>
-     *              <li><code>NON_DEFAULT</code></li>
-     *              <li><code>NON_EMPTY</code></li>
-     *              <li><code>NON_NULL</code></li>
-     *              <li><code>USE_DEFAULTS</code></li>
-     *          </ul>
-     *      </p>
+     *         <p>
+     *         Supported values
+     *         <ul>
+     *         <li><code>ALWAYS</code></li>
+     *         <li><code>NON_ABSENT</code></li>
+     *         <li><code>NON_DEFAULT</code></li>
+     *         <li><code>NON_EMPTY</code></li>
+     *         <li><code>NON_NULL</code></li>
+     *         <li><code>USE_DEFAULTS</code></li>
+     *         </ul>
+     *         </p>
      *
      * @see InclusionLevel
      */
@@ -335,7 +333,8 @@ public interface GenerationConfig {
     /**
      * Gets the 'fileExtensions' configuration option.
      *
-     * @return An array of strings that should be considered as file extensions and therefore not included in class names.
+     * @return An array of strings that should be considered as file extensions
+     *         and therefore not included in class names.
      */
     String[] getFileExtensions();
 
@@ -374,86 +373,105 @@ public interface GenerationConfig {
     /**
      * Gets the 'targetVersion' configuration option.
      *
-     *  @return The target version for generated source files.
+     * @return The target version for generated source files.
      */
     String getTargetVersion();
 
     /**
      * Gets the `includeDynamicAccessors` configuraiton option.
      *
-     * @return Whether to include dynamic getters, setters, and builders
-     *         or to omit these methods.
+     * @return Whether to include dynamic getters, setters, and builders or to
+     *         omit these methods.
      */
     boolean isIncludeDynamicAccessors();
 
     /**
      * Gets the `dateTimeType` configuration option.
-     *         <p>
-     *         Example values:
-     *         <ul>
-     *         <li><code>org.joda.time.LocalDateTime</code> (Joda)</li>
-     *         <li><code>java.time.LocalDateTime</code> (JSR310)</li>
-     *         <li><code>null</code> (default behavior)</li>
-     *         </ul>
+     * <p>
+     * Example values:
+     * <ul>
+     * <li><code>org.joda.time.LocalDateTime</code> (Joda)</li>
+     * <li><code>java.time.LocalDateTime</code> (JSR310)</li>
+     * <li><code>null</code> (default behavior)</li>
+     * </ul>
      *
-     * @return The java type to use instead of {@link java.util.Date}
-     *         when adding date type fields to generate Java types.
+     * @return The java type to use instead of {@link java.util.Date} when
+     *         adding date type fields to generate Java types.
      */
     String getDateTimeType();
 
     /**
      * Gets the `dateType` configuration option.
-     *         <p>
-     *         Example values:
-     *         <ul>
-     *         <li><code>org.joda.time.LocalDate</code> (Joda)</li>
-     *         <li><code>java.time.LocalDate</code> (JSR310)</li>
-     *         <li><code>null</code> (default behavior)</li>
-     *         </ul>
+     * <p>
+     * Example values:
+     * <ul>
+     * <li><code>org.joda.time.LocalDate</code> (Joda)</li>
+     * <li><code>java.time.LocalDate</code> (JSR310)</li>
+     * <li><code>null</code> (default behavior)</li>
+     * </ul>
      *
-     * @return The java type to use instead of string
-     *         when adding string type fields with a format of date (not
-     *         date-time) to generated Java types.
+     * @return The java type to use instead of string when adding string type
+     *         fields with a format of date (not date-time) to generated Java
+     *         types.
      */
     String getDateType();
 
     /**
      * Gets the `timeType` configuration option.
-     *         <p>
-     *         Example values:
-     *         <ul>
-     *         <li><code>org.joda.time.LocalTime</code> (Joda)</li>
-     *         <li><code>java.time.LocalTime</code> (JSR310)</li>
-     *         <li><code>null</code> (default behavior)</li>
-     *         </ul>
+     * <p>
+     * Example values:
+     * <ul>
+     * <li><code>org.joda.time.LocalTime</code> (Joda)</li>
+     * <li><code>java.time.LocalTime</code> (JSR310)</li>
+     * <li><code>null</code> (default behavior)</li>
+     * </ul>
      *
-     * @return The java type to use instead of string
-     *         when adding string type fields with a format of time (not
-     *         date-time) to generated Java types.
+     * @return The java type to use instead of string when adding string type
+     *         fields with a format of time (not date-time) to generated Java
+     *         types.
      */
     String getTimeType();
 
     /**
      * Gets the `formatDates` configuration option
      *
-     * @return Whether the fields of type <code>date</code> have the <code>@JsonFormat</code> annotation
-     *         with pattern set to the default value of <code>yyyy-MM-dd</code>
+     * @return Whether the fields of type <code>date</code> have the
+     *         <code>@JsonFormat</code> annotation with pattern set to the
+     *         default value of <code>yyyy-MM-dd</code>
      */
     boolean isFormatDates();
 
     /**
      * Gets the `formatDateTime` configuration option
      *
-     * @return Whether the fields of type <code>date-type</code> have the <code>@JsonFormat</code> annotation
-     *         with pattern set to the default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>
+     * @return Whether the fields of type <code>date-type</code> have the
+     *         <code>@JsonFormat</code> annotation with pattern set to the
+     *         default value of <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>
      */
     boolean isFormatDateTimes();
 
     /**
+     * Gets the 'customDatePattern' configuration option
+     *
+     * @return The custom format that dates will use when types are serialized.
+     *         Requires support from your JSON binding library.
+     */
+    String getCustomDatePattern();
+
+    /**
+     * Gets the 'customDateTimePattern' configuration option
+     *
+     * @return The custom format that dates will use when types are serialized.
+     *         Requires support from your JSON binding library.
+     */
+    String getCustomDateTimePattern();
+
+    /**
      * Gets the `refFragmentPathDelimiters` configuration option.
      *
-     * @return A string containing any characters that should act as path delimiters when resolving $ref fragments.
-     *         By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
+     * @return A string containing any characters that should act as path
+     *         delimiters when resolving $ref fragments. By default, #, / and .
+     *         are used in an attempt to support JSON Pointer and JSON Path.
      */
     String getRefFragmentPathDelimiters();
 

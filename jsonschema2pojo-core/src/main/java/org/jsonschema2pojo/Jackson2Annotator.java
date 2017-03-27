@@ -16,9 +16,13 @@
 
 package org.jsonschema2pojo;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.jsonschema2pojo.rules.FormatRule;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -47,10 +51,7 @@ import com.sun.codemodel.JMethod;
  */
 public class Jackson2Annotator extends AbstractAnnotator {
 
-    private static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-    private static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
-
-    private JsonInclude.Include inclusionLevel = JsonInclude.Include.NON_NULL;
+    private final JsonInclude.Include inclusionLevel;
 
     public Jackson2Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
@@ -163,8 +164,10 @@ public class Jackson2Annotator extends AbstractAnnotator {
             pattern = node.get("customDatePattern").asText();
         } else if (node.has("customPattern")) {
             pattern = node.get("customPattern").asText();
+        } else if (isNotEmpty(getGenerationConfig().getCustomDatePattern())) {
+            pattern = getGenerationConfig().getCustomDatePattern();
         } else if (getGenerationConfig().isFormatDates()) {
-            pattern = ISO_8601_DATE_FORMAT;
+            pattern = FormatRule.ISO_8601_DATE_FORMAT;
         }
 
         if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
@@ -181,8 +184,10 @@ public class Jackson2Annotator extends AbstractAnnotator {
             pattern = node.get("customDateTimePattern").asText();
         } else if (node.has("customPattern")) {
             pattern = node.get("customPattern").asText();
+        } else if (isNotEmpty(getGenerationConfig().getCustomDateTimePattern())) {
+            pattern = getGenerationConfig().getCustomDateTimePattern();
         } else if (getGenerationConfig().isFormatDateTimes()) {
-            pattern = ISO_8601_DATETIME_FORMAT;
+            pattern = FormatRule.ISO_8601_DATETIME_FORMAT;
         }
 
         if (pattern != null && !field.type().fullName().equals("java.lang.String")) {

@@ -569,9 +569,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private MavenProject project;
 
     /**
-     * Whether the fields of type `date-time` have the `@JsonFormat` annotation
-     * with pattern set to the default value of `yyyy-MM-dd'T'HH:mm:ss.SSS` and
-     * timezone set to default value of `UTC`
+     * Whether the fields of type `date` are formatted during serialization with
+     * a default pattern of yyyy-MM-dd.
+     *
+     * @parameter expression="${jsonschema2pojo.formatDates}"
+     *            default-value="false"
+     * @since 0.4.33
+     */
+    private boolean formatDates = false;
+
+    /**
+     * Whether the fields of type `date` are formatted during serialization with
+     * a default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
      *
      * @parameter expression="${jsonschema2pojo.formatDateTimes}"
      *            default-value="false"
@@ -580,14 +589,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean formatDateTimes = false;
 
     /**
-     * Whether the fields of type `date` have the `@JsonFormat` annotation
-     * with pattern set to the default value of `yyyy-MM-dd`.
+     * A custom pattern to use when formatting date fields during serialization.
+     * Requires support from your JSON binding library.
      *
-     * @parameter expression="${jsonschema2pojo.formatDates}"
-     *            default-value="false"
+     * @parameter expression "${jsonschema2pojo.customDatePattern}"
      * @since 0.4.33
      */
-    private boolean formatDates = false;
+    private String customDatePattern;
+
+    /**
+     * A custom pattern to use when formatting date-time fields during
+     * serialization. Requires support from your JSON binding library.
+     *
+     * @parameter expression "${jsonschema2pojo.customDatePattern}"
+     * @since 0.4.33
+     */
+    private String customDateTimePattern;
 
     /**
      * A string containing any characters that should act as path delimiters when resolving $ref fragments.
@@ -939,6 +956,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isFormatDates() {
         return formatDates;
+    }
+
+    @Override
+    public String getCustomDatePattern() {
+        return customDatePattern;
+    }
+
+    @Override
+    public String getCustomDateTimePattern() {
+        return customDateTimePattern;
     }
 
     @Override

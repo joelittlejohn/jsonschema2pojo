@@ -352,4 +352,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getRefFragmentPathDelimiters() {
         return "#/.";
     }
+
+    @Override
+    public String getCustomDatePattern() {
+        return null;
+    }
+
+    @Override
+    public String getCustomDateTimePattern() {
+        return null;
+    }
 }

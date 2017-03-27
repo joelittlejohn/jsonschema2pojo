@@ -138,15 +138,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeDynamicAccessors = false;
 
-    private String dateTimeType = null;
+    private String dateTimeType;
 
-    private String timeType = null;
+    private String timeType;
 
-    private String dateType = null;
+    private String dateType;
 
     private boolean formatDateTimes = false;
 
     private boolean formatDates = false;
+
+    private String customDatePattern;
+
+    private String customDateTimePattern;
 
     private String refFragmentPathDelimiters = "#/.";
 
@@ -711,6 +715,30 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'customDatePattern' property of this class
+     *
+     * @param customDatePattern
+     *            A custom pattern to use when formatting date fields during
+     *            serialization. Requires support from your JSON binding
+     *            library.
+     */
+    public void setCustomDatePattern(String customDatePattern) {
+        this.customDatePattern = customDatePattern;
+    }
+
+    /**
+     * Sets the 'customDateTimePattern' property of this class
+     *
+     * @param customDatePattern
+     *            A custom pattern to use when formatting date-time fields during
+     *            serialization. Requires support from your JSON binding
+     *            library.
+     */
+    public void setCustomDateTimePattern(String customDateTimePattern) {
+        this.customDateTimePattern = customDateTimePattern;
+    }
+
+    /**
      * Sets the 'refFragmentPathDelimiters' property of this class
      *
      * @param refFragmentPathDelimiters A string containing any characters that should act as path delimiters when
@@ -966,6 +994,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isFormatDates() {
         return formatDates;
+    }
+
+    @Override
+    public String getCustomDatePattern() {
+        return customDatePattern;
+    }
+
+    @Override
+    public String getCustomDateTimePattern() {
+        return customDateTimePattern;
     }
 
     @Override

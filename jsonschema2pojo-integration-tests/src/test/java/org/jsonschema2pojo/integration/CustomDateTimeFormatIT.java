@@ -37,6 +37,7 @@ public class CustomDateTimeFormatIT {
 
     private static Class<?> classWhenFormatDatesTrue;
     private static Class<?> classWhenFormatDatesFalse;
+    private static Class<?> classWithCustomPatterns;
 
     @BeforeClass
     public static void generateClasses() throws ClassNotFoundException, IOException {
@@ -51,10 +52,40 @@ public class CustomDateTimeFormatIT {
                 "formatDateTimes", Boolean.FALSE,
                 "formatDates", Boolean.FALSE));
 
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config(
+                "dateType", "java.util.Date",
+                "customDatePattern", "yyyy",
+                "customDateTimePattern", "yyyy-MM-dd HH:mm X",
+                "formatDateTimes", Boolean.TRUE,
+                "formatDates", Boolean.TRUE));
+
         ClassLoader loader = classSchemaRule.compile();
 
         classWhenFormatDatesTrue = loader.loadClass("com.example.config_true.CustomDateTimeFormat");
         classWhenFormatDatesFalse = loader.loadClass("com.example.config_false.CustomDateTimeFormat");
+        classWithCustomPatterns = loader.loadClass("com.example.config_custom.CustomDateTimeFormat");
+    }
+
+    @Test
+    public void testDefaultFormattedDateWithCustomPattern() throws Exception {
+
+        final Object instance = classWithCustomPatterns.newInstance();
+        classWithCustomPatterns.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormatDate\":\"2001\"}"));
+    }
+
+    @Test
+    public void testDefaultFormattedDateTimeWithCustomPattern() throws Exception {
+
+        final Object instance = classWithCustomPatterns.newInstance();
+        classWithCustomPatterns.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormat\":\"2001-09-09 01:46 Z\"}"));
     }
 
     @Test

@@ -44,7 +44,7 @@ import com.sun.codemodel.JMethod;
  */
 public class Jackson1Annotator extends AbstractAnnotator {
 
-    private JsonSerialize.Inclusion inclusionLevel = JsonSerialize.Inclusion.NON_NULL;
+    private final JsonSerialize.Inclusion inclusionLevel;
 
     public Jackson1Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
