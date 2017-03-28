@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.33
+* Support customDatePattern and customDateTimePattern as global config options ([#716](https://github.com/joelittlejohn/jsonschema2pojo/issues/716))
+* Support customPattern as an alias for customDatePattern and customDateTimePattern ([#715](https://github.com/joelittlejohn/jsonschema2pojo/issues/715))
+* formatDateTimes default pattern should include timezone ([#714](https://github.com/joelittlejohn/jsonschema2pojo/issues/714))
+* Fix compilation errors for non-string enums ([#713](https://github.com/joelittlejohn/jsonschema2pojo/pull/713))
+* Add 'formatDates' config option to add JsonFormat annotation on format "date" fields ([#699](https://github.com/joelittlejohn/jsonschema2pojo/issues/699))
+
 ## 0.4.32
 * org.jsonschema2pojo.ContentResolverTest require internet connection ([#704](https://github.com/joelittlejohn/jsonschema2pojo/issues/704))
 * Add option to specify custom fragment path delimiters ([#697](https://github.com/joelittlejohn/jsonschema2pojo/pull/697))
@@ -12,6 +19,7 @@
 * Cannot use custom date,time types from external dependencies in maven/ant plugins ([#673](https://github.com/joelittlejohn/jsonschema2pojo/issues/673))
 * Jackson inclusion option ([#671](https://github.com/joelittlejohn/jsonschema2pojo/pull/671))
 * Support URI format properties with a default value using URI.create ([#664](https://github.com/joelittlejohn/jsonschema2pojo/issues/664))
+* Support configurable serialization inclusion for Jackson ([#629](https://github.com/joelittlejohn/jsonschema2pojo/issues/629))
 
 ## 0.4.29
 * Fix include additional properties set incorrectly by CLI ([#660](https://github.com/joelittlejohn/jsonschema2pojo/pull/660))
