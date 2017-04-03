@@ -1,44 +1,52 @@
 (ns jsonschema2pojo.server
-  (:use [jsonschema2pojo.bridge :as j2p]
-        [clojure.tools.logging :only [error]]
-        [clojure.string :only [split-lines replace-first]]
-        [compojure.core :only [defroutes GET POST]]
-        [compojure.route :only [not-found resources]]
-        [ring.middleware.params]
-        [ring.util.response :only [resource-response]]
-        [ring.adapter.jetty :only [run-jetty]]
-        [clojure.data.codec.base64 :as b64])
-  (:import [java.io ByteArrayInputStream]
-           [com.fasterxml.jackson.databind ObjectMapper]
-           [com.fasterxml.jackson.core JsonProcessingException])
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.data.codec.base64 :as b64]
+            [clojure.string :refer [split-lines]]
+            [clojure.tools.logging :refer [error]]
+            [compojure
+             [core :refer [defroutes GET POST]]
+             [route :refer [not-found resources]]]
+            [jsonschema2pojo.bridge :as j2p]
+            [ring.adapter.jetty :refer [run-jetty]]
+            [ring.middleware
+             [cookies :refer [wrap-cookies]]
+             [params :refer [wrap-params]]]
+            [ring.util.response :refer [resource-response]])
+  (:import com.fasterxml.jackson.core.JsonProcessingException
+           com.fasterxml.jackson.databind.ObjectMapper
+           java.io.ByteArrayInputStream))
 
 (def object-mapper (ObjectMapper.))
 
-(defn- format-parse-error [e]
+(defn- format-parse-error
+  [e]
   (let [message  (-> (.getMessage e) split-lines first)
         location (.getLocation e)
         line (.getLineNr location)
         column (.getColumnNr location)]
     (str message " (line " line ", column " column ")")))
 
-(defn- parse [schema]
+(defn- parse
+  [schema]
   (try
     (.readTree object-mapper schema)
     (catch JsonProcessingException e
       (throw (IllegalArgumentException. (format-parse-error e))))))
 
-(defn- not-blank [params k name]
+(defn- not-blank
+  [params k name]
   (if (empty? (params k))
     (throw (IllegalArgumentException. (str name " can't be blank, try adding some text")))
     (params k)))
 
-(defn- size-limit [limit s]
+(defn- size-limit
+  [limit s]
   (if (> (.length s) limit)
     (throw (IllegalArgumentException. (str "Your input was larger than " limit " characters, try making this a bit smaller")))
     s))
 
-(defn- generate-response [params generator content-type]
+(defn- generate-response
+  [params generator content-type]
   (try
     (let [schema (parse (size-limit 51200 (not-blank params "schema" "JSON Schema (or example JSON)")))
           classname (size-limit 128 (not-blank params "classname" "Class name"))
@@ -66,7 +74,8 @@
   (POST "/generator/preview" {params :params}
         (generate-response params j2p/preview "text/java"))
 
-  (GET "/" {} (resource-response "public/index.html"))
+  (GET "/" {}
+       (resource-response "public/index.html"))
 
   (resources "/")
 
@@ -74,5 +83,6 @@
 
 (def app (wrap-params routes))
 
-(defn -main [port]
+(defn -main
+  [port]
   (run-jetty app {:port (Integer. port)}))

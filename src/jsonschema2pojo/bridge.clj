@@ -1,41 +1,43 @@
 (ns jsonschema2pojo.bridge
-  (:use [clojure.java.io]
-        [clojure.string :only [upper-case]])
-  (:import [java.io ByteArrayOutputStream]
-           [org.jsonschema2pojo
-            Schema SchemaGenerator SchemaStore
-            GenerationConfig DefaultGenerationConfig
-            AnnotatorFactory AnnotationStyle SourceType ]
-           [org.jsonschema2pojo.rules RuleFactory]
-           [com.sun.codemodel JCodeModel]
-           [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]))
+  (:require [clojure.string :as str])
+  (:import com.sun.codemodel.JCodeModel
+           [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]
+           java.io.ByteArrayOutputStream
+           [org.jsonschema2pojo AnnotationStyle AnnotatorFactory DefaultGenerationConfig Schema SchemaGenerator SchemaStore SourceType]
+           org.jsonschema2pojo.rules.RuleFactory))
 
-(def ^:private schema-generator (SchemaGenerator.))
+(def ^:private schema-generator
+  (SchemaGenerator.))
 
-(defn- output-to-zip [code-model]
+(defn- output-to-zip
+  [code-model]
   (let [zip-bytes (ByteArrayOutputStream.)]
     (with-open [writer (ZipCodeWriter. zip-bytes)]
       (.build code-model writer))
     (.toByteArray zip-bytes)))
 
-(defn- output-to-string [code-model]
+(defn- output-to-string
+  [code-model]
   (let [code-as-bytes (ByteArrayOutputStream.)]
     (with-open [writer (SingleStreamCodeWriter. code-as-bytes)]
       (.build code-model writer))
     (.toByteArray code-as-bytes)))
 
-(defn- annotator [config]
+(defn- annotator
+  [config]
   (.. (AnnotatorFactory. config)
       (getAnnotator (.getAnnotationStyle config))))
 
-(defn- generate-java-types [input classname config code-model]
+(defn- generate-java-types
+  [input classname config code-model]
   (let [package (._package code-model (.getTargetPackage config))
         schema (if (= (.getSourceType config) (SourceType/JSON)) (.schemaFromExample schema-generator input) input)]
     (.. (RuleFactory. config (annotator config) (SchemaStore.))
         (getSchemaRule)
         (apply classname schema package (proxy [Schema] [nil schema schema])))))
 
-(defn params-based-config [params]
+(defn params-based-config
+  [params]
   (proxy [DefaultGenerationConfig] []
     (getTargetPackage []
       (params "targetpackage"))
@@ -75,19 +77,21 @@
       (char-array (params "propertyworddelimiters")))
     (getAnnotationStyle []
       (if (contains? params "annotationstyle")
-        (AnnotationStyle/valueOf (upper-case (params "annotationstyle")))
+        (AnnotationStyle/valueOf (str/upper-case (params "annotationstyle")))
         (proxy-super getAnnotationStyle)))
     (getSourceType []
       (if (contains? params "sourcetype")
-        (SourceType/valueOf (upper-case (params "sourcetype")))
+        (SourceType/valueOf (str/upper-case (params "sourcetype")))
         (proxy-super getSourceType)))))
 
-(defn generate [schema classname config]
+(defn generate
+  [schema classname config]
   (let [code-model (JCodeModel.)]
     (generate-java-types schema classname config code-model)
     (output-to-zip code-model)))
 
-(defn preview [schema classname config]
+(defn preview
+  [schema classname config]
   (let [code-model (JCodeModel.)]
     (generate-java-types schema classname config code-model)
     (output-to-string code-model)))
