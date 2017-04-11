@@ -154,6 +154,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String refFragmentPathDelimiters = "#/.";
 
+    private boolean processSourceFilesBeforeDirectories = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -729,7 +731,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     /**
      * Sets the 'customDateTimePattern' property of this class
      *
-     * @param customDatePattern
+     * @param customDateTimePattern
      *            A custom pattern to use when formatting date-time fields during
      *            serialization. Requires support from your JSON binding
      *            library.
@@ -747,6 +749,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setRefFragmentPathDelimiters(String refFragmentPathDelimiters) {
         this.refFragmentPathDelimiters = refFragmentPathDelimiters;
+    }
+
+    /**
+     * Sets the 'processSourceFilesBeforeDirectories' property of this class
+     *
+     * @param processSourceFilesBeforeDirectories Whether the source files should be processed before directories when
+     *                                            recursively processing the source files.  By default the OS can influence
+     *                                            the processing order.
+     */
+    public void setProcessSourceFilesBeforeDirectories(boolean processSourceFilesBeforeDirectories)
+    {
+        this.processSourceFilesBeforeDirectories = processSourceFilesBeforeDirectories;
     }
 
     @Override
@@ -1009,5 +1023,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
+    }
+
+    @Override
+    public boolean isProcessSourceFilesBeforeDirectories()
+    {
+        return processSourceFilesBeforeDirectories;
     }
 }

@@ -362,4 +362,10 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getCustomDateTimePattern() {
         return null;
     }
+
+    @Override
+    public boolean isProcessSourceFilesBeforeDirectories()
+    {
+        return false;
+    }
 }

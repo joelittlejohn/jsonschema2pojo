@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo;
 
+import org.jsonschema2pojo.rules.RuleFactory;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
-
-import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Defines the configuration options for Java type generation, including source
@@ -474,5 +474,13 @@ public interface GenerationConfig {
      *         are used in an attempt to support JSON Pointer and JSON Path.
      */
     String getRefFragmentPathDelimiters();
+
+    /**
+     * Gets the 'processSourceFilesBeforeDirectories' configuration option.
+     *
+     * @return Whether the source files should be processed before
+     *         directories, or to allow the OS to influence ordering.
+     */
+    boolean isProcessSourceFilesBeforeDirectories();
 
 }

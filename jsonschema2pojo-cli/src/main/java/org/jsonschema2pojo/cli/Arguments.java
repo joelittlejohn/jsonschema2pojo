@@ -181,6 +181,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
 
+    @Parameter(names = { "-sff", "--source-files-first" }, description = "Whether the source files should be processed before directories when recursively finding the source files.  By default the OS can influence the processing order")
+    private boolean processSourceFilesBeforeDirectories = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -450,4 +453,9 @@ public class Arguments implements GenerationConfig {
         return customDateTimePattern;
     }
 
+    @Override
+    public boolean isProcessSourceFilesBeforeDirectories()
+    {
+        return processSourceFilesBeforeDirectories;
+    }
 }

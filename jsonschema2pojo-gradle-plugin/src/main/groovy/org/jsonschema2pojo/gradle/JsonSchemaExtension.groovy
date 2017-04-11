@@ -77,6 +77,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String customDatePattern
   String customDateTimePattern
   String refFragmentPathDelimiters
+  boolean processSourceFilesBeforeDirectories
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -122,6 +123,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatDates = false
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
+    processSourceFilesBeforeDirectories = false
   }
 
   @Override
@@ -211,6 +213,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customDatePattern = ${customDatePattern}
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
+       |processSourceFilesBeforeDirectories = ${processSourceFilesBeforeDirectories}
      """.stripMargin()
   }
   

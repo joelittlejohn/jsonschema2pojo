@@ -618,6 +618,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
+     * Whether the source files should be processed before directories when recursively processing the source
+     * files.  By default the OS can influence the processing order.
+     *
+     * @parameter expression="${jsonschema2pojo.processSourceFilesBeforeDirectories}"
+     *            default-value="false"
+     * @since 0.4.34
+     */
+    private boolean processSourceFilesBeforeDirectories = false;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -973,4 +983,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return refFragmentPathDelimiters;
     }
 
+    @Override
+    public boolean isProcessSourceFilesBeforeDirectories()
+    {
+        return processSourceFilesBeforeDirectories;
+    }
 }

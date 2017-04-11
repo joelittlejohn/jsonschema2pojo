@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "refToA" : {
+            "$ref": "includes/aType.json"
+        },
+        "refToZ" : {
+            "$ref" : "includes/zType.json"
+        }
+    }
+}
