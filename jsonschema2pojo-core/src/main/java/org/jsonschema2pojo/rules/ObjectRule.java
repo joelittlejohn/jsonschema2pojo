@@ -41,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -373,12 +374,25 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addToString(JDefinedClass jclass) {
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
 
-        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ToStringBuilder.class : org.apache.commons.lang.builder.ToStringBuilder.class;
-
         JBlock body = toString.body();
-        JInvocation reflectionToString = jclass.owner().ref(toStringBuilder).staticInvoke("reflectionToString");
-        reflectionToString.arg(JExpr._this());
-        body._return(reflectionToString);
+
+        if ( ruleFactory.getGenerationConfig().getToStringExcludes().length > 0 ) {
+            Class<?> reflectionToStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ReflectionToStringBuilder.class : org.apache.commons.lang.builder.ReflectionToStringBuilder.class;
+            JInvocation toStringExclude = jclass.owner().ref(reflectionToStringBuilder).staticInvoke("toStringExclude");
+
+            JArray arr = JExpr.newArray(jclass.owner().ref(String.class));
+            for ( String exclude : ruleFactory.getGenerationConfig().getToStringExcludes() ) {
+                arr.add(JExpr.lit(exclude));
+            }
+
+            toStringExclude.arg(JExpr._this()).arg(arr);
+            body._return(toStringExclude);
+        } else {
+            Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ToStringBuilder.class : org.apache.commons.lang.builder.ToStringBuilder.class;
+            JInvocation reflectionToString = jclass.owner().ref(toStringBuilder).staticInvoke("reflectionToString");
+            reflectionToString.arg(JExpr._this());
+            body._return(reflectionToString);
+        }
 
         toString.annotate(Override.class);
     }

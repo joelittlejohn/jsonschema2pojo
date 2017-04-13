@@ -87,6 +87,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
     private boolean omitToString = false;
+    
+    @Parameter(names = { "-tse", "--tostring-excludes" }, description = "The fields that should be excluded from generated toString methods")
+    private String toStringExcludes = "";
 
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
@@ -266,6 +269,11 @@ public class Arguments implements GenerationConfig {
         return !omitToString;
     }
 
+    @Override
+    public String[] getToStringExcludes() {
+        return defaultString(toStringExcludes).split(" ");
+    }
+    
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
