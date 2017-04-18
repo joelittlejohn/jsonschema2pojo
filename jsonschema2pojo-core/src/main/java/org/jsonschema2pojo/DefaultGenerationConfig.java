@@ -367,8 +367,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return {@link SourceSortOrder#OS}
      */
     @Override
-    public SourceSortOrder getSourceSortOrder()
-    {
+    public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
 }

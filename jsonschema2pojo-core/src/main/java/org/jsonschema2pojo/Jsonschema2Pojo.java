@@ -16,13 +16,7 @@
 
 package org.jsonschema2pojo;
 
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
-import org.apache.commons.io.FilenameUtils;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.URLUtil;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,7 +29,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import org.apache.commons.io.FilenameUtils;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.URLUtil;
+
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
     /**

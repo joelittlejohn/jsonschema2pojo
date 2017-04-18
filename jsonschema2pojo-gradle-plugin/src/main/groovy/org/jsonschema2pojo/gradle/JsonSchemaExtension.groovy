@@ -25,8 +25,6 @@ import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.rules.RuleFactory
 
-import javax.xml.transform.Source
-
 /**
  * The configuration properties.
  *

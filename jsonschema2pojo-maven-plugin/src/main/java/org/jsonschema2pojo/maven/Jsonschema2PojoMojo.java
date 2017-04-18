@@ -16,13 +16,8 @@
 
 package org.jsonschema2pojo.maven;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.jsonschema2pojo.*;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.util.URLUtil;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,8 +28,22 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
+import org.jsonschema2pojo.AllFileFilter;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.AnnotatorFactory;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.InclusionLevel;
+import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceSortOrder;
+import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.URLUtil;
 
 /**
  * When invoked, this goal reads one or more

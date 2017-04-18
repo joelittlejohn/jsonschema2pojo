@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo;
 
-import org.jsonschema2pojo.rules.RuleFactory;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
+
+import org.jsonschema2pojo.rules.RuleFactory;
 
 /**
  * Defines the configuration options for Java type generation, including source

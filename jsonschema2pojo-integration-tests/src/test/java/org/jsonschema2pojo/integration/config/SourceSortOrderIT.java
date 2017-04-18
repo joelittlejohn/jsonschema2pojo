@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import java.lang.reflect.Method;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertEquals;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
 public class SourceSortOrderIT {
 
