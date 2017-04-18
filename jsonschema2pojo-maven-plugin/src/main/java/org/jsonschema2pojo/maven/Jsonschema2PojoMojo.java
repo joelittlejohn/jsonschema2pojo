@@ -16,8 +16,13 @@
 
 package org.jsonschema2pojo.maven;
 
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.*;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
+import org.jsonschema2pojo.*;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.URLUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -28,21 +33,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.AnnotatorFactory;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.InclusionLevel;
-import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.util.URLUtil;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * When invoked, this goal reads one or more
@@ -618,14 +610,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
-     * Whether the source files should be processed before directories when recursively processing the source
-     * files.  By default the OS can influence the processing order.
+     * The sort order to be applied when recursively processing the source
+     * files.  By default the OS can influence the processing order.   Supported values:
+     * <ul>
+     * <li><code>OS</code> (Let the OS influence the order the source files are processed.)</li>
+     * <li><code>FILES_FIRST</code> (Case sensitive sort, visit the files first.  The source files are processed in a breadth
+     * first sort order.)</li>
+     * <li><code>SUBDIRS_FIRST</code> (Case sensitive sort, visit the sub-directories before the files.  The source files are
+     * processed in a depth first sort order.)</li>
+     * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.processSourceFilesBeforeDirectories}"
-     *            default-value="false"
+     * @parameter expression="${jsonschema2pojo.sourceSortOrder}"
+     * default-value="OS"
      * @since 0.4.34
      */
-    private boolean processSourceFilesBeforeDirectories = false;
+    private String sourceSortOrder = SourceSortOrder.OS.toString();
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -984,8 +983,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isProcessSourceFilesBeforeDirectories()
+    public SourceSortOrder getSourceSortOrder()
     {
-        return processSourceFilesBeforeDirectories;
+        return SourceSortOrder.valueOf(sourceSortOrder.toUpperCase());
     }
 }

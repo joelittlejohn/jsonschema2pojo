@@ -16,7 +16,13 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JCodeModel;
+import org.apache.commons.io.FilenameUtils;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.URLUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,19 +32,10 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.util.FileComparator;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.URLUtil;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class Jsonschema2Pojo {
     /**
@@ -104,11 +101,8 @@ public class Jsonschema2Pojo {
     }
 
     private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
-        if (config.isProcessSourceFilesBeforeDirectories()) {
-            Collections.sort(schemaFiles, new FileComparator());
-        } else {
-            Collections.sort(schemaFiles);
-        }
+
+        Collections.sort(schemaFiles, config.getSourceSortOrder().getComparator());
 
         for (File child : schemaFiles) {
             if (child.isFile()) {

@@ -21,8 +21,11 @@ import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
 import org.jsonschema2pojo.NoopAnnotator
+import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.rules.RuleFactory
+
+import javax.xml.transform.Source
 
 /**
  * The configuration properties.
@@ -77,7 +80,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String customDatePattern
   String customDateTimePattern
   String refFragmentPathDelimiters
-  boolean processSourceFilesBeforeDirectories
+  SourceSortOrder sourceSortOrder
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -123,7 +126,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatDates = false
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
-    processSourceFilesBeforeDirectories = false
+    sourceSortOrder = SourceSortOrder.OS
   }
 
   @Override
@@ -166,6 +169,10 @@ public class JsonSchemaExtension implements GenerationConfig {
 
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
+  }
+
+  public void setSourceSortOrder(String sortOrder) {
+    sourceSortOrder = SourceSortOrder.valueOf(sortOrder.toUpperCase())
   }
 
   @Override
@@ -213,7 +220,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customDatePattern = ${customDatePattern}
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
-       |processSourceFilesBeforeDirectories = ${processSourceFilesBeforeDirectories}
+       |sourceSortOrder = ${sourceSortOrder}
      """.stripMargin()
   }
   

@@ -35,15 +35,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.InclusionLevel;
-import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.URLProtocol;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -154,7 +146,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String refFragmentPathDelimiters = "#/.";
 
-    private boolean processSourceFilesBeforeDirectories = false;
+    private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -752,15 +744,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'processSourceFilesBeforeDirectories' property of this class
+     * Sets the 'sourceSortOrder' property of this class
      *
-     * @param processSourceFilesBeforeDirectories Whether the source files should be processed before directories when
-     *                                            recursively processing the source files.  By default the OS can influence
-     *                                            the processing order.
+     * @param sourceSortOrder Sets the sort order for the source files to be processed in.  By default the OS can
+     *                        influence the processing order.
      */
-    public void setProcessSourceFilesBeforeDirectories(boolean processSourceFilesBeforeDirectories)
-    {
-        this.processSourceFilesBeforeDirectories = processSourceFilesBeforeDirectories;
+    public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
+        this.sourceSortOrder = sourceSortOrder;
     }
 
     @Override
@@ -1026,8 +1016,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isProcessSourceFilesBeforeDirectories()
-    {
-        return processSourceFilesBeforeDirectories;
+    public SourceSortOrder getSourceSortOrder() {
+        return sourceSortOrder;
     }
 }

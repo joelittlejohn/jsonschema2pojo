@@ -363,9 +363,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return null;
     }
 
+    /**
+     * @return {@link SourceSortOrder#OS}
+     */
     @Override
-    public boolean isProcessSourceFilesBeforeDirectories()
+    public SourceSortOrder getSourceSortOrder()
     {
-        return false;
+        return SourceSortOrder.OS;
     }
 }

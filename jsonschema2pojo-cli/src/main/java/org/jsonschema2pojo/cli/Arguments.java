@@ -24,13 +24,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.InclusionLevel;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.beust.jcommander.JCommander;
@@ -181,11 +175,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
 
-    @Parameter(names = { "-sff", "--source-files-first" }, description = "Whether the source files should be processed before directories when recursively finding the source files.  By default the OS can influence the processing order")
-    private boolean processSourceFilesBeforeDirectories = false;
+    @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
+    private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
+
 
     /**
      * Parses command line arguments and populates this command line instance.
@@ -454,8 +449,7 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isProcessSourceFilesBeforeDirectories()
-    {
-        return processSourceFilesBeforeDirectories;
+    public SourceSortOrder getSourceSortOrder() {
+        return sourceSortOrder;
     }
 }
