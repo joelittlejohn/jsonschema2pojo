@@ -475,4 +475,20 @@ public interface GenerationConfig {
      */
     String getRefFragmentPathDelimiters();
 
+    /**
+     * Gets the 'sourceSortOrder' configuration option.
+     *
+     * @return
+     *  <p>
+     *         Supported values:
+     *         <ul>
+     *         <li><code>OS</code> (Let the OS influence the order the source files are processed.)</li>
+     *         <li><code>FILES_FIRST</code> (Case sensitive sort, visit the files first.  The source files are processed in a breadth
+     *         first sort order.)</li>
+     *         <li><code>SUBDIRS_FIRST</code> (Case sensitive sort, visit the sub-directories before the files.  The source files are
+     *         processed in a depth first sort order.)</li>
+     *         </ul>
+     */
+    SourceSortOrder getSourceSortOrder();
+
 }

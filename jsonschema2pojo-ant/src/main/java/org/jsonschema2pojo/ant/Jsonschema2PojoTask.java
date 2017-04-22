@@ -42,6 +42,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.URLProtocol;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -153,6 +154,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String customDateTimePattern;
 
     private String refFragmentPathDelimiters = "#/.";
+
+    private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -729,7 +732,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     /**
      * Sets the 'customDateTimePattern' property of this class
      *
-     * @param customDatePattern
+     * @param customDateTimePattern
      *            A custom pattern to use when formatting date-time fields during
      *            serialization. Requires support from your JSON binding
      *            library.
@@ -747,6 +750,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setRefFragmentPathDelimiters(String refFragmentPathDelimiters) {
         this.refFragmentPathDelimiters = refFragmentPathDelimiters;
+    }
+
+    /**
+     * Sets the 'sourceSortOrder' property of this class
+     *
+     * @param sourceSortOrder Sets the sort order for the source files to be processed in.  By default the OS can
+     *                        influence the processing order.
+     */
+    public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
+        this.sourceSortOrder = sourceSortOrder;
     }
 
     @Override
@@ -1009,5 +1022,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
+    }
+
+    @Override
+    public SourceSortOrder getSourceSortOrder() {
+        return sourceSortOrder;
     }
 }

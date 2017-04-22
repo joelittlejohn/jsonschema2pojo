@@ -102,7 +102,8 @@ public class Jsonschema2Pojo {
     }
 
     private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
-        Collections.sort(schemaFiles);
+
+        Collections.sort(schemaFiles, config.getSourceSortOrder().getComparator());
 
         for (File child : schemaFiles) {
             if (child.isFile()) {

@@ -40,6 +40,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
@@ -618,6 +619,23 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
+     * The sort order to be applied when recursively processing the source
+     * files.  By default the OS can influence the processing order.   Supported values:
+     * <ul>
+     * <li><code>OS</code> (Let the OS influence the order the source files are processed.)</li>
+     * <li><code>FILES_FIRST</code> (Case sensitive sort, visit the files first.  The source files are processed in a breadth
+     * first sort order.)</li>
+     * <li><code>SUBDIRS_FIRST</code> (Case sensitive sort, visit the sub-directories before the files.  The source files are
+     * processed in a depth first sort order.)</li>
+     * </ul>
+     *
+     * @parameter expression="${jsonschema2pojo.sourceSortOrder}"
+     * default-value="OS"
+     * @since 0.4.34
+     */
+    private String sourceSortOrder = SourceSortOrder.OS.toString();
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -973,4 +991,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return refFragmentPathDelimiters;
     }
 
+    @Override
+    public SourceSortOrder getSourceSortOrder()
+    {
+        return SourceSortOrder.valueOf(sourceSortOrder.toUpperCase());
+    }
 }

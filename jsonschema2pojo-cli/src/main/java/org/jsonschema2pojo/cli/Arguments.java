@@ -30,6 +30,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -181,8 +182,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
 
+    @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
+    private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
+
 
     /**
      * Parses command line arguments and populates this command line instance.
@@ -450,4 +455,8 @@ public class Arguments implements GenerationConfig {
         return customDateTimePattern;
     }
 
+    @Override
+    public SourceSortOrder getSourceSortOrder() {
+        return sourceSortOrder;
+    }
 }

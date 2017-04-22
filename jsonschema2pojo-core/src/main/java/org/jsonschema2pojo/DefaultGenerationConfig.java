@@ -362,4 +362,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public String getCustomDateTimePattern() {
         return null;
     }
+
+    /**
+     * @return {@link SourceSortOrder#OS}
+     */
+    @Override
+    public SourceSortOrder getSourceSortOrder() {
+        return SourceSortOrder.OS;
+    }
 }
