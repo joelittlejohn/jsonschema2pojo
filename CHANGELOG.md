@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.34
+* Add 'sourceSortOrder' to decide how source files are iterated ([#719](https://github.com/joelittlejohn/jsonschema2pojo/pull/719))
+
 ## 0.4.33
 * Support customDatePattern and customDateTimePattern as global config options ([#716](https://github.com/joelittlejohn/jsonschema2pojo/issues/716))
 * Support customPattern as an alias for customDatePattern and customDateTimePattern ([#715](https://github.com/joelittlejohn/jsonschema2pojo/issues/715))
