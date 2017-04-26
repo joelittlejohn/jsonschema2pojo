@@ -107,6 +107,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeToString() {
         return true;
     }
+    
+    /**
+     * @return no exclusions
+     */
+    @Override
+    public String[] getToStringExcludes() {
+        return new String[] {};
+    }
 
     /**
      * @return {@link AnnotationStyle#JACKSON2}

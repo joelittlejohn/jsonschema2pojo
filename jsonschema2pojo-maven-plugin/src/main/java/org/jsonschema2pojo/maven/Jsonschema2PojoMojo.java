@@ -216,6 +216,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.3.1
      */
     private boolean includeToString = true;
+    
+    /**
+     * The fields to be excluded from toString generation
+     *
+     * @parameter expression="${jsonschema2pojo.toStringExcludes}"
+     *            default-value=""
+     * @since 0.4.34
+     */
+    private String[] toStringExcludes = new String[] {};
 
     /**
      * The style of annotations to use in the generated Java types.
@@ -778,6 +787,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeToString() {
         return includeToString;
+    }
+    
+    @Override
+    public String[] getToStringExcludes() {
+        return toStringExcludes;
     }
 
     @Override

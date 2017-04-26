@@ -42,7 +42,7 @@ public class IncludeToStringIT {
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void beansOmitToStringWhenConfigIsSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeToString", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");

@@ -52,6 +52,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeJsr303Annotations
   boolean includeJsr305Annotations
   boolean includeToString
+  String[] toStringExcludes
   boolean initializeCollections
   String outputEncoding
   boolean parcelable
@@ -95,6 +96,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeConstructors = false
     constructorsRequiredPropertiesOnly = false
     includeToString = true
+    toStringExcludes = [] as String[]
     annotationStyle = AnnotationStyle.JACKSON
     inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
@@ -188,6 +190,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}
        |includeConstructors = ${includeConstructors}
        |includeToString = ${includeToString}
+       |toStringExcludes = ${Arrays.toString(toStringExcludes)}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
        |inclusionLevel = ${InclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}

@@ -137,7 +137,15 @@ public interface GenerationConfig {
      *         generated Java types.
      */
     boolean isIncludeToString();
-
+    
+    /**
+     * Gets the 'toStringExcludes' configuration option.
+     *
+     * @return An array of strings representing fields 
+     *         that should be excluded from toString methods
+     */
+    String[] getToStringExcludes();
+ 
     /**
      * Gets the 'annotationStyle' configuration option.
      *

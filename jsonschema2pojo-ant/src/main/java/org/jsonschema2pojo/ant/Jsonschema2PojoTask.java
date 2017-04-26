@@ -89,6 +89,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeToString = true;
 
+    private String[] toStringExcludes = new String[] {};
+
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
@@ -819,6 +821,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeToString() {
         return includeToString;
+    }
+
+    @Override
+    public String[] getToStringExcludes() {
+        return toStringExcludes;
     }
 
     @Override
