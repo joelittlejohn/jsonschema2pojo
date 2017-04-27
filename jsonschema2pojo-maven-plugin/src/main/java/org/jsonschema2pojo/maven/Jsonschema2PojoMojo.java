@@ -222,7 +222,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *
      * @parameter expression="${jsonschema2pojo.toStringExcludes}"
      *            default-value=""
-     * @since 0.4.34
+     * @since 0.4.35
      */
     private String[] toStringExcludes = new String[] {};
 
