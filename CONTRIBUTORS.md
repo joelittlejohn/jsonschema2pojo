@@ -74,4 +74,5 @@
 * Andrés P
 * David Tanner
 * Roman Solodovnichenko
+* David Riseley
 * Paul Vincent

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.35
+* Add support for excluding fields from generated toString methods ([#720](https://github.com/joelittlejohn/jsonschema2pojo/pull/720))
+
 ## 0.4.34
 * Add 'sourceSortOrder' to decide how source files are iterated ([#719](https://github.com/joelittlejohn/jsonschema2pojo/pull/719))
 
