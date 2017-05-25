@@ -11,5 +11,5 @@
             "type" : "string"
         }
     },
-    "required": [ "requiredProperty"]
+    "required": [ "requiredProperty", ""]
 }
