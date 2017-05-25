@@ -57,6 +57,9 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
 
         for (Iterator<JsonNode> iterator = node.elements(); iterator.hasNext(); ) {
             String requiredArrayItem = iterator.next().asText();
+            if (requiredArrayItem.isEmpty()) {
+                continue;
+            }
 
             JsonNode propertyNode = null;
 
