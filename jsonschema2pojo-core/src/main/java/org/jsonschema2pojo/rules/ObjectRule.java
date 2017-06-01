@@ -158,6 +158,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addWriteToParcel(jclass);
         parcelableHelper.addDescribeContents(jclass);
         parcelableHelper.addCreator(jclass);
+        parcelableHelper.addConstructorFromParcel(jclass);
+        // Add empty constructor
+        jclass.constructor(JMod.PUBLIC);
     }
 
     /**
