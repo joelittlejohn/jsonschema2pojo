@@ -38,7 +38,7 @@ dependencies {
   // Required if generating JSR-303 annotations
   compile 'javax.validation:validation-api:1.1.0.CR2'
   // Required if generating Jackson 2 annotations
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
   // Required if generating JodaTime data types
   compile 'joda-time:joda-time:2.2'
 }
