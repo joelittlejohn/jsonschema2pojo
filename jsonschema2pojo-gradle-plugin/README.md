@@ -173,6 +173,12 @@ jsonSchema2Pojo {
 
   // Whether to include dynamic getters, setters, and builders or to omit these methods.
   includeDynamicAccessors = false
+
+  // What type to use instead of string when adding string properties of format "date" to Java types
+  dateType = "java.time.LocalDate"
+
+  // What type to use instead of string when adding string properties of format "date-time" to Java types
+  dateTimeType = "java.time.LocalDateTime"
 }
 ```
 
