@@ -100,6 +100,10 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
+    public void timeField(JFieldVar field, JsonNode node) {
+    }
+
+    @Override
     public void dateTimeField(JFieldVar field, JsonNode node) {
     }
 }

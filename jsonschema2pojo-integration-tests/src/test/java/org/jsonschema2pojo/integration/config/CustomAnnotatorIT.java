@@ -178,6 +178,11 @@ public class CustomAnnotatorIT {
         }
 
         @Override
+        public void timeField(JFieldVar field, JsonNode propertyNode) {
+            field.annotate(Deprecated.class);
+        }
+
+        @Override
         public void dateTimeField(JFieldVar field, JsonNode propertyNode) {
             field.annotate(Deprecated.class);
         }

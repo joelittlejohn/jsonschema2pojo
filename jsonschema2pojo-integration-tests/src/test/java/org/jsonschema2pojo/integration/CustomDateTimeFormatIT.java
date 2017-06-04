@@ -44,20 +44,27 @@ public class CustomDateTimeFormatIT {
 
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
                 "dateType", "java.util.Date",
+                "timeType", "java.util.Date",
                 "formatDateTimes", Boolean.TRUE,
-                "formatDates", Boolean.TRUE));
+                "formatDates", Boolean.TRUE,
+                "formatTimes", Boolean.TRUE));
 
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config(
                 "dateType", "java.util.Date",
+                "timeType", "java.util.Date",
                 "formatDateTimes", Boolean.FALSE,
+                "formatDates", Boolean.FALSE,
                 "formatDates", Boolean.FALSE));
 
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config(
                 "dateType", "java.util.Date",
+                "timeType", "java.util.Date",
                 "customDatePattern", "yyyy",
+                "customTimePattern", "H:mm a",
                 "customDateTimePattern", "yyyy-MM-dd HH:mm X",
                 "formatDateTimes", Boolean.TRUE,
-                "formatDates", Boolean.TRUE));
+                "formatDates", Boolean.TRUE,
+                "formatTimes", Boolean.TRUE));
 
         ClassLoader loader = classSchemaRule.compile();
 
@@ -171,6 +178,16 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
+    public void testDefaultWhenFormatTimesConfigIsTrue() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setDefaultFormatTime", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormatTime\":\"01:46:39.999\"}"));
+    }
+
+    @Test
     public void testDefaultWhenFormatDatesConfigIsFalse() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
         final Object instance = classWhenFormatDatesFalse.newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
@@ -181,6 +198,16 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
+    public void testDefaultWhenFormatTimesConfigIsFalse() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesFalse.newInstance();
+        classWhenFormatDatesFalse.getMethod("setDefaultFormatTime", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormatTime\":999999999999}"));
+    }
+
+    @Test
     public void testCustomDatePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomDate", Date.class).invoke(instance, new Date(999999999999L));
@@ -188,5 +215,15 @@ public class CustomDateTimeFormatIT {
         final String json = new ObjectMapper().writeValueAsString(instance);
 
         assertThat(json, is("{\"customFormatCustomDate\":\"09-09-2001\"}"));
+    }
+
+    @Test
+    public void testCustomTimePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTime", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomTime\":\"1:46 AM\"}"));
     }
 }

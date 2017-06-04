@@ -354,6 +354,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isFormatTimes() {
+        return false;
+    }
+
+    /**
      * @return "#/."
      */
     @Override
@@ -363,6 +371,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
 
     @Override
     public String getCustomDatePattern() {
+        return null;
+    }
+
+    @Override
+    public String getCustomTimePattern() {
         return null;
     }
 

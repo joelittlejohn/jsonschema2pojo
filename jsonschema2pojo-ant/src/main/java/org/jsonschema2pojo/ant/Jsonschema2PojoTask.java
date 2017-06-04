@@ -151,7 +151,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean formatDates = false;
 
+    private boolean formatTimes = false;
+
     private String customDatePattern;
+
+    private String customTimePattern;
 
     private String customDateTimePattern;
 
@@ -709,6 +713,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'formatTimes' property of this class
+     *
+     * @param formatTimes
+     *            Whether the fields of type <code>time</code> have the <code>@JsonFormat</code> annotation
+     *            with pattern set to the default value of <code>HH:mm:ss.SSS</code>.
+     */
+    public void setFormatTimes(boolean formatTimes) {
+        this.formatTimes = formatTimes;
+    }
+
+    /**
      * Sets the 'formatDates' property of this class
      *
      * @param formatDates
@@ -729,6 +744,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setCustomDatePattern(String customDatePattern) {
         this.customDatePattern = customDatePattern;
+    }
+
+    /**
+     * Sets the 'customTimePattern' property of this class
+     *
+     * @param customTimePattern
+     *            A custom pattern to use when formatting time fields during
+     *            serialization. Requires support from your JSON binding
+     *            library.
+     */
+    public void setCustomTimePattern(String customTimePattern) {
+        this.customTimePattern = customTimePattern;
     }
 
     /**
@@ -1017,8 +1044,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isFormatTimes() {
+        return formatTimes;
+    }
+
+    @Override
     public String getCustomDatePattern() {
         return customDatePattern;
+    }
+
+    @Override
+    public String getCustomTimePattern() {
+        return customTimePattern;
     }
 
     @Override

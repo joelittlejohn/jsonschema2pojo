@@ -450,6 +450,15 @@ public interface GenerationConfig {
     boolean isFormatDates();
 
     /**
+     * Gets the `formatTimes` configuration option
+     *
+     * @return Whether the fields of type <code>time</code> have the
+     *         <code>@JsonFormat</code> annotation with pattern set to the
+     *         default value of <code>HH:mm:ss.SSS</code>
+     */
+    boolean isFormatTimes();
+
+    /**
      * Gets the `formatDateTime` configuration option
      *
      * @return Whether the fields of type <code>date-type</code> have the
@@ -465,6 +474,14 @@ public interface GenerationConfig {
      *         Requires support from your JSON binding library.
      */
     String getCustomDatePattern();
+
+    /**
+     * Gets the 'customTimePattern' configuration option
+     *
+     * @return The custom format that times will use when types are serialized.
+     *         Requires support from your JSON binding library.
+     */
+    String getCustomTimePattern();
 
     /**
      * Gets the 'customDateTimePattern' configuration option

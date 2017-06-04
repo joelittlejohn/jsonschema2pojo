@@ -173,11 +173,17 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` are formatted during serialization with a default pattern of `yyyy-MM-dd`")
     private boolean formatDates = false;
 
+    @Parameter(names = { "-ft", "--format-times" }, description = "Whether the fields of type `time` are formatted during serialization with a default pattern of `HH:mm:ss.SSS`")
+    private boolean formatTimes = false;
+
     @Parameter(names = { "-fdt", "--format-date-times" }, description = "Whether the fields of type `date-time` are formatted during serialization with a default pattern of `yyyy-MM-dd'T'HH:mm:ss.SSSZ` and timezone set to default value of `UTC`")
     private boolean formatDateTimes = false;
 
     @Parameter(names = { "-dp", "--date-pattern" }, description = "A custom pattern to use when formatting date fields during serialization")
     private String customDatePattern;
+
+    @Parameter(names = { "-tp", "--time-pattern" }, description = "A custom pattern to use when formatting time fields during serialization")
+    private String customTimePattern;
 
     @Parameter(names = { "-dtp", "--date-time-pattern" }, description = "A custom pattern to use when formatting date-time fields during serialization")
     private String customDateTimePattern;
@@ -449,6 +455,11 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
+    public boolean isFormatTimes() {
+        return formatTimes;
+    }
+
+    @Override
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
     }
@@ -456,6 +467,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getCustomDatePattern() {
         return customDatePattern;
+    }
+
+    @Override
+    public String getCustomTimePattern() {
+        return customTimePattern;
     }
 
     @Override

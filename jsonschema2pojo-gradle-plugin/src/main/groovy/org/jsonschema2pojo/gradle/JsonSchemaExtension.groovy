@@ -75,8 +75,10 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean usePrimitives
   FileFilter fileFilter
   boolean formatDates
+  boolean formatTimes
   boolean formatDateTimes
   String customDatePattern
+  String customTimePattern
   String customDateTimePattern
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
@@ -124,6 +126,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     targetVersion = '1.6'
     includeDynamicAccessors = false
     formatDates = false
+    formatTimes = false
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
@@ -217,8 +220,10 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
        |formatDates = ${formatDates}
+       |formatTimes = ${formatTimes}
        |formatDateTimes = ${formatDateTimes}
        |customDatePattern = ${customDatePattern}
+       |customTimePattern = ${customTimePattern}
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}

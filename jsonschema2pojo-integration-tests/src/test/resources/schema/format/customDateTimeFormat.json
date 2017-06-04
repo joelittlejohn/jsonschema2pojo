@@ -25,10 +25,19 @@
             "type" : "string",
             "format" : "date"
         },
+        "defaultFormatTime" : {
+            "type": "string",
+            "format": "time"
+        },
         "customFormatCustomDate" : {
             "type" : "string",
             "format" : "date",
             "customDatePattern" : "dd-MM-yyyy"
+        },
+        "customFormatCustomTime" : {
+            "type" : "string",
+            "format" : "time",
+            "customTimePattern" : "H:mm a"
         }
     }
 }

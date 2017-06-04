@@ -589,6 +589,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean formatDates = false;
 
     /**
+     * Whether the fields of type `time` are formatted during serialization with
+     * a default pattern of HH:mm:ss.SSS.
+     *
+     * @parameter expression="${jsonschema2pojo.formatTimes}"
+     *            default-value="false"
+     * @since 0.4.33
+     */
+    private boolean formatTimes = false;
+
+    /**
      * Whether the fields of type `date` are formatted during serialization with
      * a default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
      *
@@ -606,6 +616,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.4.33
      */
     private String customDatePattern;
+
+    /**
+     * A custom pattern to use when formatting time fields during serialization.
+     * Requires support from your JSON binding library.
+     *
+     * @parameter expression "${jsonschema2pojo.customTimePattern}"
+     * @since 0.4.33
+     */
+    private String customTimePattern;
 
     /**
      * A custom pattern to use when formatting date-time fields during
@@ -991,8 +1010,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
+    public boolean isFormatTimes() {
+        return formatTimes;
+    }
+
+    @Override
     public String getCustomDatePattern() {
         return customDatePattern;
+    }
+
+    @Override
+    public String getCustomTimePattern() {
+        return customTimePattern;
     }
 
     @Override
