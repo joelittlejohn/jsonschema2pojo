@@ -176,6 +176,25 @@ public class Jackson2Annotator extends AbstractAnnotator {
     }
 
     @Override
+    public void timeField(JFieldVar field, JsonNode node) {
+
+        String pattern = null;
+        if (node.has("customTimePattern")) {
+            pattern = node.get("customTimePattern").asText();
+        } else if (node.has("customPattern")) {
+            pattern = node.get("customPattern").asText();
+        } else if (isNotEmpty(getGenerationConfig().getCustomTimePattern())) {
+            pattern = getGenerationConfig().getCustomTimePattern();
+        } else if (getGenerationConfig().isFormatDates()) {
+            pattern = FormatRule.ISO_8601_TIME_FORMAT;
+        }
+
+        if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
+            field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern);
+        }
+    }
+
+    @Override
     public void dateTimeField(JFieldVar field, JsonNode node) {
         String timezone = node.has("customTimezone") ? node.get("customTimezone").asText() : "UTC";
 

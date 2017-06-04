@@ -144,6 +144,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getAnnotator().dateTimeField(field, node);
         } else if ("date".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().dateField(field, node);
+        } else if ("time".equalsIgnoreCase(format)) {
+            ruleFactory.getAnnotator().timeField(field, node);
         }
     }
 

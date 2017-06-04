@@ -412,6 +412,12 @@
         <td align="center" valign="top">No (default <code>false</code>)</td>
     </tr>
     <tr>
+        <td valign="top">formatTimes</td>
+        <td valign="top">Whether the fields of type `time` are formatted during serialization with a default pattern of HH:mm:ss.SSS.
+        </td>
+        <td align="center" valign="top">No (default <code>false</code>)</td>
+    </tr>
+    <tr>
         <td valign="top">formatDateTimes</td>
         <td valign="top">Whether the fields of type `date` are formatted during serialization with a default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
         </td>
@@ -420,6 +426,12 @@
     <tr>
         <td valign="top">customDatePattern</td>
         <td valign="top">A custom pattern to use when formatting date fields during serialization. Requires support from your JSON binding library.
+        </td>
+        <td align="center" valign="top">No (default none)</td>
+    </tr>
+    <tr>
+        <td valign="top">customTimePattern</td>
+        <td valign="top">A custom pattern to use when formatting time fields during serialization. Requires support from your JSON binding library.
         </td>
         <td align="center" valign="top">No (default none)</td>
     </tr>

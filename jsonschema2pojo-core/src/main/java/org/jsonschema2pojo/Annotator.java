@@ -183,5 +183,16 @@ public interface Annotator {
      */
     void dateField(JFieldVar field, JsonNode propertyNode);
 
+    /**
+     * Add the necessary annotations to a time field. For instance, to format
+     * the time in the expected style.
+     *
+     * @param field
+     *            the field that contains data that will be serialized
+     * @param propertyNode
+     *            the schema node defining this property
+     */
+    void timeField(JFieldVar field, JsonNode propertyNode);
+
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 }

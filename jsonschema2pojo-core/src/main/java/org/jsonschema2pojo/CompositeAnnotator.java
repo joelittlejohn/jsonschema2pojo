@@ -143,4 +143,11 @@ public class CompositeAnnotator implements Annotator {
             annotator.dateField(field, propertyNode);
         }
    }
+
+    @Override
+    public void timeField(JFieldVar field, JsonNode propertyNode) {
+        for (Annotator annotator : annotators) {
+            annotator.timeField(field, propertyNode);
+        }
+    }
 }

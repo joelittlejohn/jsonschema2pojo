@@ -136,12 +136,13 @@ jsonSchema2Pojo {
   // date type fields to generated Java types.
   useJodaDates = false
 
-  // Whether to add JsonFormat annotations when using Jackson 2 that cause format "date" and "date-time"
-  // fields to be formatted as yyyy-MM-dd and yyyy-MM-dd'T'HH:mm:ss.SSSZ respectively. To customize these
-  // patterns, use customDatePattern and customDateTimePattern config options or add these inside a schema
-  // to affect an individual field
+  // Whether to add JsonFormat annotations when using Jackson 2 that cause format "date", "time", and "date-time"
+  // fields to be formatted as yyyy-MM-dd, HH:mm:ss.SSS and yyyy-MM-dd'T'HH:mm:ss.SSSZ respectively. To customize these
+  // patterns, use customDatePattern, customTimePattern, and customDateTimePattern config options or add these inside a 
+  // schema to affect an individual field
   formatDateTimes = true
   formatDates = true
+  formatTimes = true
     
   // Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, 
   // hashCode and toString methods.

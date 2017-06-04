@@ -43,6 +43,7 @@ import com.sun.codemodel.JType;
 public class FormatRule implements Rule<JType, JType> {
 
     public static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
+    public static String ISO_8601_TIME_FORMAT = "HH:mm:ss.SSS";
     public static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
     private final RuleFactory ruleFactory;
