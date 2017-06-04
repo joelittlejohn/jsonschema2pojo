@@ -594,7 +594,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *
      * @parameter expression="${jsonschema2pojo.formatTimes}"
      *            default-value="false"
-     * @since 0.4.33
+     * @since 0.4.36
      */
     private boolean formatTimes = false;
 
@@ -622,7 +622,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Requires support from your JSON binding library.
      *
      * @parameter expression "${jsonschema2pojo.customTimePattern}"
-     * @since 0.4.33
+     * @since 0.4.36
      */
     private String customTimePattern;
 
