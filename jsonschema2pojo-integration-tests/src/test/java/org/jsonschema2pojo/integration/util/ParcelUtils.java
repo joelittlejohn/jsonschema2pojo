@@ -33,6 +33,12 @@ public final class ParcelUtils {
         parcel.writeBundle(bundle);
         return parcel;
     }
+
+    public static Parcel parcelableWriteToParcel(Parcelable instance) {
+        Parcel parcel = Parcel.obtain();
+        instance.writeToParcel(parcel, 0);
+        return parcel;
+    }
     
     public static Parcelable readFromParcel(Parcel parcel, Class<?> parcelableType, String key) {
         parcel.setDataPosition(0);
@@ -44,4 +50,25 @@ public final class ParcelUtils {
         return unparceledInstance;
     }
 
+    public static Parcelable parcelableReadFromParcel(Parcel parcel, Class<?> parcelableType, Parcelable parcelable) {
+        parcel.setDataPosition(0);
+        return createFromParcelFromParcelable(parcel, parcelable);
+    }
+
+
+    private static Parcelable createFromParcelFromParcelable(Parcel in, Parcelable parcelable) {
+        try {
+            Class<?> parcelableClass = parcelable.getClass().getClassLoader().loadClass(parcelable.getClass().getName());
+            java.lang.reflect.Field creatorField = parcelableClass.getDeclaredField("CREATOR");
+            Object creatorInstance = creatorField.get(parcelable);
+            java.lang.reflect.Method createFromParcel = creatorInstance.getClass().getDeclaredMethod("createFromParcel", new Class[] { Parcel.class });
+            createFromParcel.setAccessible(true);
+            return (Parcelable) createFromParcel.invoke(creatorInstance, in);
+        }
+        catch (Throwable ignored) {
+            ignored.getCause().printStackTrace();
+            // Ignore
+        }
+        return null;
+    }
 }
