@@ -1,7 +1,7 @@
 {
     "type" : "object",
     "extends": {
-        "$ref": "parcelable-schema-base.json"
+        "$ref": "parcelable-superclass-schema-base.json"
     },
     "properties" : {
         "booleanProperty" : {
