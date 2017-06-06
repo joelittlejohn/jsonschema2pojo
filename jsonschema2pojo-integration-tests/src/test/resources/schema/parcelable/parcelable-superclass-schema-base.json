@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "baseBooleanProperty" : {
+            "type" : "boolean",
+            "default": false
+        },
+        "baseStringProperty" : {
+            "type" : "string"
+        },
+        "baseIntegerProperty" : {
+            "type" : "integer"
+        }
+    }
+}

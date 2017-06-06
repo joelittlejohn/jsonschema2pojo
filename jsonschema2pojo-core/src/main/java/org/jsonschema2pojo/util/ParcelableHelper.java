@@ -28,7 +28,11 @@ public class ParcelableHelper {
         JMethod method = jclass.method(JMod.PUBLIC, void.class, "writeToParcel");
         JVar dest = method.param(Parcel.class, "dest");
         method.param(int.class, "flags");
-        
+
+        // Call super.writeToParcel
+        if (extendsParcelable(jclass)) {
+            method.body().directStatement("super.writeToParcel(dest, flags);");
+        }
         for (JFieldVar f : jclass.fields().values()) {
             if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
                 continue;
@@ -57,6 +61,36 @@ public class ParcelableHelper {
         creatorField.init(JExpr._new(creatorClass));
     }
 
+    public void addConstructorFromParcel(JDefinedClass jclass) {
+        JMethod ctorFromParcel = jclass.constructor(JMod.PROTECTED);
+        JVar in = ctorFromParcel.param(Parcel.class, "in");
+        // Call super(in)
+        if (extendsParcelable(jclass)) {
+            ctorFromParcel.body().directStatement("super(in);");
+        }
+        for (JFieldVar f : jclass.fields().values()) {
+            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
+                continue;
+            }
+            if (f.type().erasure().name().equals("List")) {
+                ctorFromParcel.body()
+                        .invoke(in, "readList")
+                        .arg(JExpr._this().ref(f))
+                        .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
+             } else {
+                ctorFromParcel.body().assign(
+                        JExpr._this().ref(f),
+                        JExpr.cast(
+                                f.type(),
+                                in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))
+                        )
+                );
+            }
+
+        }
+    }
+
+
     private void addNewArray(JDefinedClass jclass, JDefinedClass creatorClass) {
         JMethod newArray = creatorClass.method(JMod.PUBLIC, jclass.array(), "newArray");
         newArray.param(int.class, "size");
@@ -66,29 +100,21 @@ public class ParcelableHelper {
     private void addCreateFromParcel(JDefinedClass jclass, JDefinedClass creatorClass) {
         JMethod createFromParcel = creatorClass.method(JMod.PUBLIC, jclass, "createFromParcel");
         JVar in = createFromParcel.param(Parcel.class, "in");
-        JVar instance = createFromParcel.body().decl(jclass, "instance", JExpr._new(jclass));
         suppressWarnings(createFromParcel, "unchecked");
-        for (JFieldVar f : jclass.fields().values()) {
-            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
-                continue;
-            }
-            if (f.type().erasure().name().equals("List")) {
-                createFromParcel.body()
-                        .invoke(in, "readList")
-                        .arg(instance.ref(f))
-                        .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
-             } else {
-                createFromParcel.body().assign(
-                        instance.ref(f),
-                        JExpr.cast(
-                                f.type(),
-                                in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))
-                        )
-                );
-            }
+        createFromParcel.body()._return(JExpr._new(jclass).arg(in));
+    }
 
+    private boolean extendsParcelable(final JDefinedClass jclass) {
+        final java.util.Iterator<JClass> interfaces = jclass._extends() != null ? jclass._extends()._implements() : null;
+        if (interfaces != null) {
+            while (interfaces.hasNext()) {
+                final JClass iface = interfaces.next();
+                if (iface.erasure().name().equals("Parcelable")) {
+                    return true;
+                }
+            }
         }
-        createFromParcel.body()._return(instance);
+        return false;
     }
 
     private String getListType(JType jType) {

@@ -1,0 +1,21 @@
+{
+    "type" : "object",
+    "extends": {
+        "$ref": "parcelable-superclass-schema-base.json"
+    },
+    "properties" : {
+        "booleanProperty" : {
+            "type" : "boolean"
+        },
+        "stringProperty" : {
+            "type" : "string"
+        },
+        "integerProperty" : {
+            "type" : "integer"
+        },
+        "baseIntegerProperty": {
+            "title": "Tests overriding of property",
+            "type": "integer"
+        }
+    }
+}
