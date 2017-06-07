@@ -4,7 +4,7 @@
         "foo": {
             "type": "object",
             "properties": {
-                "statuses": {
+                "objectStatus": {
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -19,7 +19,7 @@
         "bar": {
             "type": "object",
             "properties": {
-                "statuses": {
+                "objectStatus": {
                     "type": "array",
                     "items": {
                         "type": "string",

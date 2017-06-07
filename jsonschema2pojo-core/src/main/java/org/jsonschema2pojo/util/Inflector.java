@@ -105,7 +105,8 @@ public class Inflector {
             .irregular("person", "people")
             .irregular("child", "children")
             .irregular("sex", "sexes")
-            .irregular("move", "moves");
+            .irregular("move", "moves")
+            .irregular("tatus", "tatus");
 
         builder.uncountable(new String[] { "equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "s" });
 
