@@ -155,6 +155,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a "required"
      * declaration is found in the schema.
      *
+     * @see javax.validation.constraints.NotNull
      * @return a schema rule that can handle the "required" declaration.
      */
     public Rule<JDocCommentable, JDocCommentable> getRequiredRule() {
@@ -230,10 +231,22 @@ public class RuleFactory {
      * declaration is found in the schema, to assign any minimum/maximum
      * validation on that property
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @see javax.validation.constraints.DecimalMax
+     * @see javax.validation.constraints.DecimalMin
+     * @return a schema rule that can handle the "minimum/maximum" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinimumMaximumRule() {
         return new MinimumMaximumRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a "size"
+     * declaration is found in the schema for a property.
+     * @see javax.validation.constraints.Size
+     * @return a schema rule that can handle the "size" declaration
+     */
+    public Rule<JFieldVar, JFieldVar> getSizeRule() {
+        return new SizeRule(this);
     }
 
     /**
@@ -241,7 +254,7 @@ public class RuleFactory {
      * declaration is found in the schema, to assign any size validation
      * (minItems/maxItems) on that property
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @return a schema rule that can handle the "minItems/maxItems" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinItemsMaxItemsRule() {
         return new MinItemsMaxItemsRule(this);
@@ -252,7 +265,7 @@ public class RuleFactory {
      * declaration is found in the schema, to assign any size validation
      * (minLength/maxLength) on that property
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @return a schema rule that can handle the "minLength/maxLength" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getMinLengthMaxLengthRule() {
         return new MinLengthMaxLengthRule(this);
@@ -262,6 +275,7 @@ public class RuleFactory {
      * Provides a rule instance that should be applied when a "pattern"
      * declaration is found in the schema for a property.
      *
+     * @see javax.validation.constraints.Pattern
      * @return a schema rule that can handle the "pattern" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getPatternRule() {
@@ -273,7 +287,8 @@ public class RuleFactory {
      * declaration is found in the schema which itself contains properties, to
      * assign validation of the properties within that property
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @see javax.validation.Valid
+     * @return a schema rule that can handle the "property" declaration.
      */
     public Rule<JFieldVar, JFieldVar> getValidRule() {
         return new ValidRule(this);

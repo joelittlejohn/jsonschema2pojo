@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
@@ -25,9 +24,7 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -36,6 +33,7 @@ import javax.validation.Validator;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -44,7 +42,12 @@ public class IncludeJsr303AnnotationsIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();;
+    private Validator validator;
+
+    @Before
+    public void setup() throws Exception {
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
 
     @Test
     public void jsrAnnotationsAreNotIncludedByDefault() throws ClassNotFoundException {
@@ -98,61 +101,65 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303SizeValidationIsAddedForSchemaRuleMinItems() throws ClassNotFoundException {
+    public void jsr303SizeValidationIsAddedForSchemaRule() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minItems.json", "com.example",
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/size.json", "com.example",
                 config("includeJsr303Annotations", true));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.MinItems");
+        Class generatedType = resultsClassLoader.loadClass("com.example.Size");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "minItems", asList(1, 2, 3, 4, 5, 6));
+        String lowMin = "";
+        String valid = "12";
+        String highMax = "123";
+
+        Map<String, String> values = new HashMap<String, String>();
+        values.put("min", valid);
+        values.put("max", valid);
+        values.put("minMax", valid);
+        values.put("minMaxCustomMessage", valid);
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, values);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minItems", asList(1, 2, 3));
+        values.put("min", valid);
+        values.put("max", highMax);
+
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, values);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 
-    }
-
-    @Test
-    public void jsr303SizeValidationIsAddedForSchemaRuleMaxItems() throws ClassNotFoundException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/maxItems.json", "com.example",
-                config("includeJsr303Annotations", true));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.MaxItems");
-
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "maxItems", asList(1, 2, 3));
-
-        assertNumberOfConstraintViolationsOn(validInstance, is(0));
-
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maxItems", asList(1, 2, 3, 4, 5, 6));
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        values.put("max", valid);
+        values.put("minMax", lowMin);
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        values.put("minMax", highMax);
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        values.put("minMax", valid);
+        values.put("minMaxCustomMessage", lowMin);
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        validateCustomErrorMessage(invalidInstance, is(1));
+
+        values.put("minMaxCustomMessage", highMax);
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        validateCustomErrorMessage(invalidInstance, is(1));
     }
 
-    @Test
-    public void jsr303SizeValidationIsAddedForSchemaRuleMinItemsAndMaxItems() throws ClassNotFoundException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minAndMaxItems.json", "com.example",
-                config("includeJsr303Annotations", true));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.MinAndMaxItems");
-
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", asList(1, 2, 3));
-
-        assertNumberOfConstraintViolationsOn(validInstance, is(0));
-
-        Object invalidInstance1 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", asList(1));
-
-        assertNumberOfConstraintViolationsOn(invalidInstance1, is(1));
-
-        Object invalidInstance2 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", asList(1, 2, 3, 4, 5));
-
-        assertNumberOfConstraintViolationsOn(invalidInstance2, is(1));
-
-    }
 
     @Test
     public void jsr303PatternValidationIsAddedForSchemaRulePattern() throws ClassNotFoundException {
@@ -169,6 +176,10 @@ public class IncludeJsr303AnnotationsIT {
         Object invalidInstance = createInstanceWithPropertyValue(generatedType, "pattern", "123abc");
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, "patternAsObject", "123abc");
+
+        validateCustomErrorMessage(invalidInstance, is(1));
     }
 
     @Test
@@ -178,14 +189,36 @@ public class IncludeJsr303AnnotationsIT {
                 config("includeJsr303Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
+        String value = "abc";
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "required", "abc");
+        Map<String, Object> values = new HashMap<String, Object>();
+        values.put("required", value);
+        values.put("requiredAsObject", value);
+        values.put("requiredAsValue", value);
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, values);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "required", null);
+        values.remove("required");
+
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, values);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        values.put("required", value);
+        values.remove("requiredAsObject");
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        validateCustomErrorMessage(invalidInstance, is(1));
+
+        values.put("requiredAsObject", value);
+        values.remove("requiredAsValue");
+
+        invalidInstance = createInstanceWithPropertyValue(generatedType, values);
+
+        validateCustomErrorMessage(invalidInstance, is(1));
     }
 
     @Test
@@ -308,9 +341,17 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(parent, is(1));
     }
 
-    private static void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
+    private Set<ConstraintViolation<Object>> assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
         Set<ConstraintViolation<Object>> violationsForValidInstance = validator.validate(instance);
         assertThat(violationsForValidInstance.size(), matcher);
+        return violationsForValidInstance;
+    }
+
+    private void validateCustomErrorMessage(Object invalidInstance, Matcher<Integer> matcher) {
+        Set<ConstraintViolation<Object>> violations = assertNumberOfConstraintViolationsOn(invalidInstance, matcher);
+        for (ConstraintViolation<Object> violation: violations) {
+            assertThat(violation.getMessage(), containsString("custom error message"));
+        }
     }
 
     private static Object createInstanceWithPropertyValue(Class type, String propertyName, Object propertyValue) {
@@ -318,6 +359,21 @@ public class IncludeJsr303AnnotationsIT {
             Object instance = type.newInstance();
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, type);
             propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
+
+            return instance;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Object createInstanceWithPropertyValue(Class type, Map<String, ?> properties) {
+        try {
+            Object instance = type.newInstance();
+            for (String propertyName: properties.keySet()) {
+                Object propertyValue = properties.get(propertyName);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, type);
+                propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
+            }
 
             return instance;
         } catch (Exception e) {

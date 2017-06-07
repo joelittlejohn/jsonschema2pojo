@@ -19,6 +19,7 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,22 @@ public class RequiredRuleTest {
 
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
+
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
+
+        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
+        assertThat(result.javadoc().size(), is(1));
+        assertThat((String) result.javadoc().get(0), is("\n(Required)"));
+
+    }
+
+    @Test
+    public void applyAddsTextWhenRequiredIsObject() throws JClassAlreadyExistsException {
+
+        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode descriptionNode = mapper.createObjectNode();
 
         JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
 

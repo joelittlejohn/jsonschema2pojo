@@ -4,6 +4,16 @@
         "required" : {
             "type" : "string",
             "required" : true
+        },
+        "requiredAsObject" : {
+            "type" : "string",
+            "required" : {
+                "message": "custom error message"
+            }
+        },
+        "requiredAsValue" : {
+            "type" : "string",
+            "required" : "custom error message"
         }
     }
 }

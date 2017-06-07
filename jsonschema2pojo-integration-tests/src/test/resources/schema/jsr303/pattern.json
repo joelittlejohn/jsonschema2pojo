@@ -4,6 +4,13 @@
         "pattern" : {
             "type" : "string",
             "pattern" : "abc.*"
+        },
+        "patternAsObject" : {
+            "type": "string",
+            "pattern" : {
+                "regexp": "abc.*",
+                "message": "custom error message"
+            }
         }
     }
 }
