@@ -35,7 +35,7 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
     outputs.upToDateWhen { false }
 
     project.afterEvaluate {
-      configuration = project.jsonSchema2Pojo
+      configuration = configuration ?: project.jsonSchema2Pojo
       configuration.targetDirectory = configuration.targetDirectory ?:
         project.file("${project.buildDir}/generated-sources/js2p")
 
@@ -46,6 +46,13 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
       }
       outputs.dir configuration.targetDirectory
     }
+  }
+
+  def configuration(Closure closure) {
+    configuration = new JsonSchemaExtension()
+    closure.delegate = configuration
+    closure.call()
+    configuration
   }
 
   def configureJava() {
