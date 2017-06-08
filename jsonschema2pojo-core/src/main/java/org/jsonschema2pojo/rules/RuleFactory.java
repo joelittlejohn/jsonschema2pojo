@@ -236,6 +236,10 @@ public class RuleFactory {
         return new MinimumMaximumRule(this);
     }
 
+    public Rule<JFieldVar, JFieldVar> getJsonFormatRule() {
+        return new JsonFormatRule(this);
+    }
+    
     /**
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any size validation

@@ -106,6 +106,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
 
         ruleFactory.getMinimumMaximumRule().apply(nodeName, node, field, schema);
+        ruleFactory.getJsonFormatRule().apply(nodeName, node, field, schema);
 
         ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
 

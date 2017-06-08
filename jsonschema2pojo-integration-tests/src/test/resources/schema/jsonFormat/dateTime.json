@@ -1,0 +1,10 @@
+{
+    "type" : "object",
+    "properties" : {
+        "lastUpdated" : {
+            "type": "string", 
+            "format":"date-time",
+            "date-pattern" : "yyyy-MM-dd HH:mm"
+        }
+    }
+}
