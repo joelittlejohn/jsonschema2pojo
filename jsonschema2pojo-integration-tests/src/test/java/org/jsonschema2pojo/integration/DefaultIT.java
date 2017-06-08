@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.LinkedHashSet;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
@@ -350,7 +351,7 @@ public class DefaultIT {
 
         Method getter = classWithDefaults.getMethod("getUniqueArrayWithDefault");
 
-        assertThat(getter.invoke(instance), is(instanceOf(Set.class)));
+        assertThat(getter.invoke(instance), is(instanceOf(LinkedHashSet.class)));
 
         Set<Integer> defaultSet = (Set<Integer>) getter.invoke(instance);
         Iterator<Integer> defaultSetIterator = defaultSet.iterator();

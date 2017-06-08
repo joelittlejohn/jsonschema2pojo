@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
@@ -47,7 +47,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *
      * <p>When constructs of type "array" appear in the schema, these are mapped to
      * Java collections in the generated POJO. If the array is marked as having
-     * "uniqueItems" then the resulting Java type is {@link Set}, if not, then
+     * "uniqueItems" then the resulting Java type is {@link LinkedHashSet}, if not, then
      * the resulting Java type is {@link List}. The schema given by "items" will
      * decide the generic type of the collection.</p>
      *
@@ -67,7 +67,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *            the schema "type" node
      * @param jpackage
      *            the package into which newly generated types should be added
-     * @return the Java type associated with this array rule, either {@link Set}
+     * @return the Java type associated with this array rule, either {@link LinkedHashSet}
      *         or {@link List}, narrowed by the "items" type
      */
     @Override
@@ -85,7 +85,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
 
         JClass arrayType;
         if (uniqueItems) {
-            arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
+            arrayType = jpackage.owner().ref(LinkedHashSet.class).narrow(itemType);
         } else {
             arrayType = jpackage.owner().ref(List.class).narrow(itemType);
         }

@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.LinkedHashSet;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
@@ -68,11 +69,11 @@ public class ArrayIT {
     }
 
     @Test
-    public void uniqueArraysAreSets() throws NoSuchMethodException {
+    public void uniqueArraysAreLinkedHashSets() throws NoSuchMethodException {
 
         Method getterMethod = classWithArrayProperties.getMethod("getUniqueArray");
 
-        assertThat(getterMethod.getReturnType().getName(), is(Set.class.getName()));
+        assertThat(getterMethod.getReturnType().getName(), is(LinkedHashSet.class.getName()));
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
 
         Type genericType = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments()[0];
