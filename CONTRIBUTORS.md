@@ -76,3 +76,6 @@
 * Roman Solodovnichenko
 * David Riseley
 * Paul Vincent
+* Michał Kołodziejski
+* Jonathan Leitschuh
+* Sean Byron

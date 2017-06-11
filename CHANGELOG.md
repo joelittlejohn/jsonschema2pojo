@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.36
+* Add customTimePattern and formatTimes config options ([#740](https://github.com/joelittlejohn/jsonschema2pojo/pull/740))
+* Schema with required[""] results in String index out of range: 0  ([#725](https://github.com/joelittlejohn/jsonschema2pojo/issues/725))
+* [Android] Writing to /Reading from Parcelable ignores superclass  ([#602](https://github.com/joelittlejohn/jsonschema2pojo/issues/602))
+
 ## 0.4.35
 * Add support for excluding fields from generated toString methods ([#720](https://github.com/joelittlejohn/jsonschema2pojo/pull/720))
 
