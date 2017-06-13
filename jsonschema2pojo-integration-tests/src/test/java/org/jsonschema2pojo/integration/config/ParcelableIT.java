@@ -57,8 +57,22 @@ public class ParcelableIT {
 
     @Test
     public void parcelableSuperclassIsUnparceled() throws ClassNotFoundException, IOException {
+        // Explicitely set includeConstructors to false if default value changes in the future
         Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", 
-                config("parcelable", true))
+                config("parcelable", true, "includeConstructors", false))
+                .loadClass("com.example.ParcelableSuperclassSchema");
+
+        Parcelable instance = (Parcelable) new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-superclass-data.json"), parcelableType);
+        Parcel parcel = parcelableWriteToParcel(instance);
+        Parcelable unparceledInstance = parcelableReadFromParcel(parcel, parcelableType, instance);
+
+        assertThat(instance, is(equalTo(unparceledInstance)));
+    }
+
+    @Test
+    public void parcelableDefaultConstructorDoesNotConflict() throws ClassNotFoundException, IOException {
+        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", 
+                config("parcelable", true, "includeConstructors", true))
                 .loadClass("com.example.ParcelableSuperclassSchema");
 
         Parcelable instance = (Parcelable) new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-superclass-data.json"), parcelableType);

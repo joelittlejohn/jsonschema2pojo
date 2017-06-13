@@ -159,8 +159,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
         parcelableHelper.addDescribeContents(jclass);
         parcelableHelper.addCreator(jclass);
         parcelableHelper.addConstructorFromParcel(jclass);
-        // Add empty constructor
-        jclass.constructor(JMod.PUBLIC);
+        // #742 : includeConstructors will include the default constructor
+        if (!ruleFactory.getGenerationConfig().isIncludeConstructors()) {
+            // Add empty constructor
+            jclass.constructor(JMod.PUBLIC);
+        }
     }
 
     /**
