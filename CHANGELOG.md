@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.37
+* Two default constructors incorrectly added when types are parcelable and includeConstructors is active ([#742](https://github.com/joelittlejohn/jsonschema2pojo/issues/742))
+
 ## 0.4.36
 * Add customTimePattern and formatTimes config options ([#740](https://github.com/joelittlejohn/jsonschema2pojo/pull/740))
 * Schema with required[""] results in String index out of range: 0  ([#725](https://github.com/joelittlejohn/jsonschema2pojo/issues/725))
