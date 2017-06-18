@@ -44,7 +44,7 @@ dependencies {
     // Required if generating Gson annotations
     compile 'com.google.code.gson:gson:2.5'
     // Required if generating Moshi 1.x annotations
-    compile 'com.squareup.moshi:moshi:1.1.0'
+    compile 'com.squareup.moshi:moshi:1.5.0'
     // Required if generating equals, hashCode, or toString methods
     compile 'commons-lang:commons-lang:2.6'
     // Required if generating JSR-303 annotations
