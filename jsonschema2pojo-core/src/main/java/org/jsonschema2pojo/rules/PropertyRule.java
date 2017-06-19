@@ -76,7 +76,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         node = resolveRefs(node, schema);
 
-        int accessModifier = ruleFactory.getGenerationConfig().isIncludeAccessors() ? JMod.PRIVATE : JMod.PUBLIC;
+        int accessModifier = ruleFactory.getGenerationConfig().isIncludeGetters() || ruleFactory.getGenerationConfig().isIncludeSetters() ? JMod.PRIVATE : JMod.PUBLIC;
         JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
 
         propertyAnnotations(nodeName, node, schema, field);
@@ -85,11 +85,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
-        if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
+        if (ruleFactory.getGenerationConfig().isIncludeGetters()) {
             JMethod getter = addGetter(jclass, field, nodeName, node);
             ruleFactory.getAnnotator().propertyGetter(getter, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
+        }
 
+        if (ruleFactory.getGenerationConfig().isIncludeSetters()) {
             JMethod setter = addSetter(jclass, field, nodeName, node);
             ruleFactory.getAnnotator().propertySetter(setter, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);

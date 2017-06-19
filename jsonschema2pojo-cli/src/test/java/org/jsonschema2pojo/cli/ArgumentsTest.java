@@ -52,8 +52,8 @@ public class ArgumentsTest {
     public void parseRecognisesValidArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target", "--package", "mypackage",
-                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors",
-                "--inclusion-level", "ALWAYS"
+                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-getters",
+                "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -64,14 +64,16 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
-        assertThat(args.isIncludeDynamicAccessors(), is(true));
+        assertThat(args.isIncludeDynamicGetters(), is(true));
+        assertThat(args.isIncludeDynamicSetters(), is(true));
+        assertThat(args.isIncludeDynamicBuilders(), is(true));
         assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
     @Test
     public void parseRecognisesShorthandArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-il", "ALWAYS"
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-idg", "-ids", "-idb", "-il", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -82,7 +84,9 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
-        assertThat(args.isIncludeDynamicAccessors(), is(true));
+        assertThat(args.isIncludeDynamicGetters(), is(true));
+        assertThat(args.isIncludeDynamicSetters(), is(true));
+        assertThat(args.isIncludeDynamicBuilders(), is(true));
         assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
@@ -109,7 +113,9 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(false));
         assertThat(args.isIncludeHashcodeAndEquals(), is(true));
         assertThat(args.isIncludeToString(), is(true));
-        assertThat(args.isIncludeDynamicAccessors(), is(false));
+        assertThat(args.isIncludeDynamicGetters(), is(false));
+        assertThat(args.isIncludeDynamicSetters(), is(false));
+        assertThat(args.isIncludeDynamicBuilders(), is(false));
     }
 
     @Test

@@ -371,12 +371,20 @@ public interface GenerationConfig {
     boolean isIncludeAdditionalProperties();
 
     /**
-     * Gets the 'includeAccessors' configuration option.
+     * Gets the 'includeGetters' configuration option.
      *
-     * @return Whether to include getters/setters or to omit these accessor
+     * @return Whether to include getters or to omit these accessor
      *         methods and create public fields instead.
      */
-    boolean isIncludeAccessors();
+    boolean isIncludeGetters();
+
+    /**
+     * Gets the 'includeSetters' configuration option.
+     *
+     * @return Whether to include setters or to omit these accessor
+     *         methods and create public fields instead.
+     */
+    boolean isIncludeSetters();
 
     /**
      * Gets the 'targetVersion' configuration option.
@@ -386,12 +394,25 @@ public interface GenerationConfig {
     String getTargetVersion();
 
     /**
-     * Gets the `includeDynamicAccessors` configuraiton option.
+     * Gets the `includeDynamicGetters` configuration option.
      *
-     * @return Whether to include dynamic getters, setters, and builders or to
-     *         omit these methods.
+     * @return Whether to include dynamic getters or to omit these methods
      */
-    boolean isIncludeDynamicAccessors();
+    boolean isIncludeDynamicGetters();
+
+    /**
+     * Gets the `includeDynamicSetters` configuration option.
+     *
+     * @return Whether to include dynamic setters or to omit these methods
+     */
+    boolean isIncludeDynamicSetters();
+
+    /**
+     * Gets the `includeDynamicBuilders` configuration option.
+     *
+     * @return Whether to include dynamic builders or to omit these methods
+     */
+    boolean isIncludeDynamicBuilders();
 
     /**
      * Gets the `dateTimeType` configuration option.

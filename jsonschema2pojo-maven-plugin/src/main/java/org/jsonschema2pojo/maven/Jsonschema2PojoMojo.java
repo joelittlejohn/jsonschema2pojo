@@ -542,14 +542,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeAdditionalProperties = true;
 
     /**
-     * Whether to include getters/setters or to omit these accessor methods and
-     * create public fields instead.
+     * Whether to include getters or to omit these accessor method and
+     * create public fields instead
      *
-     * @parameter expression="${jsonschema2pojo.includeAccessors}"
+     * @parameter expression="${jsonschema2pojo.includeGetters}"
      *            default-value="true"
-     * @since 0.4.15
      */
-    private boolean includeAccessors = true;
+    private boolean includeGetters = true;
+
+    /**
+     * Whether to include setters or to omit these accessor method and
+     * create public fields instead
+     *
+     * @parameter expression="${jsonschame2pojo.includeSetters}"
+     *            default-value="true"
+     */
+    private boolean includeSetters = true;
 
     /**
      * The target version for generated source files.
@@ -560,14 +568,28 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetVersion = "1.6";
 
     /**
-     * Whether to include dynamic getters, setters, and builders or to omit
-     * these methods.
+     * Whether to include dynamic getters or to omit these methods.
      *
-     * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
+     * @parameter expression="${jsonschema2pojo.includeDynamicGetters}"
      *            default-value="false"
-     * @since 0.4.17
      */
-    private boolean includeDynamicAccessors = false;
+    private boolean includeDynamicGetters = false;
+
+    /**
+     * Whether to include dynamic setters or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicSetters}"
+     *            default-value="false"
+     */
+    private boolean includeDynamicSetters = false;
+
+    /**
+     * Whether to include dynamic builders or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicBuilders}"
+     *            default-value="false"
+     */
+    private boolean includeDynamicBuilders = false;
 
     /**
      * The project being built.
@@ -960,9 +982,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isIncludeAccessors() {
-        return includeAccessors;
-    }
+    public boolean isIncludeGetters() { return includeGetters; }
+
+    @Override
+    public boolean isIncludeSetters() { return includeSetters; }
 
     @Override
     public String getTargetVersion() {
@@ -970,8 +993,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isIncludeDynamicAccessors() {
-        return includeDynamicAccessors;
+    public boolean isIncludeDynamicGetters() {
+        return includeDynamicGetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicSetters() {
+        return includeDynamicSetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicBuilders() {
+        return includeDynamicBuilders;
     }
 
     @Override

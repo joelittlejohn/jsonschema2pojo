@@ -135,11 +135,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeAdditionalProperties = true;
 
-    private boolean includeAccessors = true;
+    private boolean includeGetters = true;
+
+    private boolean includeSetters = true;
 
     private String targetVersion = "1.6";
 
-    private boolean includeDynamicAccessors = false;
+    private boolean includeDynamicGetters = false;
+
+    private boolean includeDynamicSetters = false;
+
+    private boolean includeDynamicBuilders = false;
 
     private String dateTimeType;
 
@@ -668,14 +674,25 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'includeAccessors' property of this class
+     * Sets the 'includeGetters' property of this class
      *
-     * @param includeAccessors
-     *            Whether to include getters/setters or to omit these accessor
+     * @param includeGetters
+     *            Whether to include getters or to omit these accessor
      *            methods and create public fields instead.
      */
-    public void setIncludeAccessors(boolean includeAccessors) {
-        this.includeAccessors = includeAccessors;
+    public void setIncludeGetters(boolean includeGetters) {
+        this.includeGetters = includeGetters;
+    }
+
+    /**
+     * Sets the 'includeSetters' property of this class
+     *
+     * @param includeSetters
+     *            Whether to include setters or to omit these accessor
+     *            methods and create public fields instead.
+     */
+    public void setIncludeSetters(boolean includeSetters) {
+        this.includeSetters = includeSetters;
     }
 
     /**
@@ -691,13 +708,33 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'includeDynamicAccessors' property of this class
+     * Sets the 'includeDynamicGetters' property of this class
      *
-     * @param includeDynamicAccessors
-     *            Whether to include dynamic getters, setters, and builders or to omit these methods.
+     * @param includeDynamicGetters
+     *            Whether to include dynamic getters or to omit these methods.
      */
-    public void setIncludeDynamicAccessors(boolean includeDynamicAccessors) {
-        this.includeDynamicAccessors = includeDynamicAccessors;
+    public void setIncludeDynamicGetters(boolean includeDynamicGetters) {
+        this.includeDynamicGetters = includeDynamicGetters;
+    }
+
+    /**
+     * Sets the 'includeDynamicSetters' property of this class
+     *
+     * @param includeDynamicSetters
+     *            Whether to include dynamic setters or to omit these methods.
+     */
+    public void setIncludeDynamicSetters(boolean includeDynamicSetters) {
+        this.includeDynamicSetters = includeDynamicSetters;
+    }
+
+    /**
+     * Sets the 'includeDynamicBuilders' property of this class
+     *
+     * @param includeDynamicBuilders
+     *            Whether to include dynamic builders or to omit these methods.
+     */
+    public void setIncludeDynamicBuilders(boolean includeDynamicBuilders) {
+        this.includeDynamicBuilders = includeDynamicBuilders;
     }
 
     /**
@@ -994,8 +1031,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isIncludeAccessors() {
-        return includeAccessors;
+    public boolean isIncludeGetters() {
+        return includeGetters;
+    }
+
+    @Override
+    public boolean isIncludeSetters() {
+        return includeSetters;
     }
 
     @Override
@@ -1004,8 +1046,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isIncludeDynamicAccessors() {
-        return includeDynamicAccessors;
+    public boolean isIncludeDynamicGetters() {
+        return includeDynamicGetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicSetters() {
+        return includeDynamicSetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicBuilders() {
+        return includeDynamicBuilders;
     }
 
     @Override

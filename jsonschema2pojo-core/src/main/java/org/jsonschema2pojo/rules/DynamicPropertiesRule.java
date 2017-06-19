@@ -91,23 +91,37 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema currentSchema) {
-        if (!ruleFactory.getGenerationConfig().isIncludeDynamicAccessors()) {
+        if (!ruleFactory.getGenerationConfig().isIncludeDynamicSetters() &&
+                !ruleFactory.getGenerationConfig().isIncludeDynamicGetters() &&
+                !ruleFactory.getGenerationConfig().isIncludeDynamicBuilders()) {
             return jclass;
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeAccessors() ||
+        if (ruleFactory.getGenerationConfig().isIncludeGetters() ||
+                ruleFactory.getGenerationConfig().isIncludeSetters() ||
                 ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             if (LanguageFeatures.canUseJava7(ruleFactory.getGenerationConfig())) {
-                addInternalSetMethodJava7(jclass, node);
-                addInternalGetMethodJava7(jclass, node);
+                if (ruleFactory.getGenerationConfig().isIncludeSetters()) {
+                    addInternalSetMethodJava7(jclass, node);
+                }
+                if (ruleFactory.getGenerationConfig().isIncludeGetters()) {
+                    addInternalGetMethodJava7(jclass, node);
+                }
             } else {
-                addInternalSetMethodJava6(jclass, node);
-                addInternalGetMethodJava6(jclass, node);
+                if (ruleFactory.getGenerationConfig().isIncludeSetters()) {
+                    addInternalSetMethodJava6(jclass, node);
+                }
+                if (ruleFactory.getGenerationConfig().isIncludeGetters()) {
+                    addInternalGetMethodJava6(jclass, node);
+                }
             }
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeAccessors()) {
+        if (ruleFactory.getGenerationConfig().isIncludeGetters()) {
             addGetMethods(jclass);
+        }
+
+        if (ruleFactory.getGenerationConfig().isIncludeSetters()) {
             addSetMethods(jclass);
         }
 
