@@ -115,10 +115,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
 
-        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
-            addToString(jclass);
-        }
-
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }
@@ -129,6 +125,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
+        }
+
+        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
+            addToString(jclass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
