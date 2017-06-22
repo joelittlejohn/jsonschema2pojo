@@ -35,7 +35,7 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
     project.afterEvaluate {
       configuration = project.jsonSchema2Pojo
       configuration.targetDirectory = configuration.targetDirectory ?:
-              project.file("${project.buildDir}/generated-sources/js2p")
+        project.file("${project.buildDir}/generated-sources/js2p")
 
       if (project.plugins.hasPlugin('java')) {
         configureJava()
