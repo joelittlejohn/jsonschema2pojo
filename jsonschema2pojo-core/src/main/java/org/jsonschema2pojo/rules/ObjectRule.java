@@ -22,6 +22,7 @@ import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -115,10 +116,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
 
-        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
-            addToString(jclass);
-        }
-
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }
@@ -129,6 +126,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
+        }
+
+        if (ruleFactory.getGenerationConfig().isIncludeToString()) {
+            addToString(jclass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
@@ -378,27 +379,27 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private void addToString(JDefinedClass jclass) {
+        Map<String, JFieldVar> fields = jclass.fields();
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
+        Set<String> excludes = new HashSet<String>(Arrays.asList(ruleFactory.getGenerationConfig().getToStringExcludes()));
 
         JBlock body = toString.body();
+        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ToStringBuilder.class : org.apache.commons.lang.builder.ToStringBuilder.class;
+        JClass toStringBuilderClass = jclass.owner().ref(toStringBuilder);
+        JInvocation toStringBuilderInvocation = JExpr._new(toStringBuilderClass).arg(JExpr._this());
 
-        if ( ruleFactory.getGenerationConfig().getToStringExcludes().length > 0 ) {
-            Class<?> reflectionToStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ReflectionToStringBuilder.class : org.apache.commons.lang.builder.ReflectionToStringBuilder.class;
-            JInvocation toStringExclude = jclass.owner().ref(reflectionToStringBuilder).staticInvoke("toStringExclude");
-
-            JArray arr = JExpr.newArray(jclass.owner().ref(String.class));
-            for ( String exclude : ruleFactory.getGenerationConfig().getToStringExcludes() ) {
-                arr.add(JExpr.lit(exclude));
-            }
-
-            toStringExclude.arg(JExpr._this()).arg(arr);
-            body._return(toStringExclude);
-        } else {
-            Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ToStringBuilder.class : org.apache.commons.lang.builder.ToStringBuilder.class;
-            JInvocation reflectionToString = jclass.owner().ref(toStringBuilder).staticInvoke("reflectionToString");
-            reflectionToString.arg(JExpr._this());
-            body._return(reflectionToString);
+        if (!jclass._extends().fullName().equals(Object.class.getName())) {
+            toStringBuilderInvocation = toStringBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("toString"));
         }
+
+        for (JFieldVar fieldVar : fields.values()) {
+            if (excludes.contains(fieldVar.name()) || (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
+                continue;
+            }
+            toStringBuilderInvocation = toStringBuilderInvocation.invoke("append").arg(fieldVar.name()).arg(fieldVar);
+        }
+
+        body._return(toStringBuilderInvocation.invoke("toString"));
 
         toString.annotate(Override.class);
     }
