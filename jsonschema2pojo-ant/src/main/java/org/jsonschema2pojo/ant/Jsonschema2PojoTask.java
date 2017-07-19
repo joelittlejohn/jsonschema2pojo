@@ -135,11 +135,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeAdditionalProperties = true;
 
+    private boolean includeAccessors = true;
+
     private boolean includeGetters = true;
 
     private boolean includeSetters = true;
 
     private String targetVersion = "1.6";
+
+    private boolean includeDynamicAccessors = false;
 
     private boolean includeDynamicGetters = false;
 
@@ -674,6 +678,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'includeAccessors' property of this class
+     *
+     * @param includeAccessors
+     *            Whether to include getters/setters or to omit these accessor
+     *            methods and create public fields instead.
+     */
+    public void setIncludeAccessors(boolean includeAccessors) {
+        this.includeAccessors = includeAccessors;
+    }
+
+    /**
      * Sets the 'includeGetters' property of this class
      *
      * @param includeGetters
@@ -705,6 +720,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setTargetVersion(String targetVersion) {
         this.targetVersion = targetVersion;
+    }
+
+    /**
+     * Sets the 'includeDynamicAccessors' property of this class
+     *
+     * @param includeDynamicAccessors
+     *            Whether to include dynamic getters, setters, and builders or to omit these methods.
+     */
+    public void setIncludeDynamicAccessors(boolean includeDynamicAccessors) {
+        this.includeDynamicAccessors = includeDynamicAccessors;
     }
 
     /**
@@ -1031,6 +1056,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeAccessors() {
+        return includeAccessors;
+    }
+
+    @Override
     public boolean isIncludeGetters() {
         return includeGetters;
     }
@@ -1043,6 +1073,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getTargetVersion() {
         return targetVersion;
+    }
+
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return includeDynamicAccessors;
     }
 
     @Override

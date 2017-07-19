@@ -371,6 +371,14 @@ public interface GenerationConfig {
     boolean isIncludeAdditionalProperties();
 
     /**
+     * Gets the 'includeAccessors' configuration option.
+     *
+     * @return Whether to include getters/setters or to omit these accessor
+     *         methods and create public fields instead.
+     */
+    boolean isIncludeAccessors();
+
+    /**
      * Gets the 'includeGetters' configuration option.
      *
      * @return Whether to include getters or to omit these accessor
@@ -392,6 +400,14 @@ public interface GenerationConfig {
      * @return The target version for generated source files.
      */
     String getTargetVersion();
+
+    /**
+     * Gets the `includeDynamicAccessors` configuration option
+     *
+     * @return Whether to include dynamic getters, setters, and builders or to
+     *         omit these methods.
+     */
+    boolean isIncludeDynamicAccessors();
 
     /**
      * Gets the `includeDynamicGetters` configuration option.

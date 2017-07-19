@@ -45,8 +45,8 @@ public class DynamicPropertiesIT {
     @Test
     public void shouldSetStringFieldJava7() throws Throwable {
         setDeclaredPropertyTest(
-                config("includeDynamicGetters", true, "includeDynamicSetters", true,
-                    "includeDynamicBuilders", true, "targetVersion", "1.7"),
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true,
+                    "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.7"),
                 "/schema/dynamic/parentType.json",
                 "ParentType",
                 String.class,
@@ -173,7 +173,7 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldSetAdditionalProperty() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example.ParentType");
         Object instance = parentType.newInstance();
@@ -193,7 +193,7 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldGetAdditionalProperty() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/dynamic/parentType.json", "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example.ParentType");
         Object instance = parentType.newInstance();
@@ -214,7 +214,7 @@ public class DynamicPropertiesIT {
     }
 
     public void setDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
-        setDeclaredPropertyTest(config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
+        setDeclaredPropertyTest(config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
             schemaLocation, typeName, fieldType, fieldName, fieldGetter, value);
     }
 
@@ -240,7 +240,7 @@ public class DynamicPropertiesIT {
 
     public void withDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
         ClassLoader resultsClassLoader =
-                schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true, "generateBuilders", true));
+                schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true, "generateBuilders", true));
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
@@ -262,7 +262,7 @@ public class DynamicPropertiesIT {
     }
 
     public void getDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldSetter, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = parentType.newInstance();
@@ -281,7 +281,7 @@ public class DynamicPropertiesIT {
     }
 
     public void setAdditionalPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = parentType.newInstance();
@@ -304,7 +304,7 @@ public class DynamicPropertiesIT {
     }
 
     public void setPropertyTest(String schemaLocation, String typeName, String fieldName, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
@@ -318,7 +318,7 @@ public class DynamicPropertiesIT {
     }
 
     public void getPropertyTest(String schemaLocation, String typeName, String fieldName) throws Throwable {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();

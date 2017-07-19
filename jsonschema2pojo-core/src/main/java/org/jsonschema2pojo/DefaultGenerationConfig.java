@@ -301,6 +301,13 @@ public class DefaultGenerationConfig implements GenerationConfig {
     /**
      * @return <code>true</code>
      */
+    public boolean isIncludeAccessors() {
+        return true;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
     @Override
     public boolean isIncludeGetters() {
         return true;
@@ -320,6 +327,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public String getTargetVersion() {
         return "1.6";
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return false;
     }
 
     /**

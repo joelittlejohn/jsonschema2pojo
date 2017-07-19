@@ -161,6 +161,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-D", "--enable-additional-properties" }, description = "Enable additional properties support on generated types, regardless of the input schema(s)")
     private boolean isIncludeAdditionalProperties = false;
 
+    @Parameter(names = { "-da", "--disable-accessors" }, description = "Whether to omit getter/setter methods and create public fields instead.")
+    private boolean disableAccessors = false;
+
     @Parameter(names = { "-dg", "--disable-getters" }, description = "Whether to omit getter methods and create public fields instead.")
     private boolean disableGetters = false;
 
@@ -169,6 +172,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-tv", "--target-version" }, description = "The target version for generated source files.")
     private String targetVersion = "1.6";
+
+    @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
+    private boolean includeDynamicAccessors = false;
 
     @Parameter(names = { "-idg", "--include-dynamic-getters" }, description = "Include dynamic getter support on generated types.")
     private boolean includeDynamicGetters = false;
@@ -414,6 +420,11 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeAccessors() {
+        return !disableAccessors;
+    }
+
+    @Override
     public boolean isIncludeGetters() {
         return !disableGetters;
     }
@@ -426,6 +437,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getTargetVersion() {
         return targetVersion;
+    }
+
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return includeDynamicAccessors;
     }
 
     @Override
