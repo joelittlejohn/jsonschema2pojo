@@ -164,11 +164,26 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-da", "--disable-accessors" }, description = "Whether to omit getter/setter methods and create public fields instead.")
     private boolean disableAccessors = false;
 
+    @Parameter(names = { "-dg", "--disable-getters" }, description = "Whether to omit getter methods and create public fields instead.")
+    private boolean disableGetters = false;
+
+    @Parameter(names = { "-ds", "--disable-setters" }, description = "Whether to omit setter methods and create public fields instead.")
+    private boolean disableSetters = false;
+
     @Parameter(names = { "-tv", "--target-version" }, description = "The target version for generated source files.")
     private String targetVersion = "1.6";
 
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;
+
+    @Parameter(names = { "-idg", "--include-dynamic-getters" }, description = "Include dynamic getter support on generated types.")
+    private boolean includeDynamicGetters = false;
+
+    @Parameter(names = { "-ids", "--include-dynamic-setters" }, description = "Include dynamic setter support on generated types.")
+    private boolean includeDynamicSetters = false;
+
+    @Parameter(names = { "-idb", "--include-dynamic-builders" }, description = "Include dynamic builder support on generated types.")
+    private boolean includeDynamicBuilders = false;
 
     @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` are formatted during serialization with a default pattern of `yyyy-MM-dd`")
     private boolean formatDates = false;
@@ -410,6 +425,16 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeGetters() {
+        return !disableGetters;
+    }
+
+    @Override
+    public boolean isIncludeSetters() {
+        return !disableSetters;
+    }
+
+    @Override
     public String getTargetVersion() {
         return targetVersion;
     }
@@ -417,6 +442,21 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeDynamicAccessors() {
         return includeDynamicAccessors;
+    }
+
+    @Override
+    public boolean isIncludeDynamicGetters() {
+        return includeDynamicGetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicSetters() {
+        return includeDynamicSetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicBuilders() {
+        return includeDynamicBuilders;
     }
 
     @Override

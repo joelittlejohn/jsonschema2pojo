@@ -68,14 +68,14 @@ public class CompilerWarningIT {
       {
         "includeAccessorsWithSystemJavaCompiler",
         systemJavaCompiler,
-        config("includeDynamicAccessors", true),
+        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
         "/schema/dynamic/parentType.json",
         Matchers.empty()
       },
       {
         "includeAccessorsWithEclipseCompiler",
         eclipseCompiler,
-        config("includeDynamicAccessors", true),
+        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
         "/schema/dynamic/parentType.json",
         onlyCastExceptions()
       }

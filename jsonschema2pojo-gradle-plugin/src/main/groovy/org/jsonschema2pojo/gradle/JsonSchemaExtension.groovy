@@ -44,8 +44,13 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
   boolean includeAccessors
+  boolean includeGetters
+  boolean includeSetters
   boolean includeAdditionalProperties
   boolean includeDynamicAccessors
+  boolean includeDynamicGetters
+  boolean includeDynamicSetters
+  boolean includeDynamicBuilders
   boolean includeConstructors
   boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
@@ -123,8 +128,13 @@ public class JsonSchemaExtension implements GenerationConfig {
     fileExtensions = [] as String[]
     includeAdditionalProperties = true
     includeAccessors = true
+    includeGetters = false
+    includeSetters = false
     targetVersion = '1.6'
     includeDynamicAccessors = false
+    includeDynamicGetters = false
+    includeDynamicSetters = false
+    includeDynamicBuilders = false
     formatDates = false
     formatTimes = false
     formatDateTimes = false
@@ -217,8 +227,13 @@ public class JsonSchemaExtension implements GenerationConfig {
        |classNameSuffix = ${classNameSuffix}
        |fileExtensions = ${Arrays.toString(fileExtensions)}
        |includeAccessors = ${includeAccessors}
+       |includeGetters = ${includeGetters}
+       |includeSetters = ${includeSetters}
        |targetVersion = ${targetVersion}
        |includeDynamicAccessors = ${includeDynamicAccessors}
+       |includeDynamicGetters = ${includeDynamicGetters}
+       |includeDynamicSetters = ${includeDynamicSetters}
+       |includeDynamicBuilders = ${includeDynamicBuilders}
        |formatDates = ${formatDates}
        |formatTimes = ${formatTimes}
        |formatDateTimes = ${formatDateTimes}

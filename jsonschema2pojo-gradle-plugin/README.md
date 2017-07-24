@@ -172,8 +172,23 @@ jsonSchema2Pojo {
   // Whether to include getters/setters or to omit these accessor methods and create public fields instead.
   includeAccessors = true
 
+  // Whether to include getters or to omit these accessor methods and create public fields instead.
+  includeGetters = false
+
+  // Whether to include setters or to omit these accessor methods and create public fields instead.
+  includeSetters = false
+
   // Whether to include dynamic getters, setters, and builders or to omit these methods.
   includeDynamicAccessors = false
+
+  // Whether to include dynamic getters or to omit these methods.
+  includeDynamicGetters = false
+
+  // Whether to include dynamic setters or to omit these methods.
+  includeDynamicSetters = false
+
+  // Whether to include dynamic builders or to omit these methods.
+  includeDynamicBuilders = false
 
   // What type to use instead of string when adding string properties of format "date" to Java types
   dateType = "java.time.LocalDate"

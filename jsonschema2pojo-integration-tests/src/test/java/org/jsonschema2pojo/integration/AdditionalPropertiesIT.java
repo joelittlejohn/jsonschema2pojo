@@ -71,7 +71,7 @@ public class AdditionalPropertiesIT {
     @SuppressWarnings("unchecked")
     public void jacksonCanDeserializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAccessors", false));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeGetters", false, "includeAccessors", false));
 
         Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
 
@@ -105,7 +105,7 @@ public class AdditionalPropertiesIT {
     @Test
     public void jacksonCanSerializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAccessors", false));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeGetters", false, "includeAccessors", false));
 
         Class<?> classWithAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
         String jsonWithAdditionalProperties = "{\"a\":1, \"b\":2};";

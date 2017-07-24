@@ -110,6 +110,8 @@ public class IncludeAccessorsPropertiesIT {
     private static Map<String, Object> configWithIncludeAccessors(Map<String, Object> template, boolean includeAccessors) {
         Map<String, Object> config = new HashMap<String, Object>(template);
         config.put("includeAccessors", includeAccessors);
+        config.put("includeGetters", includeAccessors);
+        config.put("includeSetters", includeAccessors);
         return config;
     }
 

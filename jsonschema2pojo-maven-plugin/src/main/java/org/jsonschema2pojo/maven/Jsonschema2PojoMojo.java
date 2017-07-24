@@ -552,6 +552,24 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeAccessors = true;
 
     /**
+     * Whether to include getters or to omit this accessor method and
+     * create public fields instead
+     *
+     * @parameter expression="${jsonschema2pojo.includeGetters}"
+     *            default-value="false"
+     */
+    private boolean includeGetters = false;
+
+    /**
+     * Whether to include setters or to omit this accessor method and
+     * create public fields instead
+     *
+     * @parameter expression="${jsonschame2pojo.includeSetters}"
+     *            default-value="false"
+     */
+    private boolean includeSetters = false;
+
+    /**
      * The target version for generated source files.
      *
      * @parameter expression="${maven.compiler.target}" default-value="1.6"
@@ -564,10 +582,33 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * these methods.
      *
      * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
-     *            default-value="false"
      * @since 0.4.17
      */
     private boolean includeDynamicAccessors = false;
+
+    /**
+     * Whether to include dynamic getters or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicGetters}"
+     *            default-value="false"
+     */
+    private boolean includeDynamicGetters = false;
+
+    /**
+     * Whether to include dynamic setters or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicSetters}"
+     *            default-value="false"
+     */
+    private boolean includeDynamicSetters = false;
+
+    /**
+     * Whether to include dynamic builders or to omit these methods.
+     *
+     * @parameter expression="${jsonschema2pojo.includeDynamicBuilders}"
+     *            default-value="false"
+     */
+    private boolean includeDynamicBuilders = false;
 
     /**
      * The project being built.
@@ -965,6 +1006,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
+    public boolean isIncludeGetters() { return includeGetters; }
+
+    @Override
+    public boolean isIncludeSetters() { return includeSetters; }
+
+    @Override
     public String getTargetVersion() {
         return targetVersion;
     }
@@ -972,6 +1019,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeDynamicAccessors() {
         return includeDynamicAccessors;
+    }
+
+    @Override
+    public boolean isIncludeDynamicGetters() {
+        return includeDynamicGetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicSetters() {
+        return includeDynamicSetters;
+    }
+
+    @Override
+    public boolean isIncludeDynamicBuilders() {
+        return includeDynamicBuilders;
     }
 
     @Override

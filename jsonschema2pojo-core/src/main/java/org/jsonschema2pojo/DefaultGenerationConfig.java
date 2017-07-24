@@ -301,9 +301,24 @@ public class DefaultGenerationConfig implements GenerationConfig {
     /**
      * @return <code>true</code>
      */
-    @Override
     public boolean isIncludeAccessors() {
         return true;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeGetters() {
+        return false;
+    }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isIncludeSetters() {
+        return false;
     }
 
     /**
@@ -319,6 +334,30 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isIncludeDynamicAccessors() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeDynamicGetters() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeDynamicSetters() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeDynamicBuilders() {
         return false;
     }
 
