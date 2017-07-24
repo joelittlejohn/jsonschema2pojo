@@ -128,8 +128,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     fileExtensions = [] as String[]
     includeAdditionalProperties = true
     includeAccessors = true
-    includeGetters = true
-    includeSetters = true
+    includeGetters = false
+    includeSetters = false
     targetVersion = '1.6'
     includeDynamicAccessors = false
     includeDynamicGetters = false

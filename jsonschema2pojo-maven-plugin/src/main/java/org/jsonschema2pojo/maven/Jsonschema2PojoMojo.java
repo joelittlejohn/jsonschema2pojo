@@ -552,22 +552,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeAccessors = true;
 
     /**
-     * Whether to include getters or to omit these accessor method and
+     * Whether to include getters or to omit this accessor method and
      * create public fields instead
      *
      * @parameter expression="${jsonschema2pojo.includeGetters}"
-     *            default-value="true"
+     *            default-value="false"
      */
-    private boolean includeGetters = true;
+    private boolean includeGetters = false;
 
     /**
-     * Whether to include setters or to omit these accessor method and
+     * Whether to include setters or to omit this accessor method and
      * create public fields instead
      *
      * @parameter expression="${jsonschame2pojo.includeSetters}"
-     *            default-value="true"
+     *            default-value="false"
      */
-    private boolean includeSetters = true;
+    private boolean includeSetters = false;
 
     /**
      * The target version for generated source files.

@@ -137,9 +137,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeAccessors = true;
 
-    private boolean includeGetters = true;
+    private boolean includeGetters = false;
 
-    private boolean includeSetters = true;
+    private boolean includeSetters = false;
 
     private String targetVersion = "1.6";
 

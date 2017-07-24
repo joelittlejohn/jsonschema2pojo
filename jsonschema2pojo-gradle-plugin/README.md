@@ -173,10 +173,10 @@ jsonSchema2Pojo {
   includeAccessors = true
 
   // Whether to include getters or to omit these accessor methods and create public fields instead.
-  includeGetters = true
+  includeGetters = false
 
   // Whether to include setters or to omit these accessor methods and create public fields instead.
-  includeSetters = true
+  includeSetters = false
 
   // Whether to include dynamic getters, setters, and builders or to omit these methods.
   includeDynamicAccessors = false

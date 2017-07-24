@@ -310,7 +310,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isIncludeGetters() {
-        return true;
+        return false;
     }
 
     /**
@@ -318,7 +318,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isIncludeSetters() {
-        return true;
+        return false;
     }
 
     /**
