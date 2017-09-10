@@ -36,7 +36,7 @@ public class TypeUtil {
 
         try {
             FieldDeclaration fieldDeclaration = (FieldDeclaration) JavaParser.parseBodyDeclaration(typeDefinition + " foo;");
-            ClassOrInterfaceType c = (ClassOrInterfaceType) fieldDeclaration.getType().getChildrenNodes().get(0);
+            ClassOrInterfaceType c = (ClassOrInterfaceType) ((ReferenceType) fieldDeclaration.getType()).getType();
 
             return buildClass(_package, c, 0);
         } catch (ParseException e) {

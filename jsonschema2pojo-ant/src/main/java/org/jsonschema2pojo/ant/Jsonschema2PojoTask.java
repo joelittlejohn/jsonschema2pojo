@@ -41,6 +41,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
@@ -173,6 +174,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
+    private Language targetLanguage = Language.JAVA;
+    
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -852,6 +855,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
+    
+    public void setTargetLanguage(Language targetLanguage) {
+        this.targetLanguage = targetLanguage;
+    }
 
     @Override
     public boolean isGenerateBuilders() {
@@ -1159,4 +1166,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
+    
+    @Override
+    public Language getTargetLanguage() {
+        return targetLanguage;
+    }
+    
 }

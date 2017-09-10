@@ -430,4 +430,13 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
+    
+    /**
+     * @return {@link Language#JAVA}
+     */
+    @Override
+    public Language getTargetLanguage() {
+        return Language.JAVA;
+    }
+    
 }

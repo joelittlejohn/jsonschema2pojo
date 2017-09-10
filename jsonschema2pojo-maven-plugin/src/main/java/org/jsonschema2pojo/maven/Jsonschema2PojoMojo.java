@@ -39,6 +39,7 @@ import org.jsonschema2pojo.AnnotatorFactory;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
@@ -689,7 +690,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     /**
      * The sort order to be applied when recursively processing the source
-     * files.  By default the OS can influence the processing order.   Supported values:
+     * files. By default the OS can influence the processing order.   Supported values:
      * <ul>
      * <li><code>OS</code> (Let the OS influence the order the source files are processed.)</li>
      * <li><code>FILES_FIRST</code> (Case sensitive sort, visit the files first.  The source files are processed in a breadth
@@ -698,12 +699,25 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * processed in a depth first sort order.)</li>
      * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.sourceSortOrder}"
-     * default-value="OS"
+     * @parameter expression="${jsonschema2pojo.sourceSortOrder}" default-value="OS"
      * @since 0.4.34
      */
     private String sourceSortOrder = SourceSortOrder.OS.toString();
 
+    /**
+     * The type of code that will be generated.
+     * <p>
+     * Supported values:
+     * <ul>
+     * <li><code>java</code> (Generate .java source files)</li>
+     * <li><code>scala</code> (Generate .scala source files, using scalagen)</li>
+     * </ul>
+     * 
+     * @parameter expression="${jsonschema2pojo.targetLanguage}" default-value="java"
+     * @since 0.5.0
+     */
+    private String targetLanguage = "java";
+    
     /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
@@ -1097,8 +1111,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public SourceSortOrder getSourceSortOrder()
-    {
+    public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.valueOf(sourceSortOrder.toUpperCase());
+    }
+    
+    @Override
+    public Language getTargetLanguage() {
+        return Language.valueOf(targetLanguage.toUpperCase());
     }
 }

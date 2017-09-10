@@ -42,7 +42,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
