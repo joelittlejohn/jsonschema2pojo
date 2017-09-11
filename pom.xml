@@ -30,8 +30,6 @@
         <developer>
             <name>Joe Littlejohn</name>
             <email>joe.littlejohn@gmail.com</email>
-            <organization>Nokia MixRadio</organization>
-            <organizationUrl>http://mixrad.io</organizationUrl>
         </developer>
     </developers>
 
@@ -55,6 +53,8 @@
         <gradle.version>1.6</gradle.version>
         <gson.version>2.5</gson.version>
         <moshi.version>1.5.0</moshi.version>
+        <scala.version>2.10.1</scala.version>
+        <scalaArm.scalaVersion>2.10</scalaArm.scalaVersion>
     </properties>
 
     <build>
