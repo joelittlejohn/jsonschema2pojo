@@ -22,8 +22,9 @@
         <module>jsonschema2pojo-cli</module>
         <module>jsonschema2pojo-core</module>
         <module>jsonschema2pojo-gradle-plugin</module>
-        <module>jsonschema2pojo-maven-plugin</module>
         <module>jsonschema2pojo-integration-tests</module>
+        <module>jsonschema2pojo-maven-plugin</module>
+        <module>jsonschema2pojo-scalagen</module>
     </modules>
 
     <developers>
@@ -315,19 +316,9 @@
                 <version>1.0.10</version>
             </dependency>
             <dependency>
-                <groupId>com.mysema.scalagen</groupId>
-                <artifactId>scalagen_2.10.1</artifactId>
-                <version>0.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-compiler</artifactId>
-                <version>2.10.1</version>
-            </dependency>    
-            <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.10.1</version>
+                <version>2.11.6</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.codemodel</groupId>
