@@ -16,27 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.SerializableHelper;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,7 +35,30 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
-import android.os.Parcelable;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.util.NameHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -132,8 +135,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
-            addHashCode(jclass);
-            addEquals(jclass);
+            addHashCode(jclass, node);
+            addEquals(jclass, node);
         }
 
         if (ruleFactory.getGenerationConfig().isParcelable()) {
@@ -403,8 +406,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         toString.annotate(Override.class);
     }
 
-    private void addHashCode(JDefinedClass jclass) {
-        Map<String, JFieldVar> fields = jclass.fields();
+    private void addHashCode(JDefinedClass jclass, JsonNode node) {
+        Map<String, JFieldVar> fields = removeFieldsExcludedFromEqualsAndHashCode(jclass.fields(), node);
 
         JMethod hashCode = jclass.method(JMod.PUBLIC, int.class, "hashCode");
 
@@ -428,6 +431,37 @@ public class ObjectRule implements Rule<JPackage, JType> {
         body._return(hashCodeBuilderInvocation.invoke("toHashCode"));
 
         hashCode.annotate(Override.class);
+    }
+
+    private Map<String, JFieldVar> removeFieldsExcludedFromEqualsAndHashCode(Map<String, JFieldVar> fields, JsonNode node) {
+        Map<String, JFieldVar> filteredFields = new HashMap<String, JFieldVar>(fields);
+
+        JsonNode properties = node.get("properties");
+
+        if (properties != null) {
+            if (node.has("excludedFromEqualsAndHashCode")) {
+                JsonNode excludedArray = node.get("excludedFromEqualsAndHashCode");
+
+                for (Iterator<JsonNode> iterator = excludedArray.elements(); iterator.hasNext(); ) {
+                    String excludedPropertyName = iterator.next().asText();
+                    JsonNode excludedPropertyNode = properties.get(excludedPropertyName);
+                    filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(excludedPropertyName, excludedPropertyNode));
+                }
+            }
+
+            for (Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields(); iterator.hasNext(); ) {
+                Map.Entry<String, JsonNode> entry = iterator.next();
+                String propertyName = entry.getKey();
+                JsonNode propertyNode = entry.getValue();
+
+                if (propertyNode.has("excludedFromEqualsAndHashCode") &&
+                        propertyNode.get("excludedFromEqualsAndHashCode").asBoolean()) {
+                    filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(propertyName, propertyNode));
+                }
+            }
+        }
+
+        return filteredFields;
     }
 
     private void addConstructors(JDefinedClass jclass, JsonNode node, Schema schema, boolean onlyRequired) {
@@ -522,8 +556,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         return field;
     }
 
-    private void addEquals(JDefinedClass jclass) {
-        Map<String, JFieldVar> fields = jclass.fields();
+    private void addEquals(JDefinedClass jclass, JsonNode node) {
+        Map<String, JFieldVar> fields = removeFieldsExcludedFromEqualsAndHashCode(jclass.fields(), node);
 
         JMethod equals = jclass.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
