@@ -45,6 +45,12 @@ dependencies {
 
 // Each configuration is set to the default value
 jsonSchema2Pojo {
+
+  // Whether to allow 'additional' properties to be supported in classes by adding a map to
+  // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
+  // controls whether the map is added. Set this to false to globabally disable additional properties.
+  includeAdditionalProperties = false
+
   // Whether to generate builder-style methods of the form withXxx(value) (that return this),
   // alongside the standard, void-return setters.
   generateBuilders = false
