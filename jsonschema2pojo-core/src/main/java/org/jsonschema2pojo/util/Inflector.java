@@ -88,6 +88,7 @@ public class Inflector {
             .singular("(o)es$", "$1")
             .singular("(shoe)s$", "$1")
             .singular("(cris|ax|test)es$", "$1is")
+            .singular("(tax)es$", "$1")
             .singular("([octop|vir])i$", "$1us")
             .singular("(alias|status)es$", "$1")
             .singular("^(ox)en", "$1")
