@@ -32,5 +32,16 @@ public enum SourceType {
      * JSON documents, that represent an example of the kind of JSON data that
      * the generated Java types will be mapped to.
      */
-    JSON
+    JSON,
+
+    /**
+     * JSON-schema documents, represented as YAML
+     */
+    YAMLSCHEMA,
+
+    /**
+     * YAML documents, that represent an example of the kind of YAML (or JSON) data that
+     * the generated Java types will be mapped to.
+     */
+    YAML
 }

@@ -1,0 +1,4 @@
+properties:
+  longProperty:
+    type: integer
+type: object

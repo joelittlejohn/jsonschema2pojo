@@ -1,0 +1,26 @@
+dependencies:
+  extended-address: street-address
+  locality: region
+  post-office-box: street-address
+  region: country-name
+  street-address: region
+description: An Address following the convention of http://microformats.org/wiki/hcard
+properties:
+  country-name:
+    required: true
+    type: string
+  extended-address:
+    type: string
+  locality:
+    required: true
+    type: string
+  post-office-box:
+    type: string
+  postal-code:
+    type: string
+  region:
+    required: true
+    type: string
+  street-address:
+    type: string
+type: object

@@ -1,0 +1,7 @@
+additionalProperties:
+  javaType: com.example.AdditionalPropertyValue
+  type: object
+properties:
+  propertyOfA:
+    type: string
+type: object

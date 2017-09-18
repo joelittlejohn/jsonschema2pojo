@@ -1,0 +1,9 @@
+javaType: com.example.WordDelimit
+properties:
+  property-with-hyphens:
+    type: string
+  property_with mixed-delimiters:
+    type: string
+  property_with_underscores:
+    type: string
+type: object

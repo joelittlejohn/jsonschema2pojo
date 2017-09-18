@@ -35,6 +35,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.URLUtil;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 
@@ -57,8 +58,9 @@ public class Jsonschema2Pojo {
 
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
+        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config)));
 
-        SchemaMapper mapper = new SchemaMapper(ruleFactory, new SchemaGenerator());
+        SchemaMapper mapper = new SchemaMapper(ruleFactory, createSchemaGenerator(config));
 
         JCodeModel codeModel = new JCodeModel();
 
@@ -88,6 +90,22 @@ public class Jsonschema2Pojo {
             }
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
+        }
+    }
+    
+    private static ContentResolver createContentResolver(GenerationConfig config) {
+    	if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
+    		return new ContentResolver(new YAMLFactory());
+    	} else {
+    		return new ContentResolver();
+    	}
+    }
+
+    private static SchemaGenerator createSchemaGenerator(GenerationConfig config) {
+        if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
+            return new SchemaGenerator(new YAMLFactory());
+        } else {
+            return new SchemaGenerator();
         }
     }
 

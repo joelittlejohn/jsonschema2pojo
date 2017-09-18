@@ -1,0 +1,5 @@
+properties:
+  longProperty:
+    minimum: -2147483649
+    type: integer
+type: object

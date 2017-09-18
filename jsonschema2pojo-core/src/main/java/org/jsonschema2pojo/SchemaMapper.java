@@ -97,10 +97,12 @@ public class SchemaMapper {
 
         switch (ruleFactory.getGenerationConfig().getSourceType()) {
             case JSONSCHEMA:
+            case YAMLSCHEMA:
                 ObjectNode schemaNode = NODE_FACTORY.objectNode();
                 schemaNode.put("$ref", schemaUrl.toString());
                 return schemaNode;
             case JSON:
+            case YAML:
                 return schemaGenerator.schemaFromExample(schemaUrl);
             default:
                 throw new IllegalArgumentException("Unrecognised source type: " + ruleFactory.getGenerationConfig().getSourceType());

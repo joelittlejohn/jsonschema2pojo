@@ -1,0 +1,5 @@
+javaType: com.example.RefToSubdirectory1
+properties:
+  refToOther:
+    $ref: ../subdirectory2/refToSubdirectory1.json
+type: object

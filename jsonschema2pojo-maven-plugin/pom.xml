@@ -35,6 +35,11 @@
     </build>
 
     <dependencies>
+    <dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud</artifactId>
+    <version>0.19.0-alpha</version>
+</dependency>
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>

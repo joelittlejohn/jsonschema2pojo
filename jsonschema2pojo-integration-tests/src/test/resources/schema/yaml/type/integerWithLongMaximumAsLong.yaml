@@ -1,0 +1,5 @@
+properties:
+  longProperty:
+    maximum: 2147483648
+    type: integer
+type: object

@@ -1,0 +1,10 @@
+additionalProperties:
+  $ref: a.json
+properties:
+  a:
+    $ref: a.json
+  arrayOfA:
+    items:
+      $ref: a.json
+    type: array
+type: object

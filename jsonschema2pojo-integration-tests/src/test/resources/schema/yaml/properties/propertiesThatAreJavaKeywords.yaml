@@ -1,0 +1,10 @@
+properties:
+  abstract:
+    type: string
+  enum:
+    type: string
+  public:
+    type: string
+  void:
+    type: string
+type: object

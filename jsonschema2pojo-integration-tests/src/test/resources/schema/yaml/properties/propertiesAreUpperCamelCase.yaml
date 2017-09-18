@@ -1,0 +1,11 @@
+javaType: com.example.UpperCase
+properties:
+  ' PropertyThreeWithSpace':
+    type: string
+  Property1:
+    type: string
+  PropertyTwo:
+    type: integer
+  propertyFour:
+    type: string
+type: object

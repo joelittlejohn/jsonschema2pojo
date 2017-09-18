@@ -1,0 +1,10 @@
+properties:
+  propertyClasspathRef:
+    $ref: classpath:/schema/ref/a.json
+  propertyJavaRef:
+    $ref: java:/schema/description/description.json
+  propertyResourceRef:
+    $ref: resource:/schema/title/title.json
+  transitiveRelativeClasspathRef:
+    $ref: java:/schema/ref/classpathRefs2.json
+type: object

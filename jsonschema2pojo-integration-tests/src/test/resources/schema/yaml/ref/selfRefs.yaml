@@ -1,0 +1,23 @@
+additionalProperties:
+  $ref: '#'
+definitions:
+  embedded:
+    properties:
+      embeddedProp:
+        $ref: '#/definitions/embedded2'
+    type: object
+  embedded2:
+    properties:
+      embeddedProp2:
+        $ref: '#'
+    type: object
+properties:
+  arrayOfSelf:
+    items:
+      $ref: '#'
+    type: array
+  childOfSelf:
+    $ref: '#'
+  embeddedInSelf:
+    $ref: '#/definitions/embedded'
+type: object

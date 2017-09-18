@@ -1,0 +1,13 @@
+properties:
+  booleanProperty:
+    type:
+    - boolean
+    - string
+  integerProperty:
+    type:
+    - integer
+    - 'null'
+  stringProperty:
+    type:
+    - string
+type: object

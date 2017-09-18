@@ -1,0 +1,23 @@
+definitions:
+  Name:
+    type: string
+  Namespace:
+    type: string
+  Thing:
+    properties:
+      name:
+        $ref: '#/definitions/Name'
+      namespace:
+        $ref: '#/definitions/Namespace'
+      version:
+        $ref: '#/definitions/Version'
+  ThingList:
+    items:
+      $ref: '#/definitions/Thing'
+    type: array
+  Version:
+    type: string
+properties:
+  things:
+    $ref: '#/definitions/ThingList'
+type: object

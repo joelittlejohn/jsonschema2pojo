@@ -1,0 +1,20 @@
+properties:
+  list:
+    type: array
+  listWithValues:
+    default:
+    - 100
+    - 200
+    - 300
+    type: array
+  set:
+    type: array
+    uniqueItems: true
+  setWithValues:
+    default:
+    - 100
+    - 200
+    - 300
+    type: array
+    uniqueItems: true
+type: object

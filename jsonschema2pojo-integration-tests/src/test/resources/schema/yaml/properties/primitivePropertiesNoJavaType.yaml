@@ -1,0 +1,8 @@
+properties:
+  a:
+    type: integer
+  b:
+    type: number
+  c:
+    type: boolean
+type: object

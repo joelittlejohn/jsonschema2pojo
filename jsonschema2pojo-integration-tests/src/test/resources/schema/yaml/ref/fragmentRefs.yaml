@@ -1,0 +1,9 @@
+additionalProperties: false
+properties:
+  a:
+    $ref: a.json
+  fragmentOfA:
+    $ref: a.json/#/additionalProperties
+  fragmentOfSelf:
+    $ref: '#/properties/a'
+type: object

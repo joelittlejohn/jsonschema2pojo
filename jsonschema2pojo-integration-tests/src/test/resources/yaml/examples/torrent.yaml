@@ -1,0 +1,12 @@
+build: 25053
+props:
+- dht: 1
+  dlrate: 0
+  hash: 71D6FC08482AEF2903C5994C4842455D5C97CD63
+  pex: 1
+  seed_override: 0
+  seed_ratio: 1500
+  seed_time: 0
+  superseed: 0
+  trackers: http://bt.rutracker.org/ann?uk=11111111\r\n\r\nhttp://retracker.local/announce\r\n\r\nhttp://ix.rutracker.net/ann?uk=111111111\r\n
+  ulrate: 0

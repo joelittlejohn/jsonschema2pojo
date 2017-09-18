@@ -1,0 +1,4 @@
+properties:
+  floatProperty:
+    type: number
+type: object

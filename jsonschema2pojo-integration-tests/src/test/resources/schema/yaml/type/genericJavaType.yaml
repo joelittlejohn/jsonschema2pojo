@@ -1,0 +1,13 @@
+properties:
+  a:
+    javaType: java.util.Map<String,Integer>
+    type: object
+  b:
+    javaType: java.util.Map<java.util.Map<String,Integer>, java.util.List<java.util.List<Boolean>>>
+    type: object
+  c:
+    javaType: java.util.Map<String, String[][]>
+    type: object
+  d:
+    javaType: java.util.Map<String,Double>
+type: object

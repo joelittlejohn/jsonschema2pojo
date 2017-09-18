@@ -1,0 +1,6 @@
+properties:
+  address:
+    $ref: https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/address.json
+  refsToA:
+    $ref: https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/refsToA.json
+type: object

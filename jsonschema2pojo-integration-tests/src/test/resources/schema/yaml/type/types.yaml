@@ -1,0 +1,72 @@
+properties:
+  anyProperty:
+    type: any
+  arrayProperty:
+    type: array
+  booleanProperty:
+    type: boolean
+  booleanWithJavaType:
+    javaType: long
+    type: boolean
+  dateWithJavaType:
+    format: date-time
+    javaType: int
+    type: string
+  defaultProperty: {}
+  impliedObjectProperty:
+    properties:
+      property:
+        type: string
+  integerProperty:
+    type: integer
+  integerWithJavaType:
+    javaType: java.math.BigDecimal
+    type: integer
+  nullProperty:
+    type: 'null'
+  nullableStringProperty:
+    type:
+    - 'null'
+    - string
+  numberProperty:
+    type: number
+  numberWithJavaType:
+    javaType: java.util.UUID
+    type: number
+  objectProperty:
+    properties:
+      property:
+        type: string
+    type: object
+  primitiveJavaType:
+    javaType: long
+    type: object
+  reusedClasspathType:
+    javaType: java.util.Locale
+    type: object
+  reusedGeneratedType:
+    javaType: com.example.ObjectProperty
+    type: object
+  stringProperty:
+    type: string
+  stringWithJavaType:
+    javaType: java.lang.Boolean
+    type: string
+  typeWithGenericInterface:
+    javaInterfaces:
+    - org.jsonschema2pojo.integration.yaml.YamlTypeIT.InterfaceWithGenerics<String,Integer,Boolean>
+    type: object
+  typeWithInheritedClass:
+    extendsJavaClass: org.jsonschema2pojo.integration.yaml.YamlTypeIT.InheritedClass
+    type: object
+  typeWithInheritedClassWithGenerics:
+    extendsJavaClass: org.jsonschema2pojo.integration.yaml.YamlTypeIT.InheritedClassWithGenerics<String,Integer,Boolean>
+    type: object
+  typeWithInterfaces:
+    javaInterfaces:
+    - java.io.Serializable
+    - Cloneable
+    type: object
+  unknownProperty:
+    type: some-unknown-type
+type: object

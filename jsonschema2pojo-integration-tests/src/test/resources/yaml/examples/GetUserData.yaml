@@ -1,0 +1,145 @@
+id: c58b64ca-7e83-404f-ab2a-f4666ade521f
+result:
+  data:
+    aliases:
+      alias:
+      - address: gergergerger@gerger.de
+        isDefault: false
+      aliasesTotal: 1
+    blockedAddresses:
+      blockedAddress: []
+      blockedAddressesMax: 500
+      blockedAddressesTotal: 0
+    disposableAddresses:
+      deaDomain: bvdfbdg.fd
+      deaNamesTotal: 0
+    externalAccounts:
+      extAccount:
+      - accountName: rget4nhrthjrth
+        address: htrhtr@hrhtrhtr.de
+        colorIndicator: ' '
+        folder: Inbox
+        fromName: ''
+        isDefault: false
+        leaveMail: true
+        mailFromAllowed: true
+        port: '995'
+        protocol: pop3
+        replyTo: ''
+        retrieveOnlyNew: true
+        server: rgerghehtr
+        sslFlag: true
+        useFilters: true
+        username: ferfergergerge
+      extAccountsTotal: 1
+    filters:
+      filtersMax: 100
+      mobileFiltersMax: '100'
+      numberOfFilters: 8
+      numberOfMailFilters: 8
+      numberOfMobileFilters: 0
+    otherYahooMboxes:
+      otherYahooMboxesTotal: 0
+      yMbox: []
+    switches:
+      noFormWarning: false
+    userFeaturePref:
+      attachFileSize: 26214400
+      attachFiles: 50
+      attachTotalEncodedSize: 34865152
+      attachTotalSize: 26214400
+      btTier: ''
+      bulkAction: 0
+      domainMembership: ''
+      filtersMax: 100
+      governingJurisdiction: pl
+      hasAddressGuard: true
+      hasAds: true
+      hasAliasEnabled: true
+      hasArchiving: false
+      hasForwarding: true
+      hasMailPlus: false
+      hasStationery: false
+      intl: pl
+      isMaster: false
+      isMobileDeviceRegistered: false
+      isPremium: false
+      isThreadingEnabled: true
+      isUpsellEnabled: true
+      mailCheckInterval: 1
+      mailForward: ''
+      mailRegTime: '1334726388.0'
+      mailboxQuota: 322122547200
+      mailboxQuotaMegabytes: 307200
+      mobileFiltersMax: '100'
+      optInState: '4'
+      partnerName: Yahoo!
+      partnerType: ''
+      quotaUsed: 728926165
+      quotaUsedMegabytes: 695.158162117
+      rogersTier: ''
+      silo: '132120'
+      soundNewMail: ''
+      timezone:
+        fullname: Europe/Paris
+        name: '+1'
+      ymvm: ''
+    userPopPref:
+      hasPOP: false
+      popBulkSubjectPrefix: false
+      popNoBulk: false
+      popSetupEligible: true
+    userSendPref:
+      addUnknownContact: always
+      autosaveOnSend: 'yes'
+      canSendFromPopAcct: true
+      defaultFromAddress: xxxxxxxxx@dgferger.de
+      defaultFromName: htrhtrhtrhr
+      defaultID: xxxxxxxxx@dgferger.de
+      defaultReplyToAddress: ''
+      firstName: xxxx
+      includeMsgOnReply: short
+      lastName: xxxxx
+      loggedInAlias: rghtrhtrh
+      richTextSignature: dhtml
+      showCcBcc: hide
+      signatureActive: true
+      signatureText: none
+    userSpamPref:
+      spamBlockSender: false
+      spamCleanupPeriod: 30
+      spamFilterActive: true
+      spamGuardPlusEnabled: false
+      spamMoveToInbox: 0
+    userUIPref:
+      composeFontFamily: arial, helvetica, sans-serif
+      composeFontSize: '12'
+      defaultSortOrder: down
+      goOnMessageDelete: box
+      imageBlocking: '0'
+      language: pl-PL
+      messagesPerPage: '25'
+      msgPaneVisible: true
+      newsCategory: ''
+      pimBeta: ''
+      pimColor: blue
+      pimTheme: ''
+      searchPromo: false
+      showAttachmentColumn: true
+      showCalendarStrip: false
+      showFlagColumn: true
+      showNoise: false
+      showSizeColumn: true
+      showSnippets: true
+      showTo: false
+      useRichText: dynamic
+    userVacationPref:
+      vacationAddressBookOnly: false
+      vacationResponseDomain0: ''
+      vacationResponseDomain1: ''
+      vacationResponseEndDate: ''
+      vacationResponseOn: false
+      vacationResponseSpecialText: ''
+      vacationResponseStartDate: ''
+      vacationResponseSubject: ''
+      vacationResponseText: ''

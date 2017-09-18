@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -38,9 +39,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ContentResolver {
 
     private static final Set<String> CLASSPATH_SCHEMES = new HashSet<String>(asList("classpath", "resource", "java"));
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .enable(JsonParser.Feature.ALLOW_COMMENTS)
-            .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+    
+    private final ObjectMapper objectMapper;
+
+    public ContentResolver() {
+    	this(null);
+	}
+
+    public ContentResolver(JsonFactory jsonFactory) {
+    	this.objectMapper = new ObjectMapper(jsonFactory)
+                .enable(JsonParser.Feature.ALLOW_COMMENTS)
+                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+	}
 
     /**
      * Resolve a given URI to read its contents and parse the result as JSON.
@@ -64,7 +74,7 @@ public class ContentResolver {
         }
 
         try {
-            return OBJECT_MAPPER.readTree(uri.toURL());
+            return objectMapper.readTree(uri.toURL());
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
         } catch (MalformedURLException e) {
@@ -85,7 +95,7 @@ public class ContentResolver {
         }
 
         try {
-            return OBJECT_MAPPER.readTree(contentAsStream);
+            return objectMapper.readTree(contentAsStream);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
         } catch (MalformedURLException e) {

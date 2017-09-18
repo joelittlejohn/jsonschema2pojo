@@ -1,0 +1,11 @@
+additionalProperties: false
+definitions:
+  com.example.Foo:
+    properties:
+      bar:
+        type: string
+    type: object
+properties:
+  foo:
+    $ref: '#/definitions/com.example.Foo'
+type: object
