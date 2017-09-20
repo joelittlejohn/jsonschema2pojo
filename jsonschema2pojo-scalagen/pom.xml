@@ -6,12 +6,12 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>0.5.1-SNAPSHOT</version>
+        <version>0.5.1</version>
     </parent>
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-scalagen</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.1</version>
 
     <properties>
         <commons.collections.version>4.01</commons.collections.version>
