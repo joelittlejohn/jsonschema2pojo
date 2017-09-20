@@ -19,7 +19,7 @@
 
     <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/codemirror.css">
     <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/lib/eclipse.css">
-    <link rel="stylesheet" href="http://joelittlejohn.github.io/jsonschema2pojo/resources/public/index.css">
+    <link rel="stylesheet" href="http://localhost:3000/index.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="canonical" href="http://www.jsonschema2pojo.org">
 
@@ -94,6 +94,15 @@
     }
   }
 }</textarea>
+
+            <div class="form-section">
+
+                <button class="btn submit" id="preview-button" data-loading-text="Generating...">Preview <i class="fa fa-eye"></i></button>
+                <button class="btn submit" id="zip-button" data-loading-text="Generating...">Zip <i class="fa fa-file-archive-o"></i></button>
+                <a id="download-zip-link" class="hide"></a>
+
+            </div>
+
           </div>
           <div class="span4">
             <div class="control-group">
@@ -111,6 +120,20 @@
             </div>
 
             <div class="form-section">
+              Target language:<br>
+              <label class="radio inline">
+                <input type="radio" name="targetlanguage"
+                       id="targetLanguage1" value="java" checked>
+                Java
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="targetlanguage"
+                       id="targetLanguage2" value="scala">
+                Scala
+              </label>
+            </div>
+
+            <div class="form-section">
               Source type:<br>
               <label class="radio inline">
                 <input type="radio" name="sourcetype"
@@ -121,8 +144,19 @@
                 <input type="radio" name="sourcetype"
                        id="sourceType2" value="json">
                 JSON
+              </label><br>
+              <label class="radio inline">
+                <input type="radio" name="sourcetype"
+                       id="sourceType3" value="yamlschema" checked>
+                YAML Schema
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="sourcetype"
+                       id="sourceType4" value="yaml">
+                YAML
               </label>
             </div>
+
             <div class="form-section">
               Annotation style:<br>
               <label class="radio inline" style="width: 6em;">
@@ -209,14 +243,6 @@
               </label>
             </div>
 
-          </div>
-        </div>
-
-        <div class="row form-section">
-          <div class="span6">
-            <button class="btn submit" id="preview-button" data-loading-text="Generating...">Preview <i class="fa fa-eye"></i></button>
-            <button class="btn submit" id="zip-button" data-loading-text="Generating...">Zip <i class="fa fa-file-archive-o"></i></button>
-            <a id="download-zip-link" class="hide"></a>
           </div>
         </div>
       </form>

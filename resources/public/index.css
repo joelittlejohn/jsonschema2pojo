@@ -1,7 +1,7 @@
 /* CodeMirror overrides */
 
 .CodeMirror-scroll {
-  height: 45em;
+  height: 58em;
 }
 .CodeMirror {
   border: 1px solid #aaa
@@ -23,6 +23,9 @@ div.span2 {
   margin-left: 1em;
 }
 
+body, label {
+  font-size: 0.9em
+}
 /* misc */
 
 .form-section {

@@ -14,9 +14,15 @@
             [ring.util.response :refer [resource-response]])
   (:import com.fasterxml.jackson.core.JsonProcessingException
            com.fasterxml.jackson.databind.ObjectMapper
-           java.io.ByteArrayInputStream))
+           com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+           java.io.ByteArrayInputStream
+           org.jsonschema2pojo.SourceType))
 
-(def object-mapper (ObjectMapper.))
+(defn- object-mapper
+  [config]
+  (if (or (= (.getSourceType config) SourceType/YAMLSCHEMA) (= (.getSourceType config) SourceType/YAML))
+    (ObjectMapper. (YAMLFactory.))
+    (ObjectMapper.)))
 
 (defn- format-parse-error
   [e]
@@ -27,9 +33,9 @@
     (str message " (line " line ", column " column ")")))
 
 (defn- parse
-  [schema]
+  [config schema]
   (try
-    (.readTree object-mapper schema)
+    (.readTree (object-mapper config) schema)
     (catch JsonProcessingException e
       (throw (IllegalArgumentException. (format-parse-error e))))))
 
@@ -48,10 +54,10 @@
 (defn- generate-response
   [params generator content-type]
   (try
-    (let [schema (parse (size-limit 51200 (not-blank params "schema" "JSON Schema (or example JSON)")))
+    (let [config (j2p/params-based-config params)
+          schema (parse config (size-limit 51200 (not-blank params "schema" "JSON Schema (or example JSON)")))
           classname (size-limit 128 (not-blank params "classname" "Class name"))
           targetpackage (size-limit 256 (not-blank params "targetpackage" "Package"))
-          config (j2p/params-based-config params)
           code-bytes (generator schema classname config)]
       {:status 200
        :headers {"Content-Type" content-type}
