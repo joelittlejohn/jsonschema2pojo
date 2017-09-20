@@ -79,3 +79,8 @@
 * Michał Kołodziejski
 * Jonathan Leitschuh
 * Sean Byron
+* Eric Cochran
+* Christoph Sladkovsky
+* John Keeping
+* lstav
+* Wojciech Matuszewski

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0
+* Array elements behavior controlling. ([#783](https://github.com/joelittlejohn/jsonschema2pojo/issues/783))
+* Support YAML syntax for JSON Schema ([#778](https://github.com/joelittlejohn/jsonschema2pojo/issues/778))
+* Getters and Setters can now be activated independently ([#759](https://github.com/joelittlejohn/jsonschema2pojo/pull/759))
+* Generate toString() without reflection ([#753](https://github.com/joelittlejohn/jsonschema2pojo/pull/753))
+* Intelligent Gradle plugin up-to-date check ([#748](https://github.com/joelittlejohn/jsonschema2pojo/pull/748))
+* Scala case classes support ([#598](https://github.com/joelittlejohn/jsonschema2pojo/issues/598))
+* Make the fields used in hashcode and equals generation configurable ([#530](https://github.com/joelittlejohn/jsonschema2pojo/pull/530))
+
 ## 0.4.37
 * Two default constructors incorrectly added when types are parcelable and includeConstructors is active ([#742](https://github.com/joelittlejohn/jsonschema2pojo/issues/742))
 
