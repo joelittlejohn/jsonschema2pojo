@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.5.1
+* Add Scala and YAML to the website ([#785](https://github.com/joelittlejohn/jsonschema2pojo/issues/785))
+
 ## 0.5.0
 * Array elements behavior controlling. ([#783](https://github.com/joelittlejohn/jsonschema2pojo/issues/783))
 * Support YAML syntax for JSON Schema ([#778](https://github.com/joelittlejohn/jsonschema2pojo/issues/778))
