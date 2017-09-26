@@ -526,6 +526,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *            <ul>
      *            <li><code>jsonschema</code></li>
      *            <li><code>json</code></li>
+     *            <li><code>yamlschema</code></li>
+     *            <li><code>yaml</code></li>
      *            </ul>
      */
     public void setSourceType(SourceType sourceType) {

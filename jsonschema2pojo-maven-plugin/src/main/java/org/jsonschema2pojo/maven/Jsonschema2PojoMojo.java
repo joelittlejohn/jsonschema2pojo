@@ -333,9 +333,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Supported values:
      * <ul>
      * <li><code>jsonschema</code> (schema documents, containing formal rules
-     * that describe the structure of json data)</li>
+     * that describe the structure of JSON data)</li>
      * <li><code>json</code> (documents that represent an example of the kind of
-     * json data that the generated Java types will be mapped to)</li>
+     * JSON data that the generated Java types will be mapped to)</li>
+     * <li><code>yamlschema</code> (JSON schema documents, represented as YAML)</li>
+     * <li><code>yaml</code> (documents that represent an example of the kind of
+     * YAML (or JSON) data that the generated Java types will be mapped to)</li>
      * </ul>
      *
      * @parameter expression="${jsonschema2pojo.sourceType}"
