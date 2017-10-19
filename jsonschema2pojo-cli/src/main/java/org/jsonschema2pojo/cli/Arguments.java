@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.cli;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -110,6 +110,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-305", "--jsr305-annotations" }, description = "Add JSR-305 annotations to generated Java types.")
     private boolean includeJsr305Annotations = false;
+
+    @Parameter(names = { "-o", "--use-optional-for-getters"}, description = "Use Optional for getters of non-required fields.")
+    private boolean useOptionalForGetters = false;
 
     @Parameter(names = { "-T", "--source-type" })
     private SourceType sourceType = SourceType.JSONSCHEMA;
@@ -333,6 +336,9 @@ public class Arguments implements GenerationConfig {
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
     }
+
+    @Override
+    public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
 
     @Override
     public SourceType getSourceType() {

@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2017 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,29 +16,20 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 
 /**
  * Applies the schema rules that represent a property definition.
  *
  * @see <a href=
- *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
- *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
+ * "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
+ * /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -60,12 +51,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      * then a builder method of the form <code>withFoo(Foo foo);</code> is also
      * added.
      *
-     * @param nodeName
-     *            the name of the property to be applied
-     * @param node
-     *            the node describing the characteristics of this property
-     * @param jclass
-     *            the Java class which should have this property added
+     * @param nodeName the name of the property to be applied
+     * @param node     the node describing the characteristics of this property
+     * @param jclass   the Java class which should have this property added
      * @return the given jclass
      */
     @Override
@@ -90,7 +78,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeAccessors || isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node);
+            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
@@ -122,6 +110,24 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         return jclass;
+    }
+
+    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
+        if (node.has("required")) {
+            final JsonNode requiredNode = node.get("required");
+            return requiredNode.asBoolean();
+        }
+
+        JsonNode requiredArray = schema.getContent().get("required");
+
+        if (requiredArray != null) {
+            for (JsonNode requiredNode : requiredArray) {
+                if (nodeName.equals(requiredNode.asText()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
@@ -173,11 +179,30 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return node.path("type").asText().equals("array");
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-        JMethod getter = c.method(JMod.PUBLIC, field.type(), getGetterName(jsonPropertyName, field.type(), node));
+    private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required) {
+        JType returnType = field.type();
+        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters()) {
+            if (!required && field.type().isReference()) {
+                returnType = c.owner().ref("java.util.Optional").narrow(field.type());
+            }
+        }
+
+        return returnType;
+    }
+
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired) {
+
+        JType type = getReturnType(c, field, isRequired);
+
+        JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
 
         JBlock body = getter.body();
-        body._return(field);
+        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() && !isRequired
+                && field.type().isReference()) {
+            body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(field));
+        } else {
+            body._return(field);
+        }
 
         return getter;
     }
