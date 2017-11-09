@@ -214,7 +214,7 @@ public class Arguments implements GenerationConfig {
     private Language targetLanguage = Language.JAVA;
     
     @Parameter(names = { "-fnl", "--field-names-to-lowercase" }, description = "Whether there is a need to convert JSON field names to lowercase before generating property names. ")
-    private boolean fieldNamesToLowercase = false;
+    private boolean forceCamelCase = false;
     
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -537,7 +537,7 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isFieldNamesToLowercase() {
-        return fieldNamesToLowercase;
+    public boolean isForceCamelCase() {
+        return forceCamelCase;
     }
 }

@@ -89,6 +89,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
   Language targetLanguage
+  boolean forceCamelCase
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -142,6 +143,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
+    forceCamelCase = false
   }
 
   @Override
@@ -193,7 +195,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   public void setTargetLangauge(String language) {
     targetLangauge = Langauge.valueOf(language.toUpperCase())
   }
-
+  
   @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
@@ -249,6 +251,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}
        |targetLanguage = ${targetLanguage}
+       |forceCamelCase = ${forceCamelCase}
      """.stripMargin()
   }
   

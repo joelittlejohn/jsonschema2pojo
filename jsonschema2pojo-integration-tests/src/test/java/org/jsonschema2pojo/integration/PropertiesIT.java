@@ -178,7 +178,7 @@ public class PropertiesIT {
 
     @Test
     public void classNamesAreNotAllCaps() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("fieldNamesToLowercase", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("forceCamelCase", true));
         
         Class<?> generatedRootType = resultsClassLoader.loadClass("com.example.PropertiesAreAllCaps");
         Object rootTypeInstance = generatedRootType.newInstance();
@@ -192,7 +192,7 @@ public class PropertiesIT {
     
     @Test
     public void propertyNamesAreNotAllCaps() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("fieldNamesToLowercase", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("forceCamelCase", true));
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesAreAllCaps");
 
         Object instance = generatedType.newInstance();

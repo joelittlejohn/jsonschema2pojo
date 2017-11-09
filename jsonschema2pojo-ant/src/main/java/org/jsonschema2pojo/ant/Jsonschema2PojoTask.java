@@ -176,7 +176,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Language targetLanguage = Language.JAVA;
     
-    private boolean fieldNamesToLowercase = false;
+	private boolean forceCamelCase = false;
     
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -865,12 +865,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'fieldNamesToLowercase' property of this class
+     * Sets the 'forceCamelCase' property of this class
      *
-     * @param fieldNamesToLowercase Whether there is a need to convert JSON field names to lowercase before generating property names. 
+     * @param forceCamelCase Whether JSON field names should be converted to lowercase before generating class, property and method names. 
      */
-    public void setFieldNamesToLowercase(boolean fieldNamesToLowercase) {
-        this.fieldNamesToLowercase = fieldNamesToLowercase;
+    public void setForceCamelCase(boolean forceCamelCase) {
+        this.forceCamelCase = forceCamelCase;
     }
 
     @Override
@@ -1184,10 +1184,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public Language getTargetLanguage() {
         return targetLanguage;
     }
-
+    
     @Override
-    public boolean isFieldNamesToLowercase() {
-        return fieldNamesToLowercase;
+    public boolean isForceCamelCase() {
+        return forceCamelCase;
     }
     
 }

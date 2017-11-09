@@ -77,8 +77,8 @@ public class NameHelper {
      * @param name
      * @return lowercase name 
      */
-    private String ifUppercaseMakeLowercase(String name) {
-        if (generationConfig.isFieldNamesToLowercase())  {
+    private String makeLowercase(String name) {
+        if (generationConfig.isForceCamelCase())  {
             return name.toLowerCase();
         } else {
             return name;
@@ -96,7 +96,7 @@ public class NameHelper {
     public String getPropertyName(String jsonFieldName, JsonNode node) {
         jsonFieldName = getFieldName(jsonFieldName, node);
 
-        jsonFieldName = ifUppercaseMakeLowercase(jsonFieldName);
+        jsonFieldName = makeLowercase(jsonFieldName);
         
         jsonFieldName = replaceIllegalCharacters(jsonFieldName);
         jsonFieldName = normalizeName(jsonFieldName);
@@ -123,7 +123,7 @@ public class NameHelper {
     public String getSetterName(String propertyName, JsonNode node) {
         propertyName = getFieldName(propertyName, node);
 
-        propertyName = ifUppercaseMakeLowercase(propertyName);
+        propertyName = makeLowercase(propertyName);
         
         propertyName = replaceIllegalCharacters(propertyName);
         String setterName = "set" + capitalize(capitalizeTrailingWords(propertyName));
@@ -144,7 +144,7 @@ public class NameHelper {
      */
     public String getFieldName(String propertyName, JsonNode node) {
 
-        propertyName = ifUppercaseMakeLowercase(propertyName);
+        propertyName = makeLowercase(propertyName);
         
         if (node != null && node.has("javaName")) {
             propertyName = node.get("javaName").textValue();
@@ -164,7 +164,7 @@ public class NameHelper {
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getFieldName(propertyName, node);
 
-        propertyName = ifUppercaseMakeLowercase(propertyName);
+        propertyName = makeLowercase(propertyName);
         
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
         propertyName = replaceIllegalCharacters(propertyName);

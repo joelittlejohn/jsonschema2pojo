@@ -443,7 +443,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isFieldNamesToLowercase() {
+    public boolean isForceCamelCase() {
         return false;
     }
 }

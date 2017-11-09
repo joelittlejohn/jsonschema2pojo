@@ -723,12 +723,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetLanguage = "java";
 
     /**
-     * Whether there is a need to convert JSON field names to lowercase before generating property names. 
-     *
-     * @parameter expression="${jsonschema2pojo.fieldNamesToLowercase}"
+     * Whether JSON field names should be converted to lowercase before generating class, property and method names. 
+     *      
+     * @parameter expression="${jsonschema2pojo.forceCamelCase}"
      *            default-value="false"
      */
-    private boolean fieldNamesToLowercase = false;
+    private boolean forceCamelCase = false;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -1135,7 +1135,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isFieldNamesToLowercase() {
-        return fieldNamesToLowercase;
+    public boolean isForceCamelCase() {
+        return forceCamelCase;
     }
 }
