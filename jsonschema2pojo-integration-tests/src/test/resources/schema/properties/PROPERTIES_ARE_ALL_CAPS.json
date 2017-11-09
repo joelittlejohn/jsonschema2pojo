@@ -1,0 +1,43 @@
+{
+	"type": "object",
+	"definitions": {
+		"SOME_OBJECT": {
+			"type": "object",
+			"properties": {
+				"OBJECT_FIELD_ONE": {
+					"type": "integer"
+				},
+				"OBJECT_FIELD_TWO": {
+					"type": "integer"
+				}
+			},
+			"required": [
+				"OBJECT_FIELD_ONE",
+				"OBJECT_FIELD_TWO"
+			]
+		}
+	},	
+    "properties" : {
+	    "PROPERTY1" : {
+	      "type" : "string"
+	    },
+	    "PROPERTY_2" : {
+	      "type" : "string"
+	    },
+	    "THIRD_PROPERTY" : {
+	      "type" : "string"
+	    },
+	    "THREE_WORD_PROPERTY" : {
+	      "type" : "integer"
+	    },
+	    "not_ALL_CAPS_property" : {
+	      "type" : "boolean"
+	    }, 
+	    "OBJECT_PROPERTY": {
+		  "type": "array",
+	      "items": {
+	        "$ref": "#/definitions/SOME_OBJECT"
+	      }
+	    }
+  }
+}

@@ -41,6 +41,7 @@ public class NameHelper {
     }
 
     public String normalizeName(String name) {
+        
         name = capitalizeTrailingWords(name);
 
         if (isDigit(name.charAt(0))) {
@@ -68,6 +69,21 @@ public class NameHelper {
     private String makeLowerCamelCase(String name) {
         return toLowerCase(name.charAt(0)) + name.substring(1);
     }
+    
+    /**
+     * If JSON field name is uppercase (ALL CAPS), convert it to lowercase and prepare it for future 
+     * transformations, including generating class and property names, as well as getter and setter methods.
+     *
+     * @param name
+     * @return lowercase name 
+     */
+    private String ifUppercaseMakeLowercase(String name) {
+        if (generationConfig.isFieldNamesToLowercase())  {
+            return name.toLowerCase();
+        } else {
+            return name;
+        }
+    }
 
     /**
      * Convert jsonFieldName into the equivalent Java fieldname by replacing
@@ -80,6 +96,8 @@ public class NameHelper {
     public String getPropertyName(String jsonFieldName, JsonNode node) {
         jsonFieldName = getFieldName(jsonFieldName, node);
 
+        jsonFieldName = ifUppercaseMakeLowercase(jsonFieldName);
+        
         jsonFieldName = replaceIllegalCharacters(jsonFieldName);
         jsonFieldName = normalizeName(jsonFieldName);
         jsonFieldName = makeLowerCamelCase(jsonFieldName);
@@ -105,6 +123,8 @@ public class NameHelper {
     public String getSetterName(String propertyName, JsonNode node) {
         propertyName = getFieldName(propertyName, node);
 
+        propertyName = ifUppercaseMakeLowercase(propertyName);
+        
         propertyName = replaceIllegalCharacters(propertyName);
         String setterName = "set" + capitalize(capitalizeTrailingWords(propertyName));
 
@@ -124,6 +144,8 @@ public class NameHelper {
      */
     public String getFieldName(String propertyName, JsonNode node) {
 
+        propertyName = ifUppercaseMakeLowercase(propertyName);
+        
         if (node != null && node.has("javaName")) {
             propertyName = node.get("javaName").textValue();
         }
@@ -142,6 +164,8 @@ public class NameHelper {
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getFieldName(propertyName, node);
 
+        propertyName = ifUppercaseMakeLowercase(propertyName);
+        
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
         propertyName = replaceIllegalCharacters(propertyName);
         String getterName = prefix + capitalize(capitalizeTrailingWords(propertyName));

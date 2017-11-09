@@ -213,6 +213,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-tl", "--target-language" }, description = "The type of code that will be generated.  Available options are: JAVA or SCALA")
     private Language targetLanguage = Language.JAVA;
     
+    @Parameter(names = { "-fnl", "--field-names-to-lowercase" }, description = "Whether there is a need to convert JSON field names to lowercase before generating property names. ")
+    private boolean fieldNamesToLowercase = false;
+    
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -531,5 +534,10 @@ public class Arguments implements GenerationConfig {
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
+    }
+
+    @Override
+    public boolean isFieldNamesToLowercase() {
+        return fieldNamesToLowercase;
     }
 }

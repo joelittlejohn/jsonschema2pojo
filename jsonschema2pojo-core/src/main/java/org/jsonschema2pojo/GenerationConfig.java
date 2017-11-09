@@ -565,5 +565,12 @@ public interface GenerationConfig {
      *         </ul>
      */
     Language getTargetLanguage();
+
+    /**
+     * Gets the `fieldNamesToLowercase` configuration option.
+     *
+     * @return Whether there is a need to convert JSON field names to lowercase before generating property names. 
+     */
+    boolean isFieldNamesToLowercase();
     
 }

@@ -439,4 +439,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return Language.JAVA;
     }
     
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isFieldNamesToLowercase() {
+        return false;
+    }
 }

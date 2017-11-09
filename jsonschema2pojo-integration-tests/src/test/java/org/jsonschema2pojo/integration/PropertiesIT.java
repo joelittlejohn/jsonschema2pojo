@@ -175,4 +175,46 @@ public class PropertiesIT {
         assertThat(jsonified.has(" PropertyThreeWithSpace"), is(true));
         assertThat(jsonified.has("propertyFour"), is(true));
     }
+
+    @Test
+    public void classNamesAreNotAllCaps() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("fieldNamesToLowercase", true));
+        
+        Class<?> generatedRootType = resultsClassLoader.loadClass("com.example.PropertiesAreAllCaps");
+        Object rootTypeInstance = generatedRootType.newInstance();
+
+        Class<?> generatedNestedType = resultsClassLoader.loadClass("com.example.ObjectProperty");
+        Object nestedTypeInstance = generatedNestedType.newInstance();
+        
+        assertNotNull(rootTypeInstance);
+        assertNotNull(nestedTypeInstance);
+    }
+    
+    @Test
+    public void propertyNamesAreNotAllCaps() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/PROPERTIES_ARE_ALL_CAPS.json", "com.example", config("fieldNamesToLowercase", true));
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesAreAllCaps");
+
+        Object instance = generatedType.newInstance();
+
+        new PropertyDescriptor("property1", generatedType).getWriteMethod().invoke(instance, "string1");
+        new PropertyDescriptor("property2", generatedType).getWriteMethod().invoke(instance, "string2");
+        new PropertyDescriptor("thirdProperty", generatedType).getWriteMethod().invoke(instance, "string3");
+        new PropertyDescriptor("threeWordProperty", generatedType).getWriteMethod().invoke(instance, 4);
+        new PropertyDescriptor("notAllCapsProperty", generatedType).getWriteMethod().invoke(instance, true);
+        
+        JsonNode jsonified = mapper.valueToTree(instance);
+
+        assertNotNull(generatedType.getDeclaredField("property1"));
+        assertNotNull(generatedType.getDeclaredField("property2"));
+        assertNotNull(generatedType.getDeclaredField("thirdProperty"));
+        assertNotNull(generatedType.getDeclaredField("threeWordProperty"));
+        assertNotNull(generatedType.getDeclaredField("notAllCapsProperty"));
+
+        assertThat(jsonified.has("PROPERTY1"), is(true));
+        assertThat(jsonified.has("PROPERTY_2"), is(true));
+        assertThat(jsonified.has("THIRD_PROPERTY"), is(true));
+        assertThat(jsonified.has("THREE_WORD_PROPERTY"), is(true));
+        assertThat(jsonified.has("not_ALL_CAPS_property"), is(true));
+    }
 }
