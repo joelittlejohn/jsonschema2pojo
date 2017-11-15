@@ -110,6 +110,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean removeOldOutput = false;
 
+    private boolean removeTargetPackage = false;
+
     private String outputEncoding = "UTF-8";
 
     private boolean useJodaDates = false;
@@ -990,6 +992,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+	public boolean isRemoveTargetPackage() {
+		return removeTargetPackage;
+	}
+
+	@Override
     public String getOutputEncoding() {
         return outputEncoding;
     }

@@ -252,6 +252,14 @@ public interface GenerationConfig {
     boolean isRemoveOldOutput();
 
     /**
+     * Gets the 'removeTargetPackage' configuration option.
+     *  
+     * @return Whether to empty only the target package contents before generation occurs. 
+     *         If the resulting package directories are empty, they'll be removed. 
+     */
+    boolean isRemoveTargetPackage();
+
+	/**
      * Gets the 'outputEncoding' configuration option.
      *
      * @return The character encoding that should be used when writing the

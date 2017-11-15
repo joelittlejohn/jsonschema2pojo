@@ -65,6 +65,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean serializable
   char[] propertyWordDelimiters
   boolean removeOldOutput
+  boolean removeTargetPackage
   SourceType sourceType
   String targetVersion
   boolean useCommonsLang3
@@ -218,6 +219,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeJsr305Annotations = ${includeJsr305Annotations}
        |sourceType = ${sourceType.toString().toLowerCase()}
        |removeOldOutput = ${removeOldOutput}
+       |removeTargetPackage = ${removeTargetPackage}
        |outputEncoding = ${outputEncoding}
        |useJodaDates = ${useJodaDates}
        |useJodaLocalDates = ${useJodaLocalDates}
@@ -255,5 +257,6 @@ public class JsonSchemaExtension implements GenerationConfig {
   public boolean isFormatDateTimes() {
     return formatDateTimes;
   }
+
 
 }

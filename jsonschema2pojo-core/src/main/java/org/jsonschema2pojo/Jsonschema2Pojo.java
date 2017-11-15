@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -64,7 +65,16 @@ public class Jsonschema2Pojo {
 
         JCodeModel codeModel = new JCodeModel();
 
-        if (config.isRemoveOldOutput()) {
+        if(config.isRemoveTargetPackage()) {
+        	if(!"".equals(config.getTargetPackage()))
+        	{
+        		removeTargetPackage(config.getTargetDirectory(), config.getTargetPackage());
+        	}
+        	else
+        	{
+        		removeOldOutput(config.getTargetDirectory());
+        	}
+        } else if (config.isRemoveOldOutput()) {
             removeOldOutput(config.getTargetDirectory());
         }
 
@@ -151,7 +161,32 @@ public class Jsonschema2Pojo {
         }
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+    private static void removeTargetPackage(File targetDirectory, String targetPackage) {
+		if(targetDirectory.exists()) {
+			File targetPackageDirectory = new File(targetDirectory.getAbsolutePath() + File.separator + targetPackage.replace(".", File.separator));
+			if(targetPackageDirectory.exists()) {
+				for(File f : targetPackageDirectory.listFiles()) {
+					delete(f);
+				}
+				//now clean up any empty package folders, recursively.
+				deleteEmptyPackages(targetDirectory, targetPackageDirectory);
+			}
+			
+		}
+	}
+
+	private static void deleteEmptyPackages(File rootDirectory, File packageSubDirectory) {
+		if(!packageSubDirectory.equals(rootDirectory))
+		{
+			if(packageSubDirectory.listFiles().length == 0) {
+				File parentPackageDirectory = packageSubDirectory.getParentFile();
+				delete(packageSubDirectory);
+				deleteEmptyPackages(rootDirectory, parentPackageDirectory);
+			}
+		}
+	}
+
+	@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
     private static void delete(File f) {
         if (f.isDirectory()) {
             for (File child : f.listFiles()) {
