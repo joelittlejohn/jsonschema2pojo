@@ -29,6 +29,7 @@ import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.type.ClassOrInterfaceType;
 import japa.parser.ast.type.ReferenceType;
 import japa.parser.ast.type.Type;
+import japa.parser.ast.type.WildcardType;
 
 public class TypeUtil {
 
@@ -54,7 +55,7 @@ public class TypeUtil {
             _class = _package.owner().ref(packagePrefix + c.getName());
         }
 
-        for (int i=0; i<arrayCount; i++) {
+        for (int i = 0; i < arrayCount; i++) {
             _class = _class.array();
         }
 
@@ -62,8 +63,25 @@ public class TypeUtil {
         if (typeArgs != null && typeArgs.size() > 0) {
             JClass[] genericArgumentClasses = new JClass[typeArgs.size()];
 
-            for (int i=0; i<typeArgs.size(); i++) {
-                genericArgumentClasses[i] = buildClass(_package, (ClassOrInterfaceType) ((ReferenceType) typeArgs.get(i)).getType(), ((ReferenceType) typeArgs.get(i)).getArrayCount());
+            for (int i = 0; i < typeArgs.size(); i++) {
+                final Type type = typeArgs.get(i);
+
+                final JClass resolvedClass;
+                if (type instanceof WildcardType) {
+                    final WildcardType wildcardType = (WildcardType) type;
+                    if (wildcardType.getSuper() != null) {
+                        throw new IllegalArgumentException("\"? super \" declaration is not yet supported");
+                    } else if (wildcardType.getExtends() != null) {
+                        resolvedClass = buildClass(_package, (ClassOrInterfaceType) wildcardType.getExtends().getType(), 0).wildcard();
+                    } else {
+                        resolvedClass = _package.owner().ref(Object.class).wildcard();
+                    }
+                } else {
+                    final ReferenceType referenceType = (ReferenceType) type;
+                    resolvedClass = buildClass(_package, (ClassOrInterfaceType) referenceType.getType(), referenceType.getArrayCount());
+                }
+
+                genericArgumentClasses[i] = resolvedClass;
             }
 
             _class = _class.narrow(genericArgumentClasses);

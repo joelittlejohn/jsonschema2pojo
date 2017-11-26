@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -94,8 +95,36 @@ public class GenericTypeIT {
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
 
         Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
-        assertThat(typeArguments[0], is(equalTo((Type)String.class)));
-        assertThat(typeArguments[1], is(equalTo((Type)String[][].class)));
+        assertThat(typeArguments[0], is(equalTo((Type) String.class)));
+        assertThat(typeArguments[1], is(equalTo((Type) String[][].class)));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void genericTypeCanBeWildcard() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+
+        Method getterMethod = classWithGenericTypes.getMethod("getE");
+        assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+
+        Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
+        assertThat(typeArguments, arrayContaining(is(equalTo((Type) String.class)), is(instanceOf(WildcardType.class))));
+        assertThat(((WildcardType) typeArguments[1]).getUpperBounds(), arrayContaining(is((Type) Object.class)));
+        assertThat(((WildcardType) typeArguments[1]).getLowerBounds(), emptyArray());
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void genericTypeCanBeExtendsWildcard() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+
+        Method getterMethod = classWithGenericTypes.getMethod("getF");
+        assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
+        assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
+
+        Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
+        assertThat(typeArguments, arrayContaining(is(equalTo((Type) String.class)), is(instanceOf(WildcardType.class))));
+        assertThat(((WildcardType) typeArguments[1]).getUpperBounds(), arrayContaining(is((Type) Number.class)));
+        assertThat(((WildcardType) typeArguments[1]).getLowerBounds(), emptyArray());
     }
 
 }
