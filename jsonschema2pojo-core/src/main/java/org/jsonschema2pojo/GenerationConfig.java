@@ -287,14 +287,6 @@ public interface GenerationConfig {
     boolean isUseJodaLocalTimes();
 
     /**
-     * Gets the 'useCommonsLang3' configuration option.
-     *
-     * @return Whether to use commons-lang 3.x imports instead of commons-lang
-     *         2.x imports when adding equals, hashCode and toString methods.
-     */
-    boolean isUseCommonsLang3();
-
-    /**
      * Gets the 'parcelable' configuration option.
      *
      * @return Whether to make the generated types 'parcelable' (for Android

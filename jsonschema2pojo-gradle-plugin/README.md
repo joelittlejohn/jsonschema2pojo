@@ -33,8 +33,6 @@ repositories {
 }
 
 dependencies {
-  // Required if generating equals, hashCode, or toString methods
-  compile 'commons-lang:commons-lang:2.6'
   // Required if generating JSR-303 annotations
   compile 'javax.validation:validation-api:1.1.0.CR2'
   // Required if generating Jackson 2 annotations
@@ -152,10 +150,6 @@ jsonSchema2Pojo {
   formatDateTimes = true
   formatDates = true
   formatTimes = true
-    
-  // Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, 
-  // hashCode and toString methods.
-  useCommonsLang3 = false
   
   // Whether to initialize Set and List fields as empty collections, or leave them as null.
   initializeCollections = true

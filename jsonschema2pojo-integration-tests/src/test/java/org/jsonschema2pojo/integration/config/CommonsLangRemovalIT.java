@@ -27,28 +27,17 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class CommonsLang3IT {
+public class CommonsLangRemovalIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void hashCodeAndEqualsUseCommonsLang2ByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void hashCodeAndEqualsDontUseCommonsLang() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example");
 
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang3.")));
-        assertThat(generatedOutputDirectory, containsText("org.apache.commons.lang."));
-
-    }
-
-    @Test
-    public void hashCodeAndEqualsUseCommonsLang3() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-
-        File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example",
-                config("useCommonsLang3", true));
-
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang.")));
-        assertThat(generatedOutputDirectory, containsText("org.apache.commons.lang3."));
 
     }
 

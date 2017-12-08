@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-  compile 'commons-lang:commons-lang:2.6'
   compile 'javax.validation:validation-api:1.1.0.CR2'
   compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
 

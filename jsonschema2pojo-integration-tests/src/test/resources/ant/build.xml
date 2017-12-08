@@ -40,7 +40,6 @@
                          useJodaDates="true"
                          useJodaLocalDates="true"
                          useJodaLocalTimes="true"
-                         useCommonsLang3="true"
                          parcelable="true"
                          initializeCollections="false">
             <classpath>
