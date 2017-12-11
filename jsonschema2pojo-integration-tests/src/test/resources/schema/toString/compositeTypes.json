@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "mapField": {
+      "type": "object",
+      "javaType" : "java.util.Map<String,com.example.IntPair>"
+    },
+    "objectField": {
+      "$ref": "intPair.json"
+    },
+    "arrayField": {
+      "type": "array",
+      "items": {
+        "$ref": "intPair.json"
+      }
+    },
+    "uniqueArrayField": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "intPair.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}
