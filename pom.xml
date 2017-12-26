@@ -55,6 +55,7 @@
         <gson.version>2.5</gson.version>
         <moshi.version>1.5.0</moshi.version>
         <jackson2x.version>2.9.1</jackson2x.version>
+        <scala.version>2.11.6</scala.version>
     </properties>
 
     <build>
@@ -331,7 +332,12 @@
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.11.6</version>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-compiler</artifactId>
+                <version>${scala.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.codemodel</groupId>
