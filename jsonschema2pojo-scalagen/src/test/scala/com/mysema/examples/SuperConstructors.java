@@ -1,6 +1,6 @@
 package com.mysema.examples;
 
-public class SuperConstructors extends SuperClass {
+public class SuperConstructors extends SuperConstructorsSuperClass {
     
     public SuperConstructors() {
         this("first", "last");
@@ -12,8 +12,8 @@ public class SuperConstructors extends SuperClass {
 
 }
 
-class SuperClass {
+class SuperConstructorsSuperClass {
     
-    public SuperClass(String first) {
+    public SuperConstructorsSuperClass(String first) {
     }
 }
