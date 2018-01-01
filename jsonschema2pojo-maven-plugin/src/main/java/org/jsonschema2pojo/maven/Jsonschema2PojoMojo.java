@@ -790,6 +790,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             project.addCompileSourceRoot(outputDirectory.getPath());
         }
 
+        if (useCommonsLang3) {
+            getLog().warn("useCommonsLang3 is deprecated. Please remove it from your config.");
+        }
+
         try {
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {
@@ -952,7 +956,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return useJodaLocalTimes;
     }
 
-    @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }

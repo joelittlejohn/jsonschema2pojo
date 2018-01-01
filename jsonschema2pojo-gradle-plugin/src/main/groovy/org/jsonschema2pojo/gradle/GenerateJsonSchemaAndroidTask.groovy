@@ -49,6 +49,10 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
     def configuration = project.jsonSchema2Pojo
     configuration.targetDirectory = outputDir
 
+    if (Boolean.TRUE.equals(configuration.properties.get("useCommonsLang3"))) {
+      logger.warn 'useCommonsLang3 is deprecated. Please remove it from your config.'
+    }
+
     logger.info 'Using this configuration:\n{}', configuration
     Jsonschema2Pojo.generate(configuration)
   }

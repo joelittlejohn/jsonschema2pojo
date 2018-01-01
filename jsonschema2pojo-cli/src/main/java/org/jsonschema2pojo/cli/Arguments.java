@@ -138,7 +138,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-dt", "--date-class" }, description = "Specify date class")
     private String dateType;
 
-    @Parameter(names = { "-c3", "--commons-lang3" }, description = "Whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods.")
+    @Parameter(names = { "-c3", "--commons-lang3" }, description = "Deprecated. Please remove it from your command-line arguments.")
     private boolean useCommonsLang3 = false;
 
     @Parameter(names = { "-pl", "--parcelable" }, description = "**EXPERIMENTAL** Whether to make the generated types 'parcelable' (for Android development).")
@@ -364,7 +364,6 @@ public class Arguments implements GenerationConfig {
         return useJodaLocalTimes;
     }
 
-    @Override
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }

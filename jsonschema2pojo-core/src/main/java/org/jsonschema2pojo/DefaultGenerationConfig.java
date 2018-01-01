@@ -210,14 +210,6 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isUseCommonsLang3() {
-        return false;
-    }
-
-    /**
-     * @return <code>false</code>
-     */
-    @Override
     public boolean isParcelable() {
         return false;
     }

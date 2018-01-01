@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
@@ -117,8 +118,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean useJodaLocalDates = false;
 
     private boolean useJodaLocalTimes = false;
-
-    private boolean useCommonsLang3 = false;
 
     private boolean parcelable = false;
 
@@ -600,12 +599,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'useCommonsLang3' property of this class
      *
      * @param useCommonsLang3
-     *            Whether to use commons-lang 3.x imports instead of
-     *            commons-lang 2.x imports when adding equals, hashCode and
-     *            toString methods.
      */
     public void setUseCommonsLang3(boolean useCommonsLang3) {
-        this.useCommonsLang3 = useCommonsLang3;
+        super.log("useCommonsLang3 is deprecated. Please remove it from your config.", Project.MSG_WARN);
     }
 
     /**
@@ -1007,11 +1003,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJodaLocalTimes() {
         return useJodaLocalTimes;
-    }
-
-    @Override
-    public boolean isUseCommonsLang3() {
-        return useCommonsLang3;
     }
 
     @Override

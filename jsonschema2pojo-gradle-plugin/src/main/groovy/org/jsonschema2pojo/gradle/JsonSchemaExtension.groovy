@@ -225,7 +225,6 @@ public class JsonSchemaExtension implements GenerationConfig {
        |dateTimeType = ${dateTimeType}
        |dateType = ${dateType}
        |timeType = ${timeType}
-       |useCommonsLang3 = ${useCommonsLang3}
        |parcelable = ${parcelable}
        |serializable = ${serializable}
        |initializeCollections = ${initializeCollections}

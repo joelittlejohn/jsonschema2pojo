@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "javaType": "com.example.IntPair",
+  "properties": {
+    "l": {
+      "type": "integer"
+    },
+    "r": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false
+}

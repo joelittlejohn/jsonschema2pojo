@@ -25,12 +25,16 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
@@ -386,22 +390,105 @@ public class ObjectRule implements Rule<JPackage, JType> {
         Set<String> excludes = new HashSet<String>(Arrays.asList(ruleFactory.getGenerationConfig().getToStringExcludes()));
 
         JBlock body = toString.body();
-        Class<?> toStringBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.ToStringBuilder.class : org.apache.commons.lang.builder.ToStringBuilder.class;
-        JClass toStringBuilderClass = jclass.owner().ref(toStringBuilder);
-        JInvocation toStringBuilderInvocation = JExpr._new(toStringBuilderClass).arg(JExpr._this());
 
+        // The following toString implementation roughly matches the commons ToStringBuilder for
+        // backward compatibility
+        JClass stringBuilderClass = jclass.owner().ref(StringBuilder.class);
+        JVar sb = body.decl(stringBuilderClass, "sb", JExpr._new(stringBuilderClass));
+
+        // Write the header, e.g.: example.domain.MyClass@85e382a7[
+        body.add(sb
+                .invoke("append").arg(jclass.dotclass().invoke("getName"))
+                .invoke("append").arg(JExpr.lit('@'))
+                .invoke("append").arg(
+                        jclass.owner().ref(Integer.class).staticInvoke("toHexString").arg(
+                                jclass.owner().ref(System.class).staticInvoke("identityHashCode").arg(JExpr._this())))
+                .invoke("append").arg(JExpr.lit('[')));
+
+        // If this has a parent class, include its toString()
         if (!jclass._extends().fullName().equals(Object.class.getName())) {
-            toStringBuilderInvocation = toStringBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("toString"));
+            JVar baseLength = body.decl(jclass.owner().INT, "baseLength", sb.invoke("length"));
+            JVar superString = body.decl(jclass.owner().ref(String.class), "superString", JExpr._super().invoke("toString"));
+
+            JBlock superToStringBlock = body._if(superString.ne(JExpr._null()))._then();
+
+            // If super.toString() is in the Clazz@2ee6529d[field=10] format, extract the fields
+            // from the wrapper
+            JVar contentStart = superToStringBlock.decl(jclass.owner().INT, "contentStart",
+                    superString.invoke("indexOf").arg(JExpr.lit('[')));
+            JVar contentEnd = superToStringBlock.decl(jclass.owner().INT, "contentEnd",
+                    superString.invoke("lastIndexOf").arg(JExpr.lit(']')));
+
+            JConditional superToStringInnerConditional = superToStringBlock._if(
+                    contentStart.gte(JExpr.lit(0)).cand(contentEnd.gt(contentStart)));
+
+            superToStringInnerConditional._then().add(
+                    sb.invoke("append")
+                            .arg(superString)
+                            .arg(contentStart.plus(JExpr.lit(1)))
+                            .arg(contentEnd));
+
+            // Otherwise, just append super.toString()
+            superToStringInnerConditional._else().add(sb.invoke("append").arg(superString));
+
+            // Append a comma if needed
+            body._if(sb.invoke("length").gt(baseLength))
+                    ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
+        // For each included instance field, add to the StringBuilder in the field=value format
         for (JFieldVar fieldVar : fields.values()) {
             if (excludes.contains(fieldVar.name()) || (fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
                 continue;
             }
-            toStringBuilderInvocation = toStringBuilderInvocation.invoke("append").arg(fieldVar.name()).arg(fieldVar);
+
+            body.add(sb.invoke("append").arg(fieldVar.name()));
+            body.add(sb.invoke("append").arg(JExpr.lit('=')));
+
+            if (fieldVar.type().isPrimitive()) {
+                body.add(sb.invoke("append").arg(JExpr.refthis(fieldVar.name())));
+            } else if (fieldVar.type().isArray()) {
+                // Only primitive arrays are supported
+                if (!fieldVar.type().elementType().isPrimitive()) {
+                    throw new UnsupportedOperationException("Only primitive arrays are supported");
+                }
+
+                // Leverage Arrays.toString()
+                body.add(sb.invoke("append")
+                        .arg(JOp.cond(
+                                JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
+                                JExpr.lit("<null>"),
+                                jclass.owner().ref(Arrays.class).staticInvoke("toString")
+                                        .arg(JExpr.refthis(fieldVar.name()))
+                                        .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
+                                        .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
+                                        .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
+            } else {
+                body.add(sb.invoke("append")
+                        .arg(JOp.cond(
+                                JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
+                                JExpr.lit("<null>"),
+                                JExpr.refthis(fieldVar.name()))));
+            }
+
+            body.add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
-        body._return(toStringBuilderInvocation.invoke("toString"));
+        // Add the trailer
+        JConditional trailerConditional = body._if(
+                sb.invoke("charAt").arg(sb.invoke("length").minus(JExpr.lit(1)))
+                        .eq(JExpr.lit(',')));
+
+        trailerConditional._then().add(
+                sb.invoke("setCharAt")
+                        .arg(sb.invoke("length").minus(JExpr.lit(1)))
+                        .arg(JExpr.lit(']')));
+
+        trailerConditional._else().add(
+                sb.invoke("append").arg(JExpr.lit(']')));
+
+
+        body._return(sb.invoke("toString"));
 
         toString.annotate(Override.class);
     }
@@ -410,26 +497,54 @@ public class ObjectRule implements Rule<JPackage, JType> {
         Map<String, JFieldVar> fields = removeFieldsExcludedFromEqualsAndHashCode(jclass.fields(), node);
 
         JMethod hashCode = jclass.method(JMod.PUBLIC, int.class, "hashCode");
-
-        Class<?> hashCodeBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.HashCodeBuilder.class : org.apache.commons.lang.builder.HashCodeBuilder.class;
-
         JBlock body = hashCode.body();
-        JClass hashCodeBuilderClass = jclass.owner().ref(hashCodeBuilder);
-        JInvocation hashCodeBuilderInvocation = JExpr._new(hashCodeBuilderClass);
+        JVar result = body.decl(jclass.owner().INT, "result", JExpr.lit(1));
 
-        if (!jclass._extends().fullName().equals(Object.class.getName())) {
-            hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("hashCode"));
-        }
-
+        // Incorporate each non-excluded field in the hashCode calculation
         for (JFieldVar fieldVar : fields.values()) {
             if ((fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
                 continue;
             }
-            hashCodeBuilderInvocation = hashCodeBuilderInvocation.invoke("append").arg(fieldVar);
+
+            JFieldRef fieldRef = JExpr.refthis(fieldVar.name());
+
+            JExpression fieldHash;
+            if (fieldVar.type().isPrimitive()) {
+                if ("long".equals(fieldVar.type().name())) {
+                    fieldHash = JExpr.cast(jclass.owner().INT, fieldRef.xor(fieldRef.shrz(JExpr.lit(32))));
+                } else if ("boolean".equals(fieldVar.type().name())) {
+                    fieldHash = JOp.cond(fieldRef, JExpr.lit(1), JExpr.lit(0));
+                } else if ("int".equals(fieldVar.type().name())) {
+                    fieldHash = fieldRef;
+                } else if ("double".equals(fieldVar.type().name())) {
+                    JClass doubleClass = jclass.owner().ref(Double.class);
+                    JExpression longField = doubleClass.staticInvoke("doubleToLongBits").arg(fieldRef);
+                    fieldHash = JExpr.cast(jclass.owner().INT,
+                            longField.xor(longField.shrz(JExpr.lit(32))));
+                } else if ("float".equals(fieldVar.type().name())) {
+                    fieldHash = jclass.owner().ref(Float.class).staticInvoke("floatToIntBits").arg(fieldRef);
+                } else {
+                    fieldHash = JExpr.cast(jclass.owner().INT, fieldRef);
+                }
+            } else if (fieldVar.type().isArray()) {
+                if (!fieldVar.type().elementType().isPrimitive()) {
+                    throw new UnsupportedOperationException("Only primitive arrays are supported");
+                }
+
+                fieldHash = jclass.owner().ref(Arrays.class).staticInvoke("hashCode").arg(fieldRef);
+            } else {
+                fieldHash = JOp.cond(fieldRef.eq(JExpr._null()), JExpr.lit(0), fieldRef.invoke("hashCode"));
+            }
+
+            body.assign(result, result.mul(JExpr.lit(31)).plus(fieldHash));
         }
 
-        body._return(hashCodeBuilderInvocation.invoke("toHashCode"));
+        // Add super.hashCode()
+        if (!jclass._extends().fullName().equals(Object.class.getName())) {
+            body.assign(result, result.mul(JExpr.lit(31)).plus(JExpr._super().invoke("hashCode")));
+        }
 
+        body._return(result);
         hashCode.annotate(Override.class);
     }
 
@@ -562,35 +677,59 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JMethod equals = jclass.method(JMod.PUBLIC, boolean.class, "equals");
         JVar otherObject = equals.param(Object.class, "other");
 
-        Class<?> equalsBuilder = ruleFactory.getGenerationConfig().isUseCommonsLang3() ? org.apache.commons.lang3.builder.EqualsBuilder.class : org.apache.commons.lang.builder.EqualsBuilder.class;
-
         JBlock body = equals.body();
 
         body._if(otherObject.eq(JExpr._this()))._then()._return(JExpr.TRUE);
         body._if(otherObject._instanceof(jclass).eq(JExpr.FALSE))._then()._return(JExpr.FALSE);
 
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
-        JClass equalsBuilderClass = jclass.owner().ref(equalsBuilder);
-        JInvocation equalsBuilderInvocation = JExpr._new(equalsBuilderClass);
 
+        JExpression result = JExpr.lit(true);
+
+        // First, check super.equals(other)
         if (!jclass._extends().fullName().equals(Object.class.getName())) {
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("appendSuper").arg(JExpr._super().invoke("equals").arg(otherObject));
+            result = result.cand(JExpr._super().invoke("equals").arg(rhsVar));
         }
 
+        // Chain the results of checking all other fields
         for (JFieldVar fieldVar : fields.values()) {
             if ((fieldVar.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
                 continue;
             }
-            equalsBuilderInvocation = equalsBuilderInvocation.invoke("append")
-                    .arg(fieldVar)
-                    .arg(rhsVar.ref(fieldVar.name()));
+
+            JFieldRef thisFieldRef = JExpr.refthis(fieldVar.name());
+            JFieldRef otherFieldRef = JExpr.ref(rhsVar, fieldVar.name());
+            JExpression fieldEquals;
+
+            if (fieldVar.type().isPrimitive()) {
+                if ("double".equals(fieldVar.type().name())) {
+                    JClass doubleClass = jclass.owner().ref(Double.class);
+                    fieldEquals = doubleClass.staticInvoke("doubleToLongBits").arg(thisFieldRef).eq(
+                            doubleClass.staticInvoke("doubleToLongBits").arg(otherFieldRef));
+                } else if ("float".equals(fieldVar.type().name())) {
+                    JClass floatClass = jclass.owner().ref(Float.class);
+                    fieldEquals = floatClass.staticInvoke("floatToIntBits").arg(thisFieldRef).eq(
+                            floatClass.staticInvoke("floatToIntBits").arg(otherFieldRef));
+                } else {
+                    fieldEquals = thisFieldRef.eq(otherFieldRef);
+                }
+            } else if (fieldVar.type().isArray()) {
+                if (!fieldVar.type().elementType().isPrimitive()) {
+                    throw new UnsupportedOperationException("Only primitive arrays are supported");
+                }
+
+                fieldEquals = jclass.owner().ref(Arrays.class).staticInvoke("equals").arg(thisFieldRef).arg(otherFieldRef);
+            } else {
+                fieldEquals = thisFieldRef.eq(otherFieldRef).cor(
+                        thisFieldRef.ne(JExpr._null())
+                                .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
+            }
+
+            // Chain the equality of this field with the previous comparisons
+            result = result.cand(fieldEquals);
         }
 
-        JInvocation reflectionEquals = jclass.owner().ref(equalsBuilder).staticInvoke("reflectionEquals");
-        reflectionEquals.arg(JExpr._this());
-        reflectionEquals.arg(otherObject);
-
-        body._return(equalsBuilderInvocation.invoke("isEquals"));
+        body._return(result);
 
         equals.annotate(Override.class);
     }

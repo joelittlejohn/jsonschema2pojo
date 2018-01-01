@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "grid": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

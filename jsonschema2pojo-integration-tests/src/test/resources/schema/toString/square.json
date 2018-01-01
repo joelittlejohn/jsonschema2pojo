@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "extends": {
+    "$ref": "quadrilateral.json"
+  },
+  "properties": {
+    "length": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false
+}
