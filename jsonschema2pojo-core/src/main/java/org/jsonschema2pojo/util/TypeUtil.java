@@ -41,7 +41,7 @@ public class TypeUtil {
 
             return buildClass(_package, c, 0);
         } catch (ParseException e) {
-            throw new GenerationException(e);
+            throw new GenerationException("Couldn't parse type: " + typeDefinition, e);
         }
     }
 
