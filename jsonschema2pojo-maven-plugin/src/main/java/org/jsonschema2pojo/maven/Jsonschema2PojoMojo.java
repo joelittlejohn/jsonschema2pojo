@@ -329,6 +329,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeJsr305Annotations = false;
 
     /**
+     * Whether to use {@link java.util.Optional} as return type for
+     * getters of non-required fields.
+     */
+     private boolean useOptionalForGetters = false;
+
+    /**
      * The type of input documents that will be read
      * <p>
      * Supported values:
@@ -925,6 +931,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
     }
+
+    @Override
+    public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
 
     @Override
     public SourceType getSourceType() {

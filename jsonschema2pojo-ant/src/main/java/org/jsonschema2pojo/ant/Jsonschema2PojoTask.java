@@ -105,6 +105,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr305Annotations = false;
 
+    private boolean useOptionalForGetters;
+
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
@@ -174,7 +176,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Language targetLanguage = Language.JAVA;
-    
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -513,6 +515,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeJsr305Annotations(boolean includeJsr305Annotations) {
         this.includeJsr305Annotations = includeJsr305Annotations;
+    }
+
+
+    /**
+     * Sets the 'useOptionalForGetters' property of this class
+     *
+     * @param useOptionalForGetters
+     *         Whether to use {@link java.util.Optional} as return type for
+     *         getters of non-required fields.
+     */
+    public void setUseOptionalForGetters(boolean useOptionalForGetters) {
+        this.useOptionalForGetters = useOptionalForGetters;
     }
 
     /**
@@ -950,6 +964,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
+    }
+
+    @Override
+    public boolean isUseOptionalForGetters() {
+        return useOptionalForGetters;
     }
 
     @Override

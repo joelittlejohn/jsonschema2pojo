@@ -227,6 +227,14 @@ public interface GenerationConfig {
     boolean isIncludeJsr305Annotations();
 
     /**
+     * Gets the 'useOptionalForGetters' configuration option.
+     *
+     * @return Whether to use {@link java.util.Optional} as return type for
+     *         getters of non-required fields.
+     */
+    boolean isUseOptionalForGetters();
+
+    /**
      * Gets the 'sourceType' configuration option.
      *
      * @return The type of input documents that will be read

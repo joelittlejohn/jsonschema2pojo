@@ -158,6 +158,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    @Override
+    public boolean isUseOptionalForGetters() { return false; }
+
     /**
      * @return {@link SourceType#JSONSCHEMA}
      */
