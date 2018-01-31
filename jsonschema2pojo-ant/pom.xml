@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>0.5.2-SNAPSHOT</version>
+        <version>1.0.0-alpha1</version>
     </parent>
 
     <artifactId>jsonschema2pojo-ant</artifactId>
