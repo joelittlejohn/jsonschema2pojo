@@ -16,11 +16,11 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
 public class RefFragmentPathDelimitersIT {
 
@@ -32,6 +32,6 @@ public class RefFragmentPathDelimitersIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nonStandardRef.json", "com.example",
                 config("refFragmentPathDelimiters", "#/"));
 
-        resultsClassLoader.loadClass("com.example.Foo");
+        resultsClassLoader.loadClass("com.example.NonStandardRef");
     }
 }

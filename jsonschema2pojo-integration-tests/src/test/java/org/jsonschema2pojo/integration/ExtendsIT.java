@@ -51,7 +51,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfA.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfAParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.A");
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
 
@@ -64,7 +64,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfAParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
 
@@ -105,7 +105,7 @@ public class ExtendsIT {
         Class subtype = resultsClassLoader.loadClass("com.example.Child");
         assertNotNull("no propertyOfChild field", subtype.getDeclaredField("propertyOfChild"));
 
-        Class supertype = resultsClassLoader.loadClass("com.example.ChildParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.Parent");
         assertNotNull("no propertyOfParent field", supertype.getDeclaredField("propertyOfParent"));
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
@@ -117,7 +117,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.B");
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
@@ -143,8 +143,8 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfB");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParent");
-        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBParentParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfB");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.B");
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
@@ -175,8 +175,8 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfBDifferentType.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentType");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentTypeParent");
-        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentTypeParentParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfB");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.B");
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
@@ -207,8 +207,8 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfC");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParent");
-        Class superSupertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfCParentParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfC");
+        Class superSupertype = resultsClassLoader.loadClass("com.example.C");
 
         assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class, Integer.class));
         assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, Boolean.class, Integer.class));
@@ -239,7 +239,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfAParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
 
         checkBuilderMethod(subtype, supertype, "withParent");
     }
@@ -250,7 +250,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("generateBuilders", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.B");
 
         checkBuilderMethod(type, supertype, "withParentProperty");
     }
@@ -261,7 +261,7 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfBWithNoProperties.json", "com.example", config("generateBuilders", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfBWithNoProperties");
-        Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfBWithNoPropertiesParent");
+        Class supertype = resultsClassLoader.loadClass("com.example.B");
 
         checkBuilderMethod(type, supertype, "withParentProperty");
     }

@@ -166,10 +166,15 @@ public class Jsonschema2Pojo {
         return factory.getAnnotator(factory.getAnnotator(config.getAnnotationStyle()), factory.getAnnotator(config.getCustomAnnotator()));
     }
 
-    private static String getNodeName(URL file, GenerationConfig config) {
+    public static String getNodeName(URL file, GenerationConfig config) {
+        return getNodeName(file.toString(), config);
+    }
+
+    public static String getNodeName(String filePath, GenerationConfig config) {
         try {
-            String fileName = FilenameUtils.getName(URLDecoder.decode(file.toString(), "UTF-8"));
-            String[] extensions = config.getFileExtensions();
+            String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, "UTF-8"));
+            String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
+            
             boolean extensionRemoved = false;
             for (int i = 0; i < extensions.length; i++) {
                 String extension = extensions[i];
@@ -190,8 +195,8 @@ public class Jsonschema2Pojo {
             }
             return fileName;
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", file.toString()), e);
+            throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", filePath), e);
         }
-
     }
+    
 }

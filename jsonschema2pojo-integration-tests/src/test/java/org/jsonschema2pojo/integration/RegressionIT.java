@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -30,6 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class RegressionIT {
+    
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test

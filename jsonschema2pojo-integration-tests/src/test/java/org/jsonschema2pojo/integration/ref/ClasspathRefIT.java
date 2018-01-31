@@ -44,7 +44,7 @@ public class ClasspathRefIT {
 
         Class<?> aClass = classpathRefsClass.getMethod("getPropertyClasspathRef").getReturnType();
 
-        assertThat(aClass.getName(), is("com.example.PropertyClasspathRef"));
+        assertThat(aClass.getName(), is("com.example.A"));
         assertThat(aClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPropertyOfA"))));
     }
 
@@ -53,7 +53,7 @@ public class ClasspathRefIT {
 
         Class<?> aClass = classpathRefsClass.getMethod("getPropertyResourceRef").getReturnType();
 
-        assertThat(aClass.getName(), is("com.example.PropertyResourceRef"));
+        assertThat(aClass.getName(), is("com.example.Title"));
         assertThat(aClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getTitle"))));
     }
 
@@ -62,7 +62,7 @@ public class ClasspathRefIT {
 
         Class<?> aClass = classpathRefsClass.getMethod("getPropertyJavaRef").getReturnType();
 
-        assertThat(aClass.getName(), is("com.example.PropertyJavaRef"));
+        assertThat(aClass.getName(), is("com.example.Description"));
         assertThat(aClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getDescription"))));
     }
 
@@ -71,12 +71,12 @@ public class ClasspathRefIT {
 
         Class<?> aClass = classpathRefsClass.getMethod("getTransitiveRelativeClasspathRef").getReturnType();
 
-        assertThat(aClass.getName(), is("com.example.TransitiveRelativeClasspathRef"));
+        assertThat(aClass.getName(), is("com.example.ClasspathRefs2"));
         assertThat(aClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getPropertyRelativeRef"))));
 
         Class<?> bClass = aClass.getMethod("getPropertyRelativeRef").getReturnType();
 
-        assertThat(bClass.getName(), is("com.example.PropertyRelativeRef"));
+        assertThat(bClass.getName(), is("com.example.ClasspathRefs3"));
         assertThat(bClass.getMethods(), hasItemInArray(hasProperty("name", equalTo("getTransitive"))));
 
     }

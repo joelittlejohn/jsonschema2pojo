@@ -63,11 +63,11 @@ public class SelfRefIT {
 
         Class<?> aClass = selfRefsClass.getMethod("getEmbeddedInSelf").getReturnType();
 
-        assertThat(aClass.getName(), is("com.example.EmbeddedInSelf"));
+        assertThat(aClass.getName(), is("com.example.Embedded"));
 
         Class<?> embedded2Class = aClass.getMethod("getEmbeddedProp").getReturnType();
 
-        assertThat(embedded2Class.getName(), is("com.example.EmbeddedProp"));
+        assertThat(embedded2Class.getName(), is("com.example.Embedded2"));
 
         Class<?> otherEmbeddedClass = embedded2Class.getMethod("getEmbeddedProp2").getReturnType();
 
