@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>1.0.0-alpha1</version>
+        <version>1.0.0-alpha2-SNAPSHOT</version>
     </parent>
 
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>

@@ -10,7 +10,7 @@
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>1.0.0-alpha1</version>
+    <version>1.0.0-alpha2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
