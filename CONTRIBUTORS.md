@@ -84,3 +84,9 @@
 * John Keeping
 * lstav
 * Wojciech Matuszewski
+* Dolan Halbrook
+* Holger Schmeisky
+* Stepan Kolesnik
+* David Ehrmann
+* Peter Major
+* Chris Laprun

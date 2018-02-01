@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-alpha1
+* Improve error message to include the bad type when javaType cannot be parsed ([#823](https://github.com/joelittlejohn/jsonschema2pojo/pull/823))
+* Replace commons-lang equals, hashCode, and toString with generated code ([#812](https://github.com/joelittlejohn/jsonschema2pojo/pull/812))
+* Add partial support for wildcards (? and ? extends...) in "javaType" declarations ([#810](https://github.com/joelittlejohn/jsonschema2pojo/pull/810))
+* Normalize/canonicalize relative source paths (and remove extra underscore classes that appear when using a relative source path) ([#792](https://github.com/joelittlejohn/jsonschema2pojo/pull/792))
+* Add useOptionalForGetters option for Java 8 java.util.Optional on getters ([#344](https://github.com/joelittlejohn/jsonschema2pojo/pull/344))
+* Wrong class name when using $ref in json schema. ([#164](https://github.com/joelittlejohn/jsonschema2pojo/issues/164))
+
 ## 0.5.1
 * Add Scala and YAML to the website ([#785](https://github.com/joelittlejohn/jsonschema2pojo/issues/785))
 
