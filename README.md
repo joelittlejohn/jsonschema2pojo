@@ -1,7 +1,6 @@
 # jsonschema2pojo [![Build Status](https://travis-ci.org/joelittlejohn/jsonschema2pojo.svg?branch=master)](https://travis-ci.org/joelittlejohn/jsonschema2pojo) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jsonschema2pojo/jsonschema2pojo/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.jsonschema2pojo%22)
 
-Current stable: **0.5.1**
-
+Current stable: **0.5.1**<br>
 Current unstable: **1.0.0-alpha1**
 
 
