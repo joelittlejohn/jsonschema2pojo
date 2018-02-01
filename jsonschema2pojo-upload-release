@@ -96,43 +96,47 @@ pushd $WORKING_DIR
     popd
 
     # clone wiki to update version references
-    git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
-    pushd wiki
+    if [[ ! -z $OLD_VERSION ]]; then
+	git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
+	pushd wiki
 
-        # replace any references to old version with new version
-        sed -i "s/$OLD_VERSION/$VERSION/g" *.md
+            # replace any references to old version with new version
+            sed -i "s/$OLD_VERSION/$VERSION/g" *.md
 
-        # commit wiki updates and push to main repo
-        git add .
-        git commit -m "[release] updating wiki links and examples to $VERSION"
-        git push origin master
+            # commit wiki updates and push to main repo
+            git add .
+            git commit -m "[release] updating wiki links and examples to $VERSION"
+            git push origin master
 
-        # update example
-        wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/org/jsonschema2pojo/example/Example.java
-        sed '/BEGIN EXAMPLE/q' Getting-Started.md > Getting-Started.md.new
-        echo '```java' >> Getting-Started.md.new
-        sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> Getting-Started.md.new
-        echo '```' >> Getting-Started.md.new
-        sed -n '/END EXAMPLE/,$p' Getting-Started.md >> Getting-Started.md.new
-        mv Getting-Started.md.new Getting-Started.md
-        rm Example.java
+            # update example
+            wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-core/src/test/java/org/jsonschema2pojo/example/Example.java
+            sed '/BEGIN EXAMPLE/q' Getting-Started.md > Getting-Started.md.new
+            echo '```java' >> Getting-Started.md.new
+            sed '1,/BEGIN EXAMPLE/d;/END EXAMPLE/,$d;s/  //g' Example.java >> Getting-Started.md.new
+            echo '```' >> Getting-Started.md.new
+            sed -n '/END EXAMPLE/,$p' Getting-Started.md >> Getting-Started.md.new
+            mv Getting-Started.md.new Getting-Started.md
+            rm Example.java
 
-        # commit wiki updates and push
-        git add .
-        git commit -m "[release] updating example code to $VERSION" || true
-        git push origin master || true
+            # commit wiki updates and push
+            git add .
+            git commit -m "[release] updating example code to $VERSION" || true
+            git push origin master || true
 
-    popd
+	popd
+    fi
 
     # clone main repo to update version references in the README.md
-    git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
-    pushd main
-        sed -i "s/$OLD_VERSION/$VERSION/g" README.md
+    if [[ ! -z $OLD_VERSION ]]; then
+	git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
+	pushd main
+            sed -i "s/$OLD_VERSION/$VERSION/g" README.md
 
-        git add .
-        git commit -m "[release] updating README.md for $VERSION"
-        git push origin master
-    popd
+            git add .
+            git commit -m "[release] updating README.md for $VERSION"
+            git push origin master
+	popd
+    fi
 
     # upload to github
     RELEASE=$(curl -H "Authorization: token $GITHUB_TOKEN" -sX POST \
