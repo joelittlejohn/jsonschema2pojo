@@ -2,7 +2,7 @@
 
 Current stable: **0.5.1**<br>
 Current unstable: **1.0.0-alpha1**
-
+Next unstable: [**1.0.0-alpha2**](https://github.com/joelittlejohn/jsonschema2pojo/issues?utf8=%E2%9C%93&q=+milestone%3A1.0.0-alpha2+)
 
 _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and can annotate those types for data-binding with Jackson 1.x, Jackson 2.x or Gson.
 
