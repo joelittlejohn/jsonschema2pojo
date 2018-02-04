@@ -16,27 +16,28 @@
 
 package org.jsonschema2pojo.util;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MakeUniqueClassName {
 
+    private static final Pattern UNIQUE_NAMING_PATTERN = Pattern.compile("(^.+__)(\\d+)$");
+    
     /**
      * When the class name is not unique we will use two underscore '__' and a digit representing the number of time
      * this class was found
      */
     public static String makeUnique(String className) {
-        String returnClassName = className;
-        // Last character is a digit and there is 2 underscore in the className
-        if (Character.isDigit(className.charAt(className.length() - 1)) && StringUtils.contains(className, "__")) {
-            // get the number
-            String strNumber = className.substring(StringUtils.indexOf(className, "__") + 2);
-            Integer number = Integer.parseInt(strNumber);
-            // replace the number in the string with +1
-            number = number + 1;
-            returnClassName = returnClassName.substring(0, StringUtils.indexOf(returnClassName, "__") + 2) + number;
+        
+        final Matcher m = UNIQUE_NAMING_PATTERN.matcher(className);
+        
+        if (m.matches()) {
+            // get the current number
+            final Integer number = Integer.parseInt(m.group(2));
+            // replace the current number in the string with the number +1
+            return m.group(1) + (number + 1);
         } else {
-            returnClassName = returnClassName + "__1";
+            return className + "__1";
         }
-        return returnClassName;
     }
 }
