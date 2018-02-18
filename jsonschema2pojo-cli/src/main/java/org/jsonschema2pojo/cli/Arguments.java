@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.cli;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -430,7 +430,11 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isIncludeAccessors() {
-        return !disableAccessors;
+        if (disableGetters || disableSetters) {
+            return false;
+        } else {
+            return !disableAccessors;
+        }
     }
 
     @Override

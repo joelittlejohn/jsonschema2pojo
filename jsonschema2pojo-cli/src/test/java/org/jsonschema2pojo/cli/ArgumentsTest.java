@@ -51,7 +51,7 @@ public class ArgumentsTest {
     @Test
     public void parseRecognisesValidArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "--source", "/home/source", "--target", "/home/target", "--package", "mypackage",
+                "--source", "/home/source", "--target", "/home/target", "--disable-getters", "--package", "mypackage",
                 "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors",
                 "--include-dynamic-getters", "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS"
         });
@@ -64,6 +64,9 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
+        assertThat(args.isIncludeAccessors(), is(false));
+        assertThat(args.isIncludeGetters(), is(false));
+        assertThat(args.isIncludeSetters(), is(true));
         assertThat(args.isIncludeDynamicAccessors(), is(true));
         assertThat(args.isIncludeDynamicGetters(), is(true));
         assertThat(args.isIncludeDynamicSetters(), is(true));
@@ -115,6 +118,9 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(false));
         assertThat(args.isIncludeHashcodeAndEquals(), is(true));
         assertThat(args.isIncludeToString(), is(true));
+        assertThat(args.isIncludeAccessors(), is(true));
+        assertThat(args.isIncludeGetters(), is(true));
+        assertThat(args.isIncludeSetters(), is(true));
         assertThat(args.isIncludeDynamicAccessors(), is(false));
         assertThat(args.isIncludeDynamicGetters(), is(false));
         assertThat(args.isIncludeDynamicSetters(), is(false));
