@@ -54,7 +54,12 @@ public class NameHelper {
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
 
         if (containsAny(name, wordDelimiters)) {
-            String capitalizedNodeName = WordUtils.capitalizeFully(name, wordDelimiters);
+            String capitalizedNodeName;
+            if (areAllWordsUpperCaseBesideDelimiters(name, wordDelimiters)) {
+                capitalizedNodeName = WordUtils.capitalizeFully(name, wordDelimiters);
+            } else {
+                capitalizedNodeName = WordUtils.capitalize(name, wordDelimiters);
+            }
             name = name.charAt(0) + capitalizedNodeName.substring(1);
 
             for (char c : wordDelimiters) {
@@ -63,6 +68,16 @@ public class NameHelper {
         }
 
         return name;
+    }
+
+    private boolean areAllWordsUpperCaseBesideDelimiters(String words, char... delimiters) {
+        char[] wordChars = words.toCharArray();
+        for (char c : wordChars) {
+            if (!containsAny("" + c, delimiters) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String makeLowerCamelCase(String name) {

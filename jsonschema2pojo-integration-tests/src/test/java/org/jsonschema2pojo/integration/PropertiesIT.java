@@ -175,4 +175,29 @@ public class PropertiesIT {
         assertThat(jsonified.has(" PropertyThreeWithSpace"), is(true));
         assertThat(jsonified.has("propertyFour"), is(true));
     }
+
+    @Test
+    public void propertyNamesAreAllUpperCasesAndWithUnderScores() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesAreWithAllWordsUpperCases.json", "com.example");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.AllWordsUpperCase");
+
+        Object instance = generatedType.newInstance();
+
+        new PropertyDescriptor("propertyOne", generatedType).getWriteMethod().invoke(instance, "1");
+        new PropertyDescriptor("propertyOneTwo", generatedType).getWriteMethod().invoke(instance, 2);
+        new PropertyDescriptor("propertyOneTwoThree", generatedType).getWriteMethod().invoke(instance, false);
+        new PropertyDescriptor("pROPERTYONETWOTHREEFour", generatedType).getWriteMethod().invoke(instance, "4");
+
+        JsonNode jsonified = mapper.valueToTree(instance);
+
+        assertNotNull(generatedType.getDeclaredField("propertyOne"));
+        assertNotNull(generatedType.getDeclaredField("propertyOneTwo"));
+        assertNotNull(generatedType.getDeclaredField("propertyOneTwoThree"));
+        assertNotNull(generatedType.getDeclaredField("pROPERTYONETWOTHREEFour"));
+
+        assertThat(jsonified.has("PROPERTY_ONE"), is(true));
+        assertThat(jsonified.has("PROPERTY_ONE_TWO"), is(true));
+        assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE"), is(true));
+        assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE_four"), is(true));
+    }
 }

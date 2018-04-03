@@ -1,0 +1,18 @@
+{
+  "type" : "object",
+  "javaType" : "com.example.AllWordsUpperCase",
+  "properties" : {
+    "PROPERTY_ONE" : {
+      "type" : "string"
+    },
+    "PROPERTY_ONE_TWO" : {
+      "type" : "integer"
+    },
+    "PROPERTY_ONE_TWO_THREE" : {
+      "type" : "boolean"
+    },
+    "PROPERTY_ONE_TWO_THREE_four" : {
+      "type" : "string"
+    }
+  }
+}
