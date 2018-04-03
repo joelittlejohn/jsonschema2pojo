@@ -54,7 +54,7 @@ public class NameHelper {
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
 
         if (containsAny(name, wordDelimiters)) {
-            String capitalizedNodeName = WordUtils.capitalize(name, wordDelimiters);
+            String capitalizedNodeName = WordUtils.capitalizeFully(name, wordDelimiters);
             name = name.charAt(0) + capitalizedNodeName.substring(1);
 
             for (char c : wordDelimiters) {
@@ -104,7 +104,7 @@ public class NameHelper {
      */
     public String getSetterName(String propertyName, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
-        
+
         String prefix = "set";
 
         String setterName;
@@ -147,7 +147,7 @@ public class NameHelper {
      */
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
-        
+
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
 
         String getterName;
@@ -163,7 +163,7 @@ public class NameHelper {
 
         return getterName;
     }
-    
+
     private String getPropertyNameForAccessor(String jsonPropertyName, JsonNode node) {
         jsonPropertyName = getFieldName(jsonPropertyName, node);
         jsonPropertyName = replaceIllegalCharacters(jsonPropertyName);
