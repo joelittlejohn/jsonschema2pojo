@@ -65,6 +65,8 @@ public class NameHelper {
             for (char c : wordDelimiters) {
                 name = remove(name, c);
             }
+        } else if (areAllWordsUpperCaseBesideDelimiters(name, wordDelimiters)) {
+            name = WordUtils.capitalizeFully(name, wordDelimiters);
         }
 
         return name;
