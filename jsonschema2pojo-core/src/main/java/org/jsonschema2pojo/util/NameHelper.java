@@ -54,15 +54,32 @@ public class NameHelper {
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
 
         if (containsAny(name, wordDelimiters)) {
-            String capitalizedNodeName = WordUtils.capitalize(name, wordDelimiters);
+            String capitalizedNodeName;
+            if (areAllWordsUpperCaseBesideDelimiters(name, wordDelimiters)) {
+                capitalizedNodeName = WordUtils.capitalizeFully(name, wordDelimiters);
+            } else {
+                capitalizedNodeName = WordUtils.capitalize(name, wordDelimiters);
+            }
             name = name.charAt(0) + capitalizedNodeName.substring(1);
 
             for (char c : wordDelimiters) {
                 name = remove(name, c);
             }
+        } else if (areAllWordsUpperCaseBesideDelimiters(name, wordDelimiters)) {
+            name = WordUtils.capitalizeFully(name, wordDelimiters);
         }
 
         return name;
+    }
+
+    private boolean areAllWordsUpperCaseBesideDelimiters(String words, char... delimiters) {
+        char[] wordChars = words.toCharArray();
+        for (char c : wordChars) {
+            if (!containsAny("" + c, delimiters) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String makeLowerCamelCase(String name) {
@@ -104,7 +121,7 @@ public class NameHelper {
      */
     public String getSetterName(String propertyName, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
-        
+
         String prefix = "set";
 
         String setterName;
@@ -147,7 +164,7 @@ public class NameHelper {
      */
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
-        
+
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
 
         String getterName;
@@ -163,7 +180,7 @@ public class NameHelper {
 
         return getterName;
     }
-    
+
     private String getPropertyNameForAccessor(String jsonPropertyName, JsonNode node) {
         jsonPropertyName = getFieldName(jsonPropertyName, node);
         jsonPropertyName = replaceIllegalCharacters(jsonPropertyName);

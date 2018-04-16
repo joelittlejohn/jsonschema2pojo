@@ -37,14 +37,14 @@ public class NameHelperTest {
         assertThat(nameHelper.getGetterName("foo", new JCodeModel().BOOLEAN, NODE), is("isFoo"));
         assertThat(nameHelper.getGetterName("foo", new JCodeModel().INT, NODE), is("getFoo"));
         assertThat(nameHelper.getGetterName("oAuth2State", new JCodeModel().INT, NODE), is("getoAuth2State"));
-        assertThat(nameHelper.getGetterName("URL", new JCodeModel().INT, NODE), is("getURL"));
+        assertThat(nameHelper.getGetterName("URL", new JCodeModel().INT, NODE), is("getUrl"));
     }
 
     @Test
     public void testSetterNamedCorrectly() {
         assertThat(nameHelper.getSetterName("foo", NODE), is("setFoo"));
         assertThat(nameHelper.getSetterName("oAuth2State", NODE), is("setoAuth2State"));
-        assertThat(nameHelper.getSetterName("URL", NODE), is("setURL"));
+        assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
     }
 
 }
