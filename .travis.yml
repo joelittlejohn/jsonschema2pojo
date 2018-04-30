@@ -3,3 +3,6 @@ script: "mvn verify"
 jdk:
   - openjdk7
   - openjdk8
+cache:
+  directories:
+    - "$HOME/.m2"
