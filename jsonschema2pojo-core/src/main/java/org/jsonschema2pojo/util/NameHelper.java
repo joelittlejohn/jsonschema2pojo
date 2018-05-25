@@ -112,6 +112,23 @@ public class NameHelper {
         return jsonFieldName;
     }
 
+    private String getMethodName(String prefix, String propertyName, JsonNode node) {
+        propertyName = getPropertyNameForAccessor(propertyName, node);
+
+        String methodName;
+        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+            methodName = prefix + propertyName;
+        } else {
+            methodName = prefix + capitalize(propertyName);
+        }
+
+        if (methodName.equals(prefix + "Class")) {
+            methodName = prefix + "Class_";
+        }
+
+        return methodName;
+    }
+
     /**
      * Generate setter method name for property.
      *
@@ -120,22 +137,18 @@ public class NameHelper {
      * @return
      */
     public String getSetterName(String propertyName, JsonNode node) {
-        propertyName = getPropertyNameForAccessor(propertyName, node);
+        return getMethodName("set", propertyName, node);
+    }
 
-        String prefix = "set";
-
-        String setterName;
-        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
-            setterName = prefix + propertyName;
-        } else {
-            setterName = prefix + capitalize(propertyName);
-        }
-
-        if (setterName.equals("setClass")) {
-            setterName = "setClass_";
-        }
-
-        return setterName;
+    /**
+     * Generate clearer method name for property.
+     *
+     * @param propertyName
+     * @param node
+     * @return
+     */
+    public String getClearerName(String propertyName, JsonNode node) {
+        return getMethodName("clear", propertyName, node);
     }
 
     /**

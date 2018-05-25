@@ -729,6 +729,27 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetLanguage = "java";
 
     /**
+     * Whether a SuppressWarnings annotation will be added to generated Java classes or not.
+     *
+     * @parameter expression="${jsonschema2pojo.suppressWarnings}" default-value="false"
+     * @since 1.0.0-alpha3
+     */
+    private boolean suppressWarnings = false;
+
+    /**
+     * Defines a holder class that will be wrapped around every generated field.
+     * An empty value disables the use of a holder class.
+     *
+     * If a holder class is used and generation of setters has been enabled,
+     * an additional "clear" method will be generated to clear a previously
+     * set value.
+     *
+     * @parameter expression="${jsonschema2pojo.holderClass}" default-value=""
+     * @since 1.0.0-alpha3
+     */
+    private String holderClass;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1136,5 +1157,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public Language getTargetLanguage() {
         return Language.valueOf(targetLanguage.toUpperCase());
+    }
+
+    @Override
+    public boolean isSuppressWarnings()
+    {
+        return suppressWarnings;
+    }
+
+    @Override
+    public String getHolderClass()
+    {
+        return holderClass == null || holderClass.isEmpty() ? null : holderClass;
     }
 }
