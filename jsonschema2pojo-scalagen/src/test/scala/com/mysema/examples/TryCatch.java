@@ -67,9 +67,7 @@ public class TryCatch {
     void simplified2() {
         try {
             System.getProperty("xxx").substring(1);
-        } catch (IllegalArgumentException n) {
-            throw new RuntimeException(n);
-        } catch (NullPointerException n) {
+        } catch (IllegalArgumentException | NullPointerException n) {
             throw new RuntimeException(n);
         }
     }

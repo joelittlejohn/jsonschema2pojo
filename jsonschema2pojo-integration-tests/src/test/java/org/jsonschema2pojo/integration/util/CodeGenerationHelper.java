@@ -101,9 +101,7 @@ public class CodeGenerationHelper {
             });
 
             pluginMojo.execute();
-        } catch (MojoExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (DependencyResolutionRequiredException e) {
+        } catch (MojoExecutionException | DependencyResolutionRequiredException e) {
             throw new RuntimeException(e);
         }
 

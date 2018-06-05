@@ -80,9 +80,7 @@ public class AnnotatorFactory {
             } catch (NoSuchMethodException e) {
                 return clazz.newInstance();
             }
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
-        } catch (InstantiationException e) {
+        } catch (InvocationTargetException | InstantiationException e) {
             throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Failed to create a custom annotator from the given class. It appears that we do not have access to this class - is both the class and its no-arg constructor marked public?", e);

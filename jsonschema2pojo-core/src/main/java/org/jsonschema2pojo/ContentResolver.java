@@ -77,8 +77,6 @@ public class ContentResolver {
             return objectMapper.readTree(uri.toURL());
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Unrecognised URI, can't resolve this: " + uri, e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unrecognised URI, can't resolve this: " + uri, e);
         }
@@ -98,8 +96,6 @@ public class ContentResolver {
             return objectMapper.readTree(contentAsStream);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Unrecognised URI, can't resolve this: " + uri, e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unrecognised URI, can't resolve this: " + uri, e);
         }

@@ -157,8 +157,6 @@ public class SchemaGenerator {
             SchemaAware valueSerializer = getValueSerializer(valueAsJavaType);
 
             return (ObjectNode) valueSerializer.getSchema(this.objectMapper.getSerializerProvider(), null);
-        } catch (JsonMappingException e) {
-            throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
         } catch (JsonProcessingException e) {
             throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
         }
