@@ -249,7 +249,7 @@ public class IncludeJsr303AnnotationsIT {
         Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         Class objectArrayType = resultsClassLoader.loadClass("com.example.Objectarray");
 
-        List<Object> objectArrayList = new ArrayList<Object>();
+        List<Object> objectArrayList = new ArrayList<>();
 
         Object objectArrayInstance = createInstanceWithPropertyValue(objectArrayType, "arrayitem", "OK");
         objectArrayList.add(objectArrayInstance);
@@ -272,7 +272,7 @@ public class IncludeJsr303AnnotationsIT {
         Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         Class refarrayType = resultsClassLoader.loadClass("com.example.Product");
 
-        List<Object> objectArrayList = new ArrayList<Object>();
+        List<Object> objectArrayList = new ArrayList<>();
 
         Object objectArrayInstance = createInstanceWithPropertyValue(refarrayType, "arrayitem", "OK");
         objectArrayList.add(objectArrayInstance);

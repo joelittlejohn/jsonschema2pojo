@@ -73,7 +73,7 @@ public class SerializableHelper {
 
 
     private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) throws IOException {
-        TreeMap<String, JMethod> sortedMethods = new TreeMap<String, JMethod>();
+        TreeMap<String, JMethod> sortedMethods = new TreeMap<>();
         while (methods.hasNext()) {
             JMethod method = methods.next();
             //Collect non-private methods
@@ -102,7 +102,7 @@ public class SerializableHelper {
         }
 
         //sorted
-        TreeMap<String, JDefinedClass> sortedClasses = new TreeMap<String, JDefinedClass>();
+        TreeMap<String, JDefinedClass> sortedClasses = new TreeMap<>();
         Iterator<JDefinedClass> classes = jclass.classes();
         while (classes.hasNext()) {
             JDefinedClass nestedClass = classes.next();
@@ -114,7 +114,7 @@ public class SerializableHelper {
         }
 
         //sorted
-        TreeSet<String> fieldNames = new TreeSet<String>(jclass.fields().keySet());
+        TreeSet<String> fieldNames = new TreeSet<>(jclass.fields().keySet());
         for (String fieldName : fieldNames) {
             JFieldVar fieldVar = jclass.fields().get(fieldName);
             //non private members
@@ -124,7 +124,7 @@ public class SerializableHelper {
         }
 
         Iterator<JClass> interfaces = jclass._implements();
-        List<JClass> interfacesList = new ArrayList<JClass>();
+        List<JClass> interfacesList = new ArrayList<>();
         while (interfaces.hasNext()) {
             JClass aInterface = interfaces.next();
             interfacesList.add(aInterface);

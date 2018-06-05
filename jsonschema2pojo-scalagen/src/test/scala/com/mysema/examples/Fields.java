@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Fields {
     
-    private Map<String,String> properties = new HashMap<String,String>();
+    private Map<String,String> properties = new HashMap<>();
     
     public Fields() {
     }

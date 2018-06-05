@@ -240,7 +240,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *         values
      */
     private ClassLoader buildExtendedClassloader() {
-        final List<URL> classpathUrls = new ArrayList<URL>();
+        final List<URL> classpathUrls = new ArrayList<>();
         for (String pathElement : getClasspath().list()) {
             try {
                 classpathUrls.add(new File(pathElement).toURI().toURL());

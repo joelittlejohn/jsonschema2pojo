@@ -32,26 +32,26 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
 
     private static final Map<String,Constant<String>> STRINGS;
     
-    private static final Constant<Boolean> FALSE = new ConstantImpl<Boolean>(Boolean.FALSE);
+    private static final Constant<Boolean> FALSE = new ConstantImpl<>(Boolean.FALSE);
 
-    private static final Constant<Boolean> TRUE = new ConstantImpl<Boolean>(Boolean.TRUE);
+    private static final Constant<Boolean> TRUE = new ConstantImpl<>(Boolean.TRUE);
 
     static {
-        List<String> strs = new ArrayList<String>(Arrays.asList("", ".", ".*", "%"));
+        List<String> strs = new ArrayList<>(Arrays.asList("", ".", ".*", "%"));
         for (int i = 0; i < CACHE_SIZE; i++) {
             strs.add(String.valueOf(i));
         }
 
-        STRINGS = new HashMap<String,Constant<String>>(strs.size());
+        STRINGS = new HashMap<>(strs.size());
         for (String str : strs) {
-            STRINGS.put(str, new ConstantImpl<String>(str));
+            STRINGS.put(str, new ConstantImpl<>(str));
         }
         
         for (int i = 0; i < CACHE_SIZE; i++) {
-            INTEGERS[i] = new ConstantImpl<Integer>(Integer.class, Integer.valueOf(i));
-            SHORTS[i] = new ConstantImpl<Short>(Short.class, Short.valueOf((short)i));
-            BYTES[i] = new ConstantImpl<Byte>(Byte.class, Byte.valueOf((byte)i));
-            LONGS[i] = new ConstantImpl<Long>(Long.class, Long.valueOf(i));
+            INTEGERS[i] = new ConstantImpl<>(Integer.class, Integer.valueOf(i));
+            SHORTS[i] = new ConstantImpl<>(Short.class, Short.valueOf((short) i));
+            BYTES[i] = new ConstantImpl<>(Byte.class, Byte.valueOf((byte) i));
+            LONGS[i] = new ConstantImpl<>(Long.class, Long.valueOf(i));
         }
     }
 
@@ -63,7 +63,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
         if (i >= 0 && i < CACHE_SIZE) {
             return BYTES[i];
         } else {
-            return new ConstantImpl<Byte>(Byte.class, Byte.valueOf(i));
+            return new ConstantImpl<>(Byte.class, Byte.valueOf(i));
         }
     }
 
@@ -71,7 +71,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
         if (i >= 0 && i < CACHE_SIZE) {
             return INTEGERS[i];
         } else {
-            return new ConstantImpl<Integer>(Integer.class, Integer.valueOf(i));
+            return new ConstantImpl<>(Integer.class, Integer.valueOf(i));
         }
     }
 
@@ -79,7 +79,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
         if (i >= 0 && i < CACHE_SIZE) {
             return LONGS[(int)i];
         } else {
-            return new ConstantImpl<Long>(Long.class, Long.valueOf(i));
+            return new ConstantImpl<>(Long.class, Long.valueOf(i));
         }
     }
 
@@ -87,7 +87,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
         if (i >= 0 && i < CACHE_SIZE) {
             return SHORTS[i];
         } else {
-            return new ConstantImpl<Short>(Short.class, Short.valueOf(i));
+            return new ConstantImpl<>(Short.class, Short.valueOf(i));
         }
     }
     
@@ -99,7 +99,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
         if (STRINGS.containsKey(str)) {
             return STRINGS.get(str);
         } else {
-            Constant<String> rv = new ConstantImpl<String>(Assert.notNull(str,"str"));
+            Constant<String> rv = new ConstantImpl<>(Assert.notNull(str, "str"));
             if (populateCache) {
                 STRINGS.put(str, rv);
             }
@@ -108,7 +108,7 @@ public class ConstantImpl<T> extends ExpressionBase<T> implements Constant<T> {
     }
     
     public static <T> Constant<Class<T>> create(Class<T> constant) {
-        return new ConstantImpl<Class<T>>(constant);
+        return new ConstantImpl<>(constant);
     }
 
     private final T constant;

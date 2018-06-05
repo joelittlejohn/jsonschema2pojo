@@ -28,13 +28,13 @@ import javax.inject.Named;
  */
 public abstract class AbstractModule {
 
-    private final Map<Class<?>, Object> instances = new HashMap<Class<?>, Object>();
+    private final Map<Class<?>, Object> instances = new HashMap<>();
 
-    private final Map<Class<?>, Class<?>> bindings = new HashMap<Class<?>, Class<?>>();
+    private final Map<Class<?>, Class<?>> bindings = new HashMap<>();
 
-    private final Map<String, Object> namedInstances = new HashMap<String, Object>();
+    private final Map<String, Object> namedInstances = new HashMap<>();
 
-    private final Map<String, Class<?>> namedBindings = new HashMap<String, Class<?>>();
+    private final Map<String, Class<?>> namedBindings = new HashMap<>();
 
     public AbstractModule() {
         configure();

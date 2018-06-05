@@ -97,7 +97,7 @@ public class CompilerWarningIT {
   @Test
   public void checkWarnings() {
     schemaRule.generate(schema, "com.example", config);
-    schemaRule.compile(compiler, new NullWriter(), new ArrayList<File>(), config);
+    schemaRule.compile(compiler, new NullWriter(), new ArrayList<>(), config);
     
     List<Diagnostic<? extends JavaFileObject>> warnings = warnings(schemaRule.getDiagnostics());
     
@@ -105,7 +105,7 @@ public class CompilerWarningIT {
   }
 
   public static List<Diagnostic<? extends JavaFileObject>> warnings(List<Diagnostic<? extends JavaFileObject>> all) {
-    List<Diagnostic<? extends JavaFileObject>> warnings = new ArrayList<Diagnostic<? extends JavaFileObject>>();
+    List<Diagnostic<? extends JavaFileObject>> warnings = new ArrayList<>();
     for( Diagnostic<? extends JavaFileObject> entry : all ) {
       if( entry.getKind() == Kind.WARNING ) {
         warnings.add(entry);

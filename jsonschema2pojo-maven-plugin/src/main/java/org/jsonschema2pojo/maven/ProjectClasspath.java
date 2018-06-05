@@ -58,7 +58,7 @@ public class ProjectClasspath {
         @SuppressWarnings("unchecked")
         List<String> classpathElements = project.getCompileClasspathElements();
 
-        final List<URL> classpathUrls = new ArrayList<URL>(classpathElements.size());
+        final List<URL> classpathUrls = new ArrayList<>(classpathElements.size());
 
         for (String classpathElement : classpathElements) {
 

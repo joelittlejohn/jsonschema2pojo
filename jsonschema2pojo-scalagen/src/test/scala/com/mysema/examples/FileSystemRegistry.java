@@ -23,9 +23,9 @@ public final class FileSystemRegistry {
     
     public static final FileSystemRegistry DEFAULT = new FileSystemRegistry();
     
-    private final Map<JavaFileManager,String> jfm2prefix = new WeakHashMap<JavaFileManager,String>();
+    private final Map<JavaFileManager,String> jfm2prefix = new WeakHashMap<>();
     
-    private Map<String,WeakReference<JavaFileManager>> prefix2jfm = new WeakHashMap<String,WeakReference<JavaFileManager>>();
+    private Map<String,WeakReference<JavaFileManager>> prefix2jfm = new WeakHashMap<>();
     
     private final String protocolName;
     
@@ -56,7 +56,7 @@ public final class FileSystemRegistry {
         } else {
             String result = protocolName + "://jfm" + (sequence++) + "/";
             jfm2prefix.put(jfm,result);
-            prefix2jfm.put(result, new WeakReference<JavaFileManager>(jfm));
+            prefix2jfm.put(result, new WeakReference<>(jfm));
             return result;
         }
     }

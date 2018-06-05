@@ -245,7 +245,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     private void addEnumConstants(JsonNode node, JDefinedClass _enum, JsonNode customNames, JType type) {
-        Collection<String> existingConstantNames = new ArrayList<String>();
+        Collection<String> existingConstantNames = new ArrayList<>();
         for (int i = 0; i < node.size(); i++) {
             JsonNode value = node.path(i);
 
@@ -266,7 +266,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
 
-        Collection<String> existingClassNames = new ArrayList<String>();
+        Collection<String> existingClassNames = new ArrayList<>();
         for (Iterator<JDefinedClass> classes = container.classes(); classes.hasNext();) {
             existingClassNames.add(classes.next().name());
         }
@@ -292,7 +292,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
             return customName;
         }
 
-        List<String> enumNameGroups = new ArrayList<String>(asList(splitByCharacterTypeCamelCase(nodeName)));
+        List<String> enumNameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(nodeName)));
 
         String enumName = "";
         for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {

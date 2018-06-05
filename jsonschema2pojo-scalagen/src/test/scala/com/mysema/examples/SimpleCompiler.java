@@ -115,7 +115,7 @@ public class SimpleCompiler implements JavaCompiler{
         }
         
         // no classpath given
-        List<String> args = new ArrayList<String>(arguments.length + 2);
+        List<String> args = new ArrayList<>(arguments.length + 2);
         args.add("-classpath");
         args.add(getClasspath());
         for (String arg : arguments){

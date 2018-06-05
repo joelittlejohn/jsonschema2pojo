@@ -285,7 +285,7 @@ class DateTimeOperation<T extends Comparable<T>> extends DateTimeExpression<T> i
      * @return
      */
     public static <D extends Comparable<D>> DateTimeExpression<D> create(Class<D> type, Operator<? super D> op, Expression<?>... args) {
-        return new DateTimeOperation<D>(type, op, Arrays.asList(args));
+        return new DateTimeOperation<>(type, op, Arrays.asList(args));
     }
 
     private final Operation<T> opMixin;
@@ -296,7 +296,7 @@ class DateTimeOperation<T extends Comparable<T>> extends DateTimeExpression<T> i
 
     protected DateTimeOperation(Class<T> type, Operator<? super T> op, List<Expression<?>> args) {
         super(type);
-        this.opMixin = new OperationImpl<T>(type, op, args);
+        this.opMixin = new OperationImpl<>(type, op, args);
     }
 
     @Override

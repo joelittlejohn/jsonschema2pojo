@@ -42,7 +42,7 @@ public class ToStringIT {
         assertEquals("com.example.ScalarTypes@<ref>[stringField=<null>,numberField=<null>,integerField=<null>,booleanField=<null>,nullField=<null>,bytesField=<null>]",
                 toStringAndReplaceAddress(Collections.emptyMap(), scalarTypesClass));
 
-        Map<String, Object> scalarTypes = new HashMap<String, Object>();
+        Map<String, Object> scalarTypes = new HashMap<>();
         scalarTypes.put("stringField", "hello");
         scalarTypes.put("numberField", 4.25);
         scalarTypes.put("integerField", 42);
@@ -62,11 +62,11 @@ public class ToStringIT {
         assertEquals("com.example.CompositeTypes@<ref>[mapField=<null>,objectField=<null>,arrayField=[],uniqueArrayField=[]]",
                 toStringAndReplaceAddress(Collections.emptyMap(), compositeTypesClass));
 
-        Map<String, Integer> intPair = new HashMap<String, Integer>();
+        Map<String, Integer> intPair = new HashMap<>();
         intPair.put("l", 0);
         intPair.put("r", 1);
 
-        Map<String, Object> compositeTypes = new HashMap<String, Object>();
+        Map<String, Object> compositeTypes = new HashMap<>();
         compositeTypes.put("mapField", Collections.singletonMap("intPair", intPair));
         compositeTypes.put("objectField", intPair);
         compositeTypes.put("arrayField", Collections.singleton(intPair));
@@ -104,7 +104,7 @@ public class ToStringIT {
         Class<?> squareClass = schemaRule.generateAndCompile("/schema/toString/square.json", "com.example")
                 .loadClass("com.example.Square");
 
-        Map<String, Object> square = new HashMap<String, Object>();
+        Map<String, Object> square = new HashMap<>();
         square.put("sides", 4);
         square.put("diagonals", Arrays.asList(Math.sqrt(2.0), Math.sqrt(2.0)));
         square.put("length", 1.0);

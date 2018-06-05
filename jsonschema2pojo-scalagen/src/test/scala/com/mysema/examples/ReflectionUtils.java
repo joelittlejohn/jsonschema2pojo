@@ -118,7 +118,7 @@ public final class ReflectionUtils {
     }
     
     public static Set<Class<?>> getSuperClasses(Class<?> cl) {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
         Class<?> c = cl;
         while (c != null) {
             classes.add(c);
@@ -128,7 +128,7 @@ public final class ReflectionUtils {
     }
     
     public static Set<Field> getFields(Class<?> cl) {
-        Set<Field> fields = new HashSet<Field>();
+        Set<Field> fields = new HashSet<>();
         Class<?> c = cl;
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
@@ -140,8 +140,8 @@ public final class ReflectionUtils {
     }
     
     public static Set<Class<?>> getImplementedInterfaces(Class<?> cl){
-        Set<Class<?>> interfaces = new HashSet<Class<?>>();
-        Deque<Class<?>> classes = new ArrayDeque<Class<?>>();
+        Set<Class<?>> interfaces = new HashSet<>();
+        Deque<Class<?>> classes = new ArrayDeque<>();
         classes.add(cl);
         while (!classes.isEmpty()) {
             Class<?> c = classes.pop();

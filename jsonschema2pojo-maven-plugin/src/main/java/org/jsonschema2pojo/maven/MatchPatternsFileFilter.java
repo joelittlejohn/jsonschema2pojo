@@ -45,8 +45,8 @@ public class MatchPatternsFileFilter implements FileFilter {
      * <p>Builder for MatchPatternFileFilter instances.</p>
      */
     public static class Builder {
-        List<String> includes = new ArrayList<String>();
-        List<String> excludes = new ArrayList<String>();
+        List<String> includes = new ArrayList<>();
+        List<String> excludes = new ArrayList<>();
         String sourceDirectory;
         boolean caseSensitive;
 
@@ -131,7 +131,7 @@ public class MatchPatternsFileFilter implements FileFilter {
     static List<String> processPatterns(List<String> patterns) {
         if (patterns == null)
             return null;
-        List<String> processed = new ArrayList<String>();
+        List<String> processed = new ArrayList<>();
         for (String pattern : patterns) {
             processed.add(processPattern(pattern));
         }

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class SchemaStore {
 
-    protected final Map<URI, Schema> schemas = new HashMap<URI, Schema>();
+    protected final Map<URI, Schema> schemas = new HashMap<>();
 
     protected final FragmentResolver fragmentResolver = new FragmentResolver();
     protected final ContentResolver contentResolver;

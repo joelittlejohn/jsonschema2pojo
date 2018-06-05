@@ -127,12 +127,12 @@ public class CodeGenerationHelper {
      */
     public static ClassLoader compile(File sourceDirectory) {
 
-        return compile(sourceDirectory, new ArrayList<File>(), new HashMap<String, Object>());
+        return compile(sourceDirectory, new ArrayList<>(), new HashMap<>());
 
     }
     
     public static ClassLoader compile(File sourceDirectory, List<File> classpath ) {
-        return compile(sourceDirectory, classpath, new HashMap<String, Object>());
+        return compile(sourceDirectory, classpath, new HashMap<>());
     }
 
     public static ClassLoader compile(File sourceDirectory, List<File> classpath, Map<String, Object> config) {
@@ -145,7 +145,7 @@ public class CodeGenerationHelper {
 
     public static ClassLoader compile(JavaCompiler compiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config, DiagnosticListener<? super JavaFileObject> listener) {
 
-        List<File> fullClasspath = new ArrayList<File>();
+        List<File> fullClasspath = new ArrayList<>();
         fullClasspath.addAll(classpath);
         fullClasspath.addAll(CodeGenerationHelper.classpathToFileArray(System.getProperty("java.class.path")));
 
@@ -176,7 +176,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory, new ArrayList<File>(), configValues);
+        return compile(outputDirectory, new ArrayList<>(), configValues);
 
     }
 
@@ -192,7 +192,7 @@ public class CodeGenerationHelper {
 
         File outputDirectory = generate(schema, targetPackage, configValues);
 
-        return compile(outputDirectory, new ArrayList<File>(), configValues);
+        return compile(outputDirectory, new ArrayList<>(), configValues);
 
     }
 
@@ -239,7 +239,7 @@ public class CodeGenerationHelper {
             throw new IllegalArgumentException("Invalid config, uneven list of key/value pairs!");
         }
 
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         for (int i = 0; i < keyValuePairs.length; i = i + 2) {
             values.put(keyValuePairs[i].toString(), keyValuePairs[i + 1]);
         }

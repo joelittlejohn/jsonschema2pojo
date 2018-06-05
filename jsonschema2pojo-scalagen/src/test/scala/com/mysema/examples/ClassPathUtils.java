@@ -37,7 +37,7 @@ public final class ClassPathUtils {
     public static Set<Class<?>> scanPackage(ClassLoader classLoader, String pkg) throws IOException {
         String packagePath = pkg.replace('.', '/');
         Enumeration<URL> urls = classLoader.getResources(packagePath);
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             if (url.getProtocol().equals("jar")) {
@@ -54,7 +54,7 @@ public final class ClassPathUtils {
     }
 
     private static void scanDirectory(String pkg, Set<Class<?>> classes, URL url, String packageName) throws IOException {
-        Deque<File> files = new ArrayDeque<File>();
+        Deque<File> files = new ArrayDeque<>();
         String packagePath = null;
         try {
             File packageAsFile = new File(url.toURI());

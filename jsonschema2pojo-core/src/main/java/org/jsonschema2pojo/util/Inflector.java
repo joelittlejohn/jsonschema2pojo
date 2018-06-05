@@ -171,9 +171,9 @@ public class Inflector {
 
     public static class Builder
     {
-        private List<RuleAndReplacement> plurals = new ArrayList<RuleAndReplacement>();
-        private List<RuleAndReplacement> singulars = new ArrayList<RuleAndReplacement>();
-        private List<String> uncountables = new ArrayList<String>();
+        private List<RuleAndReplacement> plurals = new ArrayList<>();
+        private List<RuleAndReplacement> singulars = new ArrayList<>();
+        private List<String> uncountables = new ArrayList<>();
 
         public Builder plural(String rule, String replacement) {
             plurals.add(0, new RuleAndReplacement(rule, replacement));

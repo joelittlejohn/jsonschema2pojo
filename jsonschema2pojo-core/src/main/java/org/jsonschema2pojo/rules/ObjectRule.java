@@ -183,11 +183,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private LinkedHashSet<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
 
         if (!node.has("properties")) {
-            return new LinkedHashSet<String>();
+            return new LinkedHashSet<>();
         }
 
-        LinkedHashSet<String> rtn = new LinkedHashSet<String>();
-        Set<String> draft4RequiredProperties = new HashSet<String>();
+        LinkedHashSet<String> rtn = new LinkedHashSet<>();
+        Set<String> draft4RequiredProperties = new HashSet<>();
 
         // setup the set of required properties for draft4 style "required"
         if (onlyRequired && node.has("required")) {
@@ -230,7 +230,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         Schema superTypeSchema = getSuperSchema(node, schema, true);
 
         if (superTypeSchema == null) {
-            return new LinkedHashSet<String>();
+            return new LinkedHashSet<>();
         }
 
         JsonNode superSchemaNode = superTypeSchema.getContent();
@@ -386,7 +386,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addToString(JDefinedClass jclass) {
         Map<String, JFieldVar> fields = jclass.fields();
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
-        Set<String> excludes = new HashSet<String>(Arrays.asList(ruleFactory.getGenerationConfig().getToStringExcludes()));
+        Set<String> excludes = new HashSet<>(Arrays.asList(ruleFactory.getGenerationConfig().getToStringExcludes()));
 
         JBlock body = toString.body();
 
@@ -548,7 +548,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private Map<String, JFieldVar> removeFieldsExcludedFromEqualsAndHashCode(Map<String, JFieldVar> fields, JsonNode node) {
-        Map<String, JFieldVar> filteredFields = new HashMap<String, JFieldVar>(fields);
+        Map<String, JFieldVar> filteredFields = new HashMap<>(fields);
 
         JsonNode properties = node.get("properties");
 
@@ -598,7 +598,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JInvocation superInvocation = constructorBody.invoke("super");
 
         Map<String, JFieldVar> fields = jclass.fields();
-        Map<String, JVar> classFieldParams = new HashMap<String, JVar>();
+        Map<String, JVar> classFieldParams = new HashMap<>();
 
         for (String property : classProperties) {
             JFieldVar field = fields.get(property);
@@ -613,7 +613,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             classFieldParams.put(property, param);
         }
 
-        List<JVar> superConstructorParams = new ArrayList<JVar>();
+        List<JVar> superConstructorParams = new ArrayList<>();
 
 
         for (String property : combinedSuperProperties) {

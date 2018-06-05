@@ -28,7 +28,7 @@ public class FragmentResolver {
 
     public JsonNode resolve(JsonNode tree, String path, String refFragmentPathDelimiters) {
 
-        return resolve(tree, new ArrayList<String>(asList(split(path, refFragmentPathDelimiters))));
+        return resolve(tree, new ArrayList<>(asList(split(path, refFragmentPathDelimiters))));
 
     }
 

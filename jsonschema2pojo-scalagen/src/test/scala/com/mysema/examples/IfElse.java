@@ -17,7 +17,7 @@ public class IfElse {
     
     public void ifElse2() {
         boolean success;
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
         if (list.size() == 2) {

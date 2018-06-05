@@ -840,7 +840,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         if (null != sourceDirectory) {
             return Collections.singleton(URLUtil.parseURL(sourceDirectory)).iterator();
         }
-        List<URL> sourceURLs = new ArrayList<URL>();
+        List<URL> sourceURLs = new ArrayList<>();
         for (String source : sourcePaths) {
             sourceURLs.add(URLUtil.parseURL(source));
         }

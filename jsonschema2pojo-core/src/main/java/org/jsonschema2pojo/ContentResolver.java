@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ContentResolver {
 
-    private static final Set<String> CLASSPATH_SCHEMES = new HashSet<String>(asList("classpath", "resource", "java"));
+    private static final Set<String> CLASSPATH_SCHEMES = new HashSet<>(asList("classpath", "resource", "java"));
     
     private final ObjectMapper objectMapper;
 

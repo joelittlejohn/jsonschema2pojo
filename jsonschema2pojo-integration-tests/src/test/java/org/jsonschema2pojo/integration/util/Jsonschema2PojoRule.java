@@ -107,7 +107,7 @@ public class Jsonschema2PojoRule implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 active = true;
-                diagnostics = new ArrayList<Diagnostic<? extends JavaFileObject>>();
+                diagnostics = new ArrayList<>();
                 boolean captureDiagnosticsStart = captureDiagnostics;
                 try {
                     File testRoot = methodNameDir(classNameDir(rootDirectory(), description.getClassName()),
@@ -206,11 +206,11 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     private static List<File> emptyClasspath() {
-        return new ArrayList<File>();
+        return new ArrayList<>();
     }
 
     private static Map<String, Object> emptyConfig() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     private static URL schemaUrl(String schema) {
