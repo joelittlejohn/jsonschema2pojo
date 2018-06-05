@@ -65,7 +65,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Target directory for generated Java source files.
      *
-     * @parameter expression="${jsonschema2pojo.outputDirectory}"
+     * @parameter property="jsonschema2pojo.outputDirectory"
      *            default-value="${project.build.directory}/java-gen"
      * @since 0.1.0
      */
@@ -75,7 +75,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Location of the JSON Schema file(s). Note: this may refer to a single
      * file or a directory of files.
      *
-     * @parameter expression="${jsonschema2pojo.sourceDirectory}"
+     * @parameter property="jsonschema2pojo.sourceDirectory"
      * @since 0.1.0
      */
     private String sourceDirectory;
@@ -84,7 +84,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * An array of locations of the JSON Schema file(s). Note: each item may
      * refer to a single file or a directory of files.
      *
-     * @parameter expression="${jsonschema2pojo.sourcePaths}"
+     * @parameter property="jsonschema2pojo.sourcePaths"
      * @since 0.3.1
      */
     private String[] sourcePaths;
@@ -94,7 +94,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * qualified name has not been supplied in the schema using the 'javaType'
      * property).
      *
-     * @parameter expression="${jsonschema2pojo.targetPackage}"
+     * @parameter property="jsonschema2pojo.targetPackage"
      * @since 0.1.0
      */
     private String targetPackage = "";
@@ -104,7 +104,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <code>withXxx(value)</code> (that return <code>this</code>), alongside
      * the standard, void-return setters.
      *
-     * @parameter expression="${jsonschema2pojo.generateBuilders}"
+     * @parameter property="jsonschema2pojo.generateBuilders"
      *            default-value="false"
      * @since 0.1.2
      */
@@ -116,7 +116,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * generating bean properties (has the side-effect of making those
      * properties non-null).
      *
-     * @parameter expression="${jsonschema2pojo.usePrimitives}"
+     * @parameter property="jsonschema2pojo.usePrimitives"
      *            default-value="false"
      * @since 0.2.0
      */
@@ -126,7 +126,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Add the output directory to the project as a source root, so that the
      * generated java types are compiled and included in the project artifact.
      *
-     * @parameter expression="${jsonschema2pojo.addCompileSourceRoot}"
+     * @parameter property="jsonschema2pojo.addCompileSourceRoot"
      *            default-value="true"
      * @since 0.1.9
      */
@@ -136,7 +136,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Skip plugin execution (don't read/validate any schema files, don't
      * generate any java types).
      *
-     * @parameter expression="${jsonschema2pojo.skip}" default-value="false"
+     * @parameter property="jsonschema2pojo.skip}" default-value="fals"
      * @since 0.2.1
      */
     private boolean skip = false;
@@ -147,7 +147,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * JSON properties will be considered to contain a single word when creating
      * Java Bean property names.
      *
-     * @parameter expression="${jsonschema2pojo.propertyWordDelimiters}"
+     * @parameter property="jsonschema2pojo.propertyWordDelimiters"
      *            default-value="- _"
      * @since 0.2.2
      */
@@ -158,7 +158,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * instead of <code>int</code> (or <code>Integer</code>) when representing
      * the JSON Schema type 'integer'.
      *
-     * @parameter expression="${jsonschema2pojo.useLongIntegers}"
+     * @parameter property="jsonschema2pojo.useLongIntegers"
      *            default-value="false"
      * @since 0.2.2
      */
@@ -170,7 +170,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * JSON Schema type 'integer'. Note that this configuration overrides
      * {@link #isUseLongIntegers()}.
      *
-     * @parameter expression="${jsonschema2pojo.useBigIntegers}"
+     * @parameter property="jsonschema2pojo.useBigIntegers"
      *            default-value="false"
      * @since 0.4.25
      */
@@ -181,7 +181,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * instead of <code>float</code> (or <code>Float</code>) when representing
      * the JSON Schema type 'number'.
      *
-     * @parameter expression="${jsonschema2pojo.useDoubleNumbers}"
+     * @parameter property="jsonschema2pojo.useDoubleNumbers"
      *            default-value="true"
      * @since 0.4.0
      */
@@ -193,7 +193,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * JSON Schema type 'number'. Note that this configuration overrides
      * {@link #isUseDoubleNumbers()}.
      *
-     * @parameter expression="${jsonschema2pojo.useBigDecimals}"
+     * @parameter property="jsonschema2pojo.useBigDecimals"
      *            default-value="false"
      * @since 0.4.22
      */
@@ -203,7 +203,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include <code>hashCode</code> and <code>equals</code> methods
      * in generated Java types.
      *
-     * @parameter expression="${jsonschema2pojo.includeHashcodeAndEquals}"
+     * @parameter property="jsonschema2pojo.includeHashcodeAndEquals"
      *            default-value="true"
      * @since 0.3.1
      */
@@ -213,7 +213,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include a <code>toString</code> method in generated Java
      * types.
      *
-     * @parameter expression="${jsonschema2pojo.includeToString}"
+     * @parameter property="jsonschema2pojo.includeToString"
      *            default-value="true"
      * @since 0.3.1
      */
@@ -222,7 +222,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * The fields to be excluded from toString generation
      *
-     * @parameter expression="${jsonschema2pojo.toStringExcludes}"
+     * @parameter property="jsonschema2pojo.toStringExcludes"
      *            default-value=""
      * @since 0.4.35
      */
@@ -245,7 +245,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>none</code> (apply no annotations at all)</li>
      * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.annotationStyle}"
+     * @parameter property="jsonschema2pojo.annotationStyle"
      *            default-value="jackson2"
      * @since 0.3.1
      */
@@ -266,7 +266,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * </ul>
      * </p>
      *
-     * @parameter expression="${jsonschema2pojo.inclusionLevel}"
+     * @parameter property="jsonschema2pojo.inclusionLevel"
      *            default-value="NON_NULL"
      */
     private String inclusionLevel = "NON_NULL";
@@ -279,7 +279,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * If you want to use the custom annotator alone, set
      * <code>annotationStyle</code> to <code>none</code>.
      *
-     * @parameter expression="${jsonschema2pojo.customAnnotator}"
+     * @parameter property="jsonschema2pojo.customAnnotator"
      *            default-value="org.jsonschema2pojo.NoopAnnotator"
      * @since 0.3.6
      */
@@ -290,7 +290,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <code>org.jsonschema2pojo.rules.RuleFactory</code> and will be used to
      * create instances of Rules used for code generation.
      *
-     * @parameter expression="${jsonschema2pojo.customRuleFactory}"
+     * @parameter property="jsonschema2pojo.customRuleFactory"
      *            default-value="org.jsonschema2pojo.rules.RuleFactory"
      * @since 0.4.5
      */
@@ -313,7 +313,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Any Java fields which are an object or array of objects will be annotated
      * with {@literal @Valid} to support validation of an entire document tree.
      *
-     * @parameter expression="${jsonschema2pojo.includeJsr303Annotations}"
+     * @parameter property="jsonschema2pojo.includeJsr303Annotations"
      *            default-value="false"
      * @since 0.3.2
      */
@@ -348,7 +348,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * YAML (or JSON) data that the generated Java types will be mapped to)</li>
      * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.sourceType}"
+     * @parameter property="jsonschema2pojo.sourceType"
      *            default-value="jsonschema"
      * @since 0.3.3
      */
@@ -363,7 +363,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * the target directory (all files and folders)</strong> before it begins
      * generating sources.
      *
-     * @parameter expression="${jsonschema2pojo.removeOldOutput}"
+     * @parameter property="jsonschema2pojo.removeOldOutput"
      *            default-value="false"
      * @since 0.3.7
      */
@@ -373,7 +373,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * The character encoding that should be used when writing the generated
      * Java source files.
      *
-     * @parameter expression="${jsonschema2pojo.outputEncoding}"
+     * @parameter property="jsonschema2pojo.outputEncoding"
      *            default-value="UTF-8"
      * @since 0.4.0
      */
@@ -384,7 +384,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * {@link java.util.Date} when adding date type fields to generated Java
      * types.
      *
-     * @parameter expression="${jsonschema2pojo.useJodaDates}"
+     * @parameter property="jsonschema2pojo.useJodaDates"
      *            default-value="false"
      * @since 0.4.0
      */
@@ -395,7 +395,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * adding string type fields of format date (not date-time) to generated
      * Java types.
      *
-     * @parameter expression="${jsonschema2pojo.useJodaLocalDates}"
+     * @parameter property="jsonschema2pojo.useJodaLocalDates"
      *            default-value="false"
      * @since 0.4.9
      */
@@ -406,7 +406,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * adding string type fields of format time (not date-time) to generated
      * Java types.
      *
-     * @parameter expression="${jsonschema2pojo.useJodaLocalTimes}"
+     * @parameter property="jsonschema2pojo.useJodaLocalTimes"
      *            default-value="false"
      * @since 0.4.9
      */
@@ -416,7 +416,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * What type to use instead of string when adding string type fields of
      * format date-time to generated Java types.
      *
-     * @parameter expression="${jsonschema2pojo.dateTimeType}"
+     * @parameter property="jsonschema2pojo.dateTimeType"
      * @since 0.4.22
      */
     private String dateTimeType = null;
@@ -425,7 +425,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * What type to use instead of string when adding string type fields of
      * format time (not date-time) to generated Java types.
      *
-     * @parameter expression="${jsonschema2pojo.timeType}"
+     * @parameter property="jsonschema2pojo.timeType"
      * @since 0.4.22
      */
     private String timeType = null;
@@ -434,7 +434,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * What type to use instead of string when adding string type fields of
      * format date (not date-time) to generated Java types.
      *
-     * @parameter expression="${jsonschema2pojo.dateType}"
+     * @parameter property="jsonschema2pojo.dateType"
      * @since 0.4.22
      */
     private String dateType = null;
@@ -443,7 +443,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
      * imports when adding equals, hashCode and toString methods.
      *
-     * @parameter expression="${jsonschema2pojo.useCommonsLang3}"
+     * @parameter property="jsonschema2pojo.useCommonsLang3"
      *            default-value="false"
      * @since 0.4.1
      */
@@ -453,7 +453,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for
      * Android development).
      *
-     * @parameter expression="${jsonschema2pojo.parcelable}"
+     * @parameter property="jsonschema2pojo.parcelable"
      *            default-value="false"
      * @since 0.4.11
      */
@@ -462,7 +462,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to make the generated types 'serializable'.
      *
-     * @parameter expression="${jsonschema2pojo.serializable}" default="false"
+     * @parameter property="jsonschema2pojo.serializable}" default="fals"
      * @since 0.4.23
      */
     private boolean serializable = false;
@@ -471,7 +471,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to initialize Set and List fields as empty collections, or leave
      * them as <code>null</code>.
      *
-     * @parameter expression="${jsonschema2pojo.initializeCollections}"
+     * @parameter property="jsonschema2pojo.initializeCollections"
      *            default-value="true"
      * @since
      */
@@ -498,7 +498,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to add a prefix to generated classes.
      *
-     * @parameter expression="${jsonschema2pojo.classNamePrefix}"
+     * @parameter property="jsonschema2pojo.classNamePrefix"
      * @since 0.4.6
      */
     private String classNamePrefix = "";
@@ -506,7 +506,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to add a suffix to generated classes.
      *
-     * @parameter expression="${jsonschema2pojo.classNameSuffix}"
+     * @parameter property="jsonschema2pojo.classNameSuffix"
      * @since 0.4.6
      */
     private String classNameSuffix = "";
@@ -515,7 +515,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * The strings (no preceeding dot) that should be considered as file name
      * extensions, and therefore ignored, when creating Java class names.
      *
-     * @parameter expression="${jsonschema2pojo.fileExtensions}"
+     * @parameter property="jsonschema2pojo.fileExtensions"
      *            default-value=""
      * @since 0.4.23
      */
@@ -524,7 +524,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to generate constructors or not
      *
-     * @parameter expression="${jsonschema2pojo.includeConstructors}"
+     * @parameter property="jsonschema2pojo.includeConstructors"
      *            default-value="false"
      * @since 0.4.8
      */
@@ -534,8 +534,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether generated constructors should have parameters for all properties,
      * or only required ones.
      *
-     * @parameter expression=
-     *            "${jsonschema2pojo.constructorsRequiredPropertiesOnly}"
+     * @parameter property=
+   *            "${jsonschema2pojo.constructorsRequiredPropertiesOnly"
      *            default-value="false"
      * @since 0.4.8
      */
@@ -546,7 +546,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * to false will disable additional properties support, regardless of the
      * input schema(s).
      *
-     * @parameter expression="${jsonschema2pojo.includeAdditionalProperties}"
+     * @parameter property="jsonschema2pojo.includeAdditionalProperties"
      *            default-value="true"
      * @since 0.4.14
      */
@@ -556,7 +556,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include getters/setters or to omit these accessor methods and
      * create public fields instead.
      *
-     * @parameter expression="${jsonschema2pojo.includeAccessors}"
+     * @parameter property="jsonschema2pojo.includeAccessors"
      *            default-value="true"
      * @since 0.4.15
      */
@@ -566,7 +566,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include getters or to omit this accessor method and
      * create public fields instead
      *
-     * @parameter expression="${jsonschema2pojo.includeGetters}"
+     * @parameter property="jsonschema2pojo.includeGetters"
      *            default-value="false"
      */
     private boolean includeGetters = false;
@@ -575,7 +575,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include setters or to omit this accessor method and
      * create public fields instead
      *
-     * @parameter expression="${jsonschame2pojo.includeSetters}"
+     * @parameter property="jsonschame2pojo.includeSetters"
      *            default-value="false"
      */
     private boolean includeSetters = false;
@@ -583,7 +583,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * The target version for generated source files.
      *
-     * @parameter expression="${maven.compiler.target}" default-value="1.6"
+     * @parameter property="maven.compiler.target}" default-value="1."
      * @since 0.4.17
      */
     private String targetVersion = "1.6";
@@ -592,7 +592,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether to include dynamic getters, setters, and builders or to omit
      * these methods.
      *
-     * @parameter expression="${jsonschema2pojo.includeDynamicAccessors}"
+     * @parameter property="jsonschema2pojo.includeDynamicAccessors"
      * @since 0.4.17
      */
     private boolean includeDynamicAccessors = false;
@@ -600,7 +600,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to include dynamic getters or to omit these methods.
      *
-     * @parameter expression="${jsonschema2pojo.includeDynamicGetters}"
+     * @parameter property="jsonschema2pojo.includeDynamicGetters"
      *            default-value="false"
      */
     private boolean includeDynamicGetters = false;
@@ -608,7 +608,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to include dynamic setters or to omit these methods.
      *
-     * @parameter expression="${jsonschema2pojo.includeDynamicSetters}"
+     * @parameter property="jsonschema2pojo.includeDynamicSetters"
      *            default-value="false"
      */
     private boolean includeDynamicSetters = false;
@@ -616,7 +616,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to include dynamic builders or to omit these methods.
      *
-     * @parameter expression="${jsonschema2pojo.includeDynamicBuilders}"
+     * @parameter property="jsonschema2pojo.includeDynamicBuilders"
      *            default-value="false"
      */
     private boolean includeDynamicBuilders = false;
@@ -624,7 +624,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * The project being built.
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
@@ -634,7 +634,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether the fields of type `date` are formatted during serialization with
      * a default pattern of yyyy-MM-dd.
      *
-     * @parameter expression="${jsonschema2pojo.formatDates}"
+     * @parameter property="jsonschema2pojo.formatDates"
      *            default-value="false"
      * @since 0.4.33
      */
@@ -644,7 +644,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether the fields of type `time` are formatted during serialization with
      * a default pattern of HH:mm:ss.SSS.
      *
-     * @parameter expression="${jsonschema2pojo.formatTimes}"
+     * @parameter property="jsonschema2pojo.formatTimes"
      *            default-value="false"
      * @since 0.4.36
      */
@@ -654,7 +654,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether the fields of type `date` are formatted during serialization with
      * a default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
      *
-     * @parameter expression="${jsonschema2pojo.formatDateTimes}"
+     * @parameter property="jsonschema2pojo.formatDateTimes"
      *            default-value="false"
      * @since 0.4.29
      */
@@ -664,7 +664,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * A custom pattern to use when formatting date fields during serialization.
      * Requires support from your JSON binding library.
      *
-     * @parameter expression "${jsonschema2pojo.customDatePattern}"
+     * @parameter property "jsonschema2pojo.customDatePattern"
      * @since 0.4.33
      */
     private String customDatePattern;
@@ -673,7 +673,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * A custom pattern to use when formatting time fields during serialization.
      * Requires support from your JSON binding library.
      *
-     * @parameter expression "${jsonschema2pojo.customTimePattern}"
+     * @parameter property "jsonschema2pojo.customTimePattern"
      * @since 0.4.36
      */
     private String customTimePattern;
@@ -682,7 +682,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * A custom pattern to use when formatting date-time fields during
      * serialization. Requires support from your JSON binding library.
      *
-     * @parameter expression "${jsonschema2pojo.customDatePattern}"
+     * @parameter property "jsonschema2pojo.customDatePattern"
      * @since 0.4.33
      */
     private String customDateTimePattern;
@@ -691,7 +691,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * A string containing any characters that should act as path delimiters when resolving $ref fragments.
      * By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.
      *
-     * @parameter expression="${jsonschema2pojo.refFragmentPathDelimiters}" default-value="#/."
+     * @parameter property="jsonschema2pojo.refFragmentPathDelimiters"
+     *            default-value="#/."
      * @since 0.4.31
      */
     private String refFragmentPathDelimiters = "#/.";
@@ -709,7 +710,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * processed in a depth first sort order.)</li>
      * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.sourceSortOrder}" default-value="OS"
+     * @parameter property="jsonschema2pojo.sourceSortOrder"
+     *            default-value="OS"
      * @since 0.4.34
      */
     private String sourceSortOrder = SourceSortOrder.OS.toString();
@@ -723,7 +725,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>scala</code> (Generate .scala source files, using scalagen)</li>
      * </ul>
      *
-     * @parameter expression="${jsonschema2pojo.targetLanguage}" default-value="java"
+     * @parameter property="jsonschema2pojo.targetLanguage}"
+     *            default-value="java"
      * @since 0.5.0
      */
     private String targetLanguage = "java";

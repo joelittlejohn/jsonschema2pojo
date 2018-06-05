@@ -62,7 +62,7 @@ public class ParcelableHelper {
     public void addConstructorFromParcel(JDefinedClass jclass) {
         JMethod ctorFromParcel = jclass.constructor(JMod.PROTECTED);
         JVar in = ctorFromParcel.param(jclass.owner().directClass("android.os.Parcel"), "in");
-        // Call super(in)
+
         if (extendsParcelable(jclass)) {
             ctorFromParcel.body().directStatement("super(in);");
         }

@@ -57,7 +57,7 @@ public class ParcelableIT {
 
     @Test
     public void parcelableSuperclassIsUnparceled() throws ClassNotFoundException, IOException {
-        // Explicitely set includeConstructors to false if default value changes in the future
+        // Explicitly set includeConstructors to false if default value changes in the future
         Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", 
                 config("parcelable", true, "includeConstructors", false))
                 .loadClass("com.example.ParcelableSuperclassSchema");
