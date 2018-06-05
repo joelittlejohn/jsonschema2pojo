@@ -40,11 +40,10 @@ import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.fest.util.Lists;
-import org.fest.util.Strings;
 import org.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -249,13 +248,13 @@ public class CodeGenerationHelper {
     }
 
     private static List<File> classpathToFileArray( String classpath ) {
-        List<File> files = Lists.newArrayList();
+        List<File> files = new ArrayList();
         
-        if( Strings.isNullOrEmpty(classpath)) return files;
+        if (StringUtils.isEmpty(classpath)) return files;
         
         String[] paths = classpath.split(Pattern.quote(File.pathSeparator));
-        for( String path : paths ) {
-            if( Strings.isNullOrEmpty(classpath) ) continue;
+        for ( String path : paths ) {
+            if ( StringUtils.isEmpty(classpath) ) continue;
             files.add(new File(path));
         }
         return files;

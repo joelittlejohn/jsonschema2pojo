@@ -19,7 +19,6 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
-import static org.fest.util.Lists.newArrayList;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
@@ -168,11 +167,11 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     private static <M extends Member> Matcher<M> methodWhitelist() {
-        return nameMatches(isIn(newArrayList("setAdditionalProperty", "getAdditionalProperties")));
+        return nameMatches(isIn(Arrays.asList("setAdditionalProperty", "getAdditionalProperties")));
     }
 
     private static <M extends Member> Matcher<M> fieldWhitelist() {
-        return nameMatches(isIn(newArrayList("additionalProperties")));
+        return nameMatches(isIn(Arrays.asList("additionalProperties")));
     }
 
     private static <M extends Member> Matcher<M> fieldGetterOrSetter() {

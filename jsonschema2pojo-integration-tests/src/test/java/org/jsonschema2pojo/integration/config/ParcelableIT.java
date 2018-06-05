@@ -36,7 +36,7 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest=Config.NONE)
+@Config(manifest=Config.NONE, sdk=23)
 public class ParcelableIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();

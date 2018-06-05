@@ -16,8 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import android.os.Parcelable;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
@@ -161,7 +159,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private void addParcelSupport(JDefinedClass jclass) {
-        jclass._implements(Parcelable.class);
+        jclass._implements(jclass.owner().directClass("android.os.Parcelable"));
 
         parcelableHelper.addWriteToParcel(jclass);
         parcelableHelper.addDescribeContents(jclass);

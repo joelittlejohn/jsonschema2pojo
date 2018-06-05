@@ -16,8 +16,6 @@
 
 package org.jsonschema2pojo.util;
 
-import android.os.Parcel;
-import android.os.Parcelable.Creator;
 import com.sun.codemodel.*;
 import static org.jsonschema2pojo.util.Models.*;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -26,7 +24,7 @@ public class ParcelableHelper {
 
     public void addWriteToParcel(JDefinedClass jclass) {
         JMethod method = jclass.method(JMod.PUBLIC, void.class, "writeToParcel");
-        JVar dest = method.param(Parcel.class, "dest");
+        JVar dest = method.param(jclass.owner().directClass("android.os.Parcel"), "dest");
         method.param(int.class, "flags");
 
         // Call super.writeToParcel
@@ -51,7 +49,7 @@ public class ParcelableHelper {
     }
     
     public void addCreator(JDefinedClass jclass) {
-        JClass creatorType = jclass.owner().ref(Creator.class).narrow(jclass); 
+        JClass creatorType = jclass.owner().directClass("android.os.Parcelable.Creator").narrow(jclass);
         JDefinedClass creatorClass = jclass.owner().anonymousClass(creatorType);
         
         addCreateFromParcel(jclass, creatorClass);
@@ -63,7 +61,7 @@ public class ParcelableHelper {
 
     public void addConstructorFromParcel(JDefinedClass jclass) {
         JMethod ctorFromParcel = jclass.constructor(JMod.PROTECTED);
-        JVar in = ctorFromParcel.param(Parcel.class, "in");
+        JVar in = ctorFromParcel.param(jclass.owner().directClass("android.os.Parcel"), "in");
         // Call super(in)
         if (extendsParcelable(jclass)) {
             ctorFromParcel.body().directStatement("super(in);");
@@ -99,7 +97,7 @@ public class ParcelableHelper {
 
     private void addCreateFromParcel(JDefinedClass jclass, JDefinedClass creatorClass) {
         JMethod createFromParcel = creatorClass.method(JMod.PUBLIC, jclass, "createFromParcel");
-        JVar in = createFromParcel.param(Parcel.class, "in");
+        JVar in = createFromParcel.param(jclass.owner().directClass("android.os.Parcel"), "in");
         suppressWarnings(createFromParcel, "unchecked");
         createFromParcel.body()._return(JExpr._new(jclass).arg(in));
     }
