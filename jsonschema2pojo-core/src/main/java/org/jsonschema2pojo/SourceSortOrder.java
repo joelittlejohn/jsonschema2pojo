@@ -29,12 +29,7 @@ public enum SourceSortOrder {
     OS {
         @Override
         public Comparator<File> getComparator() {
-            return new Comparator<File>() {
-                @Override
-                public int compare(final File fileA, final File fileB) {
-                    return fileA.compareTo(fileB);
-                }
-            };
+            return (a, b) -> a.compareTo(b);
         }
     },
 
