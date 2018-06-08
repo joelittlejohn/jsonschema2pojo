@@ -90,6 +90,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
   Language targetLanguage
+  boolean suppressWarnings
+  String holderClass
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -144,6 +146,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
+    suppressWarnings = false
+    holderClass = ''
   }
 
   @Override
@@ -251,6 +255,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}
        |targetLanguage = ${targetLanguage}
+       |suppressWarnings = ${suppressWarnings}
+       |holderClass = ${holderClass}
      """.stripMargin()
   }
   

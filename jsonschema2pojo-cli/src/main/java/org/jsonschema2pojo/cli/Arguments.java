@@ -215,7 +215,13 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-tl", "--target-language" }, description = "The type of code that will be generated.  Available options are: JAVA or SCALA")
     private Language targetLanguage = Language.JAVA;
-    
+
+    @Parameter(names = { "-sw", "--suppress-warnings" }, description = "Whether or not to add a SuppressWarnings annotation to generated classes.")
+    private boolean suppressWarnings = false;
+
+    @Parameter(names = { "-hc", "--holder-class" }, description = "Defines a holder class that will be wrapped around every generated field. An empty value disables the use of a holder class. If a holder class is used and generation of setters has been enabled, an additional \"clear\" method will be generated to clear a previously set value.")
+    private String holderClass;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -536,9 +542,21 @@ public class Arguments implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
+    }
+
+    @Override
+    public boolean isSuppressWarnings()
+    {
+        return suppressWarnings;
+    }
+
+    @Override
+    public String getHolderClass()
+    {
+        return holderClass == null || holderClass.isEmpty() ? null : holderClass;
     }
 }

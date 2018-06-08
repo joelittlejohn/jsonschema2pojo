@@ -17,11 +17,14 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.codemodel.*;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
 import static org.apache.commons.lang3.StringUtils.capitalize;
+
+import java.io.IOException;
 
 
 /**
@@ -69,7 +72,33 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         node = resolveRefs(node, schema);
 
         int accessModifier = isIncludeAccessors || isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
-        JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
+        JFieldVar field;
+        JType unwrappedPropertyType;
+
+        if (ruleFactory.getGenerationConfig().getHolderClass() == null)
+        {
+            unwrappedPropertyType = null;
+
+            field = jclass.field(accessModifier, propertyType, propertyName);
+        }
+        else
+        {
+            unwrappedPropertyType = propertyType;
+
+            final ObjectMapper mapper = new ObjectMapper();
+            JType wrappedPropertyType;
+
+            try
+            {
+                wrappedPropertyType = ruleFactory.getSchemaRule().apply(nodeName, mapper.readTree("{\"javaType\":\"" + ruleFactory.getGenerationConfig().getHolderClass() + "<" + propertyType.fullName() + ">\",\"type\":\"" + propertyType.fullName() + "\"}"), jclass, schema);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            field = jclass.field(accessModifier, wrappedPropertyType, propertyName);
+        }
 
         propertyAnnotations(nodeName, node, schema, field);
 
@@ -78,15 +107,22 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeAccessors || isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema));
+            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), unwrappedPropertyType);
             ruleFactory.getAnnotator().propertyGetter(getter, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeAccessors || isIncludeSetters) {
-            JMethod setter = addSetter(jclass, field, nodeName, node);
+            JMethod setter = addSetter(jclass, field, nodeName, node, unwrappedPropertyType);
             ruleFactory.getAnnotator().propertySetter(setter, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
+
+            if (ruleFactory.getGenerationConfig().getHolderClass() != null)
+            {
+                JMethod clearer = addClearer(jclass, field, nodeName, node);
+                ruleFactory.getAnnotator().propertySetter(clearer, nodeName);
+                propertyAnnotations(nodeName, node, schema, clearer);
+            }
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
@@ -190,31 +226,62 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return returnType;
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired) {
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired, JType propertyType) {
 
         JType type = getReturnType(c, field, isRequired);
 
-        JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
+        JMethod getter = c.method(JMod.PUBLIC, propertyType == null ? type : propertyType, getGetterName(jsonPropertyName, field.type(), node));
 
         JBlock body = getter.body();
+        JExpression expr;
+
+        if (propertyType == null)
+        {
+            expr = field;
+        }
+        else
+        {
+            expr = field.invoke("get");
+        }
+
         if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() && !isRequired
                 && field.type().isReference()) {
-            body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(field));
+            body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(expr));
         } else {
-            body._return(field);
+            body._return(expr);
         }
 
         return getter;
     }
 
-    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, JType propertyType) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName, node));
 
-        JVar param = setter.param(field.type(), field.name());
-        JBlock body = setter.body();
-        body.assign(JExpr._this().ref(field), param);
+        if (propertyType == null)
+        {
+            JVar param = setter.param(field.type(), field.name());
+            JBlock body = setter.body();
+            body.assign(JExpr._this().ref(field), param);
+        }
+        else
+        {
+            JVar param = setter.param(propertyType, field.name());
+            JBlock body = setter.body();
+            JClass holderType = c.owner().ref(ruleFactory.getGenerationConfig().getHolderClass()).narrow(propertyType.boxify());
+            JExpression ref = JExpr._new(holderType).arg(param);
+            body.assign(JExpr._this().ref(field), ref);
+        }
 
         return setter;
+    }
+
+    private JMethod addClearer(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+        JMethod clearer = c.method(JMod.PUBLIC, void.class, getClearerName(jsonPropertyName, node));
+
+        JBlock body = clearer.body();
+        body.assign(JExpr._this().ref(field), JExpr._null());
+
+        return clearer;
     }
 
     private JMethod addBuilder(JDefinedClass c, JFieldVar field) {
@@ -235,6 +302,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private String getSetterName(String propertyName, JsonNode node) {
         return ruleFactory.getNameHelper().getSetterName(propertyName, node);
+    }
+
+    private String getClearerName(String propertyName, JsonNode node) {
+    	return ruleFactory.getNameHelper().getClearerName(propertyName, node);
     }
 
     private String getGetterName(String propertyName, JType type, JsonNode node) {

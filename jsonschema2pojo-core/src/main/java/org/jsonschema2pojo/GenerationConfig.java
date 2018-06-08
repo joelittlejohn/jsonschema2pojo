@@ -137,15 +137,15 @@ public interface GenerationConfig {
      *         generated Java types.
      */
     boolean isIncludeToString();
-    
+
     /**
      * Gets the 'toStringExcludes' configuration option.
      *
-     * @return An array of strings representing fields 
+     * @return An array of strings representing fields
      *         that should be excluded from toString methods
      */
     String[] getToStringExcludes();
- 
+
     /**
      * Gets the 'annotationStyle' configuration option.
      *
@@ -555,7 +555,7 @@ public interface GenerationConfig {
 
     /**
      * Gets the 'targetLanguage' configuration option.
-     * 
+     *
      * @return The type of code that will be generated.
      *         <p>
      *         Supported values:
@@ -565,5 +565,23 @@ public interface GenerationConfig {
      *         </ul>
      */
     Language getTargetLanguage();
-    
+
+    /**
+     * Gets the 'suppressWarnings' configuration option.
+     *
+     * @return Whether the generated classes will have a SuppressWarnings
+     * annotation set.
+     */
+    boolean isSuppressWarnings();
+
+    /**
+     * Gets the 'holderClass' configuration option.
+     *
+     * @return A class that will be wrapped around every generated field.
+     * Setting this to null disables the use of a holder class.
+     * If a holder class is used and generation of setters has been enabled,
+     * an additional "clear" method will be generated to clear a previously
+     * set value.
+     */
+    String getHolderClass();
 }

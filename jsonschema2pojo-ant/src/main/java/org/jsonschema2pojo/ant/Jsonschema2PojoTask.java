@@ -177,6 +177,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Language targetLanguage = Language.JAVA;
 
+    private boolean suppressWarnings = false;
+
+    private String holderClass = null;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -867,9 +871,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
-    
+
     public void setTargetLanguage(Language targetLanguage) {
         this.targetLanguage = targetLanguage;
+    }
+
+    public void setSuppressWarnings(final boolean suppressWarnings)
+    {
+        this.suppressWarnings = suppressWarnings;
+    }
+
+    public void setHolderClass(String holderClass)
+    {
+        this.holderClass = isNotBlank(holderClass) ? holderClass : null;
     }
 
     @Override
@@ -1178,10 +1192,22 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
     }
-    
+
+    @Override
+    public boolean isSuppressWarnings()
+    {
+        return suppressWarnings;
+    }
+
+    @Override
+    public String getHolderClass()
+    {
+        return holderClass;
+    }
+
 }

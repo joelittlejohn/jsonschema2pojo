@@ -107,7 +107,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeToString() {
         return true;
     }
-    
+
     /**
      * @return no exclusions
      */
@@ -425,7 +425,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
-    
+
     /**
      * @return {@link Language#JAVA}
      */
@@ -433,5 +433,17 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public Language getTargetLanguage() {
         return Language.JAVA;
     }
-    
+
+    @Override
+    public boolean isSuppressWarnings()
+    {
+        return false;
+    }
+
+    @Override
+    public String getHolderClass()
+    {
+        return null;
+    }
+
 }

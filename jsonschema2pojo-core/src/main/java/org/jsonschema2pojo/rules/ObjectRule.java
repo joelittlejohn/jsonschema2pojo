@@ -315,6 +315,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getAnnotator().propertyInclusion(newType, node);
 
+        if (ruleFactory.getGenerationConfig().isSuppressWarnings())
+        {
+            newType.annotate(SuppressWarnings.class).param("value", "all");
+        }
+
         return newType;
 
     }
