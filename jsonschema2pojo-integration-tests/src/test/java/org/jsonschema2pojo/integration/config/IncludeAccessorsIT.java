@@ -48,7 +48,7 @@ public class IncludeAccessorsIT {
     }
 
     @Test
-    public void beansOmitGettersAndSettersWhenAccessorsAreDisabled() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void beansOmitGettersAndSettersWhenAccessorsAreDisabled() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false, "includeGetters", false, "includeSetters", false));
 
@@ -71,7 +71,7 @@ public class IncludeAccessorsIT {
     }
 
     @Test
-    public void beansWithoutAccessorsRoundTripJsonCorrectly() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, InstantiationException, IllegalAccessException, IOException {
+    public void beansWithoutAccessorsRoundTripJsonCorrectly() throws ClassNotFoundException, SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeAccessors", false, "includeGetters", false, "includeSetters", false));
 

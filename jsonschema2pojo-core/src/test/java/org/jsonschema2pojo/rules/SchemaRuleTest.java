@@ -18,7 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
@@ -78,7 +77,7 @@ public class SchemaRuleTest {
     }
 
     @Test
-    public void enumAsRootIsGeneratedCorrectly() throws URISyntaxException, JClassAlreadyExistsException {
+    public void enumAsRootIsGeneratedCorrectly() throws JClassAlreadyExistsException {
 
         ObjectNode schemaContent = new ObjectMapper().createObjectNode();
         ObjectNode enumNode = schemaContent.objectNode();

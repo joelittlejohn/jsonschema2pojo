@@ -38,14 +38,14 @@ public class IncludeJsr305AnnotationsIT {
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void jsrAnnotationsAreNotIncludedByDefault() throws ClassNotFoundException {
+    public void jsrAnnotationsAreNotIncludedByDefault() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
 
         assertThat(outputDirectory, not(containsText("javax.validation")));
     }
 
     @Test
-    public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() throws ClassNotFoundException {
+    public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
                 config("includeJsr305Annotations", false));
 

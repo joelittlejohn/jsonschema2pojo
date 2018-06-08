@@ -61,7 +61,7 @@ public class YamlPropertiesIT {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/primitiveProperties.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"));
 
@@ -96,7 +96,7 @@ public class YamlPropertiesIT {
     }
 
     @Test
-    public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesThatAreJavaKeywords.yaml", "com.example", config("sourceType", "yamlschema"));
 
@@ -114,7 +114,7 @@ public class YamlPropertiesIT {
     }
 
     @Test
-    public void propertyCalledClassCanBeSerialized() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public void propertyCalledClassCanBeSerialized() throws ClassNotFoundException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertyCalledClass.yaml", "com.example", config("sourceType", "yamlschema"));
 

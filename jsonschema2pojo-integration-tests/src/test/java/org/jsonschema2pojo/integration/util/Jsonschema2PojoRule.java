@@ -223,7 +223,7 @@ public class Jsonschema2PojoRule implements TestRule {
         return new File("target" + File.separator + "jsonschema2pojo");
     }
 
-    static File classNameDir(File baseDir, String className) throws IOException {
+    static File classNameDir(File baseDir, String className) {
         return new File(baseDir, classNameToPath(className));
     }
 
@@ -275,7 +275,7 @@ public class Jsonschema2PojoRule implements TestRule {
 
     static String classNameToPath(String className) {
         return className
-                .replaceAll("\\A(?:.*\\.)?([^\\.]*)\\Z", "$1")
+                .replaceAll("\\A(?:.*\\.)?([^.]*)\\Z", "$1")
                 .replaceAll("\\$", Pattern.quote(File.separator));
     }
 

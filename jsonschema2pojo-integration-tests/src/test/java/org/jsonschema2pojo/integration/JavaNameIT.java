@@ -46,7 +46,7 @@ public class JavaNameIT {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException, IOException {
+    public static void generateAndCompileClass() {
 
 
     }
@@ -68,7 +68,7 @@ public class JavaNameIT {
     }
 
     @Test
-    public void propertiesHaveCorrectTypes() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException, IntrospectionException {
+    public void propertiesHaveCorrectTypes() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
@@ -83,7 +83,7 @@ public class JavaNameIT {
     }
 
     @Test
-    public void gettersHaveCorrectNames() throws NoSuchMethodException, IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void gettersHaveCorrectNames() throws NoSuchMethodException, ClassNotFoundException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
@@ -98,7 +98,7 @@ public class JavaNameIT {
     }
 
     @Test
-    public void settersHaveCorrectNamesAndArgumentTypes() throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public void settersHaveCorrectNamesAndArgumentTypes() throws NoSuchMethodException, ClassNotFoundException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
@@ -132,7 +132,7 @@ public class JavaNameIT {
     }
 
     @Test
-    public void originalPropertyNamesAppearInJavaDoc() throws NoSuchFieldException, IOException {
+    public void originalPropertyNamesAppearInJavaDoc() throws IOException {
 
         schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         File generatedJavaFile = schemaRule.generated("com/example/javaname/JavaName.java");

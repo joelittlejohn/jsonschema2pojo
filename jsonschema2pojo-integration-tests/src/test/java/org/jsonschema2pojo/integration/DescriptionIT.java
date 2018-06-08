@@ -40,7 +40,7 @@ public class DescriptionIT {
     private static JavaClass classWithDescription;
 
     @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException, IOException {
+    public static void generateClasses() throws IOException {
 
         schemaRule.generateAndCompile("/schema/description/description.json", "com.example");
         File generatedJavaFile = schemaRule.generated("com/example/Description.java");
@@ -52,7 +52,7 @@ public class DescriptionIT {
     }
 
     @Test
-    public void descriptionAppearsInClassJavadoc() throws IOException {
+    public void descriptionAppearsInClassJavadoc() {
 
         String javaDocComment = classWithDescription.getComment();
 
@@ -61,7 +61,7 @@ public class DescriptionIT {
     }
 
     @Test
-    public void descriptionAppearsInFieldJavadoc() throws IOException {
+    public void descriptionAppearsInFieldJavadoc() {
 
         JavaField javaField = classWithDescription.getFieldByName("description");
         String javaDocComment = javaField.getComment();
@@ -71,7 +71,7 @@ public class DescriptionIT {
     }
 
     @Test
-    public void descriptionAppearsInGetterJavadoc() throws IOException {
+    public void descriptionAppearsInGetterJavadoc() {
 
         JavaMethod javaMethod = classWithDescription.getMethodBySignature("getDescription", new Type[] {});
         String javaDocComment = javaMethod.getComment();
@@ -81,7 +81,7 @@ public class DescriptionIT {
     }
 
     @Test
-    public void descriptionAppearsInSetterJavadoc() throws IOException {
+    public void descriptionAppearsInSetterJavadoc() {
 
         JavaMethod javaMethod = classWithDescription.getMethodBySignature("setDescription", new Type[] { new Type("java.lang.String") });
         String javaDocComment = javaMethod.getComment();
@@ -91,7 +91,7 @@ public class DescriptionIT {
     }
 
     @Test
-    public void descriptionAppearsAfterTitleInJavadoc() throws IOException {
+    public void descriptionAppearsAfterTitleInJavadoc() {
 
         JavaField javaField = classWithDescription.getFieldByName("descriptionAndTitle");
         String javaDocComment = javaField.getComment();

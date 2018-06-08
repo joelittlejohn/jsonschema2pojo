@@ -53,7 +53,7 @@ public class Moshi1IT {
 
     @Test
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public void annotationStyleMoshi1ProducesMoshi1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void annotationStyleMoshi1ProducesMoshi1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
         Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
                 config("annotationStyle", "moshi1",
@@ -76,7 +76,7 @@ public class Moshi1IT {
     }
 
     @Test
-    public void annotationStyleMoshi1MakesTypesThatWorkWithMoshi1() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException, IOException {
+    public void annotationStyleMoshi1MakesTypesThatWorkWithMoshi1() throws ClassNotFoundException, SecurityException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
                 config("annotationStyle", "moshi1",

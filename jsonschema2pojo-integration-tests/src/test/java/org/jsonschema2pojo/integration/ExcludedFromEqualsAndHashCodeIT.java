@@ -37,7 +37,7 @@ public class ExcludedFromEqualsAndHashCodeIT {
     private static Class<?> clazz;
 
     @BeforeClass
-    public static void generateAndCompileEnum() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/excludedFromEqualsAndHashCode/excludedFromEqualsAndHashCode.json", "com.example");
 

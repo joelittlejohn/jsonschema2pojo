@@ -165,7 +165,7 @@ public class ArrayIT {
      *      76</a>
      */
     @Test
-    public void propertiesThatReferenceAnArraySchemaAlwaysHaveCorrectCollectionType() throws NoSuchMethodException, ClassNotFoundException {
+    public void propertiesThatReferenceAnArraySchemaAlwaysHaveCorrectCollectionType() throws NoSuchMethodException {
 
         Method array1GetterMethod = classWithArrayProperties.getMethod("getRefToArray1");
 

@@ -18,7 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.Annotator;
@@ -87,7 +86,7 @@ public class EnumRuleTest {
     private static class FirstArgAnswer<T> implements Answer<T> {
         @SuppressWarnings("unchecked")
         @Override
-        public T answer(InvocationOnMock invocation) throws Throwable {
+        public T answer(InvocationOnMock invocation) {
             Object[] args = invocation.getArguments();
             //noinspection unchecked
             return (T) args[0];

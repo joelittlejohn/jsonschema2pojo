@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.not;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.junit.Assert.assertThat;
 
@@ -32,7 +31,7 @@ public class CommonsLangRemovalIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void hashCodeAndEqualsDontUseCommonsLang() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void hashCodeAndEqualsDontUseCommonsLang() throws SecurityException {
 
         File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example");
 

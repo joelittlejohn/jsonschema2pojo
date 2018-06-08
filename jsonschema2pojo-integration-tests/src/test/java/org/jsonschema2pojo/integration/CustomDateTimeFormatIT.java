@@ -41,7 +41,7 @@ public class CustomDateTimeFormatIT {
     private static Class<?> classWithCustomPatterns;
 
     @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException, IOException {
+    public static void generateClasses() throws ClassNotFoundException {
 
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
                 "dateType", "java.util.Date",

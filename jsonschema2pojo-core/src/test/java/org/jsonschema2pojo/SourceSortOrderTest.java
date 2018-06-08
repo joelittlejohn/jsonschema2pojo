@@ -48,7 +48,7 @@ public class SourceSortOrderTest {
         testTwoDirectoriesAreCompared(SourceSortOrder.SUBDIRS_FIRST.getComparator());
     }
 
-    private void testTwoFilesAreCompared(Comparator<File> fileComparator) throws IOException {
+    private void testTwoFilesAreCompared(Comparator<File> fileComparator) {
         final File mockFileA = mockFile();
         final File mockFileB = mockFile();
 
@@ -56,7 +56,7 @@ public class SourceSortOrderTest {
         verify(mockFileA, atLeast(1)).compareTo(mockFileB);
     }
 
-    private void testTwoDirectoriesAreCompared(Comparator<File> fileComparator) throws IOException {
+    private void testTwoDirectoriesAreCompared(Comparator<File> fileComparator) {
         final File mockDirA = mockDirectory();
         final File mockDirB = mockDirectory();
 
@@ -65,7 +65,7 @@ public class SourceSortOrderTest {
     }
 
     @Test
-    public void filesBeforeDirectories_FILES_FIRST() throws IOException {
+    public void filesBeforeDirectories_FILES_FIRST() {
         final Comparator<File> fileComparator = SourceSortOrder.FILES_FIRST.getComparator();
         final File mockFile = mockFile();
         final File mockDir = mockDirectory();
@@ -78,7 +78,7 @@ public class SourceSortOrderTest {
     }
 
     @Test
-    public void filesBeforeDirectories_SUBDIRS_FIRST() throws IOException {
+    public void filesBeforeDirectories_SUBDIRS_FIRST() {
         final Comparator<File> fileComparator = SourceSortOrder.SUBDIRS_FIRST.getComparator();
         final File mockFile = mockFile();
         final File mockDir = mockDirectory();

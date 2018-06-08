@@ -26,6 +26,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -44,17 +45,17 @@ public class IncludeJsr303AnnotationsIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();;
+    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void jsrAnnotationsAreNotIncludedByDefault() throws ClassNotFoundException {
+    public void jsrAnnotationsAreNotIncludedByDefault() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
 
         assertThat(outputDirectory, not(containsText("javax.validation")));
     }
 
     @Test
-    public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() throws ClassNotFoundException {
+    public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
                 config("includeJsr303Annotations", false));
 
@@ -144,7 +145,7 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance1 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", asList(1));
+        Object invalidInstance1 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", Collections.singletonList(1));
 
         assertNumberOfConstraintViolationsOn(invalidInstance1, is(1));
 
@@ -242,7 +243,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationIsAddedForArray() throws ClassNotFoundException, NoSuchFieldException {
+    public void jsr303ValidAnnotationIsAddedForArray() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
                 config("includeJsr303Annotations", true));
 
@@ -265,7 +266,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationIsAddedForArrayWithRef() throws ClassNotFoundException, NoSuchFieldException {
+    public void jsr303ValidAnnotationIsAddedForArrayWithRef() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
                 config("includeJsr303Annotations", true));
 

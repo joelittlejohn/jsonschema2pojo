@@ -35,7 +35,7 @@ public class RegressionIT {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException, MalformedURLException {
+    public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.<String, Object> emptyMap());
 
@@ -56,7 +56,7 @@ public class RegressionIT {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void filesWithExtensionPrefixesAreNotTruncated() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void filesWithExtensionPrefixesAreNotTruncated() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.<String, Object> emptyMap());
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FooBaz");
@@ -65,7 +65,7 @@ public class RegressionIT {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void extendsChoosesCorrectSupertypeWhenTypeIsAlreadyGenerated() throws ClassNotFoundException, NoSuchMethodException, SecurityException, MalformedURLException {
+    public void extendsChoosesCorrectSupertypeWhenTypeIsAlreadyGenerated() throws ClassNotFoundException, SecurityException, MalformedURLException {
         URL filteredSchemaUrl = new File("src/test/resources/schema/regression/extends").toURI().toURL();
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", Collections.<String, Object> emptyMap());

@@ -37,7 +37,7 @@ public class IncludeHashCodeAndEqualsIT {
     private static ClassLoader resultsClassLoader;
 
     @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    public static void generateAndCompileClass() {
         resultsClassLoader = classSchemaRule.generateAndCompile("/schema/hashCodeAndEquals/types.json", "com.example", config("includeAdditionalProperties", false));
     }
 
@@ -55,7 +55,7 @@ public class IncludeHashCodeAndEqualsIT {
     }
 
     @Test
-    public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeHashcodeAndEquals", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");

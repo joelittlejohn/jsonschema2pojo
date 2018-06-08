@@ -116,7 +116,7 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaDatesCausesDateTimeDefaultValues() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+    public void useJodaDatesCausesDateTimeDefaultValues() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
                 config("useJodaDates", true));
 
@@ -131,7 +131,7 @@ public class JodaDatesIT {
 
     @Test
     public void useJodaDatesCausesDateTimeAsStringDefaultValues() throws ClassNotFoundException,
-            IntrospectionException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+            InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
                 config("useJodaDates", true));
 
@@ -145,7 +145,7 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaLocalDatesCausesLocalDateDefaultValues() throws ClassNotFoundException, IntrospectionException,
+    public void useJodaLocalDatesCausesLocalDateDefaultValues() throws ClassNotFoundException,
             InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
                 config("useJodaLocalDates", true));
@@ -160,7 +160,7 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaLocalTimesCausesLocalTimeDefaultValues() throws ClassNotFoundException, IntrospectionException,
+    public void useJodaLocalTimesCausesLocalTimeDefaultValues() throws ClassNotFoundException,
             InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
                 config("useJodaLocalTimes", true));

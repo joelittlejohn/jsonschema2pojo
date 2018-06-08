@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.integration;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

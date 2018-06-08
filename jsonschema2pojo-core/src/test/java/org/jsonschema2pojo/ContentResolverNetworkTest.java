@@ -43,12 +43,12 @@ public class ContentResolverNetworkTest {
     );
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         server.start();
     }
 
     @After
-    public void after() throws Exception {
+    public void after() {
         server.stop();
     }
 

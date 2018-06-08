@@ -85,7 +85,7 @@ public class FormatIT {
     }
 
     @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException, IOException {
+    public static void generateClasses() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example");
 
@@ -94,7 +94,7 @@ public class FormatIT {
     }
 
     @Test
-    public void formatValueProducesExpectedType() throws NoSuchMethodException, IntrospectionException {
+    public void formatValueProducesExpectedType() throws IntrospectionException {
 
         Method getter = new PropertyDescriptor(propertyName, classWithFormattedProperties).getReadMethod();
 
@@ -103,7 +103,7 @@ public class FormatIT {
     }
 
     @Test
-    public void valueCanBeSerializedAndDeserialized() throws NoSuchMethodException, IOException, IntrospectionException, IllegalAccessException, InvocationTargetException {
+    public void valueCanBeSerializedAndDeserialized() throws IOException, IntrospectionException, IllegalAccessException, InvocationTargetException {
 
         ObjectMapper objectMapper = new ObjectMapper();
 

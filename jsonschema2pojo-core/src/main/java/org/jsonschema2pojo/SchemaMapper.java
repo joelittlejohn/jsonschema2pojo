@@ -83,7 +83,7 @@ public class SchemaMapper {
      * @throws IOException
      *             if the schema content cannot be read
      */
-    public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws IOException {
+    public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) {
 
         JPackage jpackage = codeModel._package(packageName);
 

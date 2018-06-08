@@ -76,7 +76,7 @@ public class FragmentRefIT {
     }
     
     @Test
-    public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException, ClassNotFoundException {
+    public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException {
         JCodeModel codeModel = new JCodeModel();
         JsonNode schema = new ObjectMapper().readTree("{\n" + 
               "    \"type\": \"object\",\n" + 

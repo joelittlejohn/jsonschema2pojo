@@ -250,7 +250,7 @@ public class DefaultIT {
     }
 
     @Test
-    public void complexPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void complexPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
 
@@ -261,7 +261,7 @@ public class DefaultIT {
     }
 
     @Test
-    public void simplePropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void simplePropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
 
@@ -272,7 +272,7 @@ public class DefaultIT {
     }
     
     @Test
-    public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
         Object instance = classWithDefaults.newInstance();
 

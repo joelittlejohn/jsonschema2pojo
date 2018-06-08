@@ -33,7 +33,7 @@ public class ScalaZipCodeWriter extends ZipCodeWriter {
     }
 
     @Override
-    public OutputStream openBinary(final JPackage pkg, String fileName) throws IOException {
+    public OutputStream openBinary(final JPackage pkg, String fileName) {
         final ByteArrayOutputStream javaSourceStream = new ByteArrayOutputStream();
 
         final String scalaFileName = fileName.replaceAll("\\.java$", ".scala");

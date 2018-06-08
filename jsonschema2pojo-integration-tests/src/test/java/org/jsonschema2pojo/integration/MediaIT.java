@@ -283,7 +283,7 @@ public class MediaIT {
         }
 
         @Override
-        public void serialize(byte[] value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+        public void serialize(byte[] value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
             jgen.writeString(new String(codec.encode(value), "UTF-8"));
         }
 
@@ -300,7 +300,7 @@ public class MediaIT {
         }
 
         @Override
-        public byte[] deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public byte[] deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             try {
                 return codec.decode(jp.getText().getBytes("UTF-8"));
             } catch (DecoderException e) {

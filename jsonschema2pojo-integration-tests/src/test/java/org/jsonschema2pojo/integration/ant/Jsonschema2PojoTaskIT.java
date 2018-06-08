@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -59,11 +60,11 @@ public class Jsonschema2PojoTaskIT {
      * result, we need to compile with the same custom classpath.
      */
     private List<File> buildCustomClasspath() {
-        return asList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar"));
+        return Collections.singletonList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar"));
     }
 
     @Test
-    public void antTaskDocumentationIncludesAllProperties() throws IntrospectionException, IOException {
+    public void antTaskDocumentationIncludesAllProperties() throws IOException {
 
         String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"));
 

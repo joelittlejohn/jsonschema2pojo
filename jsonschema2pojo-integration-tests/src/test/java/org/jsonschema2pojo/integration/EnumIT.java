@@ -62,7 +62,7 @@ public class EnumIT {
     }
 
     @Test
-    public void enumPropertyCreatesAStaticInnerType() throws ClassNotFoundException {
+    public void enumPropertyCreatesAStaticInnerType() {
 
         assertThat(enumClass.isEnum(), is(true));
 
@@ -108,7 +108,7 @@ public class EnumIT {
     }
 
     @Test
-    public void enumDeserializationMethodRejectsInvalidValues() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumDeserializationMethodRejectsInvalidValues() throws NoSuchMethodException, IllegalAccessException {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
 
@@ -123,7 +123,7 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void enumAtRootCreatesATopLevelType() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumAtRootCreatesATopLevelType() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
 
@@ -136,7 +136,7 @@ public class EnumIT {
     
     @Test
     @SuppressWarnings("unchecked")
-    public void intEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void intEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example");
 
@@ -188,7 +188,7 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void enumWithEmptyStringAsValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumWithEmptyStringAsValue() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithEmptyString.json", "com.example");
 
@@ -201,7 +201,7 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void enumWithNullValue() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumWithNullValue() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
 
@@ -213,7 +213,7 @@ public class EnumIT {
     }
 
     @Test
-    public void enumWithUppercaseProperty() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumWithUppercaseProperty() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithUppercaseProperty.json", "com.example");
 
@@ -222,7 +222,7 @@ public class EnumIT {
     }
 
     @Test
-    public void enumWithExtendedCharacters() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void enumWithExtendedCharacters() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithExtendedCharacters.json", "com.example");
 
@@ -247,7 +247,7 @@ public class EnumIT {
     }
 
     @Test
-    public void multipleEnumArraysWithSameName() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void multipleEnumArraysWithSameName() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");
 
@@ -286,7 +286,7 @@ public class EnumIT {
     
     @Test
     @SuppressWarnings("unchecked")
-    public void intEnumIsDeserializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JsonParseException, JsonMappingException, IOException {
+    public void intEnumIsDeserializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
 
@@ -314,7 +314,7 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void intEnumIsSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, JsonParseException, JsonMappingException, IOException, InstantiationException {
+    public void intEnumIsSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, InstantiationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
 

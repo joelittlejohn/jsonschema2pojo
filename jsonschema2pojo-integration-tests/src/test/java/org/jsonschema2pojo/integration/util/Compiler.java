@@ -19,11 +19,7 @@ package org.jsonschema2pojo.integration.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
@@ -57,7 +53,7 @@ public class Compiler {
         if (outputDirectory != null) {
             try {
                 fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
-                        Arrays.asList(outputDirectory));
+                        Collections.singletonList(outputDirectory));
                 fileManager.setLocation(StandardLocation.CLASS_PATH, classpath);
             } catch (IOException e) {
                 throw new RuntimeException("could not set output directory", e);

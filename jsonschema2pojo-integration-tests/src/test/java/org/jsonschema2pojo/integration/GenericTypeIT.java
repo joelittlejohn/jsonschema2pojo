@@ -44,7 +44,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void genericTypeCanBeIncludedInJavaType() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeCanBeIncludedInJavaType() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getA");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
@@ -57,7 +57,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void genericTypeCanBeIncludedWhenTypeObjectIsOmitted() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeCanBeIncludedWhenTypeObjectIsOmitted() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getD");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
@@ -70,7 +70,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
-    public void genericTypeInJavaTypeCanBeNested() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeInJavaTypeCanBeNested() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getB");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
@@ -88,7 +88,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
-    public void genericTypeInJavaTypeCanIncludeArrays() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeInJavaTypeCanIncludeArrays() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getC");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
@@ -101,7 +101,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void genericTypeCanBeWildcard() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeCanBeWildcard() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getE");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));
@@ -115,7 +115,7 @@ public class GenericTypeIT {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void genericTypeCanBeExtendsWildcard() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void genericTypeCanBeExtendsWildcard() throws NoSuchMethodException, SecurityException {
 
         Method getterMethod = classWithGenericTypes.getMethod("getF");
         assertThat((Class<Map>) getterMethod.getReturnType(), is(equalTo(Map.class)));

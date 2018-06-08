@@ -84,7 +84,7 @@ public class TypeIT {
     }
 
     @Test
-    public void arrayTypeProducesCollection() throws NoSuchMethodException, ClassNotFoundException {
+    public void arrayTypeProducesCollection() throws NoSuchMethodException {
 
         Method getterMethod = classWithManyTypes.getMethod("getArrayProperty");
 

@@ -102,7 +102,7 @@ public class ConstructorsIT {
         }
 
         @Test
-        public void testNoConstructorWithoutProperties() throws Exception {
+        public void testNoConstructorWithoutProperties() {
             assertHasOnlyDefaultConstructor(typeWithoutProperties);
         }
     }
@@ -182,7 +182,7 @@ public class ConstructorsIT {
         }
 
         @Test
-        public void testNoConstructorWithoutRequiredParams() throws Exception {
+        public void testNoConstructorWithoutRequiredParams() {
             assertHasOnlyDefaultConstructor(typeWithoutRequired);
         }
 

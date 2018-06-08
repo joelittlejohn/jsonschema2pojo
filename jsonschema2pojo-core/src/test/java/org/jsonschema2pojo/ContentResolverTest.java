@@ -50,7 +50,7 @@ public class ContentResolverTest {
     }
 
     @Test
-    public void classpathLinkIsResolvedToContent() throws IOException {
+    public void classpathLinkIsResolvedToContent() {
         
         URI schemaFile;
         JsonNode uriContent;
@@ -76,15 +76,9 @@ public class ContentResolverTest {
     private URI createSchemaFile() throws IOException {
         File tempFile = File.createTempFile("jsonschema2pojotest", "json");
         tempFile.deleteOnExit();
-        
-        OutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(tempFile);
+
+        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
             outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
         }
         
         return tempFile.toURI();

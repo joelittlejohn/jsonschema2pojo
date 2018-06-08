@@ -39,7 +39,7 @@ public class TitleIT {
     private static JavaClass classWithTitle;
 
     @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException, IOException {
+    public static void generateClasses() throws IOException {
 
         classSchemaRule.generateAndCompile("/schema/title/title.json", "com.example");
         File generatedJavaFile = classSchemaRule.generated("com/example/Title.java");
@@ -51,7 +51,7 @@ public class TitleIT {
     }
 
     @Test
-    public void descriptionAppearsInClassJavadoc() throws IOException {
+    public void descriptionAppearsInClassJavadoc() {
 
         String javaDocComment = classWithTitle.getComment();
 
@@ -60,7 +60,7 @@ public class TitleIT {
     }
 
     @Test
-    public void descriptionAppearsInFieldJavadoc() throws IOException {
+    public void descriptionAppearsInFieldJavadoc() {
 
         JavaField javaField = classWithTitle.getFieldByName("title");
         String javaDocComment = javaField.getComment();
@@ -70,7 +70,7 @@ public class TitleIT {
     }
 
     @Test
-    public void descriptionAppearsInGetterJavadoc() throws IOException {
+    public void descriptionAppearsInGetterJavadoc() {
 
         JavaMethod javaMethod = classWithTitle.getMethodBySignature("getTitle", new Type[] {});
         String javaDocComment = javaMethod.getComment();
@@ -80,7 +80,7 @@ public class TitleIT {
     }
 
     @Test
-    public void descriptionAppearsInSetterJavadoc() throws IOException {
+    public void descriptionAppearsInSetterJavadoc() {
 
         JavaMethod javaMethod = classWithTitle.getMethodBySignature("setTitle", new Type[] { new Type("java.lang.String") });
         String javaDocComment = javaMethod.getComment();
@@ -90,7 +90,7 @@ public class TitleIT {
     }
 
     @Test
-    public void titleAppearsBeforeDescriptionInJavadoc() throws IOException {
+    public void titleAppearsBeforeDescriptionInJavadoc() {
 
         JavaField javaField = classWithTitle.getFieldByName("titleAndDescription");
         String javaDocComment = javaField.getComment();

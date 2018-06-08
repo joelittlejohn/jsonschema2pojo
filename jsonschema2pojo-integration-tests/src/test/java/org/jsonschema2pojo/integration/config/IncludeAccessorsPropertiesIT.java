@@ -22,10 +22,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -75,7 +72,7 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     @Test
-    public void noGettersOrSettersWhenFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void noGettersOrSettersWhenFalse() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
@@ -83,7 +80,7 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     @Test
-    public void hasGettersOrSettersWhenTrue() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void hasGettersOrSettersWhenTrue() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
@@ -91,7 +88,7 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     @Test
-    public void onlyHasPublicInstanceFieldsWhenFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void onlyHasPublicInstanceFieldsWhenFalse() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsFalse);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
@@ -99,7 +96,7 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     @Test
-    public void noPublicInstanceFieldsWhenTrue() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
+    public void noPublicInstanceFieldsWhenTrue() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(path, PACKAGE, includeAccessorsTrue);
         Class generatedType = resultsClassLoader.loadClass(typeName);
 
@@ -171,7 +168,7 @@ public class IncludeAccessorsPropertiesIT {
     }
 
     private static <M extends Member> Matcher<M> fieldWhitelist() {
-        return nameMatches(isIn(Arrays.asList("additionalProperties")));
+        return nameMatches(isIn(Collections.singletonList("additionalProperties")));
     }
 
     private static <M extends Member> Matcher<M> fieldGetterOrSetter() {

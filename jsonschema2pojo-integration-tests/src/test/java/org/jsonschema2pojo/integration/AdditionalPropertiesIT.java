@@ -88,7 +88,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void jacksonCanSerializeOurAdditionalProperties() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void jacksonCanSerializeOurAdditionalProperties() throws ClassNotFoundException, IOException, SecurityException, IllegalArgumentException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
 
@@ -103,7 +103,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void jacksonCanSerializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void jacksonCanSerializeOurAdditionalPropertiesWithoutIncludeAccessors() throws ClassNotFoundException, IOException, SecurityException, IllegalArgumentException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeGetters", false, "includeAccessors", false));
 
@@ -118,7 +118,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test(expected = UnrecognizedPropertyException.class)
-    public void additionalPropertiesAreNotDeserializableWhenDisallowed() throws ClassNotFoundException, SecurityException, NoSuchMethodException, IOException {
+    public void additionalPropertiesAreNotDeserializableWhenDisallowed() throws ClassNotFoundException, SecurityException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/noAdditionalProperties.json", "com.example");
 
@@ -129,7 +129,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test(expected = UnrecognizedPropertyException.class)
-    public void additionalPropertiesAreNotDeserializableWhenDisabledGlobally() throws ClassNotFoundException, SecurityException, NoSuchMethodException, IOException {
+    public void additionalPropertiesAreNotDeserializableWhenDisabledGlobally() throws ClassNotFoundException, SecurityException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAdditionalProperties", false));
 
@@ -252,7 +252,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, NoSuchMethodException, JsonProcessingException, IOException {
+    public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, IOException {
         mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
         mapper.configure(MapperFeature.AUTO_DETECT_SETTERS, false);
         mapper.setVisibility(mapper.getVisibilityChecker().with(Visibility.ANY));

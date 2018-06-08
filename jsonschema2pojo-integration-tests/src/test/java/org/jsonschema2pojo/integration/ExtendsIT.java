@@ -93,7 +93,7 @@ public class ExtendsIT {
         new PropertyDescriptor("parent", generatedType).getWriteMethod().invoke(instance2, "not-equal");
         new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance2, "2");
 
-        assertFalse(instance.equals(instance2));
+        assertNotEquals(instance, instance2);
     }
 
     @Test
