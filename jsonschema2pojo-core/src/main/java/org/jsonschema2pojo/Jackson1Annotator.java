@@ -101,32 +101,32 @@ public class Jackson1Annotator extends AbstractAnnotator {
     }
 
     @Override
-    public void propertyGetter(JMethod getter, String propertyName) {
+    public void propertyGetter(JMethod getter, JDefinedClass clazz, String propertyName) {
         getter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
-    public void propertySetter(JMethod setter, String propertyName) {
+    public void propertySetter(JMethod setter, JDefinedClass clazz, String propertyName) {
         setter.annotate(JsonProperty.class).param("value", propertyName);
     }
 
     @Override
-    public void anyGetter(JMethod getter) {
+    public void anyGetter(JMethod getter, JDefinedClass clazz) {
         getter.annotate(JsonAnyGetter.class);
     }
 
     @Override
-    public void anySetter(JMethod setter) {
+    public void anySetter(JMethod setter, JDefinedClass clazz) {
         setter.annotate(JsonAnySetter.class);
     }
 
     @Override
-    public void enumCreatorMethod(JMethod creatorMethod) {
+    public void enumCreatorMethod(JDefinedClass _enum, JMethod creatorMethod) {
         creatorMethod.annotate(JsonCreator.class);
     }
 
     @Override
-    public void enumValueMethod(JMethod valueMethod) {
+    public void enumValueMethod(JDefinedClass _enum, JMethod valueMethod) {
         valueMethod.annotate(JsonValue.class);
     }
 

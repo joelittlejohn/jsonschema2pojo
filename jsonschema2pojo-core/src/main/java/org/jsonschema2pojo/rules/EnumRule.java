@@ -187,7 +187,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         _if._then()._throw(illegalArgumentException);
         _if._else()._return(constant);
 
-        ruleFactory.getAnnotator().enumCreatorMethod(fromValue);
+        ruleFactory.getAnnotator().enumCreatorMethod(_enum, fromValue);
     }
 
     private JFieldVar addQuickLookupMap(JDefinedClass _enum, JType backingType) {
@@ -237,7 +237,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JBlock body = fromValue.body();
         body._return(JExpr._this().ref(valueField));
 
-        ruleFactory.getAnnotator().enumValueMethod(fromValue);
+        ruleFactory.getAnnotator().enumValueMethod(_enum, fromValue);
     }
 
     private boolean isString(JType type){
@@ -256,7 +256,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
                 JEnumConstant constant = _enum.enumConstant(constantName);
                 constant.arg(DefaultRule.getDefaultValue(type, value));
-                ruleFactory.getAnnotator().enumConstant(constant, value.asText());
+                ruleFactory.getAnnotator().enumConstant(_enum, constant, value.asText());
             }
         }
     }

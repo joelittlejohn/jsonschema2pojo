@@ -141,7 +141,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperty");
 
-        ruleFactory.getAnnotator().anySetter(setter);
+        ruleFactory.getAnnotator().anySetter(setter, jclass);
 
         JVar nameParam = setter.param(String.class, "name");
         JVar valueParam = setter.param(propertyType, "value");
@@ -154,7 +154,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     private JMethod addGetter(JDefinedClass jclass, JFieldVar field) {
         JMethod getter = jclass.method(JMod.PUBLIC, field.type(), "getAdditionalProperties");
 
-        ruleFactory.getAnnotator().anyGetter(getter);
+        ruleFactory.getAnnotator().anyGetter(getter, jclass);
 
         getter.body()._return(JExpr._this().ref(field));
         return getter;

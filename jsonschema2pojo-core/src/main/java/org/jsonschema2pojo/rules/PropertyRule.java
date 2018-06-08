@@ -73,19 +73,19 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         propertyAnnotations(nodeName, node, schema, field);
 
-        formatAnnotation(field, node);
+        formatAnnotation(field, jclass, node);
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeAccessors || isIncludeGetters) {
             JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema));
-            ruleFactory.getAnnotator().propertyGetter(getter, nodeName);
+            ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeAccessors || isIncludeSetters) {
             JMethod setter = addSetter(jclass, field, nodeName, node);
-            ruleFactory.getAnnotator().propertySetter(setter, nodeName);
+            ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
@@ -150,14 +150,14 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
     }
 
-    private void formatAnnotation(JFieldVar field, JsonNode node) {
+    private void formatAnnotation(JFieldVar field, JDefinedClass clazz, JsonNode node) {
         String format = node.path("format").asText();
         if ("date-time".equalsIgnoreCase(format)) {
-            ruleFactory.getAnnotator().dateTimeField(field, node);
+            ruleFactory.getAnnotator().dateTimeField(field, clazz, node);
         } else if ("date".equalsIgnoreCase(format)) {
-            ruleFactory.getAnnotator().dateField(field, node);
+            ruleFactory.getAnnotator().dateField(field, clazz, node);
         } else if ("time".equalsIgnoreCase(format)) {
-            ruleFactory.getAnnotator().timeField(field, node);
+            ruleFactory.getAnnotator().timeField(field, clazz, node);
         }
     }
 

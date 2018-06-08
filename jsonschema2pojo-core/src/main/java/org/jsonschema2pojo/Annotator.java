@@ -78,7 +78,7 @@ public interface Annotator {
      * @param propertyName
      *            the name of the JSON property that this getter gets
      */
-    void propertyGetter(JMethod getter, String propertyName);
+    void propertyGetter(JMethod getter, JDefinedClass clazz, String propertyName);
 
     /**
      * Add the necessary annotation to mark a Java method as the setter for a
@@ -90,7 +90,7 @@ public interface Annotator {
      * @param propertyName
      *            the name of the JSON property that this setter sets
      */
-    void propertySetter(JMethod setter, String propertyName);
+    void propertySetter(JMethod setter, JDefinedClass clazz, String propertyName);
 
     /**
      * Add the necessary annotation to mark a Java method as the getter for
@@ -101,7 +101,7 @@ public interface Annotator {
      *            the method that will be used to get the values of additional
      *            properties
      */
-    void anyGetter(JMethod getter);
+    void anyGetter(JMethod getter, JDefinedClass clazz);
 
     /**
      * Add the necessary annotation to mark a Java method as the setter for
@@ -112,7 +112,7 @@ public interface Annotator {
      *            the method that will be used to set the values of additional
      *            properties
      */
-    void anySetter(JMethod setter);
+    void anySetter(JMethod setter, JDefinedClass clazz);
 
     /**
      * Add the necessary annotation to mark a static Java method as the
@@ -122,7 +122,7 @@ public interface Annotator {
      * @param creatorMethod
      *            the method that can create a Java enum value from a JSON value
      */
-    void enumCreatorMethod(JMethod creatorMethod);
+    void enumCreatorMethod(JDefinedClass _enum, JMethod creatorMethod);
 
     /**
      * Add the necessary annotation to mark a Java method as the value method
@@ -133,13 +133,13 @@ public interface Annotator {
      *            the enum instance method that can create a JSON value during
      *            serialization
      */
-    void enumValueMethod(JMethod valueMethod);
+    void enumValueMethod(JDefinedClass _enum, JMethod valueMethod);
 
     /**
      * Add the necessary annotations to an enum constant. For instance, to force
      * the the given value to be used when serializing.
      */
-    void enumConstant(JEnumConstant constant, String value);
+    void enumConstant(JDefinedClass _enum, JEnumConstant constant, String value);
 
     /**
      * Indicates whether the annotation style that this annotator uses can
@@ -170,7 +170,7 @@ public interface Annotator {
      * @param propertyNode
      *            the schema node defining this property
      */
-    void dateTimeField(JFieldVar field, JsonNode propertyNode);
+    void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
     /**
      * Add the necessary annotations to a date field. For instance, to format
@@ -181,7 +181,7 @@ public interface Annotator {
      * @param propertyNode
      *            the schema node defining this property
      */
-    void dateField(JFieldVar field, JsonNode propertyNode);
+    void dateField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
     /**
      * Add the necessary annotations to a time field. For instance, to format
@@ -192,7 +192,7 @@ public interface Annotator {
      * @param propertyNode
      *            the schema node defining this property
      */
-    void timeField(JFieldVar field, JsonNode propertyNode);
+    void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 }

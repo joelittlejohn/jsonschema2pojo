@@ -17,7 +17,7 @@
 package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.squareup.moshi.Json;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
@@ -25,7 +25,7 @@ import com.sun.codemodel.JFieldVar;
 /**
  * Annotates generated Java types using Moshi. The annotations used here are most
  * useful when the JSON fields have characters (like underscores) that are
- * poorly suited for beans. By using the {@link Json} annotation, we
+ * poorly suited for beans. By using the Moshi 'Json' annotation, we
  * are able to preserve the original format.
  *
  * @see <a
@@ -39,12 +39,14 @@ public class Moshi1Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
-        field.annotate(Json.class).param("name", propertyName);
+        JClass moshiAnnotation = clazz.owner().directClass("com.squareup.moshi.Json");
+        field.annotate(moshiAnnotation).param("name", propertyName);
     }
 
     @Override
-    public void enumConstant(JEnumConstant constant, String value) {
-        constant.annotate(Json.class).param("name", value);
+    public void enumConstant(JDefinedClass _enum, JEnumConstant constant, String value) {
+        JClass moshiAnnotation = _enum.owner().directClass("com.squareup.moshi.Json");
+        constant.annotate(moshiAnnotation).param("name", value);
     }
 
     @Override

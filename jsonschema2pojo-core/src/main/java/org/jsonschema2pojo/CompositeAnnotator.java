@@ -65,51 +65,51 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
-    public void propertyGetter(JMethod getter, String propertyName) {
+    public void propertyGetter(JMethod getter, JDefinedClass clazz, String propertyName) {
         for (Annotator annotator : annotators) {
-            annotator.propertyGetter(getter, propertyName);
+            annotator.propertyGetter(getter, clazz, propertyName);
         }
     }
 
     @Override
-    public void propertySetter(JMethod setter, String propertyName) {
+    public void propertySetter(JMethod setter, JDefinedClass clazz, String propertyName) {
         for (Annotator annotator : annotators) {
-            annotator.propertySetter(setter, propertyName);
+            annotator.propertySetter(setter, clazz, propertyName);
         }
     }
 
     @Override
-    public void anyGetter(JMethod getter) {
+    public void anyGetter(JMethod getter, JDefinedClass clazz) {
         for (Annotator annotator : annotators) {
-            annotator.anyGetter(getter);
+            annotator.anyGetter(getter, clazz);
         }
     }
 
     @Override
-    public void anySetter(JMethod setter) {
+    public void anySetter(JMethod setter, JDefinedClass clazz) {
         for (Annotator annotator : annotators) {
-            annotator.anySetter(setter);
+            annotator.anySetter(setter, clazz);
         }
     }
 
     @Override
-    public void enumCreatorMethod(JMethod creatorMethod) {
+    public void enumCreatorMethod(JDefinedClass _enum, JMethod creatorMethod) {
         for (Annotator annotator : annotators) {
-            annotator.enumCreatorMethod(creatorMethod);
+            annotator.enumCreatorMethod(_enum, creatorMethod);
         }
     }
 
     @Override
-    public void enumValueMethod(JMethod valueMethod) {
+    public void enumValueMethod(JDefinedClass _enum, JMethod valueMethod) {
         for (Annotator annotator : annotators) {
-            annotator.enumValueMethod(valueMethod);
+            annotator.enumValueMethod(_enum, valueMethod);
         }
     }
 
     @Override
-    public void enumConstant(JEnumConstant constant, String value) {
+    public void enumConstant(JDefinedClass _enum, JEnumConstant constant, String value) {
         for (Annotator annotator : annotators) {
-            annotator.enumConstant(constant, value);
+            annotator.enumConstant(_enum, constant, value);
         }
     }
 
@@ -131,23 +131,23 @@ public class CompositeAnnotator implements Annotator {
     }
 
    @Override
-   public void dateTimeField(JFieldVar field, JsonNode propertyNode) {
+   public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
       for (Annotator annotator : annotators) {
-            annotator.dateTimeField(field, propertyNode);
+            annotator.dateTimeField(field, clazz, propertyNode);
         }
    }
 
    @Override
-   public void dateField(JFieldVar field, JsonNode propertyNode) {
+   public void dateField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
       for (Annotator annotator : annotators) {
-            annotator.dateField(field, propertyNode);
+            annotator.dateField(field, clazz, propertyNode);
         }
    }
 
     @Override
-    public void timeField(JFieldVar field, JsonNode propertyNode) {
+    public void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
         for (Annotator annotator : annotators) {
-            annotator.timeField(field, propertyNode);
+            annotator.timeField(field, clazz, propertyNode);
         }
     }
 }

@@ -132,6 +132,10 @@
             <artifactId>android</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.jdt.core.compiler</groupId>
             <artifactId>ecj</artifactId>
         </dependency>
