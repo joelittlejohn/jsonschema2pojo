@@ -1,12 +1,18 @@
 # Changelog
 
+## 1.0.0-alpha2
+* Changed maven central repo listing id in poms to default of 'central' ([#833](https://github.com/joelittlejohn/jsonschema2pojo/pull/833))
+* **The generated POJO does not always adhere to JavaBean naming conventions ([#756](https://github.com/joelittlejohn/jsonschema2pojo/issues/756))**
+* **Improve unique class naming strategy by appending an incrementing number instead of adding more and more underscores ([#476](https://github.com/joelittlejohn/jsonschema2pojo/pull/476))**
+
 ## 1.0.0-alpha1
 * Improve error message to include the bad type when javaType cannot be parsed ([#823](https://github.com/joelittlejohn/jsonschema2pojo/pull/823))
 * Replace commons-lang equals, hashCode, and toString with generated code ([#812](https://github.com/joelittlejohn/jsonschema2pojo/pull/812))
 * Add partial support for wildcards (? and ? extends...) in "javaType" declarations ([#810](https://github.com/joelittlejohn/jsonschema2pojo/pull/810))
 * Normalize/canonicalize relative source paths (and remove extra underscore classes that appear when using a relative source path) ([#792](https://github.com/joelittlejohn/jsonschema2pojo/pull/792))
+* Fix sourceType docs to include YAML/YAMLSCHEMA in Maven, Gradle and Ant ([#787](https://github.com/joelittlejohn/jsonschema2pojo/issues/787))
 * Add useOptionalForGetters option for Java 8 java.util.Optional on getters ([#344](https://github.com/joelittlejohn/jsonschema2pojo/pull/344))
-* Wrong class name when using $ref in json schema. ([#164](https://github.com/joelittlejohn/jsonschema2pojo/issues/164))
+* **Wrong class name when using $ref in json schema ([#164](https://github.com/joelittlejohn/jsonschema2pojo/issues/164))**
 
 ## 0.5.1
 * Add Scala and YAML to the website ([#785](https://github.com/joelittlejohn/jsonschema2pojo/issues/785))
