@@ -3,7 +3,7 @@
   "properties": {
     "mapField": {
       "type": "object",
-      "javaType" : "java.util.Map<String,com.example.IntPair>"
+      "existingJavaType" : "java.util.Map<String,com.example.IntPair>"
     },
     "objectField": {
       "$ref": "intPair.json"

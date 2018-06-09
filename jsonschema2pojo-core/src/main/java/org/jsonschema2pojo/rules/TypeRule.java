@@ -88,8 +88,8 @@ public class TypeRule implements Rule<JClassContainer, JType> {
         if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
             type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
-        } else if (node.has("javaType")) {
-            String typeName = node.path("javaType").asText();
+        } else if (node.has("existingJavaType")) {
+            String typeName = node.path("existingJavaType").asText();
 
             if (isPrimitive(typeName, jClassContainer.owner())) {
                 type = primitiveType(typeName, jClassContainer.owner());
@@ -116,9 +116,9 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = jClassContainer.owner().ref(Object.class);
         }
 
-        if (!node.has("javaType") && node.has("format")) {
+        if (!node.has("javaType") && !node.has("existingJavaType") && node.has("format")) {
             type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), type, schema);
-        } else if (!node.has("javaType") && propertyTypeName.equals("string") && node.has("media")) {
+        } else if (!node.has("javaType") && !node.has("existingJavaType") && propertyTypeName.equals("string") && node.has("media")) {
             type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), type, schema);
         }
 

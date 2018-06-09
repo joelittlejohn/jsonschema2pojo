@@ -3,24 +3,24 @@
     "properties" : {
         "a" : {
             "type": "object",
-            "javaType" : "java.util.Map<String,Integer>"
+            "existingJavaType" : "java.util.Map<String,Integer>"
         },
         "b" : {
             "type" : "object",
-            "javaType" : "java.util.Map<java.util.Map<String,Integer>, java.util.List<java.util.List<Boolean>>>"
+            "existingJavaType" : "java.util.Map<java.util.Map<String,Integer>, java.util.List<java.util.List<Boolean>>>"
         },
         "c" : {
             "type" : "object",
-            "javaType" : "java.util.Map<String, String[][]>"
+            "existingJavaType" : "java.util.Map<String, String[][]>"
         },
         "d" : {
-            "javaType" : "java.util.Map<String,Double>"
+            "existingJavaType" : "java.util.Map<String,Double>"
         },
         "e" : {
-            "javaType" : "java.util.Map<String,?>"
+            "existingJavaType" : "java.util.Map<String,?>"
         },
         "f" : {
-            "javaType" : "java.util.Map<String,? extends Number>"
+            "existingJavaType" : "java.util.Map<String,? extends Number>"
         }
     }
 }

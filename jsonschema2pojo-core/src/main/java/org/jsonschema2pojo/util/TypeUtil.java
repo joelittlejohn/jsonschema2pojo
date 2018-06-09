@@ -48,12 +48,7 @@ public class TypeUtil {
     private static JClass buildClass(JClassContainer _package, ClassOrInterfaceType c, int arrayCount) {
         final String packagePrefix = (c.getScope() != null) ? c.getScope().toString() + "." : "";
 
-        JClass _class;
-        try {
-            _class = _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(packagePrefix + c.getName()));
-        } catch (ClassNotFoundException e) {
-            _class = _package.owner().ref(packagePrefix + c.getName());
-        }
+        JClass _class = _package.owner().ref(packagePrefix + c.getName());
 
         for (int i = 0; i < arrayCount; i++) {
             _class = _class.array();

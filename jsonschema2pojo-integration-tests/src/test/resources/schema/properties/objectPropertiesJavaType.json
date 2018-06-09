@@ -2,7 +2,7 @@
   "type" : "object",
   "properties" : {
     "a" : {
-      "javaType": "org.jsonschema2pojo.NoopAnnotator",
+      "existingJavaType": "org.jsonschema2pojo.NoopAnnotator",
       "type": "object"
     }
   }

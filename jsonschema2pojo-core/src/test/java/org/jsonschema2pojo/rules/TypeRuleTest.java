@@ -119,7 +119,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
-        objectNode.put("javaType", "int");
+        objectNode.put("existingJavaType", "int");
 
         when(config.isUsePrimitives()).thenReturn(false);
 
@@ -200,7 +200,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
-        objectNode.put("javaType", "java.lang.Integer");
+        objectNode.put("existingJavaType", "java.lang.Integer");
 
         when(config.isUsePrimitives()).thenReturn(true);
 
@@ -216,7 +216,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
-        objectNode.put("javaType", "long");
+        objectNode.put("existingJavaType", "long");
 
         when(config.isUsePrimitives()).thenReturn(false);
 
@@ -232,7 +232,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
-        objectNode.put("javaType", "java.lang.Long");
+        objectNode.put("existingJavaType", "java.lang.Long");
 
         when(config.isUsePrimitives()).thenReturn(true);
 
@@ -376,7 +376,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
-        objectNode.put("javaType", "java.math.BigInteger");
+        objectNode.put("existingJavaType", "java.math.BigInteger");
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 
@@ -421,7 +421,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
-        objectNode.put("javaType", "float");
+        objectNode.put("existingJavaType", "float");
 
         when(config.isUsePrimitives()).thenReturn(false);
 
@@ -437,7 +437,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
-        objectNode.put("javaType", "java.lang.Float");
+        objectNode.put("existingJavaType", "java.lang.Float");
 
         when(config.isUsePrimitives()).thenReturn(true);
 
@@ -453,7 +453,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
-        objectNode.put("javaType", "double");
+        objectNode.put("existingJavaType", "double");
 
         when(config.isUsePrimitives()).thenReturn(false);
 
@@ -469,7 +469,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
-        objectNode.put("javaType", "java.lang.Double");
+        objectNode.put("existingJavaType", "java.lang.Double");
 
         when(config.isUsePrimitives()).thenReturn(true);
 
@@ -485,7 +485,7 @@ public class TypeRuleTest {
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "number");
-        objectNode.put("javaType", "java.math.BigDecimal");
+        objectNode.put("existingJavaType", "java.math.BigDecimal");
 
         JType result = rule.apply("fooBar", objectNode, jpackage, null);
 

@@ -40,6 +40,7 @@ import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.util.MakeUniqueClassName;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
@@ -265,22 +266,27 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JDefinedClass newType;
 
         try {
-            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
-            if (node.has("javaType")) {
-                String fqn = substringBefore(node.get("javaType").asText(), "<");
+            if (node.has("existingJavaType")) {
+                String fqn = substringBefore(node.get("existingJavaType").asText(), "<");
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
-                JClass existingClass;
 
-                try {
-                    _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
+                JClass existingClass = resolveType(_package, fqn + (node.get("existingJavaType").asText().contains("<") ? "<" + substringAfter(node.get("existingJavaType").asText(), "<") : ""));
+                throw new ClassAlreadyExistsException(existingClass);
+            }
 
-                    throw new ClassAlreadyExistsException(existingClass);
-                } catch (ClassNotFoundException e) {
+            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
+            if (node.has("javaType")) {
+                String fqn = node.path("javaType").asText();
 
+                if (isPrimitive(fqn, _package.owner())) {
+                    throw new GenerationException("javaType cannot refer to a primitive type (" + fqn + "), did you mean to use existingJavaType?");
+                }
+
+                if (fqn.contains("<")) {
+                    throw new GenerationException("javaType does not support generic args (" + fqn + "), did you mean to use existingJavaType?");
                 }
 
                 int index = fqn.lastIndexOf(".") + 1;
@@ -288,15 +294,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     fqn = fqn.substring(0, index) + ruleFactory.getGenerationConfig().getClassNamePrefix() + fqn.substring(index) + ruleFactory.getGenerationConfig().getClassNameSuffix();
                 }
 
-                try {
-
-                    _package.owner().ref(Thread.currentThread().getContextClassLoader().loadClass(fqn));
-                    existingClass = resolveType(_package, fqn + (node.get("javaType").asText().contains("<") ? "<" + substringAfter(node.get("javaType").asText(), "<") : ""));
-
-                    throw new ClassAlreadyExistsException(existingClass);
-                } catch (ClassNotFoundException e) {
-
-                }
                 if (usePolymorphicDeserialization) {
                     newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
                 } else {
