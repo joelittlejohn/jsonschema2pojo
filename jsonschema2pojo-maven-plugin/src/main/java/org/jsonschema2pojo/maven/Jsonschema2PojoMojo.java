@@ -66,7 +66,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Target directory for generated Java source files.
      *
      * @parameter property="jsonschema2pojo.outputDirectory"
-     *            default-value="${project.build.directory}/java-gen"
+     *            default-value="${project.build.directory}/generated-sources/jsonschema2pojo"
      * @since 0.1.0
      */
     private File outputDirectory;
