@@ -90,3 +90,5 @@
 * David Ehrmann
 * Peter Major
 * Chris Laprun
+* Dennis Rippinger
+* Klevis Ramo

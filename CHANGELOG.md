@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0-alpha3
+* **maven plugin output directory should default to "generated-sources/jsonschema2pojo" ([#878](https://github.com/joelittlejohn/jsonschema2pojo/issues/878))**
+* **Always pass enclosing class or enum to annotator methods (changes method signatures) ([#876](https://github.com/joelittlejohn/jsonschema2pojo/issues/876))**
+* Remove plugin runtime dependency on Moshi ([#874](https://github.com/joelittlejohn/jsonschema2pojo/issues/874))
+* Remove plugin runtime dependency on Android ([#873](https://github.com/joelittlejohn/jsonschema2pojo/issues/873))
+* **Drop support for Maven 2.x ([#872](https://github.com/joelittlejohn/jsonschema2pojo/issues/872))**
+* **Move to Java 8 ([#860](https://github.com/joelittlejohn/jsonschema2pojo/issues/860))**
+* Generate Camel Case from underscore style names, see #848 ([#850](https://github.com/joelittlejohn/jsonschema2pojo/pull/850))
+* **Separate javaType into 'existingJavaType' and 'javaType' ([#828](https://github.com/joelittlejohn/jsonschema2pojo/issues/828))**
+
 ## 1.0.0-alpha2
 * Changed maven central repo listing id in poms to default of 'central' ([#833](https://github.com/joelittlejohn/jsonschema2pojo/pull/833))
 * **The generated POJO does not always adhere to JavaBean naming conventions ([#756](https://github.com/joelittlejohn/jsonschema2pojo/issues/756))**
