@@ -136,7 +136,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Skip plugin execution (don't read/validate any schema files, don't
      * generate any java types).
      *
-     * @parameter property="jsonschema2pojo.skip}" default-value="fals"
+     * @parameter property="jsonschema2pojo.skip" default-value="false"
      * @since 0.2.1
      */
     private boolean skip = false;
@@ -462,7 +462,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to make the generated types 'serializable'.
      *
-     * @parameter property="jsonschema2pojo.serializable}" default="fals"
+     * @parameter property="jsonschema2pojo.serializable" default="fals"
      * @since 0.4.23
      */
     private boolean serializable = false;
@@ -534,8 +534,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * Whether generated constructors should have parameters for all properties,
      * or only required ones.
      *
-     * @parameter property=
-   *            "${jsonschema2pojo.constructorsRequiredPropertiesOnly"
+     * @parameter property="jsonschema2pojo.constructorsRequiredPropertiesOnly"
      *            default-value="false"
      * @since 0.4.8
      */
@@ -583,7 +582,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * The target version for generated source files.
      *
-     * @parameter property="maven.compiler.target}" default-value="1."
+     * @parameter property="jsonschema2pojo.targetJavaVersion"
+     *            default-value="${maven.compiler.target}"
      * @since 0.4.17
      */
     private String targetVersion = "1.6";
@@ -725,7 +725,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>scala</code> (Generate .scala source files, using scalagen)</li>
      * </ul>
      *
-     * @parameter property="jsonschema2pojo.targetLanguage}"
+     * @parameter property="jsonschema2pojo.targetLanguage"
      *            default-value="java"
      * @since 0.5.0
      */
