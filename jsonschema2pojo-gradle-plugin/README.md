@@ -172,9 +172,6 @@ jsonSchema2Pojo {
   // Whether to make the generated types Serializable
   serializable = false
 
-  // Whether to include getters/setters or to omit these accessor methods and create public fields instead.
-  includeAccessors = true
-
   // Whether to include getters or to omit these accessor methods and create public fields instead.
   includeGetters = false
 

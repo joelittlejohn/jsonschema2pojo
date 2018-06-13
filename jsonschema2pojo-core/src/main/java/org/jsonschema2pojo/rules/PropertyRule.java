@@ -62,13 +62,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
 
-        boolean isIncludeAccessors = ruleFactory.getGenerationConfig().isIncludeAccessors();
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
 
         node = resolveRefs(node, schema);
 
-        int accessModifier = isIncludeAccessors || isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
+        int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
         JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
 
         propertyAnnotations(nodeName, node, schema, field);
@@ -77,13 +76,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
-        if (isIncludeAccessors || isIncludeGetters) {
+        if (isIncludeGetters) {
             JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
-        if (isIncludeAccessors || isIncludeSetters) {
+        if (isIncludeSetters) {
             JMethod setter = addSetter(jclass, field, nodeName, node);
             ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);

@@ -97,34 +97,34 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
                 !ruleFactory.getGenerationConfig().isIncludeDynamicBuilders())) {
             return jclass;
         }
-        boolean isIncludeAccessors = ruleFactory.getGenerationConfig().isIncludeAccessors();
+
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
         boolean isGenerateBuilders = ruleFactory.getGenerationConfig().isGenerateBuilders();
 
-        if (isIncludeAccessors || isIncludeGetters || isIncludeSetters || isGenerateBuilders) {
+        if (isIncludeGetters || isIncludeSetters || isGenerateBuilders) {
             if (LanguageFeatures.canUseJava7(ruleFactory.getGenerationConfig())) {
-                if (isIncludeAccessors || isIncludeSetters) {
+                if (isIncludeSetters) {
                     addInternalSetMethodJava7(jclass, node);
                 }
-                if (isIncludeAccessors || isIncludeGetters) {
+                if (isIncludeGetters) {
                     addInternalGetMethodJava7(jclass, node);
                 }
             } else {
-                if (isIncludeAccessors || isIncludeSetters) {
+                if (isIncludeSetters) {
                     addInternalSetMethodJava6(jclass, node);
                 }
-                if (isIncludeAccessors || isIncludeGetters) {
+                if (isIncludeGetters) {
                     addInternalGetMethodJava6(jclass, node);
                 }
             }
         }
 
-        if (isIncludeAccessors || isIncludeGetters) {
+        if (isIncludeGetters) {
             addGetMethods(jclass);
         }
 
-        if (isIncludeAccessors || isIncludeSetters) {
+        if (isIncludeSetters) {
             addSetMethods(jclass);
         }
 

@@ -20,8 +20,10 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;

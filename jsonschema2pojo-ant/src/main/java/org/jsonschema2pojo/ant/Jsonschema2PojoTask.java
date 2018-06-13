@@ -137,11 +137,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeAdditionalProperties = true;
 
-    private boolean includeAccessors = true;
+    private boolean includeGetters = true;
 
-    private boolean includeGetters = false;
-
-    private boolean includeSetters = false;
+    private boolean includeSetters = true;
 
     private String targetVersion = "1.6";
 
@@ -693,17 +691,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'includeAccessors' property of this class
-     *
-     * @param includeAccessors
-     *            Whether to include getters/setters or to omit these accessor
-     *            methods and create public fields instead.
-     */
-    public void setIncludeAccessors(boolean includeAccessors) {
-        this.includeAccessors = includeAccessors;
-    }
-
-    /**
      * Sets the 'includeGetters' property of this class
      *
      * @param includeGetters
@@ -1072,11 +1059,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
-    }
-
-    @Override
-    public boolean isIncludeAccessors() {
-        return includeAccessors;
     }
 
     @Override

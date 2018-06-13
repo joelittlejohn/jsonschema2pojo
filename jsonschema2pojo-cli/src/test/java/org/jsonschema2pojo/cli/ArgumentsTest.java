@@ -64,7 +64,6 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(true));
         assertThat(args.isIncludeHashcodeAndEquals(), is(false));
         assertThat(args.isIncludeToString(), is(false));
-        assertThat(args.isIncludeAccessors(), is(false));
         assertThat(args.isIncludeGetters(), is(false));
         assertThat(args.isIncludeSetters(), is(true));
         assertThat(args.isIncludeDynamicAccessors(), is(true));
@@ -118,7 +117,6 @@ public class ArgumentsTest {
         assertThat(args.isUsePrimitives(), is(false));
         assertThat(args.isIncludeHashcodeAndEquals(), is(true));
         assertThat(args.isIncludeToString(), is(true));
-        assertThat(args.isIncludeAccessors(), is(true));
         assertThat(args.isIncludeGetters(), is(true));
         assertThat(args.isIncludeSetters(), is(true));
         assertThat(args.isIncludeDynamicAccessors(), is(false));

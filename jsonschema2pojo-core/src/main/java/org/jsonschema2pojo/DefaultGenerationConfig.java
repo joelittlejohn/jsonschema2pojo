@@ -296,7 +296,8 @@ public class DefaultGenerationConfig implements GenerationConfig {
     /**
      * @return <code>true</code>
      */
-    public boolean isIncludeAccessors() {
+    @Override
+    public boolean isIncludeGetters() {
         return true;
     }
 
@@ -304,16 +305,8 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>true</code>
      */
     @Override
-    public boolean isIncludeGetters() {
-        return false;
-    }
-
-    /**
-     * @return <code>true</code>
-     */
-    @Override
     public boolean isIncludeSetters() {
-        return false;
+        return true;
     }
 
     /**

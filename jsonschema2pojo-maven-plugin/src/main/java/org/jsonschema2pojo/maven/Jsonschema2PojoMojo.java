@@ -552,32 +552,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeAdditionalProperties = true;
 
     /**
-     * Whether to include getters/setters or to omit these accessor methods and
-     * create public fields instead.
-     *
-     * @parameter property="jsonschema2pojo.includeAccessors"
-     *            default-value="true"
-     * @since 0.4.15
-     */
-    private boolean includeAccessors = true;
-
-    /**
      * Whether to include getters or to omit this accessor method and
      * create public fields instead
      *
      * @parameter property="jsonschema2pojo.includeGetters"
-     *            default-value="false"
+     *            default-value="true"
      */
-    private boolean includeGetters = false;
+    private boolean includeGetters = true;
 
     /**
      * Whether to include setters or to omit this accessor method and
      * create public fields instead
      *
      * @parameter property="jsonschame2pojo.includeSetters"
-     *            default-value="false"
+     *            default-value="true"
      */
-    private boolean includeSetters = false;
+    private boolean includeSetters = true;
 
     /**
      * The target version for generated source files.
@@ -1033,11 +1023,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
-    }
-
-    @Override
-    public boolean isIncludeAccessors() {
-        return includeAccessors;
     }
 
     @Override
