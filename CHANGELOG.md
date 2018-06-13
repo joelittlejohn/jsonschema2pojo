@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.0-alpha4
+* maven-plugin broken due to typo in Jsonschema2PojoMojo Line 728: @parameter property contains dangling '}' ([#880](https://github.com/joelittlejohn/jsonschema2pojo/issues/880))
+
 ## 1.0.0-alpha3
 * **maven plugin output directory should default to "generated-sources/jsonschema2pojo" ([#878](https://github.com/joelittlejohn/jsonschema2pojo/issues/878))**
 * **Always pass enclosing class or enum to annotator methods (changes method signatures) ([#876](https://github.com/joelittlejohn/jsonschema2pojo/issues/876))**
