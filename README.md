@@ -44,6 +44,6 @@ Project resources:
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-<img src="https://www.yourkit.com/images/yklogo.png" alt="YourKit" title="YourKit" align="right" width="185"/>
+<a href="https://www.yourkit.com"><img src="https://www.yourkit.com/images/yklogo.png" alt="YourKit" title="YourKit" align="right" width="185"/></a>
 
 Special thanks to YourKit, who support this project through a free license for their full-featured [YourKit Java Profiler](https://www.yourkit.com/java/profiler).
