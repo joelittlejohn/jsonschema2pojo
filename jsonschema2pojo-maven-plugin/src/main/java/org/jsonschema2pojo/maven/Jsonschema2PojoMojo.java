@@ -324,6 +324,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a> annotations
      * (for schema rules like Nullable, NonNull, etc) in generated Java types.
      *
+     * @parameter property="jsonschema2pojo.includeJsr305Annotations"
+     *            default-value="false"
+     *
      * @since 0.4.8
      */
     private boolean includeJsr305Annotations = false;
@@ -331,6 +334,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     /**
      * Whether to use {@link java.util.Optional} as return type for
      * getters of non-required fields.
+     *
+     * @parameter property="jsonschema2pojo.useOptionalForGetters"
+     *            default-value="false"
      */
      private boolean useOptionalForGetters = false;
 
