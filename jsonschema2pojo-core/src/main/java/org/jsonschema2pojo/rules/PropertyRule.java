@@ -77,7 +77,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema));
+            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
@@ -121,6 +121,24 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         if (requiredArray != null) {
             for (JsonNode requiredNode : requiredArray) {
+                if (nodeName.equals(requiredNode.asText()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
+        if (node.has("javaOptional")) {
+            final JsonNode requiredNode = node.get("javaOptional");
+            return requiredNode.asBoolean();
+        }
+
+        JsonNode javaOptionalArray = schema.getContent().get("javaOptional");
+
+        if (javaOptionalArray != null) {
+            for (JsonNode requiredNode : javaOptionalArray) {
                 if (nodeName.equals(requiredNode.asText()))
                     return true;
             }
@@ -178,9 +196,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return node.path("type").asText().equals("array");
     }
 
-    private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required) {
+    private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
         JType returnType = field.type();
-        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters()) {
+        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) {
             if (!required && field.type().isReference()) {
                 returnType = c.owner().ref("java.util.Optional").narrow(field.type());
             }
@@ -189,14 +207,14 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return returnType;
     }
 
-    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired) {
+    private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired, boolean usesOptional) {
 
-        JType type = getReturnType(c, field, isRequired);
+        JType type = getReturnType(c, field, isRequired, usesOptional);
 
         JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
 
         JBlock body = getter.body();
-        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() && !isRequired
+        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) && !isRequired
                 && field.type().isReference()) {
             body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(field));
         } else {
