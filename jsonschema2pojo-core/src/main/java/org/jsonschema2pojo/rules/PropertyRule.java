@@ -77,7 +77,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), usesOptional(nodeName, node, schema));
+            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
@@ -129,16 +129,16 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean usesOptional(String nodeName, JsonNode node, Schema schema) {
-        if (node.has("java_optional")) {
-            final JsonNode requiredNode = node.get("java_optional");
+    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
+        if (node.has("javaOptional")) {
+            final JsonNode requiredNode = node.get("javaOptional");
             return requiredNode.asBoolean();
         }
 
-        JsonNode requiredArray = schema.getContent().get("java_optional");
+        JsonNode javaOptionalArray = schema.getContent().get("javaOptional");
 
-        if (requiredArray != null) {
-            for (JsonNode requiredNode : requiredArray) {
+        if (javaOptionalArray != null) {
+            for (JsonNode requiredNode : javaOptionalArray) {
                 if (nodeName.equals(requiredNode.asText()))
                     return true;
             }
