@@ -171,6 +171,12 @@ public interface GenerationConfig {
     AnnotationStyle getAnnotationStyle();
 
     /**
+     * Gets the strategy used for generating type names.
+     * @see TypeNameStrategy
+     */
+    TypeNameStrategy getTypeNameStrategy();
+
+    /**
      * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
      *
      * @return Level of inclusion to set in the generated Java types.

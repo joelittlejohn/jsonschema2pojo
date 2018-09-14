@@ -18,8 +18,12 @@ package org.jsonschema2pojo.util;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.TypeNameStrategy;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -45,6 +49,32 @@ public class NameHelperTest {
         assertThat(nameHelper.getSetterName("foo", NODE), is("setFoo"));
         assertThat(nameHelper.getSetterName("oAuth2State", NODE), is("setoAuth2State"));
         assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
+    }
+
+    @Test
+    public void testFieldNameCorrectly() {
+        assertThat(nameHelper.getFieldName("foo", NODE), is("foo"));
+        assertThat(nameHelper.getFieldName("foo", node("title", "bar")), is("foo"));
+        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+
+        // TITLE_ATTRIBUTE
+        NameHelper nameHelper = helper(TypeNameStrategy.TITLE_ATTRIBUTE);
+        assertThat(nameHelper.getFieldName("foo", node("title", "bar")), is("Bar"));
+        assertThat(nameHelper.getFieldName("foo", node("title", "i am bar")), is("IAmBar"));
+        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+    }
+
+    private NameHelper helper(TypeNameStrategy strategy) {
+        GenerationConfig config = mock(GenerationConfig.class);
+        when(config.getTypeNameStrategy()).thenReturn(strategy);
+        return new NameHelper(config);
+    }
+
+    private ObjectNode node(String key, String value) {
+        return JsonNodeFactory.instance.objectNode()
+                .put(key, value);
     }
 
 }

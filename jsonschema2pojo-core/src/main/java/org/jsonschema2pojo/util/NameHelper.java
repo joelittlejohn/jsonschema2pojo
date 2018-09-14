@@ -25,6 +25,7 @@ import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.TypeNameStrategy;
 
 public class NameHelper {
 
@@ -147,8 +148,14 @@ public class NameHelper {
      */
     public String getFieldName(String propertyName, JsonNode node) {
 
-        if (node != null && node.has("javaName")) {
-            propertyName = node.get("javaName").textValue();
+        if (node != null) {
+            if (node.has("javaName")) {
+                propertyName = node.get("javaName").textValue();
+            } else if (generationConfig.getTypeNameStrategy() == TypeNameStrategy.TITLE_ATTRIBUTE &&
+                    node.has("title")) {
+                String title = node.get("title").textValue();
+                propertyName = WordUtils.capitalize(title).replaceAll(" ", "");
+            }
         }
 
         return propertyName;

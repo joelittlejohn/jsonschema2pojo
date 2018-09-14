@@ -44,6 +44,7 @@ import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.TypeNameStrategy;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
 
@@ -250,6 +251,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.3.1
      */
     private String annotationStyle = "jackson2";
+
+    /**
+     * The strategy used to generate type names.
+     * <p>
+     * Supported values:
+     * <ul>
+     *     <li><code>field_and_property_name</code></li>
+     *     <li><code>title_attribute</code></li>
+     * </ul>
+     * @parameter property="jsonschema2pojo.typeNameStrategy"
+     *            default-value="field_and_property_name"
+     * @since 1.0.0
+     */
+    private String typeNameStrategy = "field_and_property_name";
 
     /**
      * The Level of inclusion to set in the generated Java types for Jackson1
@@ -886,6 +901,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
+    }
+
+    @Override
+    public TypeNameStrategy getTypeNameStrategy() {
+        return TypeNameStrategy.valueOf(typeNameStrategy.toUpperCase());
     }
 
     @Override

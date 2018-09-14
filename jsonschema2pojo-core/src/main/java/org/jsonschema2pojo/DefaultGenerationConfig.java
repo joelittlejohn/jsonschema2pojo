@@ -117,6 +117,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return {@link TypeNameStrategy#FILE_AND_PROPERTY_NAME}
+     */
+    @Override
+    public TypeNameStrategy getTypeNameStrategy() {
+        return TypeNameStrategy.FILE_AND_PROPERTY_NAME;
+    }
+
+    /**
      * @return {@link AnnotationStyle#JACKSON2}
      */
     @Override

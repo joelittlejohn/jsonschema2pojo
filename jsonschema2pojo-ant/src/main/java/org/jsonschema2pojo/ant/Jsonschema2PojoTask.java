@@ -46,6 +46,7 @@ import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.TypeNameStrategy;
 import org.jsonschema2pojo.URLProtocol;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
@@ -94,6 +95,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String[] toStringExcludes = new String[] {};
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
+
+    private TypeNameStrategy typeNameStrategy = TypeNameStrategy.FILE_AND_PROPERTY_NAME;
 
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
@@ -445,6 +448,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setAnnotationStyle(AnnotationStyle annotationStyle) {
         this.annotationStyle = annotationStyle;
+    }
+
+    /**
+     * Sets the 'typeNameStrategy' property of this class
+     *
+     * @param typeNameStrategy
+     *            The strategy to be used when generating class names.
+     */
+    public void setTypeNameStrategy(TypeNameStrategy typeNameStrategy) {
+        this.typeNameStrategy = typeNameStrategy;
     }
 
     /**
@@ -926,6 +939,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public TypeNameStrategy getTypeNameStrategy() {
+        return typeNameStrategy;
     }
 
     @Override
