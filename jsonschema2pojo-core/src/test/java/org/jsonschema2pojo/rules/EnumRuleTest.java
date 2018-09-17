@@ -58,7 +58,7 @@ public class EnumRuleTest {
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
 
         Answer<String> firstArgAnswer = new FirstArgAnswer<>();
-        when(nameHelper.getFieldName(anyString(), Matchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
+        when(nameHelper.getClassName(anyString(), Matchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
 

@@ -156,12 +156,16 @@ public class NameHelper {
 
     public String getClassName(String propertyName, JsonNode node) {
 
-        if (node != null && generationConfig.isUseTitleAsClassname() && node.has("title")) {
-            String title = node.get("title").textValue();
-            propertyName = WordUtils.capitalize(title).replaceAll(" ", "");
+        if (node != null) {
+            if (node.has("javaName")) {
+                propertyName = node.get("javaName").textValue();
+            } else if (generationConfig.isUseTitleAsClassname() && node.has("title")) {
+                String title = node.get("title").textValue();
+                propertyName = WordUtils.capitalize(title).replaceAll(" ", "");
+            }
         }
 
-        return getFieldName(propertyName, node);
+        return propertyName;
     }
 
     /**
