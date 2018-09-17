@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.TypeNameStrategy;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -52,23 +51,23 @@ public class NameHelperTest {
     }
 
     @Test
-    public void testFieldNameCorrectly() {
-        assertThat(nameHelper.getFieldName("foo", NODE), is("foo"));
-        assertThat(nameHelper.getFieldName("foo", node("title", "bar")), is("foo"));
-        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar")), is("bar"));
-        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+    public void testClassNameCorrectly() {
+        assertThat(nameHelper.getClassName("foo", NODE), is("foo"));
+        assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("foo"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
 
         // TITLE_ATTRIBUTE
-        NameHelper nameHelper = helper(TypeNameStrategy.TITLE_ATTRIBUTE);
-        assertThat(nameHelper.getFieldName("foo", node("title", "bar")), is("Bar"));
-        assertThat(nameHelper.getFieldName("foo", node("title", "i am bar")), is("IAmBar"));
-        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar")), is("bar"));
-        assertThat(nameHelper.getFieldName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+        NameHelper nameHelper = helper(true);
+        assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("Bar"));
+        assertThat(nameHelper.getClassName("foo", node("title", "i am bar")), is("IAmBar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
     }
 
-    private NameHelper helper(TypeNameStrategy strategy) {
+    private NameHelper helper(boolean useTitleAsClassname) {
         GenerationConfig config = mock(GenerationConfig.class);
-        when(config.getTypeNameStrategy()).thenReturn(strategy);
+        when(config.isUseTitleAsClassname()).thenReturn(useTitleAsClassname);
         return new NameHelper(config);
     }
 
@@ -76,5 +75,4 @@ public class NameHelperTest {
         return JsonNodeFactory.instance.objectNode()
                 .put(key, value);
     }
-
 }

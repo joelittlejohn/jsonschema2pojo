@@ -24,7 +24,6 @@ import org.jsonschema2pojo.Language
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
-import org.jsonschema2pojo.TypeNameStrategy
 import org.jsonschema2pojo.rules.RuleFactory
 
 /**
@@ -38,7 +37,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   File targetDirectory
   String targetPackage
   AnnotationStyle annotationStyle
-  TypeNameStrategy typeNameStrategy
+  boolean useTitleAsClassname
   InclusionLevel inclusionLevel
   String classNamePrefix
   String classNameSuffix
@@ -109,7 +108,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeToString = true
     toStringExcludes = [] as String[]
     annotationStyle = AnnotationStyle.JACKSON
-    typeNameStrategy = TypeNameStrategy.FILE_AND_PROPERTY_NAME
+    useTitleAsClassname = false
     inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
     customRuleFactory = RuleFactory.class
@@ -166,8 +165,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
   }
 
-  public void setTypeNameStrategy(String strategy) {
-    typeNameStrategy = TypeNameStrategy.valueOf(strategy.toUpperCase())
+  public void setUseTitleAsClassname(boolean useTitleAsClassname) {
+    useTitleAsClassname = useTitleAsClassname
   }
 
   public void setInclusionLevel(String level) {
@@ -218,7 +217,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeToString = ${includeToString}
        |toStringExcludes = ${Arrays.toString(toStringExcludes)}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
-       |typeNameStrategy = ${typeNameStrategy.toString().toLowerCase()}
+       |useTitleAsClassname = ${useTitleAsClassname}
        |inclusionLevel = ${InclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}

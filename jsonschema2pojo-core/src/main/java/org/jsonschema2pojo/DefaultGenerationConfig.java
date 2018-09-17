@@ -117,11 +117,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
-     * @return {@link TypeNameStrategy#FILE_AND_PROPERTY_NAME}
+     * @return {@code false}
      */
     @Override
-    public TypeNameStrategy getTypeNameStrategy() {
-        return TypeNameStrategy.FILE_AND_PROPERTY_NAME;
+    public boolean isUseTitleAsClassname() {
+        return false;
     }
 
     /**

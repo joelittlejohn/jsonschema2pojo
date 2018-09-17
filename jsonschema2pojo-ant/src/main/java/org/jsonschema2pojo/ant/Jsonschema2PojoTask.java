@@ -46,7 +46,6 @@ import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.TypeNameStrategy;
 import org.jsonschema2pojo.URLProtocol;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.URLUtil;
@@ -96,7 +95,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
-    private TypeNameStrategy typeNameStrategy = TypeNameStrategy.FILE_AND_PROPERTY_NAME;
+    private boolean useTitleAsClassname = false;
 
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
@@ -451,13 +450,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'typeNameStrategy' property of this class
+     * Sets whether to use the title as classname.
      *
-     * @param typeNameStrategy
-     *            The strategy to be used when generating class names.
+     * @param useTitleAsClassname
+     *            When {@code true}, derive the classname from title.
      */
-    public void setTypeNameStrategy(TypeNameStrategy typeNameStrategy) {
-        this.typeNameStrategy = typeNameStrategy;
+    public void setUseTitleAsClassname(boolean useTitleAsClassname) {
+        this.useTitleAsClassname = useTitleAsClassname;
     }
 
     /**
@@ -942,8 +941,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public TypeNameStrategy getTypeNameStrategy() {
-        return typeNameStrategy;
+    public boolean isUseTitleAsClassname() {
+        return useTitleAsClassname;
     }
 
     @Override

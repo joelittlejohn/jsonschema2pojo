@@ -171,10 +171,9 @@ public interface GenerationConfig {
     AnnotationStyle getAnnotationStyle();
 
     /**
-     * Gets the strategy used for generating type names.
-     * @see TypeNameStrategy
+     * When {@code true} the title is used as class name.
      */
-    TypeNameStrategy getTypeNameStrategy();
+    boolean isUseTitleAsClassname();
 
     /**
      * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.

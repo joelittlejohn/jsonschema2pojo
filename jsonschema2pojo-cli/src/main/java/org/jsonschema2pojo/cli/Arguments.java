@@ -33,7 +33,6 @@ import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.TypeNameStrategy;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.beust.jcommander.JCommander;
@@ -97,8 +96,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
-    @Parameter(names = { "-tn", "--type-name-strategy" })
-    private TypeNameStrategy typeNameStrategy = TypeNameStrategy.FILE_AND_PROPERTY_NAME;
+    @Parameter(names = { "-ut", "--use-title-as-classname", "When set class names are generated from title attributes rather than property names." })
+    private boolean useTitleAsClassname = false;
 
     @Parameter(names = {"-il", "--inclusion-level"})
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
@@ -314,8 +313,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public TypeNameStrategy getTypeNameStrategy() {
-        return typeNameStrategy;
+    public boolean isUseTitleAsClassname() {
+        return useTitleAsClassname;
     }
 
     @Override
