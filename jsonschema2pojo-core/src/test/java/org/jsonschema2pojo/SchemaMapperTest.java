@@ -55,7 +55,7 @@ public class SchemaMapperTest {
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
         ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
 
-        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.getValue(), is(notNullValue()));
@@ -85,7 +85,7 @@ public class SchemaMapperTest {
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
 
-        verify(mockSchemaRule).apply(eq("Address"), eq(schemaNode), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("Address"), eq(schemaNode), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
 
@@ -114,7 +114,7 @@ public class SchemaMapperTest {
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
 
-        verify(mockSchemaRule).apply(eq("User"), eq(schemaNode), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("User"), eq(schemaNode), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
     }
@@ -135,7 +135,7 @@ public class SchemaMapperTest {
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
         ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
 
-        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.getValue(), is(notNullValue()));

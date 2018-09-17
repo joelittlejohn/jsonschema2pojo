@@ -59,7 +59,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
      * @return the given jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
         if (node == null) {
             node = JsonNodeFactory.instance.objectNode();
         }
@@ -67,7 +67,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
         for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
             String property = properties.next();
 
-            ruleFactory.getPropertyRule().apply(property, node.get(property), jclass, schema);
+            ruleFactory.getPropertyRule().apply(property, node.get(property), node, jclass, schema);
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !jclass._extends().name().equals("Object")) {

@@ -45,6 +45,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
+import scala.annotation.meta.field;
 
 /**
  * Applies the "default" schema rule.
@@ -81,7 +82,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * @return field, which will have an init expression is appropriate
      */
     @Override
-    public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
+    public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
         boolean defaultPresent = node != null && isNotEmpty(node.asText());
 

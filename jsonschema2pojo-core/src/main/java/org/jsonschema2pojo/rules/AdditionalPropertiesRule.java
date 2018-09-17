@@ -81,7 +81,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
      * @return the given Java type jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
 
         if (node != null && node.isBoolean() && node.asBoolean() == false) {
             // no additional properties allowed
@@ -100,7 +100,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         JType propertyType;
         if (node != null && node.size() != 0) {
-            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, jclass, schema);
+            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, parent, jclass, schema);
         } else {
             propertyType = jclass.owner().ref(Object.class);
         }
@@ -112,7 +112,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         addSetter(jclass, propertyType, field);
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
-            ruleFactory.getValidRule().apply(nodeName, node, field, schema);
+            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {

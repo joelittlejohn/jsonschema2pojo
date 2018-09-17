@@ -89,7 +89,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * characteristics. See other implementers of {@link Rule} for details.
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JPackage _package, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage _package, Schema schema) {
 
         JType superType = getSuperType(nodeName, node, _package, schema);
 
@@ -113,25 +113,25 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), jclass, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
         }
 
         if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), jclass, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
         }
 
-        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
+        ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }
 
-        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), jclass, schema);
+        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, jclass, schema);
 
-        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), jclass, schema);
+        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
         if (node.has("required")) {
-            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), jclass, schema);
+            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
@@ -333,7 +333,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JType superType = jPackage.owner().ref(Object.class);
         Schema superTypeSchema = getSuperSchema(node, schema, false);
         if (superTypeSchema != null) {
-            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), jPackage, superTypeSchema);
+            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
         } else if (node.has("extendsJavaClass")) {
             superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
         }

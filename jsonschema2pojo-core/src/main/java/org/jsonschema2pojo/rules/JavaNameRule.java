@@ -25,7 +25,7 @@ import com.sun.codemodel.JDocCommentable;
 public class JavaNameRule implements Rule<JDocCommentable, JDocComment> {
 
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema currentSchema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema currentSchema) {
         JDocComment javaDoc = generatableType.javadoc();
 
         javaDoc.append(String.format("%nCorresponds to the \"%s\" property.", nodeName));

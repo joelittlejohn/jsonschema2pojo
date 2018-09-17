@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
+import scala.annotation.meta.field;
 
 public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
     
@@ -32,7 +33,7 @@ public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
     }
     
     @Override
-    public JFieldVar apply(String nodeName, JsonNode node, JFieldVar field, Schema currentSchema) {
+    public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
         
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
                 && (node.has("minLength") || node.has("maxLength"))) {

@@ -53,14 +53,15 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      *
      * @param nodeName the name of the property to be applied
      * @param node     the node describing the characteristics of this property
+     * @param parent   the parent node
      * @param jclass   the Java class which should have this property added
      * @return the given jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema schema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
         String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
 
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, jclass, schema);
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, schema);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
@@ -93,19 +94,19 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (node.has("pattern")) {
-            ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), field, schema);
+            ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), node, field, schema);
         }
 
-        ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
+        ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), node, field, schema);
 
-        ruleFactory.getMinimumMaximumRule().apply(nodeName, node, field, schema);
+        ruleFactory.getMinimumMaximumRule().apply(nodeName, node, parent, field, schema);
 
-        ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, field, schema);
+        ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, parent, field, schema);
 
-        ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, field, schema);
+        ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, parent, field, schema);
 
         if (isObject(node) || isArray(node)) {
-            ruleFactory.getValidRule().apply(nodeName, node, field, schema);
+            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
         }
 
         return jclass;
@@ -149,21 +150,21 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
         if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), generatedJavaConstruct, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, generatedJavaConstruct, schema);
         }
 
         if (node.has("javaName")) {
-            ruleFactory.getJavaNameRule().apply(nodeName, node.get("javaName"), generatedJavaConstruct, schema);
+            ruleFactory.getJavaNameRule().apply(nodeName, node.get("javaName"), node, generatedJavaConstruct, schema);
         }
 
         if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), generatedJavaConstruct, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, generatedJavaConstruct, schema);
         }
 
         if (node.has("required")) {
-            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
+            ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), node, generatedJavaConstruct, schema);
         } else {
-            ruleFactory.getNotRequiredRule().apply(nodeName, node.get("required"), generatedJavaConstruct, schema);
+            ruleFactory.getNotRequiredRule().apply(nodeName, node.get("required"), node, generatedJavaConstruct, schema);
         }
     }
 

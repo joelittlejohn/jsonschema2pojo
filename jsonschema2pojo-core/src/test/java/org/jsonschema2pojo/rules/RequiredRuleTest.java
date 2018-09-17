@@ -42,7 +42,7 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(1));
@@ -58,7 +58,7 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, jclass, null);
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(0));

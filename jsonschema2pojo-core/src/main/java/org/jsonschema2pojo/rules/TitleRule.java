@@ -46,13 +46,15 @@ public class TitleRule implements Rule<JDocCommentable, JDocComment> {
      *            the name of the property to which this title applies
      * @param node
      *            the "title" schema node
+     * @param parent
+     *            the parent node
      * @param generatableType
      *            comment-able code generation construct, usually a field or
      *            method, which should have this title applied
      * @return the JavaDoc comment created to contain the title
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
         javadoc.add(0, node.asText() + "\n<p>\n");

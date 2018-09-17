@@ -55,6 +55,8 @@ public class MediaRule implements Rule<JType, JType> {
      *            the name of the property.
      * @param mediaNode
      *            the media node
+     * @param parent
+     *            the parent node
      * @param baseType
      *            the type with the media node.  This must be java.lang.String.
      * @param schema
@@ -63,7 +65,7 @@ public class MediaRule implements Rule<JType, JType> {
      * @since 0.4.2
      */
     @Override
-    public JType apply(String nodeName, JsonNode mediaNode, JType baseType, Schema schema) {
+    public JType apply(String nodeName, JsonNode mediaNode, JsonNode parent, JType baseType, Schema schema) {
         if (!mediaNode.has(BINARY_ENCODING)) {
             return baseType;
         }

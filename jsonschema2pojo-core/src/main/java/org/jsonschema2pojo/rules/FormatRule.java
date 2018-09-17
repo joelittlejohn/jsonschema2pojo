@@ -20,6 +20,7 @@ import static java.lang.String.*;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -78,6 +79,8 @@ public class FormatRule implements Rule<JType, JType> {
      *            the name of the node to which this format is applied
      * @param node
      *            the format node
+     * @param parent
+     *            the parent node
      * @param baseType
      *            the type which which is being formatted e.g. for
      *            <code>{ "type" : "string", "format" : "uri" }</code> the
@@ -85,7 +88,7 @@ public class FormatRule implements Rule<JType, JType> {
      * @return the Java type that is appropriate for the format value
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JType baseType, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JsonNode parent, JType baseType, Schema schema) {
 
         if (node.asText().equals("date-time")) {
             return baseType.owner().ref(getDateTimeType());

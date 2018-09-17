@@ -73,11 +73,11 @@ public class EnumRuleTest {
         enumNode.set("enum", arrayNode);
 
         // We're always a string for the purposes of this test
-        when(typeRule.apply("status", enumNode, jpackage, schema))
+        when(typeRule.apply("status", enumNode, null, jpackage, schema))
         .thenReturn(jpackage.owner()._ref(String.class));
 
-        JType result1 = rule.apply("status", enumNode, jpackage, schema);
-        JType result2 = rule.apply("status", enumNode, jpackage, schema);
+        JType result1 = rule.apply("status", enumNode, null, jpackage, schema);
+        JType result2 = rule.apply("status", enumNode, null, jpackage, schema);
 
         assertThat(result1.fullName(), is("org.jsonschema2pojo.rules.Status"));
         assertThat(result2.fullName(), is("org.jsonschema2pojo.rules.Status_"));

@@ -89,7 +89,7 @@ public class SchemaMapper {
 
         ObjectNode schemaNode = readSchema(schemaUrl);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, schemaNode));
 
     }
 
@@ -117,7 +117,7 @@ public class SchemaMapper {
 
         JsonNode schemaNode = objectMapper().readTree(json);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage,
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage,
                 new Schema(schemaLocation, schemaNode, schemaNode));
     }
 
@@ -133,7 +133,7 @@ public class SchemaMapper {
             schemaNode = objectMapper().readTree(json);
         }
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, jpackage, new Schema(null, schemaNode, schemaNode));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, schemaNode));
     }
 
     private ObjectMapper objectMapper() {
