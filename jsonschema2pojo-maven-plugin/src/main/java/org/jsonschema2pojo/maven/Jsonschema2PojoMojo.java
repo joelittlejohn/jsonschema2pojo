@@ -252,6 +252,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String annotationStyle = "jackson2";
 
     /**
+     * Use the title as class name. Otherwise, the property and file name is used.
+     *
+     * @parameter property="jsonschema2pojo.useTitleAsClassname"
+     *            default-value="false"
+     * @since 1.0.0
+     */
+    private boolean useTitleAsClassname = false;
+
+    /**
      * The Level of inclusion to set in the generated Java types for Jackson1
      * and Jackson2 serializers.
      * <p>
@@ -886,6 +895,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return AnnotationStyle.valueOf(annotationStyle.toUpperCase());
+    }
+
+    @Override
+    public boolean isUseTitleAsClassname() {
+        return useTitleAsClassname;
     }
 
     @Override

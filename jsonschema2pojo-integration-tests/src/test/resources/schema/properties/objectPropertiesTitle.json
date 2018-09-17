@@ -1,0 +1,10 @@
+{
+  "title": "Foo Object",
+  "type" : "object",
+  "properties" : {
+    "a" : {
+      "title": "bar object",
+      "type": "object"
+    }
+  }
+}

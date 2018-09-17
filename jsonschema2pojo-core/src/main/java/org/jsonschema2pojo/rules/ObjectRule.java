@@ -739,7 +739,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private String getClassName(String nodeName, JsonNode node, JPackage _package) {
         String prefix = ruleFactory.getGenerationConfig().getClassNamePrefix();
         String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
-        String fieldName = ruleFactory.getNameHelper().getFieldName(nodeName, node);
+        String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
         String capitalizedFieldName = capitalize(fieldName);
         String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
 

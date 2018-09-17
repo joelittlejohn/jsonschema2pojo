@@ -171,6 +171,11 @@ public interface GenerationConfig {
     AnnotationStyle getAnnotationStyle();
 
     /**
+     * When {@code true} the title is used as class name.
+     */
+    boolean isUseTitleAsClassname();
+
+    /**
      * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
      *
      * @return Level of inclusion to set in the generated Java types.

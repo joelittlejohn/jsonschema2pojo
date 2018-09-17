@@ -37,6 +37,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   File targetDirectory
   String targetPackage
   AnnotationStyle annotationStyle
+  boolean useTitleAsClassname
   InclusionLevel inclusionLevel
   String classNamePrefix
   String classNameSuffix
@@ -107,6 +108,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeToString = true
     toStringExcludes = [] as String[]
     annotationStyle = AnnotationStyle.JACKSON
+    useTitleAsClassname = false
     inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
     customRuleFactory = RuleFactory.class
@@ -163,6 +165,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
   }
 
+  public void setUseTitleAsClassname(boolean useTitleAsClassname) {
+    useTitleAsClassname = useTitleAsClassname
+  }
+
   public void setInclusionLevel(String level) {
     inclusionLevel = InclusionLevel.valueOf(level.toUpperCase())
   }
@@ -211,6 +217,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeToString = ${includeToString}
        |toStringExcludes = ${Arrays.toString(toStringExcludes)}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
+       |useTitleAsClassname = ${useTitleAsClassname}
        |inclusionLevel = ${InclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}

@@ -154,6 +154,20 @@ public class NameHelper {
         return propertyName;
     }
 
+    public String getClassName(String propertyName, JsonNode node) {
+
+        if (node != null) {
+            if (node.has("javaName")) {
+                propertyName = node.get("javaName").textValue();
+            } else if (generationConfig.isUseTitleAsClassname() && node.has("title")) {
+                String title = node.get("title").textValue();
+                propertyName = WordUtils.capitalize(title).replaceAll(" ", "");
+            }
+        }
+
+        return propertyName;
+    }
+
     /**
      * Generate getter method name for property.
      *

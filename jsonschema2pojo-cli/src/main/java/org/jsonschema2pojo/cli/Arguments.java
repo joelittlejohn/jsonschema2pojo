@@ -96,6 +96,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
+    @Parameter(names = { "-ut", "--use-title-as-classname", "When set class names are generated from title attributes rather than property names." })
+    private boolean useTitleAsClassname = false;
+
     @Parameter(names = {"-il", "--inclusion-level"})
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
@@ -307,6 +310,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public boolean isUseTitleAsClassname() {
+        return useTitleAsClassname;
     }
 
     @Override

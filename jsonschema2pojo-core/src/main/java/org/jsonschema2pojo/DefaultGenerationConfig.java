@@ -117,6 +117,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return {@code false}
+     */
+    @Override
+    public boolean isUseTitleAsClassname() {
+        return false;
+    }
+
+    /**
      * @return {@link AnnotationStyle#JACKSON2}
      */
     @Override

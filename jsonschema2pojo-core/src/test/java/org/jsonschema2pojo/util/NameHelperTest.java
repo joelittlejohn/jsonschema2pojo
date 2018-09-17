@@ -18,8 +18,11 @@ package org.jsonschema2pojo.util;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -47,4 +50,29 @@ public class NameHelperTest {
         assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
     }
 
+    @Test
+    public void testClassNameCorrectly() {
+        assertThat(nameHelper.getClassName("foo", NODE), is("foo"));
+        assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("foo"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+
+        // TITLE_ATTRIBUTE
+        NameHelper nameHelper = helper(true);
+        assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("Bar"));
+        assertThat(nameHelper.getClassName("foo", node("title", "i am bar")), is("IAmBar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+    }
+
+    private NameHelper helper(boolean useTitleAsClassname) {
+        GenerationConfig config = mock(GenerationConfig.class);
+        when(config.isUseTitleAsClassname()).thenReturn(useTitleAsClassname);
+        return new NameHelper(config);
+    }
+
+    private ObjectNode node(String key, String value) {
+        return JsonNodeFactory.instance.objectNode()
+                .put(key, value);
+    }
 }

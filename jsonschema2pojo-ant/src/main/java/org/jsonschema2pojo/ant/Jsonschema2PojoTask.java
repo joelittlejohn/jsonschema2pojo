@@ -95,6 +95,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
+    private boolean useTitleAsClassname = false;
+
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
     private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
@@ -445,6 +447,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setAnnotationStyle(AnnotationStyle annotationStyle) {
         this.annotationStyle = annotationStyle;
+    }
+
+    /**
+     * Sets whether to use the title as classname.
+     *
+     * @param useTitleAsClassname
+     *            When {@code true}, derive the classname from title.
+     */
+    public void setUseTitleAsClassname(boolean useTitleAsClassname) {
+        this.useTitleAsClassname = useTitleAsClassname;
     }
 
     /**
@@ -926,6 +938,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
+    }
+
+    @Override
+    public boolean isUseTitleAsClassname() {
+        return useTitleAsClassname;
     }
 
     @Override
