@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -426,6 +427,13 @@ public interface GenerationConfig {
      * @return Whether to include dynamic builders or to omit these methods
      */
     boolean isIncludeDynamicBuilders();
+
+    /**
+     * Gets the `additionalInterfaces` configuration option.
+     *
+     * @return a list of interfaces added to each generated class
+     */
+    String[] getAdditionalInterfaces();
 
     /**
      * Gets the `dateTimeType` configuration option.

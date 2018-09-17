@@ -122,6 +122,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
+        if (parent == null) {
+            for (String _interface : ruleFactory.getGenerationConfig().getAdditionalInterfaces()) {
+                jclass._implements(resolveType(jclass._package(), _interface));
+            }
+        }
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }

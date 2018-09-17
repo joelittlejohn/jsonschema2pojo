@@ -153,6 +153,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeDynamicBuilders = false;
 
+    private String[] additionalInterfaces = new String[0];
+
     private String dateTimeType;
 
     private String timeType;
@@ -777,6 +779,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'additionalInterfaces' property of this class
+     *
+     * @param additionalInterfaces
+     *            Interfaces added to generated classes.
+     */
+    public void setAdditionalInterfaces(String[] additionalInterfaces) {
+        this.additionalInterfaces = additionalInterfaces;
+    }
+
+    /**
      * Sets the 'formatDateTimes' property of this class
      *
      * @param formatDateTimes
@@ -1111,6 +1123,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeDynamicBuilders() {
         return includeDynamicBuilders;
+    }
+
+    @Override
+    public String[] getAdditionalInterfaces() {
+        return additionalInterfaces;
     }
 
     @Override

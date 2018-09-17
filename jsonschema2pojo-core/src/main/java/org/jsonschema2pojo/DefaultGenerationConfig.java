@@ -19,7 +19,9 @@ package org.jsonschema2pojo;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -355,6 +357,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public boolean isIncludeDynamicBuilders() {
         return false;
+    }
+
+    /**
+     * @return <code>{}</code>
+     */
+    @Override
+    public String[] getAdditionalInterfaces() {
+        return new String[] {};
     }
 
     @Override

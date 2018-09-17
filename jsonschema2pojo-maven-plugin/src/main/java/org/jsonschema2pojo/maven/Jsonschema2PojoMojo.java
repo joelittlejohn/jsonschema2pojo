@@ -627,6 +627,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeDynamicBuilders = false;
 
     /**
+     * Interfaces to add to all generated classes.
+     *
+     * @parameter property="jsonschema2pojo.additionalInterfaces"
+     *            default-value=""
+     */
+    private String[] additionalInterfaces = new String[0];
+
+    /**
      * The project being built.
      *
      * @parameter property="project"
@@ -1074,6 +1082,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeDynamicBuilders() {
         return includeDynamicBuilders;
+    }
+
+    @Override
+    public String[] getAdditionalInterfaces() {
+        return additionalInterfaces;
     }
 
     @Override

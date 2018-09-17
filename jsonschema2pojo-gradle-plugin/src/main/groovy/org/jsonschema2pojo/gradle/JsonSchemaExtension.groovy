@@ -52,6 +52,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeDynamicGetters
   boolean includeDynamicSetters
   boolean includeDynamicBuilders
+  String[] additionalInterfaces
   boolean includeConstructors
   boolean constructorsRequiredPropertiesOnly
   boolean includeHashcodeAndEquals
@@ -139,6 +140,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeDynamicGetters = false
     includeDynamicSetters = false
     includeDynamicBuilders = false
+    additionalInterfaces = [] as String[]
     formatDates = false
     formatTimes = false
     formatDateTimes = false
@@ -246,6 +248,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeDynamicGetters = ${includeDynamicGetters}
        |includeDynamicSetters = ${includeDynamicSetters}
        |includeDynamicBuilders = ${includeDynamicBuilders}
+       |additionalInterfaces = ${additionalInterfaces}
        |formatDates = ${formatDates}
        |formatTimes = ${formatTimes}
        |formatDateTimes = ${formatDateTimes}

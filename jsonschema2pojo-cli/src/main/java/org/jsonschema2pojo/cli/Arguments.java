@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -188,6 +189,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-idb", "--include-dynamic-builders" }, description = "Include dynamic builder support on generated types.")
     private boolean includeDynamicBuilders = false;
+
+    @Parameter(names = { "-ai", "--additional-interface" }, description = "Add given interfaces to generated classes.")
+    private String[] additionalInterfaces = new String[0];
 
     @Parameter(names = { "-fd", "--format-dates" }, description = "Whether the fields of type `date` are formatted during serialization with a default pattern of `yyyy-MM-dd`")
     private boolean formatDates = false;
@@ -466,6 +470,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeDynamicBuilders() {
         return includeDynamicBuilders;
+    }
+
+    @Override
+    public String[] getAdditionalInterfaces() {
+        return additionalInterfaces;
     }
 
     @Override
