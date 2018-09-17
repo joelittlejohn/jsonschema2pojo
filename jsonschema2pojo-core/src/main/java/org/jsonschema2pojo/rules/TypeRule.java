@@ -73,13 +73,15 @@ public class TypeRule implements Rule<JClassContainer, JType> {
      *            the name of the node for which this "type" rule applies
      * @param node
      *            the node for which this "type" rule applies
+     * @param parent
+     *            the parent node
      * @param jClassContainer
      *            the package into which any newly generated type may be placed
      * @return the Java type which, after reading the details of the given
      *         schema node, most appropriately matches the "type" specified
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JClassContainer jClassContainer, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
 
         String propertyTypeName = getTypeName(node);
 
@@ -87,7 +89,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
 
         if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
-            type = ruleFactory.getObjectRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
+            type = ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
         } else if (node.has("existingJavaType")) {
             String typeName = node.path("existingJavaType").asText();
 
@@ -110,16 +112,16 @@ public class TypeRule implements Rule<JClassContainer, JType> {
             type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
         } else if (propertyTypeName.equals("array")) {
 
-            type = ruleFactory.getArrayRule().apply(nodeName, node, jClassContainer.getPackage(), schema);
+            type = ruleFactory.getArrayRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
         } else {
 
             type = jClassContainer.owner().ref(Object.class);
         }
 
         if (!node.has("javaType") && !node.has("existingJavaType") && node.has("format")) {
-            type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), type, schema);
+            type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), node, type, schema);
         } else if (!node.has("javaType") && !node.has("existingJavaType") && propertyTypeName.equals("string") && node.has("media")) {
-            type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), type, schema);
+            type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), node, type, schema);
         }
 
         return type;

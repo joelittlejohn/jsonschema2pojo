@@ -54,7 +54,7 @@ public class RequiredArrayRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("fooBar");
 
-        rule.apply("Class", requiredNode, jclass, new Schema(null, requiredNode, requiredNode));
+        rule.apply("Class", requiredNode, null, jclass, new Schema(null, requiredNode, requiredNode));
 
         JDocComment fooBarJavaDoc = jclass.fields().get("fooBar").javadoc();
         JDocComment fooJavaDoc = jclass.fields().get("foo").javadoc();
@@ -79,7 +79,7 @@ public class RequiredArrayRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("foo_bar");
 
-        rule.apply("Class", requiredNode, jclass, new Schema(null, requiredNode, requiredNode));
+        rule.apply("Class", requiredNode, null, jclass, new Schema(null, requiredNode, requiredNode));
 
         Collection<JAnnotationUse> fooBarAnnotations = jclass.fields().get("fooBar").annotations();
         Collection<JAnnotationUse> fooAnnotations = jclass.fields().get("foo").annotations();

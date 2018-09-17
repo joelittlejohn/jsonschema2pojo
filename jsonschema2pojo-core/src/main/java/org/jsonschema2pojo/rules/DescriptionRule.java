@@ -42,13 +42,15 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
      *            the name of the object to which this description applies
      * @param node
      *            the "description" schema node
+     * @param parent
+     *            the parent node
      * @param generatableType
      *            comment-able code generation construct, usually a java class,
      *            which should have this description applied
      * @return the JavaDoc comment created to contain the description
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JDocCommentable generatableType, Schema schema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
         javadoc.append(node.asText());

@@ -56,12 +56,12 @@ public class CustomRuleFactoryIT {
         public Rule<JType, JType> getFormatRule() {
             return new FormatRule(this) {
                 @Override
-                public JType apply(String nodeName, JsonNode node, JType baseType, Schema schema) {
+                public JType apply(String nodeName, JsonNode node, JsonNode parent, JType baseType, Schema schema) {
                     if (node.asText().equals("date")) {
                         return baseType.owner().ref(LocalDate.class);
                     }
 
-                    return super.apply(nodeName, node, baseType, schema);
+                    return super.apply(nodeName, node, parent, baseType, schema);
                 }
             };
         }

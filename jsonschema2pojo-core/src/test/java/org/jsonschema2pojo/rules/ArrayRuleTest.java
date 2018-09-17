@@ -56,7 +56,7 @@ public class ArrayRuleTest {
         propertyNode.set("uniqueItems", BooleanNode.TRUE);
         propertyNode.set("items", itemsNode);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, mock(Schema.class));
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, mock(Schema.class));
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(Set.class)));
@@ -81,7 +81,7 @@ public class ArrayRuleTest {
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
@@ -107,7 +107,7 @@ public class ArrayRuleTest {
         when(config.isUsePrimitives()).thenReturn(true);
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
@@ -131,7 +131,7 @@ public class ArrayRuleTest {
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/defaultArray"));
 
-        JClass propertyType = rule.apply("fooBars", propertyNode, jpackage, schema);
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
     }

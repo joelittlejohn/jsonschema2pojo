@@ -61,7 +61,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
      *            the schema within which this schema rule is being applied
      */
     @Override
-    public JType apply(String nodeName, JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
+    public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
             final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
@@ -73,14 +73,14 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
                 return schema.getJavaType();
             }
 
-            return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, generatableType, schema);
+            return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
         }
 
         JType javaType;
         if (schemaNode.has("enum")) {
-            javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, generatableType, schema);
+            javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
         } else {
-            javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, generatableType.getPackage(), schema);
+            javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema);
         }
         schema.setJavaTypeIfEmpty(javaType);
 

@@ -72,7 +72,7 @@ public class FormatRuleJodaTest {
     public void applyGeneratesTypeFromFormatValue() {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
-        JType result = rule.apply("fooBar", formatNode, new JCodeModel().ref(String.class), null);
+        JType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
 
         assertThat(result.fullName(), equalTo(expectedType.getName()));
     }

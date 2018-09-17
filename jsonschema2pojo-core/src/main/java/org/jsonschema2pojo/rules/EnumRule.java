@@ -88,6 +88,8 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      *            the name of the property which is an "enum"
      * @param node
      *            the enum node
+     * @param parent
+     *            the parent node
      * @param container
      *            the class container (class or package) to which this enum
      *            should be added
@@ -95,7 +97,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      *         given enum
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JClassContainer container, Schema schema) {
+    public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer container, Schema schema) {
 
         JDefinedClass _enum;
         try {
@@ -117,22 +119,22 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         // If type is specified on the enum, get a type rule for it.  Otherwise, we're a string.
         // (This is different from the default of Object, which is why we don't do this for every case.)
         JType backingType = node.has("type") ?
-                ruleFactory.getTypeRule().apply(nodeName, typeNode, container, schema) :
+                ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) :
                     container.owner().ref(String.class);
 
-                JFieldVar valueField = addValueField(_enum, backingType);
+        JFieldVar valueField = addValueField(_enum, backingType);
 
-                // override toString only if we have a sensible string to return
-                if(isString(backingType)){
-                    addToString(_enum, valueField);
-                }
+        // override toString only if we have a sensible string to return
+        if(isString(backingType)){
+            addToString(_enum, valueField);
+        }
 
-                addValueMethod(_enum, valueField);
+        addValueMethod(_enum, valueField);
 
-                addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
-                addFactoryMethod(_enum, backingType);
+        addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
+        addFactoryMethod(_enum, backingType);
 
-                return _enum;
+        return _enum;
     }
 
     private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {

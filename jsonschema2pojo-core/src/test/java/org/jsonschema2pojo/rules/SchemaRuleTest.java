@@ -66,9 +66,9 @@ public class SchemaRuleTest {
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
 
-        rule.apply(NODE_NAME, schemaWithRef, jclass, null);
+        rule.apply(NODE_NAME, schemaWithRef, null, jclass, null);
 
-        verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), eq(jclass.getPackage()), captureSchema.capture());
+        verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), any(), eq(jclass.getPackage()), captureSchema.capture());
 
         assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
         assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));
@@ -93,11 +93,11 @@ public class SchemaRuleTest {
         EnumRule enumRule = mock(EnumRule.class);
         when(mockRuleFactory.getEnumRule()).thenReturn(enumRule);
 
-        when(enumRule.apply(NODE_NAME, enumNode, jclass, schema)).thenReturn(jclass);
+        when(enumRule.apply(NODE_NAME, enumNode, null, jclass, schema)).thenReturn(jclass);
 
-        rule.apply(NODE_NAME, schemaContent, jclass, schema);
+        rule.apply(NODE_NAME, schemaContent, null, jclass, schema);
 
-        verify(enumRule).apply(NODE_NAME, schemaContent, jclass, schema);
+        verify(enumRule).apply(NODE_NAME, schemaContent, null, jclass, schema);
         verify(schema, atLeastOnce()).setJavaTypeIfEmpty(jclass);
 
     }
@@ -122,7 +122,7 @@ public class SchemaRuleTest {
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null, schema);
+        JType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
 
         assertThat(result, is(sameInstance(previouslyGeneratedType)));
 

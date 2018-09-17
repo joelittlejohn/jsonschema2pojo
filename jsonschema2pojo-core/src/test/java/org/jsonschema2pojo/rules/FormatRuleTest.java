@@ -22,10 +22,15 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.UUID;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -75,7 +80,7 @@ public class FormatRuleTest {
     public void applyGeneratesTypeFromFormatValue() {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
-        JType result = rule.apply("fooBar", formatNode, new JCodeModel().ref(String.class), null);
+        JType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
 
         assertThat(result.fullName(), equalTo(expectedType.getName()));
     }
@@ -86,7 +91,7 @@ public class FormatRuleTest {
 
         JType baseType = new JCodeModel().ref(Long.class);
 
-        JType result = rule.apply("fooBar", formatNode, baseType, null);
+        JType result = rule.apply("fooBar", formatNode, null, baseType, null);
 
         assertThat(result, equalTo(baseType));
     }

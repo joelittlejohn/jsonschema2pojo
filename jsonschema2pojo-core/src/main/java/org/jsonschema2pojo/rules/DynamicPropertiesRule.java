@@ -83,6 +83,8 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
      * @param node
      *            the properties node, containing property names and their
      *            definition
+     * @param parent
+     *            the parent node
      * @param jclass
      *            the Java type which will have the given properties added
      * @param currentSchema
@@ -90,7 +92,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
      * @return the given jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JDefinedClass jclass, Schema currentSchema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema currentSchema) {
         if (!ruleFactory.getGenerationConfig().isIncludeDynamicAccessors() ||
                 (!ruleFactory.getGenerationConfig().isIncludeDynamicSetters() &&
                 !ruleFactory.getGenerationConfig().isIncludeDynamicGetters() &&

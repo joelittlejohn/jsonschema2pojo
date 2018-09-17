@@ -65,20 +65,22 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *            the name of the property which has type "array"
      * @param node
      *            the schema "type" node
+     * @param parent
+     *            the parent node
      * @param jpackage
      *            the package into which newly generated types should be added
      * @return the Java type associated with this array rule, either {@link Set}
      *         or {@link List}, narrowed by the "items" type
      */
     @Override
-    public JClass apply(String nodeName, JsonNode node, JPackage jpackage, Schema schema) {
+    public JClass apply(String nodeName, JsonNode node, JsonNode parent, JPackage jpackage, Schema schema) {
 
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
         boolean rootSchemaIsArray = !schema.isGenerated();
 
         JType itemType;
         if (node.has("items")) {
-            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), jpackage, schema);
+            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), node, jpackage, schema);
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }
