@@ -69,6 +69,7 @@ public class FormatIT {
                 { "stringAsStyle", String.class, "border: 1px solid red", "border: 1px solid red" },
                 { "stringAsPhone", String.class, "1-800-STARWARS", "1-800-STARWARS" },
                 { "stringAsUri", URI.class, "http://some/uri?q=abc", "http://some/uri?q=abc" },
+                { "stringAsUrl", URL.class, "http://some/uri?q=abc", "http://some/uri?q=abc" },
                 { "stringAsUuid", UUID.class, "15a2a782-81b3-48ef-b35f-c2b9847b617e", "15a2a782-81b3-48ef-b35f-c2b9847b617e" },
                 { "stringAsEmail", String.class, "a@b.com", "a@b.com" } });
     }

@@ -96,4 +96,15 @@ public class FormatRuleTest {
         assertThat(result, equalTo(baseType));
     }
 
+    @Test
+    public void applyUrlForUriAndHttpsPattern() {
+        TextNode formatNode = TextNode.valueOf("uri");
+        JsonNode parent = JsonNodeFactory.instance.objectNode()
+                .put("pattern", "https?://.+");
+
+        JType result = rule.apply("fooBar", formatNode, parent, new JCodeModel().ref(String.class), null);
+
+        assertThat(result.fullName(), equalTo(URL.class.getName()));
+    }
+
 }

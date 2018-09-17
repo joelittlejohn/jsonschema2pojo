@@ -61,6 +61,11 @@
             "type" : "string",
             "format" : "uri"
         },
+        "stringAsUrl" : {
+            "type" : "string",
+            "format" : "uri",
+            "pattern" : "https?://.+"
+        },
         "stringAsEmail" : {
             "type" : "string",
             "format" : "email"

@@ -115,7 +115,11 @@ public class FormatRule implements Rule<JType, JType> {
             return baseType.owner().ref(String.class);
 
         } else if (node.asText().equals("uri")) {
-            return baseType.owner().ref(URI.class);
+            if (parent != null && parent.has("pattern") && parent.get("pattern").textValue().startsWith("https?://")) {
+                return baseType.owner().ref(URL.class);
+            } else {
+                return baseType.owner().ref(URI.class);
+            }
 
         } else if (node.asText().equals("email")) {
             return baseType.owner().ref(String.class);
