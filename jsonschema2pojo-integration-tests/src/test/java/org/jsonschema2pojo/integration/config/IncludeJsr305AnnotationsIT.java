@@ -102,6 +102,30 @@ public class IncludeJsr305AnnotationsIT {
         }
     }
 
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void jsr305AnnotationsGeneratedProperlyInNestedArray() throws ClassNotFoundException, NoSuchFieldException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredNestedInArray.json", "com.example",
+                config("includeJsr305Annotations", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Nested");
+
+        validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
+    }
+
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void jsr305AnnotationsGeneratedProperlyInNestedObject() throws ClassNotFoundException, NoSuchFieldException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredNestedInObject.json", "com.example",
+                config("includeJsr305Annotations", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Nested");
+
+        validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
+    }
+
     private static void validateNonnullField(Field nonnullField) {
         Nonnull nonnullAnnotation = nonnullField.getAnnotation(Nonnull.class);
         Nullable nullableAnnotation = nonnullField.getAnnotation(Nullable.class);
@@ -110,9 +134,9 @@ public class IncludeJsr305AnnotationsIT {
         assertNull("Unexpected @Nullable annotation found.", nullableAnnotation);
     }
 
-    private static void validateNullableField(Field nonnullField) {
-        Nonnull nonnullAnnotation = nonnullField.getAnnotation(Nonnull.class);
-        Nullable nullableAnnotation = nonnullField.getAnnotation(Nullable.class);
+    private static void validateNullableField(Field nullableField) {
+        Nonnull nonnullAnnotation = nullableField.getAnnotation(Nonnull.class);
+        Nullable nullableAnnotation = nullableField.getAnnotation(Nullable.class);
 
         assertNull("Unexpected @Nonnull annotation found.", nonnullAnnotation);
         assertNotNull("Expected @Nullable annotation is missing.", nullableAnnotation);

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "nested": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "requiredProperty"
+        ],
+        "properties": {
+          "requiredProperty": {
+            "type": "string"
+          },
+          "nonRequiredProperty": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
