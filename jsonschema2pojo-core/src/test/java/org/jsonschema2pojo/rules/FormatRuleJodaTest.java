@@ -43,7 +43,7 @@ import org.joda.time.LocalTime;
 public class FormatRuleJodaTest {
 
     private GenerationConfig config = mock(GenerationConfig.class);
-    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+    private FormatRule rule;
 
     private final String formatValue;
     private final Class<?> expectedType;
@@ -66,6 +66,7 @@ public class FormatRuleJodaTest {
         when(config.isUseJodaLocalTimes()).thenReturn(true);
         when(config.isUseJodaLocalDates()).thenReturn(true);
         when(config.isUseJodaDates()).thenReturn(true);
+        rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
     }
 
     @Test

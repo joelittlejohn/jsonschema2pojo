@@ -19,7 +19,9 @@ package org.jsonschema2pojo;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -433,6 +435,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     @Override
     public Language getTargetLanguage() {
         return Language.JAVA;
+    }
+
+    /**
+     * @return {@link Collections#emptyMap}
+     */
+    @Override
+    public Map<String, String> getFormatTypeMapping() {
+        return Collections.emptyMap();
     }
     
 }

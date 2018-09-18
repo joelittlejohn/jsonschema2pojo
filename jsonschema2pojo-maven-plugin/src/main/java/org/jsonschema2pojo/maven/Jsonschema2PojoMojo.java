@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -737,6 +739,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String targetLanguage = "java";
 
     /**
+     * @parameter property="jsonschema2pojo.formatTypeMapping"
+     *            default-value=""
+     * @since 1.0.0
+     */
+    private Map<String, String> formatTypeMapping = new HashMap<>();
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1144,5 +1153,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public Language getTargetLanguage() {
         return Language.valueOf(targetLanguage.toUpperCase());
+    }
+
+    @Override
+    public Map<String, String> getFormatTypeMapping() {
+        return formatTypeMapping;
     }
 }

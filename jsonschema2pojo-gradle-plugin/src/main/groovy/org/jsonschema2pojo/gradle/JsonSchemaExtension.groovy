@@ -90,6 +90,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
   Language targetLanguage
+  Map<String, String> formatTypeMapping
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -144,6 +145,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
+    formatTypeMapping = Collections.emptyMap()
   }
 
   @Override
@@ -163,10 +165,6 @@ public class JsonSchemaExtension implements GenerationConfig {
 
   public void setAnnotationStyle(String style) {
     annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
-  }
-
-  public void setUseTitleAsClassname(boolean useTitleAsClassname) {
-    useTitleAsClassname = useTitleAsClassname
   }
 
   public void setInclusionLevel(String level) {
@@ -255,6 +253,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}
        |targetLanguage = ${targetLanguage}
+       |formatTypeMapping = ${formatTypeMapping}
      """.stripMargin()
   }
   
