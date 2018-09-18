@@ -28,13 +28,13 @@ public class Schema {
 
     private final URI id;
     private final JsonNode content;
-    private final JsonNode parentContent;
+    private final Schema parent;
     private JType javaType;
 
-    public Schema(URI id, JsonNode content, JsonNode parentContent) {
+    public Schema(URI id, JsonNode content, Schema parent) {
         this.id = id;
         this.content = content;
-        this.parentContent = parentContent;
+        this.parent = parent != null ? parent : this;
     }
 
     public JType getJavaType() {
@@ -59,12 +59,20 @@ public class Schema {
         return content;
     }
 
-    public JsonNode getParentContent() {
-        return parentContent;
+    public Schema getParent() {
+        return parent;
     }
     
     public boolean isGenerated() {
         return javaType != null;
+    }
+
+    public Schema derive(JsonNode content) {
+        if (content != this.content) {
+            return new Schema(id, content, this);
+        } else {
+            return this;
+        }
     }
 
 }

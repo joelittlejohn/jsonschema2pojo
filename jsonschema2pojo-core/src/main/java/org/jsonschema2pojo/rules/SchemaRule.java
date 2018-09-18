@@ -76,6 +76,8 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
         }
 
+        schema = schema.derive(schemaNode);
+
         JType javaType;
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
