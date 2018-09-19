@@ -28,13 +28,13 @@ public class Schema {
 
     private final URI id;
     private final JsonNode content;
-    private final JsonNode parentContent;
+    private final Schema parent;
     private JType javaType;
 
-    public Schema(URI id, JsonNode content, JsonNode parentContent) {
+    public Schema(URI id, JsonNode content, Schema parent) {
         this.id = id;
         this.content = content;
-        this.parentContent = parentContent;
+        this.parent = parent != null ? parent : this;
     }
 
     public JType getJavaType() {
@@ -59,12 +59,30 @@ public class Schema {
         return content;
     }
 
-    public JsonNode getParentContent() {
-        return parentContent;
+    public Schema getParent() {
+        return parent;
     }
     
     public boolean isGenerated() {
         return javaType != null;
+    }
+
+    /**
+     * Derive a schema with {@code content} and this schema as parent.
+     * It will keep the same ID as the parent schema.
+     * <p>
+     * This method is a no-op if {@code content == this.content}.
+     *
+     * @param content the content of the child schema
+     * @return a schema with the provided content; {@code this} schema if content
+     *         didn't change
+     */
+    public Schema deriveChildSchema(JsonNode content) {
+        if (content != this.content) {
+            return new Schema(id, content, this);
+        } else {
+            return this;
+        }
     }
 
 }

@@ -88,6 +88,7 @@ public class SchemaRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getContent()).thenReturn(schemaContent);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
         schema.setJavaTypeIfEmpty(jclass);
 
         EnumRule enumRule = mock(EnumRule.class);
