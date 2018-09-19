@@ -57,7 +57,7 @@ public class ArrayRuleTest {
         propertyNode.set("items", itemsNode);
 
         Schema schema = mock(Schema.class);
-        when(schema.derive(any())).thenReturn(schema);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
@@ -82,7 +82,7 @@ public class ArrayRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
-        when(schema.derive(any())).thenReturn(schema);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
@@ -108,7 +108,7 @@ public class ArrayRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
-        when(schema.derive(any())).thenReturn(schema);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
         when(config.isUsePrimitives()).thenReturn(true);
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
@@ -135,7 +135,7 @@ public class ArrayRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/defaultArray"));
-        when(schema.derive(any())).thenReturn(schema);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 

@@ -67,7 +67,17 @@ public class Schema {
         return javaType != null;
     }
 
-    public Schema derive(JsonNode content) {
+    /**
+     * Derive a schema with {@code content} and this schema as parent.
+     * It will keep the same ID as the parent schema.
+     * <p>
+     * This method is a no-op if {@code content == this.content}.
+     *
+     * @param content the content of the child schema
+     * @return a schema with the provided content; {@code this} schema if content
+     *         didn't change
+     */
+    public Schema deriveChildSchema(JsonNode content) {
         if (content != this.content) {
             return new Schema(id, content, this);
         } else {
