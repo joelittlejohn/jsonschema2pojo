@@ -43,6 +43,7 @@ import com.sun.codemodel.JType;
  */
 public class FormatRule implements Rule<JType, JType> {
 
+    public static Pattern URL_PATTERN_PATTERN = Pattern.compile("^([^()]+|\\(([^()])+\\))://(.*)$");
     public static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
     public static String ISO_8601_TIME_FORMAT = "HH:mm:ss.SSS";
     public static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
@@ -115,7 +116,11 @@ public class FormatRule implements Rule<JType, JType> {
             return baseType.owner().ref(String.class);
 
         } else if (node.asText().equals("uri")) {
-            return baseType.owner().ref(URI.class);
+            if (parent != null && parent.has("pattern") && URL_PATTERN_PATTERN.matcher(parent.get("pattern").asText("")).matches()) {
+                return baseType.owner().ref(URL.class);
+            } else {
+                return baseType.owner().ref(URI.class);
+            }
 
         } else if (node.asText().equals("email")) {
             return baseType.owner().ref(String.class);
