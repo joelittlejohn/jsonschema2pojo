@@ -72,7 +72,7 @@ public class FormatRulePrimitivesTest {
     }
 
     @Test
-    public void applyGeneratesTypeFromFormatValue() {
+    public void usePrimitivesWithCustomTypeMapping() {
         JType result = rule.apply("fooBar", TextNode.valueOf("test"), null, new JCodeModel().ref(Object.class), null);
 
         Class<?> expected = primitive != null ? primitive : wrapper;
