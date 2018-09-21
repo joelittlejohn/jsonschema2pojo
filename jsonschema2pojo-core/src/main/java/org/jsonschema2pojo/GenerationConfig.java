@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -562,5 +563,12 @@ public interface GenerationConfig {
      *         </ul>
      */
     Language getTargetLanguage();
-    
+
+    /**
+     * Gets the 'formatTypeMapping' configuration option.
+     *
+     * @return An optional mapping from format identifier (e.g. 'uri') to
+     *         fully qualified type name (e.g. 'java.net.URI').
+     */
+    Map<String, String> getFormatTypeMapping();
 }

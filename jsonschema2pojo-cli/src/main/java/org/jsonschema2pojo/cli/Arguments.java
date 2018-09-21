@@ -21,8 +21,11 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
@@ -215,6 +218,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-tl", "--target-language" }, description = "The type of code that will be generated.  Available options are: JAVA or SCALA")
     private Language targetLanguage = Language.JAVA;
+
+    @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
+    private List<String> formatTypeMapping = new ArrayList<>();
     
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -532,9 +538,16 @@ public class Arguments implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
+    }
+
+    @Override
+    public Map<String, String> getFormatTypeMapping() {
+        return formatTypeMapping
+                .stream()
+                .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
     }
 }

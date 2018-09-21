@@ -27,9 +27,13 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -176,6 +180,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Language targetLanguage = Language.JAVA;
+
+    private Map<String, String> formatTypeMapping = new HashMap<>();
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -871,6 +877,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.targetLanguage = targetLanguage;
     }
 
+    public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
+        this.formatTypeMapping = formatTypeMapping;
+    }
+    public void setFormatTypeMapping(String[] formatTypeMapping) {
+        this.formatTypeMapping = Arrays.stream(formatTypeMapping)
+            .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -1181,6 +1195,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
+    }
+
+    @Override
+    public Map<String, String> getFormatTypeMapping() {
+        return formatTypeMapping;
     }
     
 }
