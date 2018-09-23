@@ -138,6 +138,18 @@ public class NameHelper {
         return setterName;
     }
 
+    public String getBuilderName(String propertyName, JsonNode node) {
+        propertyName = getPropertyNameForAccessor(propertyName, node);
+
+        String prefix = "with";
+
+        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+            return prefix + propertyName;
+        } else {
+            return prefix + capitalize(propertyName);
+        }
+    }
+
     /**
      * Get name of the field generated from property.
      *

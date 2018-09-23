@@ -90,7 +90,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilder(jclass, field);
+            addBuilder(jclass, field, nodeName, node);
         }
 
         if (node.has("pattern")) {
@@ -235,8 +235,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return setter;
     }
 
-    private JMethod addBuilder(JDefinedClass c, JFieldVar field) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(field.name()));
+    private JMethod addBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
         JVar param = builder.param(field.type(), field.name());
         JBlock body = builder.body();
@@ -246,9 +246,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return builder;
     }
 
-    private String getBuilderName(String propertyName) {
-        propertyName = ruleFactory.getNameHelper().replaceIllegalCharacters(propertyName);
-        return "with" + capitalize(ruleFactory.getNameHelper().capitalizeTrailingWords(propertyName));
+    private String getBuilderName(String propertyName, JsonNode node) {
+        return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
     }
 
     private String getSetterName(String propertyName, JsonNode node) {

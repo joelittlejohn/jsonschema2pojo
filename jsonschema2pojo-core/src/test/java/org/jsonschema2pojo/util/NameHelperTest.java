@@ -51,6 +51,13 @@ public class NameHelperTest {
     }
 
     @Test
+    public void testBuilderNamedCorrectly() {
+        assertThat(nameHelper.getBuilderName("foo", NODE), is("withFoo"));
+        assertThat(nameHelper.getBuilderName("oAuth2State", NODE), is("withoAuth2State"));
+        assertThat(nameHelper.getBuilderName("URL", NODE), is("withUrl"));
+    }
+
+    @Test
     public void testClassNameCorrectly() {
         assertThat(nameHelper.getClassName("foo", NODE), is("foo"));
         assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("foo"));
