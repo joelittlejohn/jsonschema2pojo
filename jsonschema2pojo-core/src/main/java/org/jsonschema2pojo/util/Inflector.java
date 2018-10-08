@@ -97,6 +97,7 @@ public class Inflector {
             .singular("(quiz)zes$", "$1")
             .singular("(ess)$", "$1")
             .singular("men$", "man")
+            .singular("(.+)list$", "$1")
             .singular("specimen", "specimen")
             .singular("status$", "status");
 

@@ -49,6 +49,18 @@
                 "type" : "object"
             }
         },
+        "widgetList" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
+        },
+        "animal_list" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object"
+            }
+        },
         "properties" : {
             "type" : "array",
             "items" : {
