@@ -299,12 +299,634 @@
         </div>
       </div>
 
+      <div class="row form-section">
+<h2>Reference</h2>
+<h3>properties</h3>
+<p>For each property present in the 'properties' definition, we add a property to a given Java class according to the <a href="http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html" rel="nofollow">JavaBeans spec</a>. A private field is added to the parent class, along with accompanying accessor methods (getter and setter).</p>
+<p>E.g. json schema</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+            }
+        }
+    }</pre></div>
+<p>resulting Java type:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyObject</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">String</span> foo;
+        <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getFoo</span>() {
+           <span class="pl-k">return</span> foo;
+        }
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setFoo</span>(<span class="pl-smi">String</span> <span class="pl-v">foo</span>) {
+           <span class="pl-c1">this</span><span class="pl-k">.</span>foo <span class="pl-k">=</span> foo;
+        }
+    }</pre></div>
+<p>If the generate-builders property is set to <code>true</code>, then a builder method is also added:</p>
+<div class="highlight highlight-source-java"><pre>        <span class="pl-k">public</span> <span class="pl-smi">MyObject</span> withFoo(<span class="pl-smi">String</span> foo) {
+            <span class="pl-c1">this</span><span class="pl-k">.</span>foo <span class="pl-k">=</span> foo;
+            <span class="pl-k">return</span> <span class="pl-c1">this</span>;
+        }</pre></div>
+<p>These builder methods allow easy, one-liner construction and initialization of objects, like:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-smi">MyObject</span> o <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">MyObject</span>()<span class="pl-k">.</span>withFoo(<span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>withBar(<span class="pl-s"><span class="pl-pds">"</span>bar<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>withBaz(<span class="pl-s"><span class="pl-pds">"</span>baz<span class="pl-pds">"</span></span>);</pre></div>
+<h3>type</h3>
+<p>When encountering the type attribute (e.g. for properties), jsonschema2pojo maps schema types as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Schema type</th>
+<th>Java type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td><code>java.lang.String</code></td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td><code>java.lang.Double</code></td>
+</tr>
+<tr>
+<td><code>integer</code></td>
+<td><code>java.lang.Integer</code></td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td><code>java.lang.Boolean</code></td>
+</tr>
+<tr>
+<td><code>object</code></td>
+<td><em>generated Java type</em></td>
+</tr>
+<tr>
+<td><code>array</code></td>
+<td><code>java.util.List</code></td>
+</tr>
+<tr>
+<td>
+<code>array</code> (with <code>"uniqueItems":true</code>)</td>
+<td><code>java.util.Set</code></td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td><code>java.lang.Object</code></td>
+</tr>
+<tr>
+<td><code>any</code></td>
+<td><code>java.lang.Object</code></td>
+</tr>
+</tbody>
+</table>
+<p>When applying the <code>usePrimitives</code> option, the primitives <code>double</code>, <code>integer</code> and <code>boolean</code> will replace the wrapper types listed above.</p>
+<h3>additionalProperties</h3>
+<p>If additionalProperties is specified and set to the boolean value <code>false</code>, then the generated Java type does not support additional properties.</p>
+<p>If the additionalProperties node is undefined (not present), <code>null</code> or empty, then a new bean property named "additionalProperties", of type <code>Map&lt;String,Object&gt;</code> is added to
+the generated type (with appropriate accessors). The accessors are
+annotated to allow Jackson to marshal/unmarshal unrecognised (additional) properties found in JSON data from/to this map.</p>
+<p>So, schema file myObject.json like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+    }</pre></div>
+<p>or</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>additionalProperties<span class="pl-pds">"</span></span> : {}
+    }</pre></div>
+<p>produces:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyObject</span> {
+
+        <span class="pl-k">private</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt;</span> additionalProperties <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">java.util.HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt;</span>();
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnyGetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt;</span> <span class="pl-en">getAdditionalProperties</span>() {
+            <span class="pl-k">return</span> <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties;
+        }
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnySetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAdditionalProperties</span>(<span class="pl-smi">String</span> <span class="pl-v">name</span>, <span class="pl-smi">Object</span> <span class="pl-v">value</span>) {
+            <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties<span class="pl-k">.</span>put(name, value);
+        }
+
+    }</pre></div>
+<p>If the additionalProperties node is present and specifies a schema, then an "additionalProperties" map is added to the generated type and map values will be restricted according to the additionalProperties schema.</p>
+<p>So, schema file myObject.json like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>additionalProperties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>
+        }
+    }</pre></div>
+<p>produces:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyObject</span> {
+
+        <span class="pl-k">private</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Double</span>&gt;</span> additionalProperties <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">java.util.HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Double</span>&gt;</span>();
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnyGetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Double</span>&gt;</span> <span class="pl-en">getAdditionalProperties</span>() {
+            <span class="pl-k">return</span> <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties;
+        }
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnySetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAdditionalProperties</span>(<span class="pl-smi">String</span> <span class="pl-v">name</span>, <span class="pl-smi">Double</span> <span class="pl-v">value</span>) {
+            <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties<span class="pl-k">.</span>put(name, value);
+        }
+
+    }</pre></div>
+<p>Where the additionalProperties schema species a type <code>object</code>, map values will be restricted to instances of a newly generated Java type. If the given schema does not specify the =javaType= property, the name of the newly generated type will be derived from the parent type name and the suffix 'Property'.</p>
+<p>So, schema file myObject.json like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>additionalProperties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+        }
+    }</pre></div>
+<p>produces:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyObject</span> {
+
+        <span class="pl-k">private</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">MyObjectProperty</span>&gt;</span> additionalProperties <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">java.util.HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">MyObjectProperty</span>&gt;</span>();
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnyGetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">java.util.Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">MyObjectProperty</span>&gt;</span> <span class="pl-en">getAdditionalProperties</span>() {
+            <span class="pl-k">return</span> <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties;
+        }
+
+        <span class="pl-k">@org</span><span class="pl-k">.</span><span class="pl-smi">codehaus.jackson.annotate<span class="pl-k">.</span>JsonAnySetter</span>
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAdditionalProperties</span>(<span class="pl-smi">String</span> <span class="pl-v">name</span>, <span class="pl-smi">MyObjectProperty</span> <span class="pl-v">value</span>) {
+            <span class="pl-c1">this</span><span class="pl-k">.</span>additionalProperties<span class="pl-k">.</span>put(name, value);
+        }
+
+    }</pre></div>
+<h3>items</h3>
+<p>The 'items' rule defines a schema for the contents of an array. In generated Java types, the value of 'items' dictates the generic type of Lists and Sets.</p>
+<p>So, this example JSON Schema:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>myArrayProperty<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span> : {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                }
+            }
+        }
+    }</pre></div>
+<p>produces a property called myArrayProperty of type <code>List&lt;String&gt;</code> in the generated Java type. If items itself declares a complex type (<code>"type" : "object"</code>) then the generic type of the List or Set will itself be a generated type e.g. <code>List&lt;MyComplexType&gt;</code>.</p>
+<h3>required</h3>
+<p>The 'required' schema rule doesn't produce a structural change in generated Java types, it simply causes the text <code>(Required)</code> to be added to the JavaDoc for fields, getters and setters.</p>
+<h3>optional</h3>
+<p>The 'optional' schema rule doesn't produce a structural change in generated Java types, it simply causes the text <code>(Optional)</code> to be added to the JavaDoc for fields, getters and setters.</p>
+<p>This schema rule is deprecated since Draft 03 of the JSON Schema specification. Rather than marking <em>optional</em> properties as <em>optional</em>, one should mark <em>required</em> properties as <em>required</em>.</p>
+<h3>uniqueItems</h3>
+<p>For properties of type 'array', setting <code>uniqueItems</code> to <code>false</code> (or omitting it entirely) causes the generated Java property to be of type <code>java.util.List</code>.</p>
+<p>When <code>uniqueItems</code> is set to <code>true</code>, the generated Java property value is of type <code>java.util.Set</code>.</p>
+<h3>enum</h3>
+<p>When <em>jsonschema2pojo</em> encounters JSON Schema declarations of type "enum" it generates a <a href="http://download.oracle.com/javase/tutorial/java/javaOO/enum.html" rel="nofollow">Java enum type</a>.</p>
+<p>When a generated type includes a property of type "enum", the generated enum type becomes a static inner type declared within the enclosing (parent) generated type. If an enum is declared at the root of a schema, the generated enum is a public Java type with no enclosing type.</p>
+<p>The actual enum value is held in a 'value' property inside the enum constants. The generated enum type also includes annotations that allow Jackson to correctly marshal/unmarshal JSON values, even when the actual values contain spaces, start with digits, or contain other characters that cannot legally form part of the Java enum constant name.</p>
+<p>So, if we declare a schema myObject.json with an enum property:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>myEnum<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>one<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>secondOne<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>3rd one<span class="pl-pds">"</span></span>]
+            }
+        }
+    }</pre></div>
+<p>we see a generated MyObject Java type with an inner enum type like:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">@Generated</span>(<span class="pl-s"><span class="pl-pds">"</span>com.googlecode.jsonschema2pojo<span class="pl-pds">"</span></span>)
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">enum</span> <span class="pl-en">MyEnum</span> {
+
+        <span class="pl-c1">ONE</span>(<span class="pl-s"><span class="pl-pds">"</span>one<span class="pl-pds">"</span></span>),
+        <span class="pl-c1">SECOND_ONE</span>(<span class="pl-s"><span class="pl-pds">"</span>secondOne<span class="pl-pds">"</span></span>),
+        <span class="pl-c1">_3_RD_ONE</span>(<span class="pl-s"><span class="pl-pds">"</span>3rd one<span class="pl-pds">"</span></span>);
+        <span class="pl-k">private</span> <span class="pl-k">final</span> <span class="pl-smi">String</span> value;
+
+        <span class="pl-k">private</span> <span class="pl-en">MyEnum</span>(<span class="pl-smi">String</span> <span class="pl-v">value</span>) {
+            <span class="pl-c1">this</span><span class="pl-k">.</span>value <span class="pl-k">=</span> value;
+        }
+
+        <span class="pl-k">@JsonValue</span>
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">toString</span>() {
+            <span class="pl-k">return</span> <span class="pl-c1">this</span><span class="pl-k">.</span>value;
+        }
+
+        <span class="pl-k">@JsonCreator</span>
+        <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">MyObject</span>.<span class="pl-smi">MyEnum</span> <span class="pl-en">fromValue</span>(<span class="pl-smi">String</span> <span class="pl-v">value</span>) {
+            <span class="pl-k">for</span> (<span class="pl-smi">MyObject</span><span class="pl-k">.</span><span class="pl-smi">MyEnum</span> c<span class="pl-k">:</span> <span class="pl-smi">MyObject</span><span class="pl-k">.</span><span class="pl-smi">MyEnum</span><span class="pl-k">.</span>values()) {
+                <span class="pl-k">if</span> (c<span class="pl-k">.</span>value<span class="pl-k">.</span>equals(value)) {
+                    <span class="pl-k">return</span> c;
+                }
+            }
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">IllegalArgumentException</span>(value);
+        }
+
+    }</pre></div>
+<h3>default</h3>
+<p>Using the default rule in your JSON Schema causes the corresponding property in your generated Java type to be initialised with a default value. You'll see the default value is assigned during field declaration.</p>
+<p>Default values are supported for the JSON Schema properties of type <code>string</code>, <code>integer</code>, <code>number</code> and <code>boolean</code>; for <code>enum</code> properties; for properties with <code>format</code> of <code>utc-millisec</code> or <code>date-time</code>; for arrays of any of these types.</p>
+<p>Some example JSON Schema property definitions and their corresponding Java field declaration are shown:</p>
+<table>
+<thead>
+<tr>
+<th><em>JSON Schema</em></th>
+<th><em>Java</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>myString : { "type":"string", "default":"abc"}</code></td>
+<td><code>private String myString = "abc";</code></td>
+</tr>
+<tr>
+<td><code>myInteger : { "type":"integer", "default":"100"}</code></td>
+<td><code>private Integer myInteger = 100;</code></td>
+</tr>
+<tr>
+<td><code>myNumber : { "type":"number", "default":"10.3"}</code></td>
+<td><code>private Double myNumber = 10.3D;</code></td>
+</tr>
+<tr>
+<td><code>myMillis : { "type":"string", "format":"utc-millisec", "default":"500"}</code></td>
+<td><code>private Long myMillis = 500L;</code></td>
+</tr>
+<tr>
+<td><code>myDate : { "type":"string", "format":"date-time", "default":"500"}</code></td>
+<td><code>private Date myDate = new Date(500L);</code></td>
+</tr>
+<tr>
+<td><code>myDate : { "type":"string", "format":"date-time", "default":"2011-02-24T09:25:23.112+0000"}</code></td>
+<td><code>private Date myDate = new Date(1298539523112L);</code></td>
+</tr>
+<tr>
+<td><code>myList : { "type":"array", "default":["a","b","c"]}</code></td>
+<td><code>private List&lt;String&gt; myList = new ArrayList&lt;String&gt;(Arrays.asList("a","b","c"));</code></td>
+</tr>
+</tbody>
+</table>
+<p>As the above table shows, dates can be given a default using either a number of millis since epoch or a date string (ISO 8601 or RFC 1123). In either case, the date will be initialized using a millisecond value in the generated Java type.</p>
+<h3>title</h3>
+<p>The 'title' rule appearing in a JSON Schema causes the given title text to be added to the JavaDoc for a property. The title text will appear in JavaDoc comments of the field, getter and setter.</p>
+<p>title text always appears before description text.</p>
+<h3>description</h3>
+<p>The description rule appearing in a JSON Schema causes the given description text to be added to the JavaDoc for a property. The description text will appear in JavaDoc comments of the field, getter and setter.</p>
+<p>description text always appears after title text.</p>
+<h3>format</h3>
+<p>Using the format rule for a property can influence the Java type chosen to represent your property values. When you use a format value that <em>jsonschema2pojo</em> recognises, it will use a better (more appropriate) type for your Java bean property.</p>
+<p>For example, when I define a JSON property in my schema of type <code>string</code>, if I also attach the rule <code>"format" : "uri"</code> to that property (because my <code>string</code> is actually a URI) then my corresponding Java property will now have the type <code>java.net.URI</code> instead of <code>java.lang.String</code>.</p>
+<p>How <em>jsonschema2pojo</em> maps format values to Java types:</p>
+<table>
+<thead>
+<tr>
+<th>Format value</th>
+<th>Java type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"date-time"</code></td>
+<td><code>java.util.Date</code></td>
+</tr>
+<tr>
+<td><code>"date"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"time"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"utc-millisec"</code></td>
+<td><code>long</code></td>
+</tr>
+<tr>
+<td><code>"regex"</code></td>
+<td><code>java.util.regex.Pattern</code></td>
+</tr>
+<tr>
+<td><code>"color"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"style"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"phone"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"uri"</code></td>
+<td><code>java.net.URI</code></td>
+</tr>
+<tr>
+<td><code>"email"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"ip-address"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"ipv6"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"host-name"</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td><code>"uuid"</code></td>
+<td><code>java.util.UUID</code></td>
+</tr>
+<tr>
+<td>anything else (unrecognised format)</td>
+<td>type is unchanged</td>
+</tr>
+</tbody>
+</table>
+<h3>extends</h3>
+<p>When the extends rule is encountered in your JSON schema (to indicate that one type extends another), this will produce an <code>extends</code> relationship in your generated Java types. That extends value can be a schema given in-line, or referenced using <code>$ref</code>.</p>
+<p>As an example, lets imagine a file <code>flower.json</code> with the following content:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+    }</pre></div>
+<p>and a second file <code>rose.json</code> which contains:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>extends<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>flower.json<span class="pl-pds">"</span></span>
+        }
+    }</pre></div>
+<p>The two resulting Java types generated from these schemas would be:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Flower</span> {
+        <span class="pl-c1">....</span>
+    }</pre></div>
+<p>and</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Rose</span> <span class="pl-k">extends</span> <span class="pl-e">Flower</span> {
+        <span class="pl-c1">....</span>
+    }</pre></div>
+<p>Note: the extends rule in JSON schema accepts a schema or an array of schemas - <em>jsonschema2pojo</em> only supports the single schema variant.</p>
+<h3>$ref</h3>
+<p>A '$ref' rule can be used wherever a schema is expected i.e at the root of a schema document, as part of a property definition, as part of the items definition for an array type, as part of an additionalProperties definition.</p>
+<p>Supported protocols:</p>
+<ul>
+<li>http://, https://</li>
+<li>file://</li>
+<li>classpath:, resource:, java: (all synonyms used to resolve schemas from the classpath).</li>
+</ul>
+<p><strong>Note:</strong> If you want to refer to classpath resources from the <strong>current</strong> Maven module, you will need to bind jsonschema2pojo to a later phase. By default jsonschema2pojo is bound to <code>generate-sources</code> but if you want resources present in the current module to be on the classpath when the plugin executes, then you should bind jsonschema2pojo to the <code>process-resources</code> phase.</p>
+<p>For example, to refer to another document in the same directory which will provide the definition of a 'user' object, you might create a schema like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+       <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+       <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+          <span class="pl-s"><span class="pl-pds">"</span>loggedInUser<span class="pl-pds">"</span></span> : {
+              <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>user.json<span class="pl-pds">"</span></span>
+          }
+       }
+    }</pre></div>
+<p>jsonschema2pojo expects $ref values (URIs) to be URLs. Both absolute and relative URLs are valid. You may also refer to part of a schema document using the '#' character followed by a slash or dot delimited path.</p>
+<p>Example using an absolute reference:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>address<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>http://json-schema.org/address<span class="pl-pds">"</span></span>
+            }
+        }
+    }</pre></div>
+<p>Example using a fragment path to reuse a schema definition:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>child1<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+            },
+            <span class="pl-s"><span class="pl-pds">"</span>child2<span class="pl-pds">"</span></span> : {
+               <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>#/properties/child1<span class="pl-pds">"</span></span>
+            }
+        }
+    }</pre></div>
+<p>Example treeNode.json using a self reference to build a tree:</p>
+<div class="highlight highlight-source-json"><pre>    {
+       <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>Tree node<span class="pl-pds">"</span></span>,
+       <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+       <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+          <span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span> : {
+             <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+             <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span> : {
+                 <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>
+             }
+          }
+       }
+    }</pre></div>
+<p>which produces Java code similar to:</p>
+<div class="highlight highlight-source-java"><pre>    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">TreeNode</span> {
+
+       <span class="pl-k">public</span> <span class="pl-k">List&lt;<span class="pl-smi">TreeNode</span>&gt;</span> <span class="pl-en">getChildren</span>() {<span class="pl-c1">...</span>}
+
+       <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setChildren</span>(<span class="pl-k">List&lt;<span class="pl-smi">TreeNode</span>&gt;</span> <span class="pl-v">children</span>) {<span class="pl-c1">...</span>}
+
+    }</pre></div>
+<h3>minimum/maximum, minItems/maxItems, minLength/maxLength, required, pattern</h3>
+<p>The Maven plugin, CLI and Ant task allow JSR-303 annotations to be activated via a config argument. When activated, the following JSR-303 annotations will be generated:</p>
+<table>
+<thead>
+<tr>
+<th>Schema rule</th>
+<th>Annotation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>maximum</td>
+<td><code>@DecimalMax</code></td>
+</tr>
+<tr>
+<td>minimum</td>
+<td><code>@DecimalMin</code></td>
+</tr>
+<tr>
+<td>minItems,maxItems</td>
+<td><code>@Size</code></td>
+</tr>
+<tr>
+<td>minLength,maxLength</td>
+<td><code>@Size</code></td>
+</tr>
+<tr>
+<td>pattern</td>
+<td><code>@Pattern</code></td>
+</tr>
+<tr>
+<td>required</td>
+<td><code>@NotNull</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Extensions</h2>
+<h3>javaType</h3>
+<p>jsonschema2pojo supports an extension property 'javaType' that applies to schemas and allows you to specify a fully qualified name for your generated Java type.</p>
+<p>For example, imagine a schema fooBar.json like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+    }</pre></div>
+<p>When invoking jsonschema2pojo with package argument <code>com.example</code> the generated Java type will have a fully qualified name of <code>com.example.FooBar</code>.</p>
+<p>If the javaType property is added to fooBar.json like:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>javaType<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>com.other.package.CustomTypeName<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+    }</pre></div>
+<p>Then invoking jsonschema2pojo with package argument <code>com.example</code> will result in a generated Java type with a fully qualified name of <code>com.other.package.CustomTypeName</code>.</p>
+<p>The javaType property may appear in any schema definition, not just the root schema in a schema document. For example, this file 'parent.json' invoked using package name <code>com.example</code>:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>myProperty<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>javaType<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>com.other.package.CustomChildName<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+            }
+        }
+    }</pre></div>
+<p>will result in two generated Java types:</p>
+<ul>
+<li><code>com.example.Parent</code></li>
+<li><code>com.other.package.CustomChildName</code></li>
+</ul>
+<p>The javaType property also allows <strong>existing</strong> Java types to be used in your POJOs. If the value of javaType refers to an existing class or interface on the classpath, then that class/interface will be used (a new Java type will not be generated).</p>
+<p>When referencing existing classes, it's also possible to supply generic type arguments, for instance:</p>
+<div class="highlight highlight-source-json"><pre>    {
+        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>myProperty<span class="pl-pds">"</span></span> : {
+                <span class="pl-s"><span class="pl-pds">"</span>javaType<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>java.util.Map&lt;String,Integer&gt;<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+            }
+        }
+    }</pre></div>
+<h3>javaEnumNames</h3>
+<p>Any schema that makes use of <code>enum</code> may include <code>javaEnumNames</code>. This property allows you to take control of naming your Java enum constants and avoid relying on auto-generated names.</p>
+<p>If your schema includes <code>javaEnumNames</code> like:</p>
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+        <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>H<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>L<span class="pl-pds">"</span></span>],
+            <span class="pl-s"><span class="pl-pds">"</span>javaEnumNames<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>HIGH<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>LOW<span class="pl-pds">"</span></span>]
+        }
+    }
+}</pre></div>
+<p>Then you'll see a generated type like:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">enum</span> <span class="pl-en">Foo</span> {
+    <span class="pl-c1">HIGH</span>(<span class="pl-s"><span class="pl-pds">"</span>H<span class="pl-pds">"</span></span>),
+    <span class="pl-c1">LOW</span>(<span class="pl-s"><span class="pl-pds">"</span>L<span class="pl-pds">"</span></span>)
+    ...
+}</pre></div>
+<h3>javaInterfaces</h3>
+<p>Any schema may include a <code>javaInterfaces</code> property, the value of this property is an array of strings. Each string is expected to contain the fully-qualified name of a Java interface. The Java type generated by the schema will implement all the given interfaces.</p>
+<p>If the <code>javaInterfaces</code> property is added to fooBar.json like:</p>
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>javaInterfaces<span class="pl-pds">"</span></span> : [<span class="pl-s"><span class="pl-pds">"</span>java.io.Serializable<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Cloneable<span class="pl-pds">"</span></span>],
+    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+}</pre></div>
+<p>then the result will be a class defined like:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">FooBar</span> <span class="pl-k">implements</span> <span class="pl-e">Serializable</span>, <span class="pl-e">Cloneable</span>
+{
+<span class="pl-c1">...</span></pre></div>
+<h3>javaJsonView</h3>
+<p>Any schema may include a <code>javaJsonView</code> property, the value of the property is a fully qualified class name.  The property causes a @JsonView annotation to be added to the member with the given class for a value.  This only works for Jackson-based annotators.  It is supported for v1 and v2 Jackson.  See <a href="https://github.com/FasterXML/jackson-annotations/wiki/Jackson-Annotations">Jackson Annotations</a>.</p>
+<p>If javaJsonView is added to fooBar.json schema as follows:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+     <span class="pl-s"><span class="pl-pds">"</span>internalStatus<span class="pl-pds">"</span></span>: {
+         <span class="pl-s"><span class="pl-pds">"</span>javaJsonView<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>com.example.views.Internal<span class="pl-pds">"</span></span>,
+         <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+     }
+  }
+}</pre></div>
+<p>Then the resulting FooBar.java will have:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">com.example.views.Internal</span>;
+
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">FooBar</span> {
+    <span class="pl-k">@JsonView</span>(<span class="pl-smi">Internal</span><span class="pl-k">.</span>class)
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> internalStatus;
+}</pre></div>
+<h3>javaName</h3>
+<p>Using <code>javaName</code> rule allows you to define custom names for java bean properties instead of those inferred from the corresponding json property names. This also affects setters and getters.</p>
+<p>For example, the following schema:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+    <span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>: {
+      <span class="pl-s"><span class="pl-pds">"</span>javaName<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+    }
+  }
+}</pre></div>
+<p>will produce Java code similar to the following:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MyClass</span> {
+    <span class="pl-k">@JsonProperty</span>(<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>)
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> b;
+
+    <span class="pl-k">@JsonProperty</span>(<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>)
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getB</span>() {
+        <span class="pl-k">return</span> b;
+    }
+
+    <span class="pl-k">@JsonProperty</span>(<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>)
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setB</span>(<span class="pl-smi">String</span> <span class="pl-v">b</span>) {
+        <span class="pl-c1">this</span><span class="pl-k">.</span>b <span class="pl-k">=</span> b;
+    }
+}</pre></div>
+<h3>customPattern/customTimezone</h3>
+<p>Set a custom format pattern for date or date-time fields that will be used during serialization (if your binding library supports it). If you're using Jackson 2 this will cause an <code>@JsonFormat</code> annotation to be added. For 'date-time' fields you may also set a custom timezone (if you want to use a timezone other than UTC when writing out the date-time as a string).</p>
+<div class="highlight highlight-source-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
+        <span class="pl-s"><span class="pl-pds">"</span>dob<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>customPattern<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>yy-MM-dd<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>updatedDate<span class="pl-pds">"</span></span> : {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>customDateTimePattern<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>yyyy-MM-dd'T'HH:mm:ssZ<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>customTimezone<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>PDT<span class="pl-pds">"</span></span>
+        }
+    }
+}</pre></div>
+<p>There are two important things to note before using this extension property:</p>
+<ol>
+<li>If you set the <strong>formatDates</strong>/<strong>formatDateTimes</strong> global config options to <code>true</code>, you'll get default ISO-8601/RFC 3339 formatting without having to set these custom properties.</li>
+<li>You should be aware that setting a custom date or date-time pattern may mean that the JSON content you produce is not valid according to the rules of JSON Schema.</li>
+</ol>
+<h3>excludedFromEqualsAndHashCode</h3>
+<p>You can specify which fields should be omitted in the generated <code>equals()</code> and <code>hashCode()</code> methods using the <code>excludedFromEqualsAndHashCode</code> rule. These fields can be either listed in an object-level array or flagged individually.</p>
+<p>This option is only meaningful if <code>equals()</code> and <code>hashCode()</code> generation is enabled.</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>excludedFromEqualsAndHashCode<span class="pl-pds">"</span></span> : [ <span class="pl-s"><span class="pl-pds">"</span>excludedByArray<span class="pl-pds">"</span></span> ],
+  <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+    <span class="pl-s"><span class="pl-pds">"</span>notExcluded<span class="pl-pds">"</span></span> : {
+      <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+    },
+    <span class="pl-s"><span class="pl-pds">"</span>excludedByProperty<span class="pl-pds">"</span></span> : {
+      <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>excludedFromEqualsAndHashCode<span class="pl-pds">"</span></span> : <span class="pl-c1">true</span>
+    }
+}</pre></div>
+<p>In the above example, only <code>notExcluded</code> will be inlcuded in <code>equals()</code> and <code>hashCode()</code>.</p>
+
+        </div>
+
       <p class="muted form-section">
         <small>
-          © 2012-2016 Joe Littlejohn
-          <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues?page=1&state=open">
-            Bugs?
-          </a>
+          © 2012-2018 Joe Littlejohn
         </small>
       </p>
     </div>
