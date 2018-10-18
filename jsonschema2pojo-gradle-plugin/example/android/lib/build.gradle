@@ -47,7 +47,7 @@ dependencies {
     // Required if generating JSR-303 annotations
     compile 'javax.validation:validation-api:1.1.0.CR2'
     // Required if generating Jackson 2 annotations
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.1.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
 }
 
 // Each configuration is set to the default value
