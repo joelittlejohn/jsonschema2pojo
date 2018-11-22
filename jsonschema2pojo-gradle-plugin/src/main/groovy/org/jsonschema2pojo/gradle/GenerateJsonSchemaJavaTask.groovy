@@ -46,7 +46,6 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
 
       inputs.property("configuration", configuration.toString())
       inputs.files project.files(configuration.sourceFiles)
-      outputs.files project.files(configuration.targetDirectory)
     }
   }
 
