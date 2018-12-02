@@ -374,6 +374,11 @@ public class RuleFactory {
         return new DynamicPropertiesRule(this);
     }
 
+    public Rule<JDefinedClass, JDefinedClass> getBuilderRule(){
+        return new BuilderRule(this);
+    }
+
+
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
         return new JavaNameRule();
     }

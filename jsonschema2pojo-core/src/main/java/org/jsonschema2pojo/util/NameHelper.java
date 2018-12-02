@@ -20,11 +20,15 @@ import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 public class NameHelper {
 
@@ -212,5 +216,44 @@ public class NameHelper {
         jsonPropertyName = replaceIllegalCharacters(jsonPropertyName);
         jsonPropertyName = capitalizeTrailingWords(jsonPropertyName);
         return jsonPropertyName;
+    }
+
+    public String getBuilderClassName(JDefinedClass outterClass) {
+        return outterClass.name() + "Builder";
+    }
+
+    public String getClassName(String nodeName, JsonNode node, JPackage _package) {
+        String prefix = generationConfig.getClassNamePrefix();
+        String suffix = generationConfig.getClassNameSuffix();
+        String fieldName = getClassName(nodeName, node);
+        String capitalizedFieldName = capitalize(fieldName);
+        String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
+
+        String className = replaceIllegalCharacters(fullFieldName);
+        String normalizedName = normalizeName(className);
+        return makeUnique(normalizedName, _package);
+    }
+
+    private String createFullFieldName(String nodeName, String prefix, String suffix) {
+        String returnString = nodeName;
+        if (prefix != null) {
+            returnString = prefix + returnString;
+        }
+
+        if (suffix != null) {
+            returnString = returnString + suffix;
+        }
+
+        return returnString;
+    }
+
+    private String makeUnique(String className, JPackage _package) {
+        try {
+            JDefinedClass _class = _package._class(className);
+            _package.remove(_class);
+            return className;
+        } catch (JClassAlreadyExistsException e) {
+            return makeUnique(MakeUniqueClassName.makeUnique(className), _package);
+        }
     }
 }

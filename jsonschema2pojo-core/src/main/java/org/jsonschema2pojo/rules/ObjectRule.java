@@ -41,7 +41,6 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.util.MakeUniqueClassName;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
@@ -57,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
@@ -118,6 +116,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         if (node.has("description")) {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
+        }
+
+        // Creates the class definition for the builder
+        if(ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()){
+            ruleFactory.getBuilderRule().apply(nodeName, node, parent, jclass, schema);
         }
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
@@ -301,9 +304,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
             } else {
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, node, _package), ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, ruleFactory.getNameHelper().getClassName(nodeName, node, _package), ClassType.CLASS);
                 } else {
-                    newType = _package._class(getClassName(nodeName, node, _package));
+                    newType = _package._class(ruleFactory.getNameHelper().getClassName(nodeName, node, _package));
                 }
             }
         } catch (JClassAlreadyExistsException e) {
@@ -733,41 +736,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
     private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
             jclass._implements(resolveType(jclass._package(), i.asText()));
-        }
-    }
-
-    private String getClassName(String nodeName, JsonNode node, JPackage _package) {
-        String prefix = ruleFactory.getGenerationConfig().getClassNamePrefix();
-        String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
-        String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
-        String capitalizedFieldName = capitalize(fieldName);
-        String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
-
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(fullFieldName);
-        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
-        return makeUnique(normalizedName, _package);
-    }
-
-    private String createFullFieldName(String nodeName, String prefix, String suffix) {
-        String returnString = nodeName;
-        if (prefix != null) {
-            returnString = prefix + returnString;
-        }
-
-        if (suffix != null) {
-            returnString = returnString + suffix;
-        }
-
-        return returnString;
-    }
-
-    private String makeUnique(String className, JPackage _package) {
-        try {
-            JDefinedClass _class = _package._class(className);
-            _package.remove(_class);
-            return className;
-        } catch (JClassAlreadyExistsException e) {
-            return makeUnique(MakeUniqueClassName.makeUnique(className), _package);
         }
     }
 
