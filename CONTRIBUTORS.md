@@ -94,3 +94,4 @@
 * Klevis Ramo
 * Martin Bramwell
 * Jan Oopkaup
+* Michał Szymborski

@@ -1,8 +1,13 @@
 # Changelog
 
+## 1.0.0
+* Don't register output directory as a set of files, since this breaks Gradle 5.0+ ([#940](https://github.com/joelittlejohn/jsonschema2pojo/pull/940))
+* **Builder method should be named consistently with getter/setter ([#905](https://github.com/joelittlejohn/jsonschema2pojo/issues/905))**
+* Objects inside array with name ending with "List" are generated as "SomeNameList" ([#780](https://github.com/joelittlejohn/jsonschema2pojo/issues/780))
+
 ## 1.0.0-beta1
 * Add 'formatTypeMapping' config option to allow overriding types used for formats ([#923](https://github.com/joelittlejohn/jsonschema2pojo/pull/923))
-* **Enable development of context-aware rules. ([#917](https://github.com/joelittlejohn/jsonschema2pojo/pull/917))**
+* **Modify Rule#apply signature to include parent node (allows context-aware rules) ([#917](https://github.com/joelittlejohn/jsonschema2pojo/pull/917))**
 * Add 'javaOptional' extension rule to allow individual fields to use Java Optional on getter ([#913](https://github.com/joelittlejohn/jsonschema2pojo/pull/913))
 * Allow schema title to be used as class name (new useTitleAsClassname config option) ([#908](https://github.com/joelittlejohn/jsonschema2pojo/issues/908))
 * Incorrect @Nullable JSR305 annotations generated when using 'required' array ([#906](https://github.com/joelittlejohn/jsonschema2pojo/issues/906))
