@@ -279,7 +279,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     JVar param = builder.param(field.type(), field.name());
     JBlock body = builder.body();
-    body.assign(JExpr._this().ref("instance").ref(field), param);
+    body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
     body._return(JExpr._this());
 
     return builder;

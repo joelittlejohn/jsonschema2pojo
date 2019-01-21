@@ -16,19 +16,21 @@
 
 package org.jsonschema2pojo.util;
 
-import static java.lang.Character.*;
-import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang3.StringUtils.*;
+import static java.lang.Character.isDigit;
+import static java.lang.Character.toLowerCase;
+import static javax.lang.model.SourceVersion.isKeyword;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.containsAny;
+import static org.apache.commons.lang3.StringUtils.remove;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
-import org.jsonschema2pojo.rules.RuleFactory;
 
 public class NameHelper {
 
@@ -218,8 +220,12 @@ public class NameHelper {
         return jsonPropertyName;
     }
 
-    public String getBuilderClassName(JDefinedClass outterClass) {
+    public String getBuilderClassName(JClass outterClass) {
         return outterClass.name() + "Builder";
+    }
+
+    public String getUniqueClassName(String nodeName, JsonNode node, JPackage _package) {
+        return makeUnique(getClassName(nodeName, node, _package), _package);
     }
 
     public String getClassName(String nodeName, JsonNode node, JPackage _package) {
@@ -230,8 +236,7 @@ public class NameHelper {
         String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
 
         String className = replaceIllegalCharacters(fullFieldName);
-        String normalizedName = normalizeName(className);
-        return makeUnique(normalizedName, _package);
+        return normalizeName(className);
     }
 
     private String createFullFieldName(String nodeName, String prefix, String suffix) {

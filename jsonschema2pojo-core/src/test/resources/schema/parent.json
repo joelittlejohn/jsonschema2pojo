@@ -1,0 +1,12 @@
+{
+  "$id": "https://example.com/address.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description" : "A schema definition for an object which can be inherited",
+  "javaType" : "com.example.package.GeneratedParentType",
+  "type" : "object",
+  "properties" : {
+    "parentProperty" : { "type" : "string" }
+  },
+  "dependencies" : {
+  }
+}

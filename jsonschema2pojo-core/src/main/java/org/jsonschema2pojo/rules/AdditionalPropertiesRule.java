@@ -209,7 +209,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JVar valueParam = builder.param(propertyType, "value");
 
         JBlock body = builder.body();
-        JInvocation mapInvocation = body.invoke(JExpr._this().ref("instance").ref(field), "put");
+        JInvocation mapInvocation = body.invoke(JExpr.ref(JExpr.cast(jclass, JExpr._this().ref("instance")), field), "put");
         mapInvocation.arg(nameParam);
         mapInvocation.arg(valueParam);
         body._return(JExpr._this());

@@ -32,6 +32,7 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.util.ReflectionHelper;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -119,7 +120,17 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        return new ObjectRule(this, new ParcelableHelper());
+        return new ObjectRule(this, new ParcelableHelper(), new ReflectionHelper(this));
+    }
+
+    /**
+     * Provides a rule instance that should be applied to add constructors to a generated type
+     *
+     * @return a schema rule that can handle the "object" declaration.
+     */
+    public Rule<JPackage, JType> getConstructorRule()
+    {
+        return new ConstructorRule(this, new ReflectionHelper(this));
     }
 
     /**
@@ -375,9 +386,8 @@ public class RuleFactory {
     }
 
     public Rule<JDefinedClass, JDefinedClass> getBuilderRule(){
-        return new BuilderRule(this);
+        return new BuilderRule(this, new ReflectionHelper(this));
     }
-
 
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
         return new JavaNameRule();
