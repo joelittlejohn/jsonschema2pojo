@@ -746,13 +746,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private Map<String, String> formatTypeMapping = new HashMap<>();
 
     /**
-     * @parameter property="jsonschema2pojo.chainableSetters"
-     *            default-value="true"
-     * @since 1.0.0
-     */
-    private boolean chainableSetters = true;
-
-    /**
      * @parameter property="jsonschema2pojo.useInnerClassBuilders"
      *            default-value="false"
      * @since 1.0.0
@@ -1173,11 +1166,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
-    }
-
-    @Override
-    public boolean isChainableSettersBuilders() {
-        return chainableSetters;
     }
 
     @Override

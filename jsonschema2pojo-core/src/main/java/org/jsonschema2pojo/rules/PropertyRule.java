@@ -242,16 +242,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
   private JMethod addBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-    // Requires one of the builder generation methods to be set to true
-    if(! ruleFactory.getGenerationConfig().isUseInnerClassBuilders() && !ruleFactory.getGenerationConfig().isChainableSettersBuilders()) {
-      throw new IllegalStateException("Both chainable setters and inner class builder method generation are disabled, but builder generation is enabled");
-    }
-
     JMethod result = null;
     if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
       result = addInnerBuilder(c, field, jsonPropertyName, node);
-    }
-    if(ruleFactory.getGenerationConfig().isChainableSettersBuilders()) {
+    } else {
       result = addLegacyBuilder(c, field, jsonPropertyName, node);
     }
 

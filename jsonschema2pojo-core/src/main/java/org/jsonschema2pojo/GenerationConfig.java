@@ -580,12 +580,4 @@ public interface GenerationConfig {
      */
     default boolean isUseInnerClassBuilders(){ return false;}
 
-
-    /**
-     * If set to true then builder methods will be added to the class as chainable setters. Note: This property works
-     * in collaboration with the {@link #isGenerateBuilders()} method. If the {@link #isGenerateBuilders()} is false,
-     * then this property will not do anything.
-     * @return whether or not to include chainable setters on the generated classes. The default value for this is true.
-     */
-    default boolean isChainableSettersBuilders() { return true; }
 }

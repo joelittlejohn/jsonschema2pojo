@@ -25,10 +25,6 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.ReflectionHelper;
 
@@ -75,14 +71,8 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 
     JBlock body = buildMethod.body();
     JVar result = body.decl(instanceType, "result");
-    body.assign(result, JExpr._this().
-
-        ref(instanceField));
-    body.assign(JExpr._this().
-
-        ref(instanceField), JExpr.
-
-        _null());
+    body.assign(result, JExpr._this().ref(instanceField));
+    body.assign(JExpr._this().ref(instanceField), JExpr._null());
     body._return(result);
 
     return builderClass;

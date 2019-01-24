@@ -69,6 +69,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean useInnerClassBuilders = false;
+
     private boolean includeConstructors = false;
 
     private boolean usePrimitives;
@@ -1201,5 +1203,13 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }
-    
+
+    @Override
+    public boolean isUseInnerClassBuilders() {
+        return useInnerClassBuilders;
+    }
+
+    public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
+        this.useInnerClassBuilders = useInnerClassBuilders;
+    }
 }

@@ -446,8 +446,5 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     @Override
-    public boolean isChainableSettersBuilders() { return true; }
-
-    @Override
     public boolean isUseInnerClassBuilders() { return false; }
 }

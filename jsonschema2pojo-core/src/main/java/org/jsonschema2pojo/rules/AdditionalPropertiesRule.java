@@ -166,16 +166,11 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     }
 
     private JMethod addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
-        // Requires one of the builder generation methods to be set to true
-        if(! ruleFactory.getGenerationConfig().isUseInnerClassBuilders() && !ruleFactory.getGenerationConfig().isChainableSettersBuilders()) {
-            throw new IllegalStateException("Both chainable setters and inner class builder method generation are disabled, but builder generation is enabled");
-        }
 
         JMethod result = null;
         if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
             result = addInnerBuilder(jclass, propertyType, field);
-        }
-        if(ruleFactory.getGenerationConfig().isChainableSettersBuilders()) {
+        } else {
             result = addLegacyBuilder(jclass, propertyType, field);
         }
 
