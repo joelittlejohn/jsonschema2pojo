@@ -144,7 +144,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            ruleFactory.getConstructorRule().apply(nodeName, node, parent, _package, schema);
+            ruleFactory.getConstructorRule().apply(nodeName, node, parent, jclass, schema);
+
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {

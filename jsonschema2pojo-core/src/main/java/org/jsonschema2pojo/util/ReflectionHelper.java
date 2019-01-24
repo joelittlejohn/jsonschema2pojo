@@ -1,16 +1,31 @@
 /**
  * Copyright Â© 2010-2017 Nokia
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a
- * copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
+/*
+  Copyright Â© 2010-2017 Nokia
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a
+  copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations
+  under the License.
+ */
 package org.jsonschema2pojo.util;
 
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
@@ -75,16 +90,6 @@ public class ReflectionHelper {
     return null;
   }
 
-  private Schema resolveSchemaRefsRecursive(Schema schema) {
-    JsonNode schemaNode = schema.getContent();
-    if (schemaNode.has("$ref")) {
-      schema = ruleFactory.getSchemaStore()
-          .create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-      return resolveSchemaRefsRecursive(schema);
-    }
-    return schema;
-  }
-
   /**
    * This is recursive with searchClassAndSuperClassesForField
    */
@@ -97,51 +102,18 @@ public class ReflectionHelper {
     return searchClassAndSuperClassesForField(property, definedSuperClass);
   }
 
-  private JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
-    Map<String, JFieldVar> fields = jclass.fields();
-    JFieldVar field = fields.get(property);
-    if (field == null) {
-      return searchSuperClassesForField(property, jclass);
-    }
-    return field;
+  public JDefinedClass getBuilderClass(JDefinedClass target) {
+    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
+
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes(), Spliterator.ORDERED), false)
+        .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
   }
 
-  private static JDefinedClass definedClassOrNullFromType(JType type) {
-    if (type == null || type.isPrimitive()) {
-      return null;
-    }
-    JClass fieldClass = type.boxify();
-    JPackage jPackage = fieldClass._package();
-    return jPackage._getClass(fieldClass.name());
+  public JDefinedClass getBuilderClass(JClass target) {
+    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
+    return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
+        .orElse(null);
   }
-
-  public JDefinedClass _getClass(String nodeName, JsonNode node, JPackage _package) {
-    NameHelper nameHelper = ruleFactory.getNameHelper();
-    String className = nameHelper.getClassName(nodeName, node, _package);
-
-    return _package._getClass(className);
-  }
-
-  public JDefinedClass _getClass(String name, JPackage _package) {
-    return getAllPackageClasses(_package).stream().filter(definedClass -> definedClass.name().equals(name)).findFirst()
-        .orElseThrow(() -> new NoClassDefFoundError(name));
-  }
-
-  public Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
-    StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false)
-        .forEach(_class -> result.addAll(getAllClassClasses(_class)));
-    return result;
-  }
-
-  public Collection<JDefinedClass> getAllClassClasses(JDefinedClass _class) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
-    result.add(_class);
-
-    _class.classes().forEachRemaining(subclass -> result.add(subclass));
-    return result;
-  }
-
 
   public boolean isFinal(JType superType) {
     try {
@@ -150,6 +122,54 @@ public class ReflectionHelper {
     } catch (ClassNotFoundException e) {
       return false;
     }
+  }
+
+  public JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
+    Map<String, JFieldVar> fields = jclass.fields();
+    JFieldVar field = fields.get(property);
+    if (field == null) {
+      return searchSuperClassesForField(property, jclass);
+    }
+    return field;
+  }
+
+  private JDefinedClass definedClassOrNullFromType(JType type) {
+    if (type == null || type.isPrimitive()) {
+      return null;
+    }
+    JClass fieldClass = type.boxify();
+    JPackage jPackage = fieldClass._package();
+    return this._getClass(fieldClass.name(), jPackage);
+  }
+
+  private JDefinedClass _getClass(String name, JPackage _package) {
+    return getAllPackageClasses(_package).stream().filter(definedClass -> definedClass.name().equals(name)).findFirst()
+        .orElseThrow(() -> new NoClassDefFoundError(name));
+  }
+
+  private Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
+    LinkedList<JDefinedClass> result = new LinkedList<>();
+    StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false)
+        .forEach(_class -> result.addAll(getAllClassClasses(_class)));
+    return result;
+  }
+
+  private Collection<JDefinedClass> getAllClassClasses(JDefinedClass _class) {
+    LinkedList<JDefinedClass> result = new LinkedList<>();
+    result.add(_class);
+
+    _class.classes().forEachRemaining(result::add);
+    return result;
+  }
+
+  private Schema resolveSchemaRefsRecursive(Schema schema) {
+    JsonNode schemaNode = schema.getContent();
+    if (schemaNode.has("$ref")) {
+      schema = ruleFactory.getSchemaStore()
+          .create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+      return resolveSchemaRefsRecursive(schema);
+    }
+    return schema;
   }
 
 }

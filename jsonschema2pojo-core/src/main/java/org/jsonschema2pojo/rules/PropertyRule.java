@@ -17,17 +17,17 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
-
-import static org.apache.commons.lang3.StringUtils.capitalize;
 
 
 /**
@@ -96,7 +96,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilder(jclass, field, nodeName, node);
+            addBuilderMethod(jclass, field, nodeName, node);
         }
 
         if (node.has("pattern")) {
@@ -241,14 +241,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return setter;
     }
 
-  private JMethod addBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+  private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
     JMethod result = null;
     if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
-      result = addInnerBuilder(c, field, jsonPropertyName, node);
+      result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
     } else {
       result = addLegacyBuilder(c, field, jsonPropertyName, node);
     }
-
     return result;
   }
 
@@ -263,20 +262,17 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     return builder;
   }
 
-  private JMethod addInnerBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
-    Optional<JDefinedClass> builderClass = StreamSupport
-        .stream(Spliterators.spliteratorUnknownSize(c.classes(), Spliterator.ORDERED), false)
-        .filter(definedClass -> definedClass.name().equals(getBuilderClassName(c)))
-        .findFirst();
+  private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBuilderClass(c);
 
-    JMethod builder = builderClass.get().method(JMod.PUBLIC, builderClass.get(), getBuilderName(jsonPropertyName, node));
+    JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
 
-    JVar param = builder.param(field.type(), field.name());
-    JBlock body = builder.body();
+    JVar param = builderMethod.param(field.type(), field.name());
+    JBlock body = builderMethod.body();
     body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
     body._return(JExpr._this());
 
-    return builder;
+    return builderMethod;
   }
 
   private String getBuilderClassName(JDefinedClass c) {

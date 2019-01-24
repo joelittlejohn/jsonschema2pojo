@@ -33,6 +33,7 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.util.ReflectionHelper;
+import sun.reflect.Reflection;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -40,6 +41,7 @@ import org.jsonschema2pojo.util.ReflectionHelper;
 public class RuleFactory {
 
     private NameHelper nameHelper;
+    private ReflectionHelper reflectionHelper;
     private GenerationConfig generationConfig;
     private Annotator annotator;
     private SchemaStore schemaStore;
@@ -62,6 +64,7 @@ public class RuleFactory {
         this.annotator = annotator;
         this.schemaStore = schemaStore;
         this.nameHelper = new NameHelper(generationConfig);
+        this.reflectionHelper = new ReflectionHelper(this);
     }
 
     /**
@@ -120,7 +123,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        return new ObjectRule(this, new ParcelableHelper(), new ReflectionHelper(this));
+        return new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
     }
 
     /**
@@ -128,9 +131,9 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "object" declaration.
      */
-    public Rule<JPackage, JType> getConstructorRule()
+    public Rule<JDefinedClass, JDefinedClass> getConstructorRule()
     {
-        return new ConstructorRule(this, new ReflectionHelper(this));
+        return new ConstructorRule(this, reflectionHelper);
     }
 
     /**
@@ -367,6 +370,11 @@ public class RuleFactory {
         return nameHelper;
     }
 
+    public ReflectionHelper getReflectionHelper()    {
+        return reflectionHelper;
+    }
+
+
     /**
      * Provides a rule instance that should be applied when a "media"
      * declaration is found in the schema.
@@ -386,7 +394,7 @@ public class RuleFactory {
     }
 
     public Rule<JDefinedClass, JDefinedClass> getBuilderRule(){
-        return new BuilderRule(this, new ReflectionHelper(this));
+        return new BuilderRule(this, reflectionHelper);
     }
 
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
