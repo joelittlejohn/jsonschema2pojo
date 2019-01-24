@@ -1209,6 +1209,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return useInnerClassBuilders;
     }
 
+    /**
+     * Sets the 'useInnerClassBuilders' property of this class
+     *
+     * @param useInnerClassBuilders determines whether builders will be chainable setters or embedded classes when {@link #isGenerateBuilders()} used
+     */
     public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
         this.useInnerClassBuilders = useInnerClassBuilders;
     }
