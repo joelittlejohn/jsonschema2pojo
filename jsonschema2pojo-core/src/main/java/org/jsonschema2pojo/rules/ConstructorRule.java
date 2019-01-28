@@ -167,7 +167,7 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
     // The constructor invocation will also need all the parameters passed through
     JInvocation instanceConstructorInvocation = JExpr._new(instanceClass);
     for(JVar param : instanceConstructor.params()) {
-      instanceConstructorInvocation.arg(param.name());
+      instanceConstructorInvocation.arg(param);
     }
 
     // Only initialize the instance if the object being constructed is actually this class
