@@ -16,6 +16,7 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -96,6 +97,9 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 
   private void generateNoArgsBuilderConstructor(JDefinedClass instanceClass, JDefinedClass builderClass) {
     JMethod noargsConstructor = builderClass.constructor(JMod.PUBLIC);
+    JAnnotationUse warningSuppression = noargsConstructor.annotate(SuppressWarnings.class);
+    warningSuppression.param("value", "unchecked");
+
     JBlock constructorBlock = noargsConstructor.body();
 
     JFieldVar instanceField = reflectionHelper.searchClassAndSuperClassesForField("instance", builderClass);

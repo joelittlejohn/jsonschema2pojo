@@ -151,6 +151,7 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
 
     // Create a new method to be the builder constructor we're defining
     JMethod builderConstructor = builderClass.constructor(JMod.PUBLIC);
+    builderConstructor.annotate(SuppressWarnings.class).param("value", "unchecked");
     JBlock constructorBlock = builderConstructor.body();
 
     // The builder constructor should have the exact same parameters as the instanceConstructor
