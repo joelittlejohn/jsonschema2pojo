@@ -19,6 +19,11 @@ package org.jsonschema2pojo.rules;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
+import org.apache.commons.collections15.CollectionUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -160,7 +165,19 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return getter;
     }
 
-    private void addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private JMethod addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+
+        JMethod result = null;
+        if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+            result = addInnerBuilder(jclass, propertyType, field);
+        } else {
+            result = addLegacyBuilder(jclass, propertyType, field);
+        }
+
+        return result;
+    }
+
+    private JMethod addLegacyBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         JMethod builder = jclass.method(JMod.PUBLIC, jclass, "withAdditionalProperty");
 
         JVar nameParam = builder.param(String.class, "name");
@@ -171,6 +188,32 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         mapInvocation.arg(nameParam);
         mapInvocation.arg(valueParam);
         body._return(JExpr._this());
+
+        return builder;
+    }
+
+    private JMethod addInnerBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+        Optional<JDefinedClass> builderClass = StreamSupport
+            .stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false)
+            .filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass)))
+            .findFirst();
+
+        JMethod builder = builderClass.get().method(JMod.PUBLIC, builderClass.get(), "withAdditionalProperty");
+
+        JVar nameParam = builder.param(String.class, "name");
+        JVar valueParam = builder.param(propertyType, "value");
+
+        JBlock body = builder.body();
+        JInvocation mapInvocation = body.invoke(JExpr.ref(JExpr.cast(jclass, JExpr._this().ref("instance")), field), "put");
+        mapInvocation.arg(nameParam);
+        mapInvocation.arg(valueParam);
+        body._return(JExpr._this());
+
+        return builder;
+    }
+
+    private String getBuilderClassName(JDefinedClass c) {
+        return ruleFactory.getNameHelper().getBuilderClassName(c);
     }
 
 }

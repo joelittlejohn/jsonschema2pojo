@@ -746,6 +746,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private Map<String, String> formatTypeMapping = new HashMap<>();
 
     /**
+     * @parameter property="jsonschema2pojo.useInnerClassBuilders"
+     *            default-value="false"
+     * @since 1.0.0
+     */
+    private boolean useInnerClassBuilders = false;
+
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1158,5 +1166,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
+    }
+
+    @Override
+    public boolean isUseInnerClassBuilders() {
+        return useInnerClassBuilders;
     }
 }

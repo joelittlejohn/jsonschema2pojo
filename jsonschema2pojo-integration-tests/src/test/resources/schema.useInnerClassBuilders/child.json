@@ -1,0 +1,10 @@
+{
+  "type" : "object",
+  "extends" : {
+    "$ref" : "parent.json"
+  },
+  "properties" : {
+    "childProperty" : { "type" : "integer"},
+    "sharedProperty" : { "type" : "string" }
+  }
+}

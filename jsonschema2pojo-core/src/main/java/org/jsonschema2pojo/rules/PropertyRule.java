@@ -17,11 +17,17 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.*;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
-
-import static org.apache.commons.lang3.StringUtils.capitalize;
 
 
 /**
@@ -90,7 +96,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilder(jclass, field, nodeName, node);
+            addBuilderMethod(jclass, field, nodeName, node);
         }
 
         if (node.has("pattern")) {
@@ -235,27 +241,54 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return setter;
     }
 
-    private JMethod addBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
-
-        JVar param = builder.param(field.type(), field.name());
-        JBlock body = builder.body();
-        body.assign(JExpr._this().ref(field), param);
-        body._return(JExpr._this());
-
-        return builder;
+  private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    JMethod result = null;
+    if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+      result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
+    } else {
+      result = addLegacyBuilder(c, field, jsonPropertyName, node);
     }
+    return result;
+  }
 
-    private String getBuilderName(String propertyName, JsonNode node) {
-        return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
-    }
+  private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
-    private String getSetterName(String propertyName, JsonNode node) {
-        return ruleFactory.getNameHelper().getSetterName(propertyName, node);
-    }
+    JVar param = builder.param(field.type(), field.name());
+    JBlock body = builder.body();
+    body.assign(JExpr._this().ref(field), param);
+    body._return(JExpr._this());
 
-    private String getGetterName(String propertyName, JType type, JsonNode node) {
-        return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
-    }
+    return builder;
+  }
+
+  private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBuilderClass(c);
+
+    JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
+
+    JVar param = builderMethod.param(field.type(), field.name());
+    JBlock body = builderMethod.body();
+    body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
+    body._return(JExpr._this());
+
+    return builderMethod;
+  }
+
+  private String getBuilderClassName(JDefinedClass c) {
+    return ruleFactory.getNameHelper().getBuilderClassName(c);
+  }
+
+  private String getBuilderName(String propertyName, JsonNode node) {
+      return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
+  }
+
+  private String getSetterName(String propertyName, JsonNode node) {
+      return ruleFactory.getNameHelper().getSetterName(propertyName, node);
+  }
+
+  private String getGetterName(String propertyName, JType type, JsonNode node) {
+      return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
+  }
 
 }

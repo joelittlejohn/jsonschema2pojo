@@ -444,5 +444,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public Map<String, String> getFormatTypeMapping() {
         return Collections.emptyMap();
     }
-    
+
+    @Override
+    public boolean isUseInnerClassBuilders() { return false; }
 }

@@ -16,15 +16,14 @@
 
 package org.jsonschema2pojo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import com.mysema.scalagen.ConversionSettings;
 import com.mysema.scalagen.Converter;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class ScalaSingleStreamCodeWriter extends SingleStreamCodeWriter {
 

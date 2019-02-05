@@ -69,6 +69,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean useInnerClassBuilders = false;
+
     private boolean includeConstructors = false;
 
     private boolean usePrimitives;
@@ -1201,5 +1203,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }
-    
+
+    @Override
+    public boolean isUseInnerClassBuilders() {
+        return useInnerClassBuilders;
+    }
+
+    /**
+     * Sets the 'useInnerClassBuilders' property of this class
+     *
+     * @param useInnerClassBuilders determines whether builders will be chainable setters or embedded classes when {@link #isGenerateBuilders()} used
+     */
+    public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
+        this.useInnerClassBuilders = useInnerClassBuilders;
+    }
 }

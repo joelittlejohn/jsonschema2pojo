@@ -45,6 +45,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
+  boolean useInnerClassBuilders
   boolean includeGetters
   boolean includeSetters
   boolean includeAdditionalProperties
@@ -95,6 +96,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
     generateBuilders = false
+    useInnerClassBuilders = false
     usePrimitives = false
     sourceFiles = []
     targetPackage = ''
@@ -254,6 +256,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |sourceSortOrder = ${sourceSortOrder}
        |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
+       |useInnerClassBuilders = ${useInnerClassBuilders}
      """.stripMargin()
   }
   
