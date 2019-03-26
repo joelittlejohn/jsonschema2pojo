@@ -21,8 +21,6 @@ import com.sun.codemodel.*;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
-import static org.apache.commons.lang3.StringUtils.capitalize;
-
 
 /**
  * Applies the schema rules that represent a property definition.
