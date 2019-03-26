@@ -122,9 +122,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean hasFlag(JsonNode node, String flatName) {
-        if (node.has(flatName)) {
-            final JsonNode requiredNode = node.get(flatName);
+    private boolean hasFlag(JsonNode node, String fieldName) {
+        if (node.has(fieldName)) {
+            final JsonNode requiredNode = node.get(fieldName);
             return requiredNode.asBoolean();
         }
 
