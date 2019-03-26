@@ -112,16 +112,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
-        if (node.has("required")) {
-            final JsonNode requiredNode = node.get("required");
-            return requiredNode.asBoolean();
-        }
-
-        JsonNode requiredArray = schema.getContent().get("required");
-
-        if (requiredArray != null) {
-            for (JsonNode requiredNode : requiredArray) {
+    private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
+        JsonNode array = schema.getContent().get(arrayFieldName);
+        if (array != null) {
+            for (JsonNode requiredNode : array) {
                 if (nodeName.equals(requiredNode.asText()))
                     return true;
             }
@@ -130,22 +124,25 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
-        if (node.has("javaOptional")) {
-            final JsonNode requiredNode = node.get("javaOptional");
+    private boolean hasFlag(JsonNode node, String flatName) {
+        if (node.has(flatName)) {
+            final JsonNode requiredNode = node.get(flatName);
             return requiredNode.asBoolean();
         }
 
-        JsonNode javaOptionalArray = schema.getContent().get("javaOptional");
-
-        if (javaOptionalArray != null) {
-            for (JsonNode requiredNode : javaOptionalArray) {
-                if (nodeName.equals(requiredNode.asText()))
-                    return true;
-            }
-        }
-
         return false;
+    }
+
+    private boolean isDeclaredAs(String type, String nodeName, JsonNode node, Schema schema) {
+        return hasEnumerated(schema, type, nodeName) || hasFlag(node, type);
+    }
+
+    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
+        return isDeclaredAs("required", nodeName, node, schema);
+    }
+
+    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
+        return isDeclaredAs("javaOptional", nodeName, node, schema);
     }
 
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
