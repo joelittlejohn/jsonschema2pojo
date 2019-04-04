@@ -69,6 +69,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean includeJsonTypeInfoAnnotation = false;
+
     private boolean useInnerClassBuilders = false;
 
     private boolean includeConstructors = false;
@@ -300,6 +302,21 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setGenerateBuilders(boolean generateBuilders) {
         this.generateBuilders = generateBuilders;
+    }
+
+    /**
+     * Sets the 'includeJsonTypeInfoAnnotation' property of this class.
+     *
+     * @param includeJsonTypeInfoAnnotation
+     *            Whether to use include json type info information to class via. JsonTypeInfo annotation.
+     *            Commonly used to support polymorphic type deserialization.
+     *            <p>
+     *            Default: <code>false</code>.
+     *
+     * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+     */
+    public void setIncludeJsonTypeInfoAnnotation(boolean includeJsonTypeInfoAnnotation) {
+        this.includeJsonTypeInfoAnnotation = includeJsonTypeInfoAnnotation;
     }
 
     /**
@@ -890,6 +907,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
+    }
+
+    @Override
+    public boolean isIncludeJsonTypeInfoAnnotation()
+    {
+        return includeJsonTypeInfoAnnotation;
     }
 
     @Override

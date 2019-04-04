@@ -113,6 +113,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean generateBuilders = false;
 
     /**
+     * Whether to include JsonTypeInformation to support polymorphic deserialization.
+     *
+     * @parameter property="jsonschema2pojo.includeJsonTypeInfoAnnotation"
+     *            default-value="false"
+     * @since 1.0.2
+     */
+    private boolean includeJsonTypeInfoAnnotation = false;
+    /**
      * Whether to use primitives (<code>long</code>, <code>double</code>,
      * <code>boolean</code>) instead of wrapper types where possible when
      * generating bean properties (has the side-effect of making those
@@ -752,6 +760,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean useInnerClassBuilders = false;
 
+    public Jsonschema2PojoMojo()
+    {
+    }
+
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -850,6 +862,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
+    }
+
+    @Override
+    public boolean isIncludeJsonTypeInfoAnnotation()
+    {
+        return includeJsonTypeInfoAnnotation;
     }
 
     @Override
