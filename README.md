@@ -2,7 +2,7 @@
 
 _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and can annotate those types for data-binding with Jackson 1.x, Jackson 2.x or Gson.
 
-**_*Note:*_ there are breaking changes between 0.5.1 and 1.0.1. Check the [change log](https://github.com/joelittlejohn/jsonschema2pojo/blob/master/CHANGELOG.md). Anything marked in bold in the 1.0.1 alpha, beta and final release is a breaking change.**
+**_*Note:*_ there are breaking changes between 0.5.1 and 1.0.0. Check the [change log](https://github.com/joelittlejohn/jsonschema2pojo/blob/master/CHANGELOG.md). Anything marked in bold in the 1.0.0 alpha, beta and final release is a breaking change.**
 
 ### [Try jsonschema2pojo online](http://jsonschema2pojo.org/)<br>or `brew install jsonschema2pojo`
 
