@@ -49,6 +49,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -100,9 +101,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
-
-        addJsonTypeInfoIfConfigured(jclass, node);
-
+        
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
         }
@@ -154,26 +153,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         return jclass;
 
-    }
-
-    private void addJsonTypeInfoIfConfigured(JDefinedClass jclass, JsonNode node)
-    {
-        // Process JsonTypeInfo configuration from generation config
-        if(ruleFactory.getGenerationConfig().isIncludeJsonTypeInfoAnnotation()) {
-            // Have per-schema JavaTypeInfo configuration override what is defined in generation config; backward comparability
-            if (node.has("deserializationClassProperty")) {
-                String annotationName = node.get("deserializationClassProperty").asText();
-                addJsonTypeInfoAnnotation(jclass, annotationName);
-            } else {
-                addJsonTypeInfoAnnotation(jclass, "@class");
-            }
-        } else {
-            // per-schema JsonTypeInfo configuration
-            if (node.has("deserializationClassProperty")) {
-                String annotationName = node.get("deserializationClassProperty").asText();
-                addJsonTypeInfoAnnotation(jclass, annotationName);
-            }
-        }
     }
 
     private void addParcelSupport(JDefinedClass jclass) {
@@ -260,40 +239,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
-        ruleFactory.getAnnotator().propertyInclusion(newType, node);
+        Annotator annotator = ruleFactory.getAnnotator();
+
+        annotator.typeInfo(newType, node);
+        annotator.propertyInclusion(newType, node);
 
         return newType;
 
-    }
-
-    private void addJsonTypeInfoAnnotation(JDefinedClass jclass, String propertyName) {
-
-        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
-
-        if (annotationStyle == AnnotationStyle.JACKSON2
-                || annotationStyle == AnnotationStyle.JACKSON) {
-
-            // Add JsonTypeInfoAnnotation for Jackson 2
-            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
-            jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
-            jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
-
-            // When not provided it will use default provided by "use" attribute
-            if(StringUtils.isNotBlank(propertyName)) {
-                jsonTypeInfo.param("property", propertyName);
-            }
-        } else if(annotationStyle == AnnotationStyle.JACKSON1) {
-
-            // Add JsonTypeInfoAnnotation for Jackson 1
-            JAnnotationUse jsonTypeInfo = jclass.annotate(org.codehaus.jackson.annotate.JsonTypeInfo.class);
-            jsonTypeInfo.param("use", org.codehaus.jackson.annotate.JsonTypeInfo.Id.CLASS);
-            jsonTypeInfo.param("include", org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY);
-
-            // When not provided it will use default provided by "use" attribute
-            if(StringUtils.isNotBlank(propertyName)) {
-                jsonTypeInfo.param("property", propertyName);
-            }
-        }
     }
 
     private void addToString(JDefinedClass jclass) {

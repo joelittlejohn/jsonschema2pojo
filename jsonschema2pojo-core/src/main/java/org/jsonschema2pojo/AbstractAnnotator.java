@@ -42,6 +42,11 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
+    public void typeInfo(JDefinedClass clazz, JsonNode schema) {
+
+    }
+
+    @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
     }
 
