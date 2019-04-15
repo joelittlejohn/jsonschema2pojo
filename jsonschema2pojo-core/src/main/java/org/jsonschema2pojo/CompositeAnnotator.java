@@ -137,7 +137,17 @@ public class CompositeAnnotator implements Annotator {
         }
     }
 
-   @Override
+    @Override
+    public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+        for (Annotator annotator : annotators) {
+            if (!annotator.isPolymorphicDeserializationSupported(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
    public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
       for (Annotator annotator : annotators) {
             annotator.dateTimeField(field, clazz, propertyNode);

@@ -178,6 +178,11 @@ public class CustomAnnotatorIT {
         }
 
         @Override
+        public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+            return false;
+        }
+
+        @Override
         public void dateField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
             field.annotate(Deprecated.class);
         }
