@@ -760,11 +760,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean useInnerClassBuilders = false;
 
-    public Jsonschema2PojoMojo()
-    {
-    }
-
-
     /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
