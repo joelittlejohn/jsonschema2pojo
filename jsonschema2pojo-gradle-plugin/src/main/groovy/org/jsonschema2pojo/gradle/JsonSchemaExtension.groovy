@@ -153,7 +153,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   @Override
-  boolean isIncludeJsonTypeInfoAnnotation() {
+  boolean isIncludeTypeInfo() {
     return includeJsonTypeInfoAnnotation
   }
 

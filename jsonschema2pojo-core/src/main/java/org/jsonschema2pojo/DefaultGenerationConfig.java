@@ -42,7 +42,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isIncludeJsonTypeInfoAnnotation()
+    public boolean isIncludeTypeInfo()
     {
         return false;
     }

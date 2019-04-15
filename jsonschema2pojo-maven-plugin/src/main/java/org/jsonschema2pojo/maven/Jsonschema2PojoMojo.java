@@ -863,7 +863,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isIncludeJsonTypeInfoAnnotation()
+    public boolean isIncludeTypeInfo()
     {
         return includeJsonTypeInfoAnnotation;
     }

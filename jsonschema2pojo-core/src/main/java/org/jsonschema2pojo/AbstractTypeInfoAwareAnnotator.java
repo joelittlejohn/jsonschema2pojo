@@ -27,7 +27,7 @@ public abstract class AbstractTypeInfoAwareAnnotator extends AbstractAnnotator
 
 	@Override
 	public void typeInfo(JDefinedClass clazz, JsonNode node) {
-		if(getGenerationConfig().isIncludeJsonTypeInfoAnnotation()) {
+		if(getGenerationConfig().isIncludeTypeInfo()) {
 			// Have per-schema JavaTypeInfo configuration override what is defined in generation config; backward comparability
 			if (node.has("deserializationClassProperty")) {
 				String annotationName = node.get("deserializationClassProperty").asText();

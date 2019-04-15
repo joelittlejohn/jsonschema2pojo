@@ -43,14 +43,14 @@ public interface GenerationConfig {
     boolean isGenerateBuilders();
 
     /**
-     * Gets the 'includeJsonTypeInfoAnnotation' configuration option.
+     * Gets the 'includeTypeInfo' configuration option.
      *
-     * @return whether to include JsonTypeInfo annotation. Commonly used to support polymorphic type deserialization.
+     * @return whether to include json type information. Commonly used to support polymorphic type deserialization.
      *
      * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
      *
      */
-	boolean isIncludeJsonTypeInfoAnnotation();
+	boolean isIncludeTypeInfo();
 
 	/**
      * Gets the 'usePrimitives' configuration option.

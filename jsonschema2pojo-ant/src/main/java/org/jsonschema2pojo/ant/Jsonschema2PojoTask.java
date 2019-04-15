@@ -910,7 +910,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isIncludeJsonTypeInfoAnnotation()
+    public boolean isIncludeTypeInfo()
     {
         return includeJsonTypeInfoAnnotation;
     }

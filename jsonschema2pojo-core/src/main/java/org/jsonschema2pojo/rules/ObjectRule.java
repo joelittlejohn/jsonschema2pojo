@@ -21,10 +21,8 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -47,7 +45,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
@@ -101,7 +98,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
-        
+
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
         }
@@ -519,7 +516,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (annotationStyle == AnnotationStyle.JACKSON
                 || annotationStyle == AnnotationStyle.JACKSON1
                 || annotationStyle == AnnotationStyle.JACKSON2) {
-            return ruleFactory.getGenerationConfig().isIncludeJsonTypeInfoAnnotation() || node.has("deserializationClassProperty");
+            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }
 
         return false;
