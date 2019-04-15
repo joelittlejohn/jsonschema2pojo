@@ -158,7 +158,10 @@
     </tr>
     <tr>
         <td valign="top">includeJsonTypeInfoAnnotation</td>
-        <td valign="top">Whether to include JsonTypeInfo Annotation used in polymorphic type handling.</td>
+        <td valign="top">
+            <p>Whether to include json type information; often required to support polymorphic type handling.</p>
+            <p>By default the type information is stored in the @class property, this can be overridden in the deserializationClassProperty of the schema.</p>
+        </td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
     </tr>
     <tr>

@@ -63,7 +63,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
     private boolean generateBuilderMethods = false;
 
-    @Parameter(names = { "--include-json-type-info-annotation" }, description = "Include JsonTypeInfo annotation; commonly used to support polymorphic type deserialization. https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization")
+    @Parameter(names = { "--include-json-type-info-annotation" }, description = "Include json type info; required to support polymorphic type handling. https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization")
     private boolean includeJsonTypeInfoAnnotation = false;
 
     @Parameter(names = { "--use-inner-class-builders" }, description = "Generate an inner class with builder-style methods")
