@@ -27,7 +27,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
-public class IncludeJsonTypeInfoAnnotationIT
+public class IncludeTypeInfoIT
 {
 	@Rule
 	public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
@@ -96,7 +96,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 	{
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-																config("includeJsonTypeInfoAnnotation", false));
+																config("includeTypeInfo", false));
 
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -110,7 +110,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
 																config("annotationStyle", "JACKSON1",
-																	   "includeJsonTypeInfoAnnotation", false));
+																	   "includeTypeInfo", false));
 
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -124,7 +124,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
 																config("annotationStyle", "JACKSON1",
-																	   "includeJsonTypeInfoAnnotation", false));
+																	   "includeTypeInfo", false));
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
 		assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
@@ -141,7 +141,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 	{
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-																config("includeJsonTypeInfoAnnotation", false));
+																config("includeTypeInfo", false));
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
 		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
@@ -158,7 +158,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 	{
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-																config("includeJsonTypeInfoAnnotation", true));
+																config("includeTypeInfo", true));
 
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -177,7 +177,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
 																config("annotationStyle", "JACKSON1",
-																	   "includeJsonTypeInfoAnnotation", true));
+																	   "includeTypeInfo", true));
 
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -196,7 +196,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
 																config("annotationStyle", "JACKSON1",
-																	   "includeJsonTypeInfoAnnotation", true));
+																	   "includeTypeInfo", true));
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
 		assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
@@ -213,7 +213,7 @@ public class IncludeJsonTypeInfoAnnotationIT
 	{
 
 		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-																config("includeJsonTypeInfoAnnotation", true));
+																config("includeTypeInfo", true));
 		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
 		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));

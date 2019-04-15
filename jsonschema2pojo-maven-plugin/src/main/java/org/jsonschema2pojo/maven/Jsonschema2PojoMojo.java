@@ -118,11 +118,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * By default the type information is stored in the @class property, this can be overridden in the deserializationClassProperty
      * of the schema.
      *
-     * @parameter property="jsonschema2pojo.includeJsonTypeInfoAnnotation"
+     * @parameter property="jsonschema2pojo.includeTypeInfo"
      *            default-value="false"
      * @since 1.0.2
      */
-    private boolean includeJsonTypeInfoAnnotation = false;
+    private boolean includeTypeInfo = false;
     /**
      * Whether to use primitives (<code>long</code>, <code>double</code>,
      * <code>boolean</code>) instead of wrapper types where possible when
@@ -865,7 +865,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeTypeInfo()
     {
-        return includeJsonTypeInfoAnnotation;
+        return includeTypeInfo;
     }
 
     @Override
