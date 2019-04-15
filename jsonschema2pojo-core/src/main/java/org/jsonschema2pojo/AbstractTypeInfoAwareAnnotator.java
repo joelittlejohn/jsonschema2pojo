@@ -44,5 +44,10 @@ public abstract class AbstractTypeInfoAwareAnnotator extends AbstractAnnotator
 		}
 	}
 
+	@Override
+	public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+		return getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
+	}
+
 	abstract protected void addJsonTypeInfoAnnotation(JDefinedClass clazz, String propertyName);
 }

@@ -209,4 +209,6 @@ public interface Annotator {
     void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
+
+	boolean isPolymorphicDeserializationSupported(JsonNode node);
 }

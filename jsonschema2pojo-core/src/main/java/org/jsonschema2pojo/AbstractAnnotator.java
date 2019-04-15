@@ -96,6 +96,11 @@ public abstract class AbstractAnnotator implements Annotator {
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
     }
 
+    @Override
+    public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+        return false;
+    }
+
     public GenerationConfig getGenerationConfig() {
         return generationConfig;
     }

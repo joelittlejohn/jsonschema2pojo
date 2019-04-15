@@ -191,6 +191,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JDefinedClass newType;
 
+        Annotator annotator = ruleFactory.getAnnotator();
+
         try {
             if (node.has("existingJavaType")) {
                 String fqn = substringBefore(node.get("existingJavaType").asText(), "<");
@@ -203,7 +205,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 throw new ClassAlreadyExistsException(existingClass);
             }
 
-            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
+            boolean usePolymorphicDeserialization = annotator.isPolymorphicDeserializationSupported(node);
+
             if (node.has("javaType")) {
                 String fqn = node.path("javaType").asText();
 
@@ -235,8 +238,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
-
-        Annotator annotator = ruleFactory.getAnnotator();
 
         annotator.typeInfo(newType, node);
         annotator.propertyInclusion(newType, node);
