@@ -43,6 +43,16 @@ public interface GenerationConfig {
     boolean isGenerateBuilders();
 
     /**
+     * Gets the 'includeTypeInfo' configuration option.
+     *
+     * @return whether to include json type information. Commonly used to support polymorphic type deserialization.
+     *
+     * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+     *
+     */
+	boolean isIncludeTypeInfo();
+
+	/**
      * Gets the 'usePrimitives' configuration option.
      *
      * @return whether to use primitives (<code>long</code>, <code>double</code>

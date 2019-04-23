@@ -21,10 +21,8 @@ import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -46,7 +44,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -98,10 +98,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
-
-        if (node.has("deserializationClassProperty")) {
-            addJsonTypeInfoAnnotation(jclass, node);
-        }
 
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
@@ -195,6 +191,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JDefinedClass newType;
 
+        Annotator annotator = ruleFactory.getAnnotator();
+
         try {
             if (node.has("existingJavaType")) {
                 String fqn = substringBefore(node.get("existingJavaType").asText(), "<");
@@ -207,7 +205,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 throw new ClassAlreadyExistsException(existingClass);
             }
 
-            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
+            boolean usePolymorphicDeserialization = annotator.isPolymorphicDeserializationSupported(node);
+
             if (node.has("javaType")) {
                 String fqn = node.path("javaType").asText();
 
@@ -240,20 +239,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
-        ruleFactory.getAnnotator().propertyInclusion(newType, node);
+        annotator.typeInfo(newType, node);
+        annotator.propertyInclusion(newType, node);
 
         return newType;
 
-    }
-
-    private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
-        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            String annotationName = node.get("deserializationClassProperty").asText();
-            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
-            jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
-            jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
-            jsonTypeInfo.param("property", annotationName);
-        }
     }
 
     private void addToString(JDefinedClass jclass) {
@@ -521,9 +511,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private boolean usesPolymorphicDeserialization(JsonNode node) {
-        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            return node.has("deserializationClassProperty");
+
+        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
+
+        if (annotationStyle == AnnotationStyle.JACKSON
+                || annotationStyle == AnnotationStyle.JACKSON1
+                || annotationStyle == AnnotationStyle.JACKSON2) {
+            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }
+
         return false;
     }
 
