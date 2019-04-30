@@ -134,6 +134,14 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
         addFactoryMethod(_enum, backingType);
 
+        if (node.has("title")) {
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, _enum, schema);
+        }
+
+        if (node.has("description")) {
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, _enum, schema);
+        }
+
         return _enum;
     }
 

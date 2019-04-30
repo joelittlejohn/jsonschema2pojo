@@ -1,0 +1,5 @@
+{
+    "title" : "A title for this enum",
+    "type":"string",
+    "enum": ["one", "two"]
+}
