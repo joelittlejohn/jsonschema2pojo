@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+* Check schema required array before is required flag ([#964](https://github.com/joelittlejohn/jsonschema2pojo/pull/964))
+* Features/builders as inner classes ([#953](https://github.com/joelittlejohn/jsonschema2pojo/pull/953))
+
 ## 1.0.0
 * Don't register output directory as a set of files, since this breaks Gradle 5.0+ ([#940](https://github.com/joelittlejohn/jsonschema2pojo/pull/940))
 * **Builder method should be named consistently with getter/setter ([#905](https://github.com/joelittlejohn/jsonschema2pojo/issues/905))**

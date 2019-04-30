@@ -20,12 +20,15 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.sun.codemodel.JAnnotationUse;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -42,7 +45,7 @@ import com.sun.codemodel.JMethod;
  *
  * @see <a href="http://jackson.codehaus.org/">http://jackson.codehaus.org/</a>
  */
-public class Jackson1Annotator extends AbstractAnnotator {
+public class Jackson1Annotator extends AbstractTypeInfoAwareAnnotator {
 
     private final JsonSerialize.Inclusion inclusionLevel;
 
@@ -140,4 +143,14 @@ public class Jackson1Annotator extends AbstractAnnotator {
         field.annotate(JsonIgnore.class);
     }
 
+    protected void addJsonTypeInfoAnnotation(JDefinedClass jclass, String propertyName) {
+        JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+        jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
+        jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
+
+        // When not provided it will use default provided by "use" attribute
+        if(StringUtils.isNotBlank(propertyName)) {
+            jsonTypeInfo.param("property", propertyName);
+        }
+    }
 }

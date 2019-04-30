@@ -42,6 +42,11 @@ public abstract class AbstractAnnotator implements Annotator {
     }
 
     @Override
+    public void typeInfo(JDefinedClass clazz, JsonNode schema) {
+
+    }
+
+    @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
     }
 
@@ -89,6 +94,11 @@ public abstract class AbstractAnnotator implements Annotator {
 
     @Override
     public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
+    }
+
+    @Override
+    public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+        return false;
     }
 
     public GenerationConfig getGenerationConfig() {

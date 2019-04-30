@@ -1,0 +1,5 @@
+{
+  "type" : "object",
+  "deserializationClassProperty": "@clazz",
+  "properties" : {}
+}

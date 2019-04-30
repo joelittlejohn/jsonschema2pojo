@@ -44,6 +44,13 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
+    public void typeInfo(JDefinedClass clazz, JsonNode node) {
+        for (Annotator annotator : annotators) {
+            annotator.typeInfo(clazz, node);
+        }
+    }
+
+    @Override
     public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
         for (Annotator annotator : annotators) {
             annotator.propertyOrder(clazz, propertiesNode);
@@ -130,7 +137,17 @@ public class CompositeAnnotator implements Annotator {
         }
     }
 
-   @Override
+    @Override
+    public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+        for (Annotator annotator : annotators) {
+            if (!annotator.isPolymorphicDeserializationSupported(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
    public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
       for (Annotator annotator : annotators) {
             annotator.dateTimeField(field, clazz, propertyNode);

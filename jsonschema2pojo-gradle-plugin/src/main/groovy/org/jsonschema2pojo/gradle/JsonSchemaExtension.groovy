@@ -45,6 +45,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
+  boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
   boolean includeGetters
   boolean includeSetters
@@ -96,6 +97,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
     generateBuilders = false
+    includeJsonTypeInfoAnnotation = false
     useInnerClassBuilders = false
     usePrimitives = false
     sourceFiles = []
@@ -151,6 +153,11 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   @Override
+  boolean isIncludeTypeInfo() {
+    return includeJsonTypeInfoAnnotation
+  }
+
+  @Override
   public Iterator<URL> getSource() {
     def urlList = []
     for (source in sourceFiles) {
@@ -203,6 +210,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
+       |includeJsonTypeInfoAnnotation = ${includeJsonTypeInfoAnnotation}
        |usePrimitives = ${usePrimitives}
        |source = ${sourceFiles}
        |targetDirectory = ${targetDirectory}
@@ -261,7 +269,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
   
   public boolean isFormatDateTimes() {
-    return formatDateTimes;
+    return formatDateTimes
   }
 
 }

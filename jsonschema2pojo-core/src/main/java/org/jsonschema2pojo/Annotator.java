@@ -33,6 +33,20 @@ import com.sun.codemodel.JMethod;
 public interface Annotator {
 
     /**
+     * Add the necessary annotation to dictate correct type information during
+     * serialization and deserialization; often required with polymorphic types.
+     *
+     * @see <a
+      *      href="https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization">Jackson Docs - Polymorphic Type Handling</a>
+     *
+     * @param clazz
+     *            a generated pojo class, that is serialized to JSON
+     * @param schema
+     *            the object schema associated with this clazz
+     */
+    void typeInfo(JDefinedClass clazz, JsonNode schema);
+
+    /**
      * Add the necessary annotation to dictate correct property order during
      * serialization
      *
@@ -195,4 +209,6 @@ public interface Annotator {
     void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
+
+	boolean isPolymorphicDeserializationSupported(JsonNode node);
 }
