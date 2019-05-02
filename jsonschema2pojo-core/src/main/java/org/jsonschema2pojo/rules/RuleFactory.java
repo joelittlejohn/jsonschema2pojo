@@ -273,6 +273,17 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a property
+     * declaration is found in the schema, to assign he digits validation
+     * on that property.
+     *
+     * @return a schema rule that can handle the "digits" declaration.
+     */
+    public Rule<JFieldVar, JFieldVar> getDigitsRule() {
+        return new DigitsRule(this);
+    }
+
+    /**
      * Provides a rule instance that should be applied when a "pattern"
      * declaration is found in the schema for a property.
      *

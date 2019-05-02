@@ -1,0 +1,12 @@
+{
+    "type" : "object",
+    "properties" : {
+        "decimal" : {
+            "type" : "number",
+            "digits" : {
+                "integerDigits": 5,
+                "fractionalDigits": 10
+            }
+        }
+    }
+}

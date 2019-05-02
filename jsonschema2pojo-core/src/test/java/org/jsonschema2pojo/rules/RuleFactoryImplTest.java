@@ -68,6 +68,8 @@ public class RuleFactoryImplTest {
         
         assertThat(ruleFactory.getValidRule(), notNullValue());
 
+        assertThat(ruleFactory.getDigitsRule(), notNullValue());
+
     }
 
     @Test
