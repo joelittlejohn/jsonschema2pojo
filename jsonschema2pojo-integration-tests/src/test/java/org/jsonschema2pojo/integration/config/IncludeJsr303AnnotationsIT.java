@@ -238,7 +238,7 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
         // negative value
-        validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("-12345.1234567890"));
+        validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("-12345.0123456789"));
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -248,7 +248,7 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
         // too many integer digits
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("123456.1234567890"));
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("123456.0123456789"));
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 

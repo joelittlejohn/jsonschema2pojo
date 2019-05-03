@@ -36,17 +36,12 @@ public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-            && node.has("digits")) {
+            && node.has("integerDigits") && node.has("fractionalDigits")) {
 
             JAnnotationUse annotation = field.annotate(Digits.class);
 
-            if (node.get("digits").get("integerDigits") == null ||
-                node.get("digits").get("fractionalDigits") == null) {
-                throw new NoSuchElementException("Cannot find both 'integerDigits' and 'fractionalDigits' declared within 'digits' constraint." );
-            }
-
-            annotation.param("integer", node.get("digits").get("integerDigits").asInt());
-            annotation.param("fraction", node.get("digits").get("fractionalDigits").asInt());
+            annotation.param("integer", node.get("integerDigits").asInt());
+            annotation.param("fraction", node.get("fractionalDigits").asInt());
         }
 
         return field;
