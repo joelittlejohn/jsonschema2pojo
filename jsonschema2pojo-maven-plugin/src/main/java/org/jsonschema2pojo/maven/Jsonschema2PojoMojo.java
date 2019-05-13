@@ -803,7 +803,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } else if (!isEmpty(sourcePaths)) {
             // verify individual source paths
             for (int i = 0; i < sourcePaths.length; i++) {
-                sourcePaths[i] = FilenameUtils.normalize(sourcePaths[i]);
+                switch (URLUtil.parseProtocol(sourcePaths[i])) {
+                    case HTTP:
+                    case HTTPS:
+                        break;
+                    default:
+                        sourcePaths[i] = FilenameUtils.normalize(sourcePaths[i]);
+                }
                 try {
                     URLUtil.parseURL(sourcePaths[i]);
                 } catch (IllegalArgumentException e) {
