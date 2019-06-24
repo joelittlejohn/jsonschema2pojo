@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
@@ -126,6 +127,12 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
       // Generate the no arguments constructor - we'll need this even if there is a property
       // constructor available, because it is used by the serialization and deserialization
       generateNoArgsConstructor(instanceClass);
+
+    // If Vert.x Data Object, then it should generate both constructor and toJson method
+    if (generationConfig.getAnnotationStyle() == AnnotationStyle.VERTX) {
+      generateVertxConstructor(instanceClass);
+      generateVertxToJsonMethod(instanceClass);
+    }
 
       if (includeCopyConstructor) {
         addCopyConstructor(instanceClass, classProperties, combinedSuperProperties);
@@ -415,4 +422,41 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     noargsConstructor.javadoc()
         .add("No args constructor for use in serialization");
   }
+
+  private void generateVertxConstructor(JDefinedClass jclass) {
+    // add a no-args constructor for serialization purposes
+    JMethod jsonObjectConstructor = jclass.constructor(JMod.PUBLIC);
+    jsonObjectConstructor.javadoc().add("Constructor with decoding");
+    jsonObjectConstructor.param(jclass.owner().ref("io.vertx.core.json.JsonObject"), "jsonObject");
+
+    JBlock constructorBody = jsonObjectConstructor.body();
+    constructorBody.add(
+        jclass.owner()
+            .ref(jclass.fullName() + "Converter")
+            .staticInvoke("fromJson")
+            .arg(JExpr.ref("jsonObject"))
+            .arg(JExpr._this())
+    );
+  }
+
+  private void generateVertxToJsonMethod(JDefinedClass jclass) {
+    // add a no-args constructor for serialization purposes
+    JMethod toJsonMethod = jclass.method(JMod.PUBLIC, jclass.owner().ref("io.vertx.core.json.JsonObject"), "toJson");
+    toJsonMethod.javadoc().add("Encode to JsonObject");
+
+    JBlock constructorBody = toJsonMethod.body();
+    constructorBody.directStatement("JsonObject obj = new JsonObject()");
+    constructorBody.add(
+        jclass.owner()
+            .ref(jclass.fullName() + "Converter")
+            .staticInvoke("toJson")
+            .arg(JExpr._this())
+            .arg(JExpr.ref("obj"))
+    );
+    constructorBody._return(JExpr.ref("obj"));
+  }
+
+
+
+
 }

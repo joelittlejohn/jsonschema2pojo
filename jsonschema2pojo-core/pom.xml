@@ -31,6 +31,10 @@
             <artifactId>scala-library</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-codegen</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.javaparser</groupId>
             <artifactId>javaparser</artifactId>
         </dependency>
