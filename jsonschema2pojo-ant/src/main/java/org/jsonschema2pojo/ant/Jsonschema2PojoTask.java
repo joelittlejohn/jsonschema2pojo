@@ -69,6 +69,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean generateBuilders;
 
+    private boolean includeTypeInfo = false;
+
+    private boolean useInnerClassBuilders = false;
+
     private boolean includeConstructors = false;
 
     private boolean usePrimitives;
@@ -298,6 +302,22 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setGenerateBuilders(boolean generateBuilders) {
         this.generateBuilders = generateBuilders;
+    }
+
+    /**
+     * Sets the 'includeTypeInfo' property of this class.
+     *
+     * @param includeTypeInfo
+     *            Whether to use include json type info information to class. Often required to support polymorphic type deserialization.
+     *            <p>
+     *            By default the type information is stored in the @class property, this can be overridden in the deserializationClassProperty of the schema.
+     *            <p>
+     *            Default: <code>false</code>.
+     *
+     * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+     */
+    public void setIncludeTypeInfo(boolean includeTypeInfo) {
+        this.includeTypeInfo = includeTypeInfo;
     }
 
     /**
@@ -891,6 +911,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeTypeInfo()
+    {
+        return includeTypeInfo;
+    }
+
+    @Override
     public boolean isUsePrimitives() {
         return usePrimitives;
     }
@@ -1201,5 +1227,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }
-    
+
+    @Override
+    public boolean isUseInnerClassBuilders() {
+        return useInnerClassBuilders;
+    }
+
+    /**
+     * Sets the 'useInnerClassBuilders' property of this class
+     *
+     * @param useInnerClassBuilders determines whether builders will be chainable setters or embedded classes when {@link #isGenerateBuilders()} used
+     */
+    public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
+        this.useInnerClassBuilders = useInnerClassBuilders;
+    }
 }

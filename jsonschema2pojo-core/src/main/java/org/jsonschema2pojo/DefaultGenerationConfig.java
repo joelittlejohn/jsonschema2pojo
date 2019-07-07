@@ -42,6 +42,15 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
+    public boolean isIncludeTypeInfo()
+    {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
     public boolean isUsePrimitives() {
         return false;
     }
@@ -444,5 +453,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public Map<String, String> getFormatTypeMapping() {
         return Collections.emptyMap();
     }
-    
+
+    @Override
+    public boolean isUseInnerClassBuilders() { return false; }
 }

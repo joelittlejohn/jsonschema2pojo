@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -29,40 +32,27 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.util.MakeUniqueClassName;
-import org.jsonschema2pojo.util.NameHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.SerializableHelper;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.ReflectionHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -74,11 +64,13 @@ import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 public class ObjectRule implements Rule<JPackage, JType> {
 
     private final RuleFactory ruleFactory;
+    private final ReflectionHelper reflectionHelper;
     private final ParcelableHelper parcelableHelper;
 
-    protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper) {
+    protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper, ReflectionHelper reflectionHelper) {
         this.ruleFactory = ruleFactory;
         this.parcelableHelper = parcelableHelper;
+        this.reflectionHelper = reflectionHelper;
     }
 
     /**
@@ -91,9 +83,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage _package, Schema schema) {
 
-        JType superType = getSuperType(nodeName, node, _package, schema);
-
-        if (superType.isPrimitive() || isFinal(superType)) {
+        JType superType = reflectionHelper.getSuperType(nodeName, node, _package, schema);
+        if (superType.isPrimitive() || reflectionHelper.isFinal(superType)) {
             return superType;
         }
 
@@ -108,16 +99,17 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         schema.setJavaTypeIfEmpty(jclass);
 
-        if (node.has("deserializationClassProperty")) {
-            addJsonTypeInfoAnnotation(jclass, node);
-        }
-
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
         }
 
         if (node.has("description")) {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
+        }
+
+        // Creates the class definition for the builder
+        if(ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()){
+            ruleFactory.getBuilderRule().apply(nodeName, node, parent, jclass, schema);
         }
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
@@ -148,7 +140,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            addConstructors(jclass, node, schema, ruleFactory.getGenerationConfig().isConstructorsRequiredPropertiesOnly());
+            ruleFactory.getConstructorRule().apply(nodeName, node, parent, jclass, schema);
+
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
@@ -173,74 +166,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    /**
-     * Retrieve the list of properties to go in the constructor from node. This
-     * is all properties listed in node["properties"] if ! onlyRequired, and
-     * only required properties if onlyRequired.
-     *
-     * @param node
-     * @return
-     */
-    private LinkedHashSet<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
 
-        if (!node.has("properties")) {
-            return new LinkedHashSet<>();
-        }
-
-        LinkedHashSet<String> rtn = new LinkedHashSet<>();
-        Set<String> draft4RequiredProperties = new HashSet<>();
-
-        // setup the set of required properties for draft4 style "required"
-        if (onlyRequired && node.has("required")) {
-            JsonNode requiredArray =  node.get("required");
-            if (requiredArray.isArray()) {
-                for (JsonNode requiredEntry: requiredArray) {
-                    if (requiredEntry.isTextual()) {
-                        draft4RequiredProperties.add(requiredEntry.asText());
-                    }
-                }
-            }
-        }
-
-        NameHelper nameHelper = ruleFactory.getNameHelper();
-        for (Iterator<Map.Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext();) {
-            Map.Entry<String, JsonNode> property = properties.next();
-
-            JsonNode propertyObj = property.getValue();
-            if (onlyRequired) {
-                // draft3 style
-                if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
-                    rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
-                }
-
-                // draft4 style
-                if (draft4RequiredProperties.contains(property.getKey())) {
-                    rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
-                }
-            } else {
-                rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
-            }
-        }
-        return rtn;
-    }
-
-    /**
-     * Recursive, walks the schema tree and assembles a list of all properties of this schema's super schemas
-     */
-    private LinkedHashSet<String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
-        Schema superTypeSchema = getSuperSchema(node, schema, true);
-
-        if (superTypeSchema == null) {
-            return new LinkedHashSet<>();
-        }
-
-        JsonNode superSchemaNode = superTypeSchema.getContent();
-
-        LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, onlyRequired);
-        rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
-
-        return rtn;
-    }
 
     /**
      * Creates a new Java class that will be generated.
@@ -265,6 +191,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JDefinedClass newType;
 
+        Annotator annotator = ruleFactory.getAnnotator();
+
         try {
             if (node.has("existingJavaType")) {
                 String fqn = substringBefore(node.get("existingJavaType").asText(), "<");
@@ -277,7 +205,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 throw new ClassAlreadyExistsException(existingClass);
             }
 
-            boolean usePolymorphicDeserialization = usesPolymorphicDeserialization(node);
+            boolean usePolymorphicDeserialization = annotator.isPolymorphicDeserializationSupported(node);
+
             if (node.has("javaType")) {
                 String fqn = node.path("javaType").asText();
 
@@ -301,83 +230,20 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
             } else {
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, getClassName(nodeName, node, _package), ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package), ClassType.CLASS);
                 } else {
-                    newType = _package._class(getClassName(nodeName, node, _package));
+                    newType = _package._class(ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package));
                 }
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
-        ruleFactory.getAnnotator().propertyInclusion(newType, node);
+        annotator.typeInfo(newType, node);
+        annotator.propertyInclusion(newType, node);
 
         return newType;
 
-    }
-
-    private boolean isFinal(JType superType) {
-        try {
-            Class<?> javaClass = Class.forName(superType.fullName());
-            return Modifier.isFinal(javaClass.getModifiers());
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    private JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
-        if (node.has("extends") && node.has("extendsJavaClass")) {
-            throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
-        }
-
-        JType superType = jPackage.owner().ref(Object.class);
-        Schema superTypeSchema = getSuperSchema(node, schema, false);
-        if (superTypeSchema != null) {
-            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
-        } else if (node.has("extendsJavaClass")) {
-            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
-        }
-
-        return superType;
-    }
-
-    private Schema getSuperSchema(JsonNode node, Schema schema, boolean followRefs) {
-        if (node.has("extends")) {
-            String path;
-            if (schema.getId().getFragment() == null) {
-                path = "#extends";
-            } else {
-                path = "#" + schema.getId().getFragment() + "/extends";
-            }
-
-            Schema superSchema = ruleFactory.getSchemaStore().create(schema, path, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-
-            if (followRefs) {
-                superSchema = resolveSchemaRefsRecursive(superSchema);
-            }
-
-            return superSchema;
-        }
-        return null;
-    }
-
-    private Schema resolveSchemaRefsRecursive(Schema schema) {
-        JsonNode schemaNode = schema.getContent();
-        if (schemaNode.has("$ref")) {
-            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-            return resolveSchemaRefsRecursive(schema);
-        }
-        return schema;
-    }
-
-    private void addJsonTypeInfoAnnotation(JDefinedClass jclass, JsonNode node) {
-        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            String annotationName = node.get("deserializationClassProperty").asText();
-            JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
-            jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
-            jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
-            jsonTypeInfo.param("property", annotationName);
-        }
     }
 
     private void addToString(JDefinedClass jclass) {
@@ -575,98 +441,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         return filteredFields;
     }
 
-    private void addConstructors(JDefinedClass jclass, JsonNode node, Schema schema, boolean onlyRequired) {
-
-        LinkedHashSet<String> classProperties = getConstructorProperties(node, onlyRequired);
-        LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, schema, onlyRequired);
-
-        // no properties to put in the constructor => default constructor is good enough.
-        if (classProperties.isEmpty() && combinedSuperProperties.isEmpty()) {
-            return;
-        }
-
-        // add a no-args constructor for serialization purposes
-        JMethod noargsConstructor = jclass.constructor(JMod.PUBLIC);
-        noargsConstructor.javadoc().add("No args constructor for use in serialization");
-
-        // add the public constructor with property parameters
-        JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
-        JBlock constructorBody = fieldsConstructor.body();
-        JInvocation superInvocation = constructorBody.invoke("super");
-
-        Map<String, JFieldVar> fields = jclass.fields();
-        Map<String, JVar> classFieldParams = new HashMap<>();
-
-        for (String property : classProperties) {
-            JFieldVar field = fields.get(property);
-
-            if (field == null) {
-                throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
-            }
-
-            fieldsConstructor.javadoc().addParam(property);
-            JVar param = fieldsConstructor.param(field.type(), field.name());
-            constructorBody.assign(JExpr._this().ref(field), param);
-            classFieldParams.put(property, param);
-        }
-
-        List<JVar> superConstructorParams = new ArrayList<>();
-
-
-        for (String property : combinedSuperProperties) {
-            JFieldVar field = searchSuperClassesForField(property, jclass);
-
-            if (field == null) {
-                throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
-            }
-
-            JVar param = classFieldParams.get(property);
-
-            if (param == null) {
-                param = fieldsConstructor.param(field.type(), field.name());
-            }
-
-            fieldsConstructor.javadoc().addParam(property);
-            superConstructorParams.add(param);
-        }
-
-        for (JVar param : superConstructorParams) {
-            superInvocation.arg(param);
-        }
-    }
-
-    private static JDefinedClass definedClassOrNullFromType(JType type)
-    {
-        if (type == null || type.isPrimitive())
-        {
-            return null;
-        }
-        JClass fieldClass = type.boxify();
-        JPackage jPackage = fieldClass._package();
-        return jPackage._getClass(fieldClass.name());
-    }
-
-    /**
-     * This is recursive with searchClassAndSuperClassesForField
-     */
-    private JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
-        JClass superClass = jclass._extends();
-        JDefinedClass definedSuperClass = definedClassOrNullFromType(superClass);
-        if (definedSuperClass == null) {
-            return null;
-        }
-        return searchClassAndSuperClassesForField(property, definedSuperClass);
-    }
-
-    private JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
-        Map<String, JFieldVar> fields = jclass.fields();
-        JFieldVar field = fields.get(property);
-        if (field == null) {
-            return searchSuperClassesForField(property, jclass);
-        }
-        return field;
-    }
-
     private void addEquals(JDefinedClass jclass, JsonNode node) {
         Map<String, JFieldVar> fields = removeFieldsExcludedFromEqualsAndHashCode(jclass.fields(), node);
 
@@ -736,45 +510,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-    private String getClassName(String nodeName, JsonNode node, JPackage _package) {
-        String prefix = ruleFactory.getGenerationConfig().getClassNamePrefix();
-        String suffix = ruleFactory.getGenerationConfig().getClassNameSuffix();
-        String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
-        String capitalizedFieldName = capitalize(fieldName);
-        String fullFieldName = createFullFieldName(capitalizedFieldName, prefix, suffix);
-
-        String className = ruleFactory.getNameHelper().replaceIllegalCharacters(fullFieldName);
-        String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
-        return makeUnique(normalizedName, _package);
-    }
-
-    private String createFullFieldName(String nodeName, String prefix, String suffix) {
-        String returnString = nodeName;
-        if (prefix != null) {
-            returnString = prefix + returnString;
-        }
-
-        if (suffix != null) {
-            returnString = returnString + suffix;
-        }
-
-        return returnString;
-    }
-
-    private String makeUnique(String className, JPackage _package) {
-        try {
-            JDefinedClass _class = _package._class(className);
-            _package.remove(_class);
-            return className;
-        } catch (JClassAlreadyExistsException e) {
-            return makeUnique(MakeUniqueClassName.makeUnique(className), _package);
-        }
-    }
-
     private boolean usesPolymorphicDeserialization(JsonNode node) {
-        if (ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.JACKSON2) {
-            return node.has("deserializationClassProperty");
+
+        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
+
+        if (annotationStyle == AnnotationStyle.JACKSON
+                || annotationStyle == AnnotationStyle.JACKSON1
+                || annotationStyle == AnnotationStyle.JACKSON2) {
+            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }
+
         return false;
     }
 

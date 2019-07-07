@@ -112,6 +112,11 @@ public class CustomAnnotatorIT {
     public static class DeprecatingAnnotator implements Annotator {
 
         @Override
+        public void typeInfo(JDefinedClass clazz, JsonNode schema) {
+
+        }
+
+        @Override
         public void propertyOrder(JDefinedClass clazz, JsonNode propertiesNode) {
             clazz.annotate(Deprecated.class);
         }
@@ -170,6 +175,11 @@ public class CustomAnnotatorIT {
                 JDefinedClass clazz, String propertyName) {
             field.annotate(Deprecated.class);
 
+        }
+
+        @Override
+        public boolean isPolymorphicDeserializationSupported(JsonNode node) {
+            return false;
         }
 
         @Override

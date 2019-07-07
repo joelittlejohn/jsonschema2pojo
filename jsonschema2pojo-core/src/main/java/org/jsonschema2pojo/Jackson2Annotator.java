@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.sun.codemodel.JAnnotationUse;
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.rules.FormatRule;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -49,7 +52,7 @@ import com.sun.codemodel.JMethod;
  * @see <a
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
-public class Jackson2Annotator extends AbstractAnnotator {
+public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
 
     private final JsonInclude.Include inclusionLevel;
 
@@ -211,6 +214,17 @@ public class Jackson2Annotator extends AbstractAnnotator {
 
         if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
             field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern).param("timezone", timezone);
+        }
+    }
+
+    protected void addJsonTypeInfoAnnotation(JDefinedClass jclass, String propertyName) {
+        JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
+        jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
+        jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
+
+        // When not provided it will use default provided by "use" attribute
+        if(StringUtils.isNotBlank(propertyName)) {
+            jsonTypeInfo.param("property", propertyName);
         }
     }
 }

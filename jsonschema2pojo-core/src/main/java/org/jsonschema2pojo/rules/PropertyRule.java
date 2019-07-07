@@ -17,11 +17,17 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.*;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
-
-import static org.apache.commons.lang3.StringUtils.capitalize;
 
 
 /**
@@ -90,7 +96,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilder(jclass, field, nodeName, node);
+            addBuilderMethod(jclass, field, nodeName, node);
         }
 
         if (node.has("pattern")) {
@@ -105,6 +111,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, parent, field, schema);
 
+        ruleFactory.getDigitsRule().apply(nodeName, node, parent, field, schema);
+
         if (isObject(node) || isArray(node)) {
             ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
         }
@@ -112,16 +120,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
-        if (node.has("required")) {
-            final JsonNode requiredNode = node.get("required");
-            return requiredNode.asBoolean();
-        }
-
-        JsonNode requiredArray = schema.getContent().get("required");
-
-        if (requiredArray != null) {
-            for (JsonNode requiredNode : requiredArray) {
+    private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
+        JsonNode array = schema.getContent().get(arrayFieldName);
+        if (array != null) {
+            for (JsonNode requiredNode : array) {
                 if (nodeName.equals(requiredNode.asText()))
                     return true;
             }
@@ -130,22 +132,25 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
-        if (node.has("javaOptional")) {
-            final JsonNode requiredNode = node.get("javaOptional");
+    private boolean hasFlag(JsonNode node, String fieldName) {
+        if (node.has(fieldName)) {
+            final JsonNode requiredNode = node.get(fieldName);
             return requiredNode.asBoolean();
         }
 
-        JsonNode javaOptionalArray = schema.getContent().get("javaOptional");
-
-        if (javaOptionalArray != null) {
-            for (JsonNode requiredNode : javaOptionalArray) {
-                if (nodeName.equals(requiredNode.asText()))
-                    return true;
-            }
-        }
-
         return false;
+    }
+
+    private boolean isDeclaredAs(String type, String nodeName, JsonNode node, Schema schema) {
+        return hasEnumerated(schema, type, nodeName) || hasFlag(node, type);
+    }
+
+    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
+        return isDeclaredAs("required", nodeName, node, schema);
+    }
+
+    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
+        return isDeclaredAs("javaOptional", nodeName, node, schema);
     }
 
     private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
@@ -235,27 +240,54 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return setter;
     }
 
-    private JMethod addBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
-
-        JVar param = builder.param(field.type(), field.name());
-        JBlock body = builder.body();
-        body.assign(JExpr._this().ref(field), param);
-        body._return(JExpr._this());
-
-        return builder;
+  private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    JMethod result = null;
+    if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+      result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
+    } else {
+      result = addLegacyBuilder(c, field, jsonPropertyName, node);
     }
+    return result;
+  }
 
-    private String getBuilderName(String propertyName, JsonNode node) {
-        return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
-    }
+  private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
-    private String getSetterName(String propertyName, JsonNode node) {
-        return ruleFactory.getNameHelper().getSetterName(propertyName, node);
-    }
+    JVar param = builder.param(field.type(), field.name());
+    JBlock body = builder.body();
+    body.assign(JExpr._this().ref(field), param);
+    body._return(JExpr._this());
 
-    private String getGetterName(String propertyName, JType type, JsonNode node) {
-        return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
-    }
+    return builder;
+  }
+
+  private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBuilderClass(c);
+
+    JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
+
+    JVar param = builderMethod.param(field.type(), field.name());
+    JBlock body = builderMethod.body();
+    body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
+    body._return(JExpr._this());
+
+    return builderMethod;
+  }
+
+  private String getBuilderClassName(JDefinedClass c) {
+    return ruleFactory.getNameHelper().getBuilderClassName(c);
+  }
+
+  private String getBuilderName(String propertyName, JsonNode node) {
+      return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
+  }
+
+  private String getSetterName(String propertyName, JsonNode node) {
+      return ruleFactory.getNameHelper().getSetterName(propertyName, node);
+  }
+
+  private String getGetterName(String propertyName, JType type, JsonNode node) {
+      return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
+  }
 
 }

@@ -94,3 +94,6 @@
 * Klevis Ramo
 * Martin Bramwell
 * Jan Oopkaup
+* Michał Szymborski
+* Duane Zamrok
+* Gleb Averchuk

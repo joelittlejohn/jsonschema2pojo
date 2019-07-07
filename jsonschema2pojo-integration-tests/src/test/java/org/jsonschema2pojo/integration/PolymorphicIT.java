@@ -32,7 +32,10 @@
 package org.jsonschema2pojo.integration;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
@@ -46,7 +49,7 @@ public class PolymorphicIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
     
     @Test
-    public void extendsWithPolymorphicDeserialization() throws ClassNotFoundException {
+    public void extendsWithPolymorphicDeserializationWithDefaultAnnotationStyle() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
 
@@ -54,6 +57,32 @@ public class PolymorphicIT {
         Class<?> supertype = subtype.getSuperclass();
 
         assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+		assertNull(supertype.getAnnotation(org.codehaus.jackson.annotate.JsonTypeInfo.class));
+    }
 
+	@Test
+	public void extendsWithPolymorphicDeserializationWithJackson2() throws ClassNotFoundException {
+
+		ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
+																	   config("annotationStyle", "JACKSON2"));
+
+		Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
+		Class<?> supertype = subtype.getSuperclass();
+
+		assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+		assertNull(supertype.getAnnotation(org.codehaus.jackson.annotate.JsonTypeInfo.class));
+	}
+
+    @Test
+    public void extendsWithPolymorphicDeserializationWithJackson1() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
+                                                                       config("annotationStyle", "JACKSON1"));
+
+        Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
+        Class<?> supertype = subtype.getSuperclass();
+
+        assertNotNull(supertype.getAnnotation(org.codehaus.jackson.annotate.JsonTypeInfo.class));
+		assertNull(supertype.getAnnotation(JsonTypeInfo.class));
     }
 }

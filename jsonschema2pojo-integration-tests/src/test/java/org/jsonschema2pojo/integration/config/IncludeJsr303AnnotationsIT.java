@@ -25,6 +25,7 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -221,6 +222,46 @@ public class IncludeJsr303AnnotationsIT {
         Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maxLength", "Tooooo long");
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+    }
+
+    @Test
+    public void jsr303DigitsValidationIsAddedForSchemaRuleDigits() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/digits.json", "com.example",
+            config("includeJsr303Annotations", true, "useBigDecimals", true));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Digits");
+
+        // positive value
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("12345.1234567890"));
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        // negative value
+        validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("-12345.0123456789"));
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        // zero value
+        validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("0.0"));
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        // too many integer digits
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("123456.0123456789"));
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        // too many fractional digits
+        invalidInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("12345.12345678901"));
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
+        // too many integer & fractional digits
+        invalidInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("123456.12345678901"));
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
+
     }
 
     @Test

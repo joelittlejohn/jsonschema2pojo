@@ -93,6 +93,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private void addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
 
+        // Confirm that this class doesn't already have a builder method matching the same name as the parentBuilder
         if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
 
             JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());

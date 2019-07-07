@@ -45,6 +45,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
+  boolean includeJsonTypeInfoAnnotation
+  boolean useInnerClassBuilders
   boolean includeGetters
   boolean includeSetters
   boolean includeAdditionalProperties
@@ -95,6 +97,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
     generateBuilders = false
+    includeJsonTypeInfoAnnotation = false
+    useInnerClassBuilders = false
     usePrimitives = false
     sourceFiles = []
     targetPackage = ''
@@ -146,6 +150,11 @@ public class JsonSchemaExtension implements GenerationConfig {
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
+  }
+
+  @Override
+  boolean isIncludeTypeInfo() {
+    return includeJsonTypeInfoAnnotation
   }
 
   @Override
@@ -201,6 +210,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
+       |includeJsonTypeInfoAnnotation = ${includeJsonTypeInfoAnnotation}
        |usePrimitives = ${usePrimitives}
        |source = ${sourceFiles}
        |targetDirectory = ${targetDirectory}
@@ -254,11 +264,12 @@ public class JsonSchemaExtension implements GenerationConfig {
        |sourceSortOrder = ${sourceSortOrder}
        |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
+       |useInnerClassBuilders = ${useInnerClassBuilders}
      """.stripMargin()
   }
   
   public boolean isFormatDateTimes() {
-    return formatDateTimes;
+    return formatDateTimes
   }
 
 }

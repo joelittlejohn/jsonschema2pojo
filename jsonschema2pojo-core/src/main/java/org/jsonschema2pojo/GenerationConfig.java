@@ -43,6 +43,16 @@ public interface GenerationConfig {
     boolean isGenerateBuilders();
 
     /**
+     * Gets the 'includeTypeInfo' configuration option.
+     *
+     * @return whether to include json type information. Commonly used to support polymorphic type deserialization.
+     *
+     * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+     *
+     */
+	boolean isIncludeTypeInfo();
+
+	/**
      * Gets the 'usePrimitives' configuration option.
      *
      * @return whether to use primitives (<code>long</code>, <code>double</code>
@@ -571,4 +581,13 @@ public interface GenerationConfig {
      *         fully qualified type name (e.g. 'java.net.URI').
      */
     Map<String, String> getFormatTypeMapping();
+
+    /**
+     * If set to true, then the gang of four builder pattern will be used to generate builders on generated classes. Note: This property works
+     * in collaboration with the {@link #isGenerateBuilders()} method. If the {@link #isGenerateBuilders()} is false,
+     * then this property will not do anything.
+     * @return whether to include the gang of four builder patter on the generated classes. The default value for this is false.
+     */
+    default boolean isUseInnerClassBuilders(){ return false;}
+
 }
