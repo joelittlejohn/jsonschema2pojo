@@ -757,6 +757,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private Map<String, String> formatTypeMapping = new HashMap<>();
 
     /**
+     * If set to true, then the gang of four builder pattern will be used to generate builders on generated classes. Note: This property works
+     * in collaboration with the {@link #isGenerateBuilders()} method. If the {@link #isGenerateBuilders()} is false,
+     * then this property will not do anything.
      * @parameter property="jsonschema2pojo.useInnerClassBuilders"
      *            default-value="false"
      * @since 1.0.0
