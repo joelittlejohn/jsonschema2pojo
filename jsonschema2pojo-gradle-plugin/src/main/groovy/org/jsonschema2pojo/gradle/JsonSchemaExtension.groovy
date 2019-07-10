@@ -56,6 +56,9 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeDynamicBuilders
   boolean includeConstructors
   boolean constructorsRequiredPropertiesOnly
+  boolean constructorsIncludeRequiredPropertiesConstructor;
+  boolean constructorsIncludeAllPropertiesConstructor;
+  boolean constructorsIncludeCopyConstructor;
   boolean includeHashcodeAndEquals
   boolean includeJsr303Annotations
   boolean includeJsr305Annotations
@@ -110,6 +113,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeHashcodeAndEquals = true
     includeConstructors = false
     constructorsRequiredPropertiesOnly = false
+    constructorsIncludeRequiredPropertiesConstructor = false
+    constructorsIncludeAllPropertiesConstructor = true
     includeToString = true
     toStringExcludes = [] as String[]
     annotationStyle = AnnotationStyle.JACKSON
@@ -222,6 +227,10 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useBigDecimals = ${useBigDecimals}
        |includeHashcodeAndEquals = ${includeHashcodeAndEquals}
        |includeConstructors = ${includeConstructors}
+       |constructorsRequiredPropertiesOnly = ${constructorsRequiredPropertiesOnly}
+       |constructorsIncludeRequiredPropertiesConstructor = ${constructorsIncludeRequiredPropertiesConstructor}
+       |constructorsIncludeAllPropertiesConstructor = ${constructorsIncludeAllPropertiesConstructor}
+       |constructorsIncludeCopyConstructor = ${constructorsIncludeCopyConstructor}
        |includeToString = ${includeToString}
        |toStringExcludes = ${Arrays.toString(toStringExcludes)}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}

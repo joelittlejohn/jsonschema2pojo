@@ -559,14 +559,39 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeConstructors = false;
 
     /**
-     * Whether generated constructors should have parameters for all properties,
-     * or only required ones.
+     * The 'constructorsRequiredPropertiesOnly' configuration option. This is a legacy configuration option used to turn on the {@link
+     * #isConstructorsIncludeAllPropertiesConstructor()} and off the {@link * #isConstructorsIncludeAllPropertiesConstructor()} configuration options.
+     * It is specifically tied to the {@link #isIncludeConstructors()} * property, and will do nothing if that property is not enabled
      *
-     * @parameter property="jsonschema2pojo.constructorsRequiredPropertiesOnly"
-     *            default-value="false"
+     * @parameter property="jsonschema2pojo.constructorsRequiredPropertiesOnly" default-value="false"
      * @since 0.4.8
      */
     private boolean constructorsRequiredPropertiesOnly = false;
+
+    /**
+     * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor with only the required properties as parameters.
+     */
+    boolean constructorsIncludeRequiredPropertiesConstructor = false;
+
+    /**
+     * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor with all listed properties as parameters.
+     */
+    boolean constructorsIncludeAllPropertiesConstructor = true;
+
+    /**
+     * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
+     * originating class will assigned to the new class.
+     */
+    boolean constructorsIncludeCopyConstructor = false;
 
     /**
      * Whether to allow 'additional properties' support in objects. Setting this
@@ -1074,6 +1099,21 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isConstructorsRequiredPropertiesOnly() {
         return constructorsRequiredPropertiesOnly;
+    }
+
+    @Override
+    public boolean isConstructorsIncludeRequiredPropertiesConstructor() {
+        return constructorsIncludeRequiredPropertiesConstructor;
+    }
+
+    @Override
+    public boolean isConstructorsIncludeAllPropertiesConstructor() {
+        return constructorsIncludeAllPropertiesConstructor;
+    }
+
+    @Override
+    public boolean isConstructorsIncludeCopyConstructor() {
+        return constructorsIncludeCopyConstructor;
     }
 
     @Override

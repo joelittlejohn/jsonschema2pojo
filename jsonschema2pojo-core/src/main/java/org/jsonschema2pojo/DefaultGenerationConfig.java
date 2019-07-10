@@ -305,6 +305,24 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isConstructorsIncludeRequiredPropertiesConstructor(){ return false; }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
+    public boolean isConstructorsIncludeAllPropertiesConstructor() { return true; }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isConstructorsIncludeCopyConstructor() { return false; }
+
+    /**
      * @return <code>true</code>
      */
     @Override
