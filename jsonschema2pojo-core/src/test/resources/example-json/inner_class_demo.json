@@ -1,0 +1,16 @@
+{
+  "data" : {
+    "type" : "funds-transfer-method",
+    "attributes" : {
+      "funds-transfer-type" : "ach",
+      "ach-check-type" : "personal",
+      "bank-account-name" : "John James Doe",
+      "bank-account-type" : "checking",
+      "bank-account-number" : "1234567890",
+      "routing-number": "123456789",
+      "contact-email" : "johndoe@gmail.com",
+      "contact-name" : "John Doe",
+      "ip-address" : "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+    }
+  }
+}

@@ -446,6 +446,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return Language.JAVA;
     }
 
+    @Override
+    public boolean isGenInnerClasses() {
+        return false;
+    }
+
     /**
      * @return {@link Collections#emptyMap}
      */
