@@ -416,7 +416,7 @@
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-codegen</artifactId>
-                <version>3.7.1</version>
+                <version>3.8.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>

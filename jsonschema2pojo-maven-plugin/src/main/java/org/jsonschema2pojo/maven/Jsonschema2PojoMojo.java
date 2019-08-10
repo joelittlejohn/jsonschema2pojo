@@ -256,6 +256,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <a href="https://code.google.com/p/google-gson/">gson</a> library)</li>
      * <li><code>moshi1</code> (apply annotations from the
      * <a href="https://github.com/square/moshi">moshi 1.x</a> library)</li>
+     * <li><code>vertx</code> (apply annotations from the
+     * <a href="https://vertx.io/">Vert.x Codegen</a> library)</li>
      * <li><code>none</code> (apply no annotations at all)</li>
      * </ul>
      *

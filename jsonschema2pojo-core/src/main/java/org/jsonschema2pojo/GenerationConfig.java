@@ -150,45 +150,47 @@ public interface GenerationConfig {
    */
   boolean isIncludeHashcodeAndEquals();
 
-  /**
-   * Gets the 'includeToString' configuration option.
-   *
-   * @return Whether to use include a <code>toString</code> method in
-   *         generated Java types.
-   */
-  boolean isIncludeToString();
+    /**
+     * Gets the 'includeToString' configuration option.
+     *
+     * @return Whether to use include a <code>toString</code> method in
+     *         generated Java types.
+     */
+    boolean isIncludeToString();
 
-  /**
-   * Gets the 'toStringExcludes' configuration option.
-   *
-   * @return An array of strings representing fields
-   *         that should be excluded from toString methods
-   */
-  String[] getToStringExcludes();
+    /**
+     * Gets the 'toStringExcludes' configuration option.
+     *
+     * @return An array of strings representing fields
+     *         that should be excluded from toString methods
+     */
+    String[] getToStringExcludes();
 
-  /**
-   * Gets the 'annotationStyle' configuration option.
-   *
-   * @return The style of annotations to use in the generated Java types.
-   *         <p>
-   *         Supported values:
-   *         <ul>
-   *         <li><code>jackson1</code> (apply annotations from the
-   *         <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)
-   *         </li>
-   *         <li><code>jackson2</code> (apply annotations from the
-   *         <a href="https://github.com/FasterXML/jackson-annotations">
-   *         Jackson 2.x</a> library)</li>
-   *         <li><code>gson</code> (apply annotations from the
-   *         <a href="https://code.google.com/p/google-gson/">gson</a>
-   *         library)</li>
-   *         <li><code>moshi1</code> (apply annotations from the
-   *         <a href="https://github.com/square/moshi">moshi</a> library)</li>
-   *         <li><code>none</code> (apply no annotations at all)</li>
-   *         </ul>
-   * @see AnnotatorFactory
-   */
-  AnnotationStyle getAnnotationStyle();
+    /**
+     * Gets the 'annotationStyle' configuration option.
+     *
+     * @return The style of annotations to use in the generated Java types.
+     *         <p>
+     *         Supported values:
+     *         <ul>
+     *         <li><code>jackson1</code> (apply annotations from the
+     *         <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)
+     *         </li>
+     *         <li><code>jackson2</code> (apply annotations from the
+     *         <a href="https://github.com/FasterXML/jackson-annotations">
+     *         Jackson 2.x</a> library)</li>
+     *         <li><code>gson</code> (apply annotations from the
+     *         <a href="https://code.google.com/p/google-gson/">gson</a>
+     *         library)</li>
+     *         <li><code>moshi1</code> (apply annotations from the
+     *         <a href="https://github.com/square/moshi">moshi</a> library)</li>
+     *         <li><code>vertx</code> (apply annotations from the
+     *         <a href="https://vertx.io/">Vert.x Codegen</a> library)</li>
+     *         <li><code>none</code> (apply no annotations at all)</li>
+     *         </ul>
+     * @see AnnotatorFactory
+     */
+    AnnotationStyle getAnnotationStyle();
 
   /**
    * When {@code true} the title is used as class name.
