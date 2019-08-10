@@ -574,6 +574,14 @@ public interface GenerationConfig {
      */
     Language getTargetLanguage();
 
+
+    /**
+     *  Gets the 'genInnerClasses' configuration option.
+     *  Useful for generating all subtypes as inner classes in one main class. The default is one class corresponding to one subtype.
+     * @return false for default 
+     */
+    boolean isGenInnerClasses();
+
     /**
      * Gets the 'formatTypeMapping' configuration option.
      *

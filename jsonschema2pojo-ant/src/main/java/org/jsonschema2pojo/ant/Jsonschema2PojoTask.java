@@ -1224,6 +1224,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isGenInnerClasses() {
+        return false;
+    }
+
+    @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }

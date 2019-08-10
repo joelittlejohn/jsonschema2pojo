@@ -33,7 +33,6 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.util.ReflectionHelper;
-import sun.reflect.Reflection;
 
 /**
  * Provides factory/creation methods for the code generation rules.

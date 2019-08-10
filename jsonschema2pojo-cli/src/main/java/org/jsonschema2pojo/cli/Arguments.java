@@ -69,6 +69,10 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--use-inner-class-builders" }, description = "Generate an inner class with builder-style methods")
     private boolean useInnerClassBuilders = false;
 
+    @Parameter(names = { "--gen-inner-classes" }, description = "Generate all subtypes as inner classes in one main class. The default is one class corresponding to one subtype.")
+    private boolean genInnerClasses = false;
+
+
     @Parameter(names = { "-c", "--generate-constructors" }, description = "Generate constructors")
     private boolean generateConstructors = false;
 
@@ -559,6 +563,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
+    }
+
+    @Override
+    public boolean isGenInnerClasses() {
+        return genInnerClasses;
     }
 
     @Override

@@ -265,6 +265,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
+       |genInnerClasses = ${genInnerClasses}
      """.stripMargin()
   }
   
@@ -272,4 +273,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     return formatDateTimes
   }
 
+  @Override
+  boolean isGenInnerClasses() {
+    return false
+  }
 }
