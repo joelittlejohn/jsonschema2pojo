@@ -71,20 +71,22 @@ public class TypeRule implements Rule<JClassContainer, JType> {
   @Override
   public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
 
+    JClassContainer parentContainer = jClassContainer.getPackage();
+
     String propertyTypeName = getTypeName(node);
 
     JType type;
 
     if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
-      type = ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
+      type = ruleFactory.getObjectRule().apply(nodeName, node, parent, parentContainer.getPackage(), schema);
     } else if (node.has("existingJavaType")) {
       String typeName = node.path("existingJavaType").asText();
 
       if (isPrimitive(typeName, jClassContainer.owner())) {
         type = primitiveType(typeName, jClassContainer.owner());
       } else {
-        type = resolveType(jClassContainer, typeName);
+        type = resolveType(parentContainer, typeName);
       }
     } else if (propertyTypeName.equals("string")) {
 
@@ -100,7 +102,13 @@ public class TypeRule implements Rule<JClassContainer, JType> {
       type = unboxIfNecessary(jClassContainer.owner().ref(Boolean.class), ruleFactory.getGenerationConfig());
     } else if (propertyTypeName.equals("array")) {
 
-      type = ruleFactory.getArrayRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
+      if (node.has("items") && node.get("items").has("enum")) {
+        // We have an array of anonymous enum, we will generate an inner enum
+        type = ruleFactory.getArrayRule().apply(nodeName, node, parent, jClassContainer, schema);
+      } else {
+        // We have a regular array, we will generate the types into the package
+        type = ruleFactory.getArrayRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
+      }
     } else {
 
       type = jClassContainer.owner().ref(Object.class);

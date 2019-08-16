@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "javaType": "com.example.MyItem",
+  "type": "object",
+  "properties": {
+    "kinds": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "KIND1",
+          "KIND2"
+        ]
+      }
+    },
+    "KindWithPojo": {
+      "$ref": "#/definitions/KindWithPojo"
+    }
+  },
+  "definitions": {
+    "Kind": {
+      "$schema": "http://json-schema.org/draft-03/schema#",
+      "javaType": "com.example.Kind",
+      "type": "object",
+      "properties": {
+        "kindCode": {
+          "type": "string"
+        }
+      }
+    },
+    "KindWithPojo": {
+      "$schema": "http://json-schema.org/draft-03/schema#",
+      "javaType": "com.example.KindWithPojo",
+      "type": "object",
+      "properties": {
+        "kinds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Kind"
+          }
+        }
+      }
+    }
+  }
+}

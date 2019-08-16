@@ -33,7 +33,6 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.util.ReflectionHelper;
-import sun.reflect.Reflection;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -82,7 +81,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "array" declaration.
      */
-    public Rule<JPackage, JClass> getArrayRule() {
+    public Rule<JClassContainer, JClass> getArrayRule() {
         return new ArrayRule(this);
     }
 
