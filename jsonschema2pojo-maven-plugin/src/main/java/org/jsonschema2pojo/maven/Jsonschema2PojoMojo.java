@@ -396,6 +396,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.3.7
      */
     private boolean removeOldOutput = false;
+    
+    /**
+     * Whether to empty only the target package contents before generation occurs. 
+     * If the resulting package directories are empty, they'll be removed. 
+     * @parameter expression="${jsonschema2pojo.removeOldOutput}"
+     *            default-value="false"
+     */
+    private boolean removeTargetPackage = false;
 
     /**
      * The character encoding that should be used when writing the generated
@@ -989,6 +997,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isRemoveOldOutput() {
         return removeOldOutput;
+    }
+    
+    @Override
+    public boolean isRemoveTargetPackage() {
+    	return removeTargetPackage;
     }
 
     @Override

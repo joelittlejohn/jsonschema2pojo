@@ -317,6 +317,17 @@
         <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
     </tr>
     <tr>
+        <td valign="top">removeTargetPackage</td>
+        <td valign="top">Whether to empty only the package directory before generation occurs, to clear out all source files
+            that have been generated previously. This flag will also clean up any empty package directories.
+            <p>
+                <strong>Be warned</strong>, when activated this option will cause jsonschema2pojo to <strong>indiscriminately
+                delete the entire contents of the target package directory (all files and folders)</strong> before it begins
+                generating sources.
+        </td>
+        <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+    </tr>
+    <tr>
         <td valign="top">skip</td>
         <td valign="top">Whether to skip type generation entirely (useful when set via a build property to allow quick
             disabling of this task using a command line property).
