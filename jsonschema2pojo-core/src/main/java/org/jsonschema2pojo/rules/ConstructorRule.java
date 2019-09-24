@@ -16,6 +16,9 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JConditional;
@@ -25,7 +28,13 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
+
+import java.beans.ConstructorProperties;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,12 +45,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
 
-public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
+public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
   private final RuleFactory ruleFactory;
   private final ReflectionHelper reflectionHelper;
@@ -183,6 +194,17 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
   private JMethod generateFieldsConstructor(JDefinedClass jclass, LinkedHashSet<String> classProperties, LinkedHashSet<String> combinedSuperProperties) {
     // add the public constructor with property parameters
     JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
+
+    GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
+
+    JAnnotationArrayMember constructorPropertiesAnnotation;
+
+    if (generationConfig.isUseJdkConstructorProperties()) {
+      constructorPropertiesAnnotation = fieldsConstructor.annotate(ConstructorProperties.class).paramArray("value");
+    } else {
+      constructorPropertiesAnnotation = null;
+    }
+
     JBlock constructorBody = fieldsConstructor.body();
     JInvocation superInvocation = constructorBody.invoke("super");
 
@@ -197,6 +219,11 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
       }
 
       fieldsConstructor.javadoc().addParam(property);
+
+      if (generationConfig.isUseJdkConstructorProperties() && constructorPropertiesAnnotation != null) {
+        constructorPropertiesAnnotation.param(field.name());
+      }
+
       JVar param = fieldsConstructor.param(field.type(), field.name());
       constructorBody.assign(JExpr._this().ref(field), param);
       classFieldParams.put(property, param);
@@ -218,6 +245,11 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
       }
 
       fieldsConstructor.javadoc().addParam(property);
+
+      if (generationConfig.isUseJdkConstructorProperties() && constructorPropertiesAnnotation != null) {
+        constructorPropertiesAnnotation.param(param.name());
+      }
+
       superConstructorParams.add(param);
     }
 
@@ -233,8 +265,4 @@ public class ConstructorRule  implements Rule<JDefinedClass, JDefinedClass> {
     JMethod noargsConstructor = jclass.constructor(JMod.PUBLIC);
     noargsConstructor.javadoc().add("No args constructor for use in serialization");
   }
-
-
-
-
 }

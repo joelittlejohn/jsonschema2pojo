@@ -52,7 +52,16 @@ public interface GenerationConfig {
      */
 	boolean isIncludeTypeInfo();
 
-	/**
+    /**
+     * Gets the 'useJdkConstructorProperties' configuration option.
+     *
+     * @return whether to include JDK Constructor Properties. Used by serialization libraries to get parameter names of constructors at runtime. (Not Available on Android)
+     *
+     * @see <a href="ConstructorProperties">https://docs.oracle.com/javase/7/docs/api/java/beans/ConstructorProperties.html</a>
+     */
+    boolean isUseJdkConstructorProperties();
+
+    /**
      * Gets the 'usePrimitives' configuration option.
      *
      * @return whether to use primitives (<code>long</code>, <code>double</code>
