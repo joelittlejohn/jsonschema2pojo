@@ -32,7 +32,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class UseJdkConstructorPropertiesIT {
+public class IncludeConstructorPropertiesAnnotationIT {
   @Rule
   public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
@@ -40,7 +40,7 @@ public class UseJdkConstructorPropertiesIT {
   private String[] expectedValueForRequiredValuesConstructor = { "x", "y" };
   private String testObjectPackage = "com.example";
   private String testObjectName = testObjectPackage + "." + "TestObject";
-  private String testObjectSchema = "/schema/jdkConstructorProperties/testObject.json";
+  private String testObjectSchema = "/schema/includeConstructorPropertiesAnnotation/testObject.json";
 
   @Test
   public void defaultConfig() throws ClassNotFoundException {
@@ -85,7 +85,7 @@ public class UseJdkConstructorPropertiesIT {
   @Test
   public void disabled() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("useJdkConstructorProperties", false));
+                                                            config("includeConstructorPropertiesAnnotation", false));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -96,7 +96,7 @@ public class UseJdkConstructorPropertiesIT {
   public void disabledJackson1() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("annotationStyle", "JACKSON1",
-                                                                   "useJdkConstructorProperties", false));
+                                                                   "includeConstructorPropertiesAnnotation", false));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -108,7 +108,7 @@ public class UseJdkConstructorPropertiesIT {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true,
                                                                    "constructorsRequiredPropertiesOnly", true,
-                                                                   "useJdkConstructorProperties", false));
+                                                                   "includeConstructorPropertiesAnnotation", false));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -121,7 +121,7 @@ public class UseJdkConstructorPropertiesIT {
                                                             config("annotationStyle", "JACKSON1",
                                                                    "includeConstructors", true,
                                                                    "constructorsRequiredPropertiesOnly", true,
-                                                                   "useJdkConstructorProperties", false));
+                                                                   "includeConstructorPropertiesAnnotation", false));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -132,7 +132,7 @@ public class UseJdkConstructorPropertiesIT {
   public void enabled() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -144,7 +144,7 @@ public class UseJdkConstructorPropertiesIT {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("annotationStyle", "JACKSON1",
                                                                    "includeConstructors", true,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -156,7 +156,7 @@ public class UseJdkConstructorPropertiesIT {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true,
                                                                    "constructorsRequiredPropertiesOnly", true,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -169,7 +169,7 @@ public class UseJdkConstructorPropertiesIT {
                                                             config("annotationStyle", "JACKSON1",
                                                                    "includeConstructors", true,
                                                                    "constructorsRequiredPropertiesOnly", true,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -180,7 +180,7 @@ public class UseJdkConstructorPropertiesIT {
   public void enabledWithoutConstructors() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", false,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -192,7 +192,7 @@ public class UseJdkConstructorPropertiesIT {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("annotationStyle", "JACKSON1",
                                                                    "includeConstructors", false,
-                                                                   "useJdkConstructorProperties", true));
+                                                                   "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 

@@ -464,7 +464,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isUseJdkConstructorProperties() {
+    public boolean isIncludeConstructorPropertiesAnnotation() {
         return false;
     }
 }

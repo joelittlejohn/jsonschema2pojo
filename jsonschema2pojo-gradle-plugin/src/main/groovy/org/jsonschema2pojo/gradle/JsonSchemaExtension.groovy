@@ -47,7 +47,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
-  boolean useJdkConstructorProperties
+  boolean includeConstructorPropertiesAnnotation
   boolean includeGetters
   boolean includeSetters
   boolean includeAdditionalProperties
@@ -159,8 +159,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   @Override
-  boolean isUseJdkConstructorProperties() {
-    return useJdkConstructorProperties
+  boolean isIncludeConstructorPropertiesAnnotation() {
+    return includeConstructorPropertiesAnnotation
   }
 
   @Override
@@ -213,8 +213,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     targetLangauge = Langauge.valueOf(language.toUpperCase())
   }
 
-  public void setUseJdkConstructorProperties(boolean enabled) {
-    useJdkConstructorProperties = enabled
+  public void setIncludeConstructorPropertiesAnnotation(boolean enabled) {
+    includeConstructorPropertiesAnnotation = enabled
   }
 
   @Override
@@ -275,7 +275,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
-       |useJdkConstructorProperties = ${useJdkConstructorProperties}
+       |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
      """.stripMargin()
   }
   

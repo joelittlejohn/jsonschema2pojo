@@ -17,8 +17,6 @@ package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JConditional;
@@ -28,13 +26,9 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 import java.beans.ConstructorProperties;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +40,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
@@ -199,7 +192,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     JAnnotationArrayMember constructorPropertiesAnnotation;
 
-    if (generationConfig.isUseJdkConstructorProperties()) {
+    if (generationConfig.isIncludeConstructorPropertiesAnnotation()) {
       constructorPropertiesAnnotation = fieldsConstructor.annotate(ConstructorProperties.class).paramArray("value");
     } else {
       constructorPropertiesAnnotation = null;
@@ -220,7 +213,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
       fieldsConstructor.javadoc().addParam(property);
 
-      if (generationConfig.isUseJdkConstructorProperties() && constructorPropertiesAnnotation != null) {
+      if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(field.name());
       }
 
@@ -246,7 +239,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
       fieldsConstructor.javadoc().addParam(property);
 
-      if (generationConfig.isUseJdkConstructorProperties() && constructorPropertiesAnnotation != null) {
+      if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(param.name());
       }
 

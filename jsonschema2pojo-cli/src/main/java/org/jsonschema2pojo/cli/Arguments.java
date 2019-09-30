@@ -69,8 +69,8 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--use-inner-class-builders" }, description = "Generate an inner class with builder-style methods")
     private boolean useInnerClassBuilders = false;
 
-    @Parameter(names = { "--use-jdk-constructor-properties" }, description = "Generate ConstructorProperties annotation with parameter names of constructors. (Not Available on Android)")
-    private boolean useJdkConstructorProperties = false;
+    @Parameter(names = { "--include-constructor-properties-annotation" }, description = "Generate ConstructorProperties annotation with parameter names of constructors. (Not Available on Android)")
+    private boolean includeConstructorPropertiesAnnotation = false;
 
     @Parameter(names = { "-c", "--generate-constructors" }, description = "Generate constructors")
     private boolean generateConstructors = false;
@@ -299,8 +299,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isUseJdkConstructorProperties() {
-        return useJdkConstructorProperties;
+    public boolean isIncludeConstructorPropertiesAnnotation() {
+        return includeConstructorPropertiesAnnotation;
     }
 
     @Override

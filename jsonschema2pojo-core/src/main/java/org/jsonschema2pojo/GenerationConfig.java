@@ -53,13 +53,13 @@ public interface GenerationConfig {
 	boolean isIncludeTypeInfo();
 
     /**
-     * Gets the 'useJdkConstructorProperties' configuration option.
+     * Gets the 'includeConstructorPropertiesAnnotation' configuration option.
      *
      * @return whether to include JDK Constructor Properties. Used by serialization libraries to get parameter names of constructors at runtime. (Not Available on Android)
      *
      * @see <a href="ConstructorProperties">https://docs.oracle.com/javase/7/docs/api/java/beans/ConstructorProperties.html</a>
      */
-    boolean isUseJdkConstructorProperties();
+    boolean isIncludeConstructorPropertiesAnnotation();
 
     /**
      * Gets the 'usePrimitives' configuration option.

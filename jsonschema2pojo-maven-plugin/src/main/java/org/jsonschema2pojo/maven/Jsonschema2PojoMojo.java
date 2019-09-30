@@ -764,11 +764,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useInnerClassBuilders = false;
 
     /**
-     * @parameter property="jsonschema2pojo.useJdkConstructorProperties"
+     * @parameter property="jsonschema2pojo.includeConstructorPropertiesAnnotation"
      *            default-value="false"
      * @since 1.0.2
      */
-    private boolean useJdkConstructorProperties = false;
+    private boolean includeConstructorPropertiesAnnotation = false;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -876,9 +876,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isUseJdkConstructorProperties()
+    public boolean isIncludeConstructorPropertiesAnnotation()
     {
-        return useJdkConstructorProperties;
+        return includeConstructorPropertiesAnnotation;
     }
 
     @Override
