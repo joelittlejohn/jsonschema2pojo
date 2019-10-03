@@ -73,6 +73,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useInnerClassBuilders = false;
 
+    private boolean includeConstructorPropertiesAnnotation = false;
+
     private boolean includeConstructors = false;
 
     private boolean usePrimitives;
@@ -610,6 +612,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'includeConstructorPropertiesAnnotation' property of this class
+     *
+     * @param includeConstructorPropertiesAnnotation Determines if constructors will be annotated with JDK-provided ConstructorProperties annotation. (Not Available on Android)
+     */
+    public void setIncludeConstructorPropertiesAnnotation(boolean includeConstructorPropertiesAnnotation) {
+        this.includeConstructorPropertiesAnnotation = includeConstructorPropertiesAnnotation;
+    }
+
+    /**
      * Sets the 'useJodaDates' property of this class
      *
      * @param useJodaDates
@@ -801,6 +812,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setIncludeDynamicBuilders(boolean includeDynamicBuilders) {
         this.includeDynamicBuilders = includeDynamicBuilders;
     }
+
 
     /**
      * Sets the 'formatDateTimes' property of this class
@@ -1231,6 +1243,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+
+    @Override
+    public boolean isIncludeConstructorPropertiesAnnotation() {
+        return includeConstructorPropertiesAnnotation;
     }
 
     /**
