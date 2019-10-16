@@ -87,6 +87,12 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
     } else {
       // Declare the inheritance
       builderClass._extends(parentBuilderClass);
+      
+      JMethod buildMethod = builderClass.method(JMod.PUBLIC, instanceType, "build");
+      buildMethod.annotate(Override.class);
+
+      JBlock body = buildMethod.body();
+      body._return(JExpr.cast(instanceType, JExpr._super().invoke("build")));
 
       // Create the noargs builder constructor
       generateNoArgsBuilderConstructor(instanceClass, builderClass);

@@ -47,6 +47,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
+  boolean includeConstructorPropertiesAnnotation
   boolean includeGetters
   boolean includeSetters
   boolean includeAdditionalProperties
@@ -163,6 +164,11 @@ public class JsonSchemaExtension implements GenerationConfig {
   }
 
   @Override
+  boolean isIncludeConstructorPropertiesAnnotation() {
+    return includeConstructorPropertiesAnnotation
+  }
+
+  @Override
   public Iterator<URL> getSource() {
     def urlList = []
     for (source in sourceFiles) {
@@ -210,6 +216,10 @@ public class JsonSchemaExtension implements GenerationConfig {
 
   public void setTargetLangauge(String language) {
     targetLangauge = Langauge.valueOf(language.toUpperCase())
+  }
+
+  public void setIncludeConstructorPropertiesAnnotation(boolean enabled) {
+    includeConstructorPropertiesAnnotation = enabled
   }
 
   @Override
@@ -274,6 +284,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
+       |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
      """.stripMargin()
   }
   

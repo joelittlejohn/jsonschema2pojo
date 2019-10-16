@@ -472,6 +472,17 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return Collections.emptyMap();
     }
 
+    /**
+     * @return <code>false</code>
+     */
     @Override
     public boolean isUseInnerClassBuilders() { return false; }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeConstructorPropertiesAnnotation() {
+        return false;
+    }
 }
