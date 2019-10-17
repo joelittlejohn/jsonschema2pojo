@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import org.apache.commons.io.FileUtils;
 
 import com.mysema.scalagen.ConversionSettings;
-import com.mysema.scalagene.Converter;
+import com.mysema.scalagen.Converter;
 import com.sun.codemodel.JPackage;
 
 public class ScalaFileCodeWriter extends com.sun.codemodel.writer.FileCodeWriter {
