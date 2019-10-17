@@ -96,9 +96,9 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     LinkedHashSet<String> combinedSuperProperties = null;
 
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
-    boolean includeCopyConstructor = generationConfig.isConstructorsIncludeCopyConstructor();
-    boolean includeAllPropertiesConstructor = generationConfig.isConstructorsIncludeAllPropertiesConstructor();
-    boolean includeRequiredPropertiesConstructor = generationConfig.isConstructorsIncludeRequiredPropertiesConstructor();
+    boolean includeCopyConstructor = generationConfig.isIncludeCopyConstructor();
+    boolean includeAllPropertiesConstructor = generationConfig.isIncludeAllPropertiesConstructor();
+    boolean includeRequiredPropertiesConstructor = generationConfig.isIncludeRequiredPropertiesConstructor();
 
     if (includeAllPropertiesConstructor || includeCopyConstructor) {
       classProperties = getConstructorProperties(node, false);

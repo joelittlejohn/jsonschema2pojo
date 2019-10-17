@@ -210,7 +210,7 @@ public class ConstructorsIT {
           config(
               "propertyWordDelimiters", "_",
               "includeConstructors", true,
-              "constructorsIncludeRequiredPropertiesConstructor", true));
+              "includeRequiredPropertiesConstructor", true));
       // @formatter:on
     }
 
@@ -282,7 +282,7 @@ public class ConstructorsIT {
       testClasses = new ConstructorTestClasses(classSchemaRule,
           config("propertyWordDelimiters", "_",
               "includeConstructors", true,
-              "constructorsIncludeCopyConstructor", true));
+              "includeCopyConstructor", true));
       // @formatter:on
     }
 

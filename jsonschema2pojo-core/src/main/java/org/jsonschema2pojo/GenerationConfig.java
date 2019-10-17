@@ -377,7 +377,7 @@ public interface GenerationConfig {
 
   /**
    * Gets the 'constructorsRequiredPropertiesOnly' configuration option. This is a legacy configuration option used to turn on the {@link
-   * #isConstructorsIncludeAllPropertiesConstructor()} and off the {@link #isConstructorsIncludeAllPropertiesConstructor()} configuration options.
+   * #isIncludeAllPropertiesConstructor()} and off the {@link #isIncludeAllPropertiesConstructor()} configuration options.
    * It is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
    */
   boolean isConstructorsRequiredPropertiesOnly();
@@ -388,7 +388,7 @@ public interface GenerationConfig {
    * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
    * whether the resulting object should include a constructor with only the required properties as parameters.
    */
-  boolean isConstructorsIncludeRequiredPropertiesConstructor();
+  boolean isIncludeRequiredPropertiesConstructor();
 
   /**
    * Gets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -396,7 +396,7 @@ public interface GenerationConfig {
    * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
    * whether the resulting object should include a constructor with all listed properties as parameters.
    */
-  boolean isConstructorsIncludeAllPropertiesConstructor();
+  boolean isIncludeAllPropertiesConstructor();
 
   /**
    * Gets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -405,7 +405,7 @@ public interface GenerationConfig {
    * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
    * originating class will assigned to the new class.
    */
-  boolean isConstructorsIncludeCopyConstructor();
+  boolean isIncludeCopyConstructor();
 
   /**
    * Gets the 'includeAdditionalProperties' configuration option.

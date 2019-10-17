@@ -560,7 +560,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     /**
      * The 'constructorsRequiredPropertiesOnly' configuration option. This is a legacy configuration option used to turn on the {@link
-     * #isConstructorsIncludeAllPropertiesConstructor()} and off the {@link * #isConstructorsIncludeAllPropertiesConstructor()} configuration options.
+     * #isIncludeAllPropertiesConstructor()} and off the {@link * #isConstructorsIncludeAllPropertiesConstructor()} configuration options.
      * It is specifically tied to the {@link #isIncludeConstructors()} * property, and will do nothing if that property is not enabled
      *
      * @parameter property="jsonschema2pojo.constructorsRequiredPropertiesOnly" default-value="false"
@@ -574,7 +574,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with only the required properties as parameters.
      */
-    boolean constructorsIncludeRequiredPropertiesConstructor = false;
+    boolean includeRequiredPropertiesConstructor = false;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -582,7 +582,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with all listed properties as parameters.
      */
-    boolean constructorsIncludeAllPropertiesConstructor = true;
+    boolean includeAllPropertiesConstructor = true;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -591,7 +591,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
      * originating class will assigned to the new class.
      */
-    boolean constructorsIncludeCopyConstructor = false;
+    boolean includeCopyConstructor = false;
 
     /**
      * Whether to allow 'additional properties' support in objects. Setting this
@@ -1115,18 +1115,18 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isConstructorsIncludeRequiredPropertiesConstructor() {
-        return constructorsIncludeRequiredPropertiesConstructor;
+    public boolean isIncludeRequiredPropertiesConstructor() {
+        return includeRequiredPropertiesConstructor;
     }
 
     @Override
-    public boolean isConstructorsIncludeAllPropertiesConstructor() {
-        return constructorsIncludeAllPropertiesConstructor;
+    public boolean isIncludeAllPropertiesConstructor() {
+        return includeAllPropertiesConstructor;
     }
 
     @Override
-    public boolean isConstructorsIncludeCopyConstructor() {
-        return constructorsIncludeCopyConstructor;
+    public boolean isIncludeCopyConstructor() {
+        return includeCopyConstructor;
     }
 
     @Override

@@ -147,11 +147,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean constructorsRequiredPropertiesOnly = false;
 
-    boolean constructorsIncludeRequiredPropertiesConstructor = false;
+    boolean includeRequiredPropertiesConstructor = false;
 
-    boolean constructorsIncludeAllPropertiesConstructor = true;
+    boolean includeAllPropertiesConstructor = true;
 
-    boolean constructorsIncludeCopyConstructor = false;
+    boolean includeCopyConstructor = false;
 
     private boolean includeAdditionalProperties = true;
 
@@ -289,7 +289,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     /**
      * Sets the 'constructorsRequiredPropertiesOnly' property of this class. This is a legacy configuration option used to turn on the {@link
-     * #isConstructorsIncludeAllPropertiesConstructor()} and off the {@link #isConstructorsIncludeAllPropertiesConstructor()} configuration options. It
+     * #isIncludeAllPropertiesConstructor()} and off the {@link #isIncludeAllPropertiesConstructor()} configuration options. It
      * is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
      *
      * @param constructorsRequiredPropertiesOnly controls whether the resulting class will have only the constructor with required properties or
@@ -305,11 +305,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with only the required properties as parameters.
      *
-     * @param constructorsIncludeRequiredPropertiesConstructor controls whether the resulting class will include a constructor which takes in only
+     * @param includeRequiredPropertiesConstructor controls whether the resulting class will include a constructor which takes in only
      * required properties
      */
-    public void setConstructorsIncludeRequiredPropertiesConstructor(boolean constructorsIncludeRequiredPropertiesConstructor) {
-        this.constructorsIncludeRequiredPropertiesConstructor = constructorsIncludeRequiredPropertiesConstructor;
+    public void setIncludeRequiredPropertiesConstructor(boolean includeRequiredPropertiesConstructor) {
+        this.includeRequiredPropertiesConstructor = includeRequiredPropertiesConstructor;
     }
 
     /**
@@ -318,11 +318,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with all listed properties as parameters.
      *
-     * @param constructorsIncludeAllPropertiesConstructor controls whether the resulting class will include a constructor which takes in all available
+     * @param includeAllPropertiesConstructor controls whether the resulting class will include a constructor which takes in all available
      * properties of the class
      */
-    public void setConstructorsIncludeAllPropertiesConstructor(boolean constructorsIncludeAllPropertiesConstructor) {
-        this.constructorsIncludeAllPropertiesConstructor = constructorsIncludeAllPropertiesConstructor;
+    public void setIncludeAllPropertiesConstructor(boolean includeAllPropertiesConstructor) {
+        this.includeAllPropertiesConstructor = includeAllPropertiesConstructor;
     }
 
     /**
@@ -332,11 +332,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
      * originating class will assigned to the new class.
      *
-     * @param constructorsIncludeCopyConstructor controls whether the resulting class will include a constructor which takes in an instance of the class
+     * @param includeCopyConstructor controls whether the resulting class will include a constructor which takes in an instance of the class
      * to be shallow copied into the new instance
      */
-    public void setConstructorsIncludeCopyConstructor(boolean constructorsIncludeCopyConstructor) {
-        this.constructorsIncludeCopyConstructor = constructorsIncludeCopyConstructor;
+    public void setIncludeCopyConstructor(boolean includeCopyConstructor) {
+        this.includeCopyConstructor = includeCopyConstructor;
     }
 
     /**
@@ -1183,18 +1183,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public boolean isConstructorsIncludeRequiredPropertiesConstructor() {
-        return constructorsIncludeRequiredPropertiesConstructor;
+    public boolean isIncludeRequiredPropertiesConstructor() {
+        return includeRequiredPropertiesConstructor;
     }
 
     @Override
-    public boolean isConstructorsIncludeAllPropertiesConstructor() {
-        return constructorsIncludeAllPropertiesConstructor;
+    public boolean isIncludeAllPropertiesConstructor() {
+        return includeAllPropertiesConstructor;
     }
 
     @Override
-    public boolean isConstructorsIncludeCopyConstructor() {
-        return constructorsIncludeCopyConstructor;
+    public boolean isIncludeCopyConstructor() {
+        return includeCopyConstructor;
     }
 
     @Override
