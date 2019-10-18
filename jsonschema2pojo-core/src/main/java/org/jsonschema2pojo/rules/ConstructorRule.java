@@ -1,17 +1,14 @@
 /**
  * Copyright Â© 2010-2017 Nokia
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations
+ * under the License.
  */
 package org.jsonschema2pojo.rules;
 
@@ -57,31 +54,113 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
   @Override
   public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass instanceClass, Schema currentSchema) {
-
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
-    // Determine which properties belong to that class (or its superType/parent)
-    LinkedHashSet<String> classProperties = getConstructorProperties(node, generationConfig.isConstructorsRequiredPropertiesOnly());
-    LinkedHashSet<String> combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, generationConfig.isConstructorsRequiredPropertiesOnly());
-
-    // no properties to put in the constructor => default constructor is good enough.
-    if (classProperties.isEmpty() && combinedSuperProperties.isEmpty()) {
-      return instanceClass;
+    if (generationConfig.isConstructorsRequiredPropertiesOnly()) {
+      handleLegacyConfiguration(node, instanceClass, currentSchema);
+    } else {
+      handleMultiChoiceConstructorConfiguration(node, instanceClass, currentSchema);
     }
 
-    // Generate the no arguments constructor
-    generateNoArgsConstructor(instanceClass);
+    return instanceClass;
+  }
+
+  private JDefinedClass handleLegacyConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
+    // Determine which properties belong to that class (or its superType/parent)
+    LinkedHashSet<String> requiredClassProperties = getConstructorProperties(node, true);
+    LinkedHashSet<String> requiredCombinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
+
+    // Only generate the constructors if there are actually properties to put in them
+    if (!requiredClassProperties.isEmpty() || !requiredCombinedSuperProperties.isEmpty()) {
+
+      // Generate the no arguments constructor - we'll need this even if there is a property
+      // constructor available, because it is used by the serialization and deserialization
+      generateNoArgsConstructor(instanceClass);
+
+      // Generate the actual constructor taking in only the required properties
+      addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProperties);
+    }
+
+    // Return the original class we modified
+    return instanceClass;
+  }
+
+  private void handleMultiChoiceConstructorConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
+    // Use this flag to keep track of whether or not we'll actually need to generate any constructors
+    boolean requiresConstructors = false;
+
+    // Use these lists to keep track of the properties on the class, but we'll only populate them if we need to
+    LinkedHashSet<String> requiredClassProperties = null;
+    LinkedHashSet<String> classProperties = null;
+    LinkedHashSet<String> requiredCombinedSuperProperties = null;
+    LinkedHashSet<String> combinedSuperProperties = null;
+
+    GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
+    boolean includeCopyConstructor = generationConfig.isIncludeCopyConstructor();
+    boolean includeAllPropertiesConstructor = generationConfig.isIncludeAllPropertiesConstructor();
+    boolean includeRequiredPropertiesConstructor = generationConfig.isIncludeRequiredPropertiesConstructor();
+
+    if (includeAllPropertiesConstructor || includeCopyConstructor) {
+      classProperties = getConstructorProperties(node, false);
+      combinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, false);
+
+      // If we're generating a copy constructor / field constructor but there are no properties then there is
+      // no need to actually generate any constructors.
+      requiresConstructors = requiresConstructors || !classProperties.isEmpty() || !combinedSuperProperties.isEmpty();
+    }
+    if (includeRequiredPropertiesConstructor) {
+      requiredClassProperties = getConstructorProperties(node, true);
+      requiredCombinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
+
+      // If we're generating a field constructor, but there are no actual fields on the class then there is
+      // no need to actually generate constructors since the default constructor is sufficient
+      requiresConstructors = requiresConstructors || !requiredClassProperties.isEmpty() || !requiredCombinedSuperProperties.isEmpty();
+    }
+
+    // Only generate the constructors if there are actually properties to put in them
+    if (requiresConstructors) {
+      // Generate the no arguments constructor - we'll need this even if there is a property
+      // constructor available, because it is used by the serialization and deserialization
+      generateNoArgsConstructor(instanceClass);
+
+      if (includeCopyConstructor) {
+        addCopyConstructor(instanceClass, classProperties, combinedSuperProperties);
+      }
+      if (includeAllPropertiesConstructor && (classProperties.size() + combinedSuperProperties.size()) > 0) {
+        addFieldsConstructor(instanceClass, classProperties, combinedSuperProperties);
+      }
+      if (includeRequiredPropertiesConstructor && (requiredClassProperties.size() + requiredCombinedSuperProperties.size()) > 0) {
+        addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProperties);
+      }
+    }
+  }
+
+  private void addFieldsConstructor(JDefinedClass instanceClass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+    GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
     // Generate the constructor with the properties which were located
     JMethod instanceConstructor = generateFieldsConstructor(instanceClass, classProperties, combinedSuperProperties);
 
     // If we're using InnerClassBuilder implementations then we also need to generate those
     if (generationConfig.isGenerateBuilders() && generationConfig.isUseInnerClassBuilders()) {
-      JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBuilderClass(instanceClass);
+      JDefinedClass builderClass = ruleFactory.getReflectionHelper()
+          .getBuilderClass(instanceClass);
       generateFieldsBuilderConstructor(builderClass, instanceClass, instanceConstructor);
     }
+  }
 
-    return instanceClass;
+  private void addCopyConstructor(JDefinedClass instanceClass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+    GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
+
+    // Generate the constructor with the properties which were located
+    JMethod instanceConstructor = generateCopyConstructor(instanceClass, classProperties, combinedSuperProperties);
+
+    // If we're using InnerClassBuilder implementations then we also need to generate those
+    if (generationConfig.isGenerateBuilders() && generationConfig.isUseInnerClassBuilders()) {
+      JDefinedClass builderClass = ruleFactory.getReflectionHelper()
+          .getBuilderClass(instanceClass);
+      generateFieldsBuilderConstructor(builderClass, instanceClass, instanceConstructor);
+    }
   }
 
   /**
@@ -110,13 +189,15 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     NameHelper nameHelper = ruleFactory.getNameHelper();
-    for (Iterator<Entry<String, JsonNode>> properties = node.get("properties").fields(); properties.hasNext(); ) {
+    for (Iterator<Entry<String, JsonNode>> properties = node.get("properties")
+        .fields(); properties.hasNext(); ) {
       Map.Entry<String, JsonNode> property = properties.next();
 
       JsonNode propertyObj = property.getValue();
       if (onlyRequired) {
         // draft3 style
-        if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
+        if (propertyObj.has("required") && propertyObj.get("required")
+            .asBoolean()) {
           rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
         }
 
@@ -155,11 +236,12 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // Create a new method to be the builder constructor we're defining
     JMethod builderConstructor = builderClass.constructor(JMod.PUBLIC);
-    builderConstructor.annotate(SuppressWarnings.class).param("value", "unchecked");
+    builderConstructor.annotate(SuppressWarnings.class)
+        .param("value", "unchecked");
     JBlock constructorBlock = builderConstructor.body();
 
     // The builder constructor should have the exact same parameters as the instanceConstructor
-    for(JVar param : instanceConstructor.params()) {
+    for (JVar param : instanceConstructor.params()) {
       builderConstructor.param(param.type(), param.name());
     }
 
@@ -171,7 +253,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // The constructor invocation will also need all the parameters passed through
     JInvocation instanceConstructorInvocation = JExpr._new(instanceClass);
-    for(JVar param : instanceConstructor.params()) {
+    for (JVar param : instanceConstructor.params()) {
       instanceConstructorInvocation.arg(param);
     }
 
@@ -179,12 +261,55 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     // if it's a subtype then ignore the instance initialization since the subclass will initialize it
     constructorBlock.directStatement("// Skip initialization when called from subclass");
 
-    JInvocation comparison = JExpr._this().invoke("getClass").invoke("equals").arg(JExpr.dotclass(builderClass));
+    JInvocation comparison = JExpr._this()
+        .invoke("getClass")
+        .invoke("equals")
+        .arg(JExpr.dotclass(builderClass));
     JConditional ifNotSubclass = constructorBlock._if(comparison);
-    ifNotSubclass._then().assign(JExpr._this().ref(instanceField), JExpr.cast(instanceField.type(), instanceConstructorInvocation));
+    ifNotSubclass._then()
+        .assign(JExpr._this()
+            .ref(instanceField), JExpr.cast(instanceField.type(), instanceConstructorInvocation));
   }
 
-  private JMethod generateFieldsConstructor(JDefinedClass jclass, LinkedHashSet<String> classProperties, LinkedHashSet<String> combinedSuperProperties) {
+  private JMethod generateCopyConstructor(JDefinedClass jclass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+
+    // Create the JMethod for the copy constructor
+    JMethod copyConstructorResult = jclass.constructor(JMod.PUBLIC);
+
+    // Add a parameter to the copyConstructor for the actual object being copied
+    copyConstructorResult.javadoc()
+        .addParam("source");
+    JVar copyConstructorParam = copyConstructorResult.param(jclass, "source");
+
+    // Create the method block for the copyConstructor
+    JBlock constructorBody = copyConstructorResult.body();
+
+    // Invoke the super class constructor for this class. We'll include the original object
+    // being copied if there are any combinedSuperProperties to be set, and if not then we'll
+    // simply call the empty constructor from the super class
+    JInvocation superInvocation = constructorBody.invoke("super");
+    if (!combinedSuperProperties.isEmpty()) {
+      superInvocation.arg(copyConstructorParam);
+    }
+
+    // For each of the class properties being set we then need to do something like the following
+    // this.property = source.property
+    Map<String, JFieldVar> fields = jclass.fields();
+    for (String property : classProperties) {
+      JFieldVar field = fields.get(property);
+
+      if (field == null) {
+        throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
+      }
+
+      constructorBody.assign(JExpr._this()
+          .ref(field), copyConstructorParam.ref(field));
+    }
+
+    return copyConstructorResult;
+  }
+
+  private JMethod generateFieldsConstructor(JDefinedClass jclass, Set<String> classProperties, Set<String> combinedSuperProperties) {
     // add the public constructor with property parameters
     JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
 
@@ -211,14 +336,15 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
         throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
       }
 
-      fieldsConstructor.javadoc().addParam(property);
-
+      fieldsConstructor.javadoc()
+          .addParam(property);
       if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(field.name());
       }
 
       JVar param = fieldsConstructor.param(field.type(), field.name());
-      constructorBody.assign(JExpr._this().ref(field), param);
+      constructorBody.assign(JExpr._this()
+          .ref(field), param);
       classFieldParams.put(property, param);
     }
 
@@ -237,8 +363,8 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
         param = fieldsConstructor.param(field.type(), field.name());
       }
 
-      fieldsConstructor.javadoc().addParam(property);
-
+      fieldsConstructor.javadoc()
+          .addParam(property);
       if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(param.name());
       }
@@ -256,6 +382,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
   private void generateNoArgsConstructor(JDefinedClass jclass) {
     // add a no-args constructor for serialization purposes
     JMethod noargsConstructor = jclass.constructor(JMod.PUBLIC);
-    noargsConstructor.javadoc().add("No args constructor for use in serialization");
+    noargsConstructor.javadoc()
+        .add("No args constructor for use in serialization");
   }
 }

@@ -75,8 +75,17 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-c", "--generate-constructors" }, description = "Generate constructors")
     private boolean generateConstructors = false;
 
-    @Parameter(names = { "-r", "--constructors-required-only" }, description = "Generate constructors with only required fields")
+    @Parameter(names = { "-r", "--constructors-required-only" }, description = "Generate only a constructor with only required fields")
     private boolean constructorsRequiredPropertiesOnly = false;
+
+    @Parameter(names = { "--constructors-include-required-properties-constructor" }, description = "Generate a constructor with only required fields")
+    private boolean includeRequiredPropertiesConstructor = false;
+
+    @Parameter(names = { "--constructors-include-all-properties-constructor" }, description = "Generate a constructor with all fields")
+    private boolean includeAllPropertiesConstructor = true;
+
+    @Parameter(names = { "--constructors-include-copy-constructor" }, description = "Generate constructors with a copy oriented parameter")
+    private boolean includeCopyConstructor = false;
 
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
@@ -458,6 +467,15 @@ public class Arguments implements GenerationConfig {
     public boolean isConstructorsRequiredPropertiesOnly() {
         return constructorsRequiredPropertiesOnly;
     }
+
+    @Override
+    public boolean isIncludeRequiredPropertiesConstructor() { return includeRequiredPropertiesConstructor; }
+
+    @Override
+    public boolean isIncludeAllPropertiesConstructor() { return includeAllPropertiesConstructor; }
+
+    @Override
+    public boolean isIncludeCopyConstructor() { return includeCopyConstructor; }
 
     @Override
     public boolean isIncludeAdditionalProperties() {

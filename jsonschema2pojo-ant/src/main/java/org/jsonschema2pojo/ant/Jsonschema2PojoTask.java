@@ -147,6 +147,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean constructorsRequiredPropertiesOnly = false;
 
+    boolean includeRequiredPropertiesConstructor = false;
+
+    boolean includeAllPropertiesConstructor = true;
+
+    boolean includeCopyConstructor = false;
+
     private boolean includeAdditionalProperties = true;
 
     private boolean includeGetters = true;
@@ -282,14 +288,55 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'constructorsRequiredPropertiesOnly' property of this class.
+     * Sets the 'constructorsRequiredPropertiesOnly' property of this class. This is a legacy configuration option used to turn on the {@link
+     * #isIncludeAllPropertiesConstructor()} and off the {@link #isIncludeAllPropertiesConstructor()} configuration options. It
+     * is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
      *
-     * @param constructorsRequiredPropertiesOnly
-     *            Whether generated constructors should have parameters for all
-     *            properties, or only required ones.
+     * @param constructorsRequiredPropertiesOnly controls whether the resulting class will have only the constructor with required properties or
+     * something else
      */
     public void setConstructorsRequiredPropertiesOnly(boolean constructorsRequiredPropertiesOnly) {
         this.constructorsRequiredPropertiesOnly = constructorsRequiredPropertiesOnly;
+    }
+
+    /**
+     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor with only the required properties as parameters.
+     *
+     * @param includeRequiredPropertiesConstructor controls whether the resulting class will include a constructor which takes in only
+     * required properties
+     */
+    public void setIncludeRequiredPropertiesConstructor(boolean includeRequiredPropertiesConstructor) {
+        this.includeRequiredPropertiesConstructor = includeRequiredPropertiesConstructor;
+    }
+
+    /**
+     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor with all listed properties as parameters.
+     *
+     * @param includeAllPropertiesConstructor controls whether the resulting class will include a constructor which takes in all available
+     * properties of the class
+     */
+    public void setIncludeAllPropertiesConstructor(boolean includeAllPropertiesConstructor) {
+        this.includeAllPropertiesConstructor = includeAllPropertiesConstructor;
+    }
+
+    /**
+     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
+     * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
+     * originating class will assigned to the new class.
+     *
+     * @param includeCopyConstructor controls whether the resulting class will include a constructor which takes in an instance of the class
+     * to be shallow copied into the new instance
+     */
+    public void setIncludeCopyConstructor(boolean includeCopyConstructor) {
+        this.includeCopyConstructor = includeCopyConstructor;
     }
 
     /**
@@ -909,9 +956,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.targetLanguage = targetLanguage;
     }
 
+    /**
+     * Sets the 'useInnerClassBuilders' property of this class
+     *
+     * @param useInnerClassBuilders determines whether builders will be chainable setters or embedded classes when {@link #isGenerateBuilders()} used
+     */
+    public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
+        this.useInnerClassBuilders = useInnerClassBuilders;
+    }
+
     public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
         this.formatTypeMapping = formatTypeMapping;
     }
+
     public void setFormatTypeMapping(String[] formatTypeMapping) {
         this.formatTypeMapping = Arrays.stream(formatTypeMapping)
             .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
@@ -1126,6 +1183,21 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeRequiredPropertiesConstructor() {
+        return includeRequiredPropertiesConstructor;
+    }
+
+    @Override
+    public boolean isIncludeAllPropertiesConstructor() {
+        return includeAllPropertiesConstructor;
+    }
+
+    @Override
+    public boolean isIncludeCopyConstructor() {
+        return includeCopyConstructor;
+    }
+
+    @Override
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
     }
@@ -1248,14 +1320,5 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return includeConstructorPropertiesAnnotation;
-    }
-
-    /**
-     * Sets the 'useInnerClassBuilders' property of this class
-     *
-     * @param useInnerClassBuilders determines whether builders will be chainable setters or embedded classes when {@link #isGenerateBuilders()} used
-     */
-    public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
-        this.useInnerClassBuilders = useInnerClassBuilders;
     }
 }
