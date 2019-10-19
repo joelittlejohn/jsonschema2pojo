@@ -91,6 +91,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
+    public boolean isGetterSetterExact() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
     public boolean isUseLongIntegers() {
         return false;
     }

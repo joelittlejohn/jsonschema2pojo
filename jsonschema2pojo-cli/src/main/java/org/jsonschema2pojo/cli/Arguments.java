@@ -93,6 +93,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-d", "--word-delimiters" }, description = "The characters that should be considered as word delimiters when creating Java Bean property names from JSON property names")
     private String propertyWordDelimiters = "- _";
 
+    @Parameter(names = { "-gse", "--getter-setter-exact" }, description = "Set whether or not the getters and setters generated for fields are camel cased (e.g. 't' has a getter of 'gett()')")
+    private boolean getterSetterExact = false;
+
     @Parameter(names = { "-l", "--long-integers" }, description = "Use long (or Long) instead of int (or Integer) when the JSON Schema type 'integer' is encountered")
     private boolean useLongIntegers = false;
 
@@ -320,6 +323,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public char[] getPropertyWordDelimiters() {
         return defaultString(propertyWordDelimiters).toCharArray();
+    }
+
+    @Override
+    public boolean isGetterSetterExact() {
+        return getterSetterExact;
     }
 
     @Override

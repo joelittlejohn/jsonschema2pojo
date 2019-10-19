@@ -71,6 +71,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean parcelable
   boolean serializable
   char[] propertyWordDelimiters
+  boolean getterSetterExact
   boolean removeOldOutput
   SourceType sourceType
   String targetVersion
@@ -107,6 +108,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     sourceFiles = []
     targetPackage = ''
     propertyWordDelimiters = ['-', ' ', '_'] as char[]
+    getterSetterExact = false
     useLongIntegers = false
     useBigIntegers = false
     useDoubleNumbers = true
@@ -231,6 +233,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |targetDirectory = ${targetDirectory}
        |targetPackage = ${targetPackage}
        |propertyWordDelimiters = ${Arrays.toString(propertyWordDelimiters)}
+       |getterSetterExact = ${getterSetterExact}
        |useLongIntegers = ${useLongIntegers}
        |useBigIntegers = ${useBigIntegers}
        |useDoubleNumbers = ${useDoubleNumbers}

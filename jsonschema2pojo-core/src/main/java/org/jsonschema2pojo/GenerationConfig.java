@@ -100,6 +100,14 @@ public interface GenerationConfig {
   char[] getPropertyWordDelimiters();
 
   /**
+   * Gets the 'getterSetterExact' configuration option.
+   *
+   * @return Whether or not the getters and setters generated for fields are
+   *         camel cased (e.g. 't' has a getter of 'gett()')
+   */
+  boolean isGetterSetterExact();
+
+  /**
    * Gets the 'useLongIntegers' configuration option.
    *
    * @return Whether to use the java type <code>long</code> (or
