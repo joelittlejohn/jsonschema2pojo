@@ -89,6 +89,9 @@ public class NameHelper {
     }
 
     private String makeLowerCamelCase(String name) {
+        if (name.length() == 1) {
+            return name;
+        }
         return toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
