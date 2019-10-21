@@ -213,7 +213,10 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
         }
 
         if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
-            field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern).param("timezone", timezone);
+            JAnnotationUse annotationUse = field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern);
+            if (!getGenerationConfig().isExcludeTimezoneFromDateTimeFormat()) {
+                annotationUse.param("timezone", timezone);
+            }
         }
     }
 

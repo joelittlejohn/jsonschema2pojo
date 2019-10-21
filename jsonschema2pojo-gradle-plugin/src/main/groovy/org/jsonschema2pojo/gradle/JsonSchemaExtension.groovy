@@ -77,6 +77,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useCommonsLang3
   boolean useDoubleNumbers
   boolean useBigDecimals
+  boolean excludeTimezoneFromDateTimeFormat
   boolean useJodaDates
   boolean useJodaLocalDates
   boolean useJodaLocalTimes

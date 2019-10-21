@@ -127,6 +127,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String outputEncoding = "UTF-8";
 
+    private boolean excludeTimezoneFromDateTimeFormat = false;
+
     private boolean useJodaDates = false;
 
     private boolean useJodaLocalDates = false;
@@ -668,6 +670,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
+     * Sets the 'excludeTimezoneFromDateTimeFormat' property of this class
+     *
+     * @param excludeTimezoneFromDateTimeFormat
+     *            Whether to exclude the timezone from the date-time format annotations
+     */
+    public void setExcludeTimezoneFromDateTimeFormat(boolean excludeTimezoneFromDateTimeFormat) {
+        this.excludeTimezoneFromDateTimeFormat = excludeTimezoneFromDateTimeFormat;
+    }
+
+    /**
      * Sets the 'useJodaDates' property of this class
      *
      * @param useJodaDates
@@ -951,7 +963,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
-    
+
     public void setTargetLanguage(Language targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
@@ -1120,6 +1132,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isExcludeTimezoneFromDateTimeFormat() {
+        return excludeTimezoneFromDateTimeFormat;
     }
 
     @Override
