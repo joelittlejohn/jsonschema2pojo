@@ -43,14 +43,14 @@ public final class Jsonschema2PojoCLI {
      */
     public static void main(String[] args) throws IOException {
 
+        CommandLineLogger logger = new CommandLineLogger();
+
         Arguments arguments = new Arguments().parse(args);
 
         if (arguments.isUseCommonsLang3()) {
-            System.err.println("--commons-lang3 is deprecated. Please remove the argument from your command-line arguments.");
+            logger.warn("--commons-lang3 is deprecated. Please remove the argument from your command-line arguments.");
         }
 
-        Jsonschema2Pojo.generate(arguments);
+        Jsonschema2Pojo.generate(arguments, logger);
     }
-
-
 }

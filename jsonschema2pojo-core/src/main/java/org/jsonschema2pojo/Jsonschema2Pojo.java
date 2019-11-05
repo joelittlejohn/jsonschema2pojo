@@ -52,12 +52,13 @@ public class Jsonschema2Pojo {
      * @throws IOException
      *             if the application is unable to read data from the source
      */
-    public static void generate(GenerationConfig config) throws IOException {
+    public static void generate(GenerationConfig config, RuleLogger logger) throws IOException {
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
 
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
+        ruleFactory.setLogger(logger);
         ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config)));
 
         SchemaMapper mapper = new SchemaMapper(ruleFactory, createSchemaGenerator(config));
