@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright © 2010-2014 Nokia
 #
@@ -18,4 +18,6 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
-java -jar "${SCRIPTPATH}"/"${project.build.finalName}".jar "$@"
+pushd "${SCRIPTPATH}" >> /dev/null || echo "Could not naviage to script directory" || exit
+java -jar "${project.build.finalName}".jar "$@"
+popd >> /dev/null || echo "Could not naviage away from script directory" || exit

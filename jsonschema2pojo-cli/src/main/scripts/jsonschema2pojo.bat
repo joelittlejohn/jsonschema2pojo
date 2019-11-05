@@ -15,4 +15,7 @@
 @REM
 
 @echo off
-java -jar "%~dp0/../lib/${project.build.finalName}.jar" %*
+
+pushd %~dp0
+java -jar "%~dp0\${project.build.finalName}.jar" %*
+popd

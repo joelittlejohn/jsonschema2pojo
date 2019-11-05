@@ -50,8 +50,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <classpathPrefix>./</classpathPrefix>
                             <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>org.jsonschema2pojo.cli.Jsonschema2PojoCLI</mainClass>
                         </manifest>
                     </archive>
@@ -61,9 +61,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.1.1</version>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -72,6 +69,7 @@
                         </goals>
                         <configuration>
                             <includeScope>runtime</includeScope>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
