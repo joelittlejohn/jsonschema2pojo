@@ -107,29 +107,33 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     }
 
     static JExpression getDefaultValue(JType fieldType, JsonNode node) {
+        return getDefaultValue(fieldType, node.asText());
+    }
+
+    static JExpression getDefaultValue(JType fieldType, String value) {
 
         fieldType = fieldType.unboxify();
 
         if (fieldType.fullName().equals(String.class.getName())) {
-            return JExpr.lit(node.asText());
+            return JExpr.lit(value);
 
         } else if (fieldType.fullName().equals(int.class.getName())) {
-            return JExpr.lit(Integer.parseInt(node.asText()));
+            return JExpr.lit(Integer.parseInt(value));
 
         } else if (fieldType.fullName().equals(BigInteger.class.getName())) {
-            return JExpr._new(fieldType).arg(JExpr.lit(node.asText()));
+            return JExpr._new(fieldType).arg(JExpr.lit(value));
 
         } else if (fieldType.fullName().equals(double.class.getName())) {
-            return JExpr.lit(Double.parseDouble(node.asText()));
+            return JExpr.lit(Double.parseDouble(value));
 
         } else if (fieldType.fullName().equals(BigDecimal.class.getName())) {
-            return JExpr._new(fieldType).arg(JExpr.lit(node.asText()));
+            return JExpr._new(fieldType).arg(JExpr.lit(value));
 
         } else if (fieldType.fullName().equals(boolean.class.getName())) {
-            return JExpr.lit(Boolean.parseBoolean(node.asText()));
+            return JExpr.lit(Boolean.parseBoolean(value));
 
         } else if (fieldType.fullName().equals(DateTime.class.getName()) || fieldType.fullName().equals(Date.class.getName())) {
-            long millisecs = parseDateToMillisecs(node.asText());
+            long millisecs = parseDateToMillisecs(value);
 
             JInvocation newDateTime = JExpr._new(fieldType);
             newDateTime.arg(JExpr.lit(millisecs));
@@ -139,22 +143,22 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.fullName().equals(LocalDate.class.getName()) || fieldType.fullName().equals(LocalTime.class.getName())) {
 
             JInvocation stringParseableTypeInstance = JExpr._new(fieldType);
-            stringParseableTypeInstance.arg(JExpr.lit(node.asText()));
+            stringParseableTypeInstance.arg(JExpr.lit(value));
             return stringParseableTypeInstance;
 
         } else if (fieldType.fullName().equals(long.class.getName())) {
-            return JExpr.lit(Long.parseLong(node.asText()));
+            return JExpr.lit(Long.parseLong(value));
 
         } else if (fieldType.fullName().equals(float.class.getName())) {
-            return JExpr.lit(Float.parseFloat(node.asText()));
+            return JExpr.lit(Float.parseFloat(value));
 
         } else if (fieldType.fullName().equals(URI.class.getName())) {
             JInvocation invokeCreate = fieldType.owner().ref(URI.class).staticInvoke("create");
-            return invokeCreate.arg(JExpr.lit(node.asText()));
+            return invokeCreate.arg(JExpr.lit(value));
 
         } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
 
-            return getDefaultEnum(fieldType, node);
+            return getDefaultEnum(fieldType, value);
 
         } else {
             return JExpr._null();
@@ -244,15 +248,14 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     /**
      * @see EnumRule
      */
-    private static JExpression getDefaultEnum(JType fieldType, JsonNode node) {
+    private static JExpression getDefaultEnum(JType fieldType, String value) {
 
         JDefinedClass enumClass = (JDefinedClass) fieldType;
         JType backingType = enumClass.fields().get("value").type();
         JInvocation invokeFromValue = enumClass.staticInvoke("fromValue");
-        invokeFromValue.arg(getDefaultValue(backingType, node));
+        invokeFromValue.arg(getDefaultValue(backingType, value));
 
         return invokeFromValue;
-
     }
 
     private static long parseDateToMillisecs(String valueAsText) {

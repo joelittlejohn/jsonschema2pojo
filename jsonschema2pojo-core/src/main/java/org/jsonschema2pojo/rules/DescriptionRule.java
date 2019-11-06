@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
@@ -53,7 +54,16 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
     public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
-        javadoc.append(node.asText());
+        String descriptionText = node.asText();
+
+        if(StringUtils.isNotBlank(descriptionText)) {
+
+            String[] lines = node.asText().split("/\r?\n/");
+
+            for(String line : lines) {
+                javadoc.append(line);
+            }
+        }
 
         return javadoc;
     }

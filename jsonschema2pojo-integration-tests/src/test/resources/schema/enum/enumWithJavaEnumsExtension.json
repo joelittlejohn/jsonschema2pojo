@@ -1,0 +1,29 @@
+{
+    "type" : "object",
+    "properties" : {
+        "enumProperty" : {
+            "type" : "string",
+            "enum" : ["1", "2", "3", "4"],
+            "javaEnums" : [
+                {
+                    "name": "ONE",
+                    "title": "The first number.",
+                    "description": "1 (one, also called unit, unity, and (multiplicative) identity) is a number, and a numerical digit used to represent that number in numerals. (https://en.wikipedia.org/wiki/1)"
+                },
+                {
+                    "name": "TWO",
+                    "title": "The second number.",
+                    "description": "2 (two) is a number, numeral, and glyph. \n\nIt is the natural number following 1 and preceding 3. (https://en.wikipedia.org/wiki/2)"
+                },{
+                    "name": "THREE",
+                    "title": "The third number.",
+                    "description": "3 (three) is a number, numeral, and glyph. It is the natural number following 2 and preceding 4. (https://en.wikipedia.org/wiki/3)"
+                },{
+                    "name": "FOUR",
+                    "title": "The fourth number.",
+                    "description": "4 (four) is a number, numeral, and glyph. It is the natural number following 3 and preceding 5. (https://en.wikipedia.org/wiki/4)"
+                }
+            ]
+        }
+    }
+}

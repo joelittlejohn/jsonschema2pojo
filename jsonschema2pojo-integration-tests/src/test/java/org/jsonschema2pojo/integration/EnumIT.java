@@ -36,8 +36,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -58,7 +56,6 @@ public class EnumIT {
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
-
     }
 
     @Test
@@ -99,9 +96,9 @@ public class EnumIT {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
 
-        assertThat((Enum) fromValue.invoke(enumClass, "one"), is(sameInstance(enumClass.getEnumConstants()[0])));
-        assertThat((Enum) fromValue.invoke(enumClass, "secondOne"), is(sameInstance(enumClass.getEnumConstants()[1])));
-        assertThat((Enum) fromValue.invoke(enumClass, "3rd one"), is(sameInstance(enumClass.getEnumConstants()[2])));
+        assertThat(fromValue.invoke(enumClass, "one"), is(sameInstance(enumClass.getEnumConstants()[0])));
+        assertThat(fromValue.invoke(enumClass, "secondOne"), is(sameInstance(enumClass.getEnumConstants()[1])));
+        assertThat(fromValue.invoke(enumClass, "3rd one"), is(sameInstance(enumClass.getEnumConstants()[2])));
 
         assertThat(fromValue.isAnnotationPresent(JsonCreator.class), is(true));
 
@@ -283,7 +280,43 @@ public class EnumIT {
         assertThat(jsonTree.get("enum_Property").isTextual(), is(true));
         assertThat(jsonTree.get("enum_Property").asText(), is("3"));
     }
-    
+
+    @Test
+    @SuppressWarnings({ "unchecked" })
+    public void enumWithJavaEnumsExtension() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithJavaEnumsExtension.json", "com.example");
+
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension$EnumProperty");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 0, "1", objectMapper);
+        assertThat(enumClass.getEnumConstants()[1].name(), is("TWO"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 1, "2", objectMapper);
+        assertThat(enumClass.getEnumConstants()[2].name(), is("THREE"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 2, "3", objectMapper);
+        assertThat(enumClass.getEnumConstants()[3].name(), is("FOUR"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 3, "4", objectMapper);
+    }
+
+    private void checkValueOfEnum(Class<?> typeWithEnumProperty, Class<?> enumClass, int enumIndex, String expectedValue, ObjectMapper objectMapper)
+            throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, IOException {
+        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Method enumSetter = typeWithEnumProperty.getMethod("setEnumProperty", enumClass);
+        enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[enumIndex]);
+
+        String jsonString = objectMapper.writeValueAsString(valueWithEnumProperty);
+        JsonNode jsonTree = objectMapper.readTree(jsonString);
+
+        assertThat(jsonTree.size(), is(1));
+        assertThat(jsonTree.has("enumProperty"), is(true));
+        assertThat(jsonTree.get("enumProperty").isTextual(), is(true));
+        assertThat(jsonTree.get("enumProperty").asText(), is(expectedValue));
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void intEnumIsDeserializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException {
@@ -309,7 +342,7 @@ public class EnumIT {
         // as per the json snippet above
         assertThat(enumObject, IsInstanceOf.instanceOf(enumClass));
         assertThat(getValueMethod, is(notNullValue()));
-        assertThat((Integer)getValueMethod.invoke(enumObject), is(2));
+        assertThat(getValueMethod.invoke(enumObject), is(2));
     }
 
     @Test
@@ -371,7 +404,7 @@ public class EnumIT {
 
         Method enumGetter = parentClass.getMethod("getEnumProperty");
 
-        assertThat((Enum) enumGetter.invoke(result), is(equalTo(enumClass.getEnumConstants()[2])));
+        assertThat(enumGetter.invoke(result), is(equalTo(enumClass.getEnumConstants()[2])));
 
     }
 
