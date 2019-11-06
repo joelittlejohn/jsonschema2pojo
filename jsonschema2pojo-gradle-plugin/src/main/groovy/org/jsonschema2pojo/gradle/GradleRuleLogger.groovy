@@ -20,7 +20,7 @@ class GradleRuleLogger implements RuleLogger {
 
     GradleRuleLogger(Logger logger) {
         super()
-        logger.error("Test Logger")
+        logger.info("Initializing {}", GradleRuleLogger.class)
         this.logger = logger
     }
 
