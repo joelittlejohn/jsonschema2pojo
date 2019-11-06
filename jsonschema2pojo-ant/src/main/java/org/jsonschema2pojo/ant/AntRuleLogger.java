@@ -21,6 +21,14 @@ import org.jsonschema2pojo.RuleLogger;
 
 public class AntRuleLogger implements RuleLogger {
 
+  private static final String LEVEL_PREFIX = "[";
+  private static final String LEVEL_SUFFIX = "] ";
+  private static final String DEBUG_LEVEL_PREFIX = LEVEL_PREFIX + "DEBUG" + LEVEL_SUFFIX;
+  private static final String ERROR_LEVEL_PREFIX = LEVEL_PREFIX + "ERROR" + LEVEL_SUFFIX;
+  private static final String INFO_LEVEL_PREFIX = LEVEL_PREFIX + "INFO" + LEVEL_SUFFIX;
+  private static final String TRACE_LEVEL_PREFIX = LEVEL_PREFIX + "TRACE" + LEVEL_SUFFIX;
+  private static final String WARN_LEVEL_PREFIX = LEVEL_PREFIX + "WARN" + LEVEL_SUFFIX;
+
   private final Jsonschema2PojoTask task;
 
   public AntRuleLogger(Jsonschema2PojoTask jsonschema2PojoTask) {
@@ -29,53 +37,34 @@ public class AntRuleLogger implements RuleLogger {
 
   @Override
   public void debug(String msg) {
-    log(msg, Project.MSG_DEBUG);
+    log(msg, Project.MSG_DEBUG, DEBUG_LEVEL_PREFIX);
   }
 
   @Override
   public void error(String msg) {
-    log(msg, Project.MSG_ERR);
+    log(msg, Project.MSG_ERR, ERROR_LEVEL_PREFIX);
   }
 
   @Override
   public void info(String msg) {
-    log(msg, Project.MSG_INFO);
+    log(msg, Project.MSG_INFO, INFO_LEVEL_PREFIX);
   }
 
   @Override
   public void trace(String msg) {
-    log(msg, Project.MSG_VERBOSE);
+    log(msg, Project.MSG_VERBOSE, TRACE_LEVEL_PREFIX);
   }
 
   @Override
   public void warn(String msg) {
-    log(msg, Project.MSG_WARN);
+    log(msg, Project.MSG_WARN, WARN_LEVEL_PREFIX);
   }
 
-  private void log(String msg, int level) {
-    if (task.getProject() != null) {
+  private void log(String msg, int level, String levelPrefix) {
+    if (task != null && task.getProject() != null) {
       task.getProject().log(msg, level);
     } else {
-      switch (level) {
-        case Project.MSG_ERR:
-          System.err.println("ERROR: " + msg);
-          break;
-        case Project.MSG_WARN:
-          System.err.println("WARNING: " + msg);
-          break;
-        case Project.MSG_INFO:
-          System.err.println("INFO: " + msg);
-          break;
-        case Project.MSG_DEBUG:
-          System.err.println("DEBUG: " + msg);
-          break;
-        case Project.MSG_VERBOSE:
-          System.err.println("VERBOSE: " + msg);
-          break;
-        default:
-          System.err.println(msg);
-          break;
-      }
+      System.err.println(levelPrefix + msg);
     }
   }
 }
