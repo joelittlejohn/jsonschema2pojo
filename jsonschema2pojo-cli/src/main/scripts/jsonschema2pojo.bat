@@ -16,6 +16,5 @@
 
 @echo off
 
-pushd %~dp0
 java -jar "%~dp0\${project.build.finalName}.jar" %*
-popd
+
