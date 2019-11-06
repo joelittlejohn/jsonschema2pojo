@@ -12,11 +12,12 @@
  */
 package org.jsonschema2pojo.gradle
 
+import org.gradle.api.logging.Logger
 import org.jsonschema2pojo.RuleLogger
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 class GradleRuleLogger implements RuleLogger {
+
+    def Logger
 
     GradleRuleLogger(Logger logger) {
         super()

@@ -22,8 +22,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.Jsonschema2Pojo
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * Task that generates java source files for an Android project
@@ -58,7 +56,6 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
 
     logger.info 'Using this configuration:\n{}', configuration
 
-    Logger slf4jLogger = LoggerFactory.getLogger(GenerateJsonSchemaJavaTask.class)
-    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(slf4jLogger))
+    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
   }
 }
