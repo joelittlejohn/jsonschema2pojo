@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -173,7 +174,7 @@ public class Jsonschema2Pojo {
 
     public static String getNodeName(String filePath, GenerationConfig config) {
         try {
-            String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, "UTF-8"));
+            String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, StandardCharsets.UTF_8.toString()));
             String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
             
             boolean extensionRemoved = false;
