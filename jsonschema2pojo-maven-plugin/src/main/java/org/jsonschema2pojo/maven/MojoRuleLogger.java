@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2017 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.maven;
 
 import org.apache.maven.plugin.logging.Log;
-import org.jsonschema2pojo.RuleLogger;
+import org.jsonschema2pojo.AbstractRuleLogger;
 
-public class MojoRuleLogger implements RuleLogger {
+public class MojoRuleLogger extends AbstractRuleLogger {
   private final Log log;
 
   public MojoRuleLogger(Log log) {
@@ -28,27 +28,53 @@ public class MojoRuleLogger implements RuleLogger {
   }
 
   @Override
-  public void debug(String msg) {
-      log.debug(msg);
+  protected void doDebug(String msg) {
+    log.debug(msg);
   }
 
   @Override
-  public void error(String msg) {
+  protected void doError(String msg) {
     log.error(msg);
   }
 
   @Override
-  public void info(String msg) {
+  protected void doInfo(String msg) {
     log.info(msg);
   }
 
   @Override
-  public void trace(String msg) {
+  protected void doTrace(String msg) {
     log.debug(msg); // No trace level for Mojo Logger
   }
 
   @Override
-  public void warn(String msg) {
+  protected void doWarn(String msg) {
     log.warn(msg);
   }
+
+  @Override
+  public boolean isDebugEnabled() {
+    return log.isDebugEnabled();
+  }
+
+  @Override
+  public boolean isErrorEnabled() {
+    return log.isErrorEnabled();
+  }
+
+  @Override
+  public boolean isInfoEnabled() {
+    return log.isInfoEnabled();
+  }
+
+  @Override
+  public boolean isTraceEnabled() {
+    return log.isDebugEnabled(); // No trace level for Mojo Logger
+  }
+
+  @Override
+  public boolean isWarnEnabled() {
+    return log.isWarnEnabled();
+  }
+
 }

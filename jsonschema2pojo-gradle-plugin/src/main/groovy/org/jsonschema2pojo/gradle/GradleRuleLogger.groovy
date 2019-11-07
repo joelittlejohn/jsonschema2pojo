@@ -13,11 +13,11 @@
 package org.jsonschema2pojo.gradle
 
 import org.gradle.api.logging.Logger
-import org.jsonschema2pojo.RuleLogger
+import org.jsonschema2pojo.AbstractRuleLogger
 
-class GradleRuleLogger implements RuleLogger {
+class GradleRuleLogger extends AbstractRuleLogger {
 
-    def Logger
+    Logger Logger
 
     GradleRuleLogger(Logger logger) {
         super()
@@ -26,27 +26,52 @@ class GradleRuleLogger implements RuleLogger {
     }
 
     @Override
-    void debug(String msg) {
+    void doDebug(String msg) {
         logger.debug(msg)
     }
 
     @Override
-    void error(String msg) {
+    void doError(String msg) {
         logger.error(msg)
     }
 
     @Override
-    void info(String msg) {
+    void doInfo(String msg) {
         logger.info(msg)
     }
 
     @Override
-    void trace(String msg) {
+    void doTrace(String msg) {
         logger.trace(msg)
     }
 
     @Override
-    void warn(String msg) {
+    void doWarn(String msg) {
         logger.warn(msg)
+    }
+
+    @Override
+    boolean isDebugEnabled() {
+        return logger.isDebugEnabled()
+    }
+
+    @Override
+    boolean isErrorEnabled() {
+        return logger.isErrorEnabled()
+    }
+
+    @Override
+    boolean isInfoEnabled() {
+        return logger.isInfoEnabled()
+    }
+
+    @Override
+    boolean isTraceEnabled() {
+        return logger.isTraceEnabled()
+    }
+
+    @Override
+    boolean isWarnEnabled() {
+        return logger.isWarnEnabled()
     }
 }

@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.ant;
 
 import org.apache.tools.ant.Project;
-import org.jsonschema2pojo.RuleLogger;
+import org.jsonschema2pojo.AbstractRuleLogger;
 
-public class AntRuleLogger implements RuleLogger {
+public class AntRuleLogger extends AbstractRuleLogger {
 
   private static final String LEVEL_PREFIX = "[";
   private static final String LEVEL_SUFFIX = "] ";
@@ -36,27 +36,47 @@ public class AntRuleLogger implements RuleLogger {
   }
 
   @Override
-  public void debug(String msg) {
+  public boolean isDebugEnabled() {
+    return true;
+  }
+
+  @Override
+  public boolean isErrorEnabled() {
+    return true;
+  }
+
+  @Override
+  public boolean isInfoEnabled() {
+    return true;
+  }
+
+  @Override
+  public boolean isTraceEnabled() {
+    return true;
+  }
+
+  @Override
+  public boolean isWarnEnabled() {
+    return true;
+  }
+
+  protected void doDebug(String msg) {
     log(msg, Project.MSG_DEBUG, DEBUG_LEVEL_PREFIX);
   }
 
-  @Override
-  public void error(String msg) {
+  protected void doError(String msg) {
     log(msg, Project.MSG_ERR, ERROR_LEVEL_PREFIX);
   }
 
-  @Override
-  public void info(String msg) {
+  protected void doInfo(String msg) {
     log(msg, Project.MSG_INFO, INFO_LEVEL_PREFIX);
   }
 
-  @Override
-  public void trace(String msg) {
+  protected void doTrace(String msg) {
     log(msg, Project.MSG_VERBOSE, TRACE_LEVEL_PREFIX);
   }
 
-  @Override
-  public void warn(String msg) {
+  protected void doWarn(String msg) {
     log(msg, Project.MSG_WARN, WARN_LEVEL_PREFIX);
   }
 

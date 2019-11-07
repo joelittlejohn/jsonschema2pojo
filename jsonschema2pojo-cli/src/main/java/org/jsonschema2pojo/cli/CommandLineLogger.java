@@ -16,36 +16,153 @@
 
 package org.jsonschema2pojo.cli;
 
-import org.jsonschema2pojo.RuleLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.beust.jcommander.IParameterValidator2;
+import com.beust.jcommander.ParameterDescription;
+import com.beust.jcommander.ParameterException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.jsonschema2pojo.AbstractRuleLogger;
 
-public class CommandLineLogger implements RuleLogger {
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-  private final Logger log = LoggerFactory.getLogger(Jsonschema2PojoCLI.class);
+public class CommandLineLogger extends AbstractRuleLogger {
 
-  @Override
-  public void debug(String msg) {
-    log.debug(msg);
+  public static final String DEFAULT_LOG_LEVEL = LogLevel.INFO.value();
+
+  private final int logLevel;
+
+  public CommandLineLogger(String logLevel) {
+    this.logLevel = LogLevel.fromValue(logLevel).levelInt();
   }
 
   @Override
-  public void error(String msg) {
-    log.error(msg);
+  public boolean isDebugEnabled() {
+    return logLevel >= LogLevel.DEBUG.levelInt();
   }
 
   @Override
-  public void info(String msg) {
-    log.info(msg);
+  public boolean isErrorEnabled() {
+    return logLevel >= LogLevel.ERROR.levelInt();
   }
 
   @Override
-  public void trace(String msg) {
-    log.trace(msg);
+  public boolean isInfoEnabled() {
+    return logLevel >= LogLevel.INFO.levelInt();
   }
 
   @Override
-  public void warn(String msg) {
-    log.warn(msg);
+  public boolean isTraceEnabled() {
+    return logLevel >= LogLevel.TRACE.levelInt();
+  }
+
+  @Override
+  public boolean isWarnEnabled() {
+    return logLevel >= LogLevel.WARN.levelInt();
+  }
+
+  public void printLogLevels() {
+    Set<String> levelNames = LogLevel.getLevelNames();
+    String levelNamesJoined = levelNames.stream().collect(Collectors.joining(", "));
+    System.out.println("Available Log Levels: " + levelNamesJoined);
+  }
+
+  @Override
+  protected void doDebug(String msg) {
+    System.out.println(msg);
+  }
+
+  @Override
+  protected void doError(String msg) {
+    System.err.println(msg);
+  }
+
+  @Override
+  protected void doInfo(String msg) {
+    System.out.print(msg);
+  }
+
+  @Override
+  protected void doTrace(String msg) {
+    System.out.print(msg);
+  }
+
+  @Override
+  protected void doWarn(String msg) {
+    System.err.println(msg);
+  }
+
+  public enum LogLevel {
+    OFF("off", -2),
+    ERROR("error", -1),
+    WARN("warn", 0),
+    INFO("info", 1),
+    DEBUG("debug", 2),
+    TRACE("trace", 3);
+
+    private final static Map<String, LogLevel> LEVEL_NAMES = new LinkedHashMap<>();
+    private final String levelName;
+    private final int levelInt;
+
+    LogLevel(String value, int levelInt) {
+      this.levelName = value;
+      this.levelInt = levelInt;
+    }
+
+    @JsonCreator
+    public static LogLevel fromValue(String value) {
+      LogLevel constant = LEVEL_NAMES.get(value);
+      if (constant == null) {
+        throw new IllegalArgumentException(value);
+      } else {
+        return constant;
+      }
+    }
+
+    public static Set<String> getLevelNames() {
+      return LEVEL_NAMES.keySet();
+    }
+
+    public int levelInt() {
+      return levelInt;
+    }
+
+    @Override
+    public String toString() {
+      return this.levelName;
+    }
+
+    @JsonValue
+    public String value() {
+      return this.levelName;
+    }
+
+    static {
+      for (LogLevel c : values()) {
+        LEVEL_NAMES.put(c.levelName, c);
+      }
+    }
+  }
+
+  public static class LogLevelValidator implements IParameterValidator2 {
+
+    @Override
+    public void validate(String name, String value, ParameterDescription pd) throws ParameterException {
+
+      Collection<String> availableLogLevels = LogLevel.getLevelNames();
+
+      if (!availableLogLevels.contains(value)) {
+        String availableLevelJoined = availableLogLevels.stream().collect(Collectors.joining(", ", "[", "]"));
+        throw new ParameterException("The parameter " + name + " must be one of " + availableLevelJoined);
+      }
+    }
+
+    @Override
+    public void validate(String name, String value) throws ParameterException {
+      validate(name, value, null);
+    }
   }
 }

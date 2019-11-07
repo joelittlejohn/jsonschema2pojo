@@ -27,4 +27,14 @@ public interface RuleLogger {
   void trace(String msg);
 
   void warn(String msg);
+
+  boolean isDebugEnabled();
+
+  boolean isErrorEnabled();
+
+  boolean isInfoEnabled();
+
+  boolean isTraceEnabled();
+
+  boolean isWarnEnabled();
 }
