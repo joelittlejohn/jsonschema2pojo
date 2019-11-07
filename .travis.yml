@@ -15,5 +15,4 @@ cache:
     - "$HOME/.gradle/wrapper/"
 
 script:
-  - rm -rf ~/.gradle/wrapper/dists/gradle-2.3-bin
   - mvn verify
