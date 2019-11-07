@@ -134,7 +134,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         addValueMethod(_enum, valueField);
 
-        EnumDefinition enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, backingType);
+        EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
 
         addEnumConstants(enumDefinition, _enum, schema);
 
@@ -151,7 +151,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return _enum;
     }
 
-    private EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode node, JType backingType) {
+    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType) {
 
       JsonNode enums = node.path("enum");
       JsonNode javaEnumNames = node.path("javaEnumNames");
@@ -303,7 +303,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         ruleFactory.getAnnotator().enumCreatorMethod(_enum, fromValue);
     }
 
-    private JFieldVar addQuickLookupMap(JDefinedClass _enum, JType backingType) {
+    protected JFieldVar addQuickLookupMap(JDefinedClass _enum, JType backingType) {
 
         JClass lookupType = _enum.owner().ref(Map.class).narrow(backingType.boxify(), _enum);
         JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "CONSTANTS");
@@ -387,7 +387,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    private String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
+    protected String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
         String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
@@ -399,7 +399,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return makeUnique(normalizedName, existingClassNames);
     }
 
-    private String makeUnique(final String name, Collection<String> existingNames) {
+    protected String makeUnique(final String name, Collection<String> existingNames) {
         boolean found = false;
 
         for (String existingName : existingNames) {
@@ -443,7 +443,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return enumName;
     }
 
-    private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
+    protected void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
             jclass._implements(resolveType(jclass._package(), i.asText()));
         }
