@@ -245,7 +245,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-log" }, description = "Configure log level. Defaults to info. Available options are: off, error, warn, info, debug, trace", validateWith = LogLevelValidator.class )
     private String logLevel = CommandLineLogger.DEFAULT_LOG_LEVEL;
 
-    @Parameter(names = {"--print-log-levels"}, description = "Prints log levels")
+    @Parameter(names = {"--print-log-levels"}, description = "Prints available log levels and exit.")
     private boolean printLogLevels = false;
 
     private static final int EXIT_OKAY = 0;
