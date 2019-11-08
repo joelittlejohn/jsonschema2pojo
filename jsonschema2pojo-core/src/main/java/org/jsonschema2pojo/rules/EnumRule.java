@@ -135,19 +135,18 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) :
                     container.owner().ref(String.class);
 
-        JFieldVar valueField = addValueField(_enum, backingType);
-
         EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
+
+        JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);
 
         // override toString only if we have a sensible string to return
         if(isString(backingType)){
             addToString(_enum, valueField);
         }
 
-        addValueMethod(enumDefinition, _enum, valueField);
-
+        addFieldAccessors(_enum, valueField);
         addEnumConstants(enumDefinition, _enum, schema);
-        addFactoryMethod(enumDefinition, _enum, backingType);
+        addFactoryMethod(enumDefinition, _enum);
 
         applyCustomizations(enumDefinition, _enum);
 
@@ -339,8 +338,23 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    protected void addFactoryMethod(EnumDefinition enumDefinition, JDefinedClass _enum, JType backingType) {
-        JFieldVar quickLookupMap = addQuickLookupMap(enumDefinition, _enum, backingType);
+    protected JFieldVar addConstructorAndFields(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
+        JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, backingType, VALUE_FIELD_NAME);
+
+        JMethod constructor = _enum.constructor(JMod.PRIVATE);
+        JVar valueParam = constructor.param(backingType, VALUE_FIELD_NAME);
+        JBlock body = constructor.body();
+        body.assign(JExpr._this().ref(valueField), valueParam);
+
+        return valueField;
+    }
+
+    protected void addFactoryMethod(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
+        JFieldVar quickLookupMap = addQuickLookupMap(enumDefinition, _enum);
 
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
         JVar valueParam = fromValue.param(backingType, "value");
@@ -366,7 +380,18 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         ruleFactory.getAnnotator().enumCreatorMethod(_enum, fromValue);
     }
 
-    protected JFieldVar addQuickLookupMap(EnumDefinition enumDefinition, JDefinedClass _enum, JType backingType) {
+    protected void addFieldAccessors(JDefinedClass _enum, JFieldVar valueField) {
+        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
+
+        JBlock body = fromValue.body();
+        body._return(JExpr._this().ref(valueField));
+
+        ruleFactory.getAnnotator().enumValueMethod(_enum, fromValue);
+    }
+
+    protected JFieldVar addQuickLookupMap(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
 
         JClass lookupType = _enum.owner().ref(Map.class).narrow(backingType.boxify(), _enum);
         JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "CONSTANTS");
@@ -382,17 +407,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return lookupMap;
     }
 
-    private JFieldVar addValueField(JDefinedClass _enum, JType type) {
-        JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, type, VALUE_FIELD_NAME);
-
-        JMethod constructor = _enum.constructor(JMod.PRIVATE);
-        JVar valueParam = constructor.param(type, VALUE_FIELD_NAME);
-        JBlock body = constructor.body();
-        body.assign(JExpr._this().ref(valueField), valueParam);
-
-        return valueField;
-    }
-
     private void addToString(JDefinedClass _enum, JFieldVar valueField) {
         JMethod toString = _enum.method(JMod.PUBLIC, String.class, "toString");
         JBlock body = toString.body();
@@ -405,15 +419,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         body._return(toReturn);
 
         toString.annotate(Override.class);
-    }
-
-    private void addValueMethod(EnumDefinition enumDefinition, JDefinedClass _enum, JFieldVar valueField) {
-        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
-
-        JBlock body = fromValue.body();
-        body._return(JExpr._this().ref(valueField));
-
-        ruleFactory.getAnnotator().enumValueMethod(_enum, fromValue);
     }
 
     private boolean isString(JType type){
