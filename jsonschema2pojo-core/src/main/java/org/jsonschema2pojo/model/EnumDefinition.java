@@ -7,17 +7,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Holds the an enum types effective definition.
+ *
+ * The definition of the enum can be decided by:
+ *    "enum" (JSON-Schema)
+ *    "enum" and "javaEnums" (JSON-Schema + jsonschema2pojo extension)
+ *    "enum" and "javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
+ */
 public class EnumDefinition {
-  private final JType type;
+  private final JType backingType;
   private final ArrayList<EnumValueDefinition> enumValues;
   private final String nodeName;
   private final JsonNode enumNode;
+  private final EnumDefinitionExtensionType type;
 
-  public EnumDefinition(String nodeName, JsonNode enumNode, JType type, ArrayList<EnumValueDefinition> enumValues) {
+  public EnumDefinition(String nodeName,
+                        JsonNode enumNode,
+                        JType backingType,
+                        ArrayList<EnumValueDefinition> enumValues,
+                        EnumDefinitionExtensionType type) {
     this.nodeName = nodeName;
     this.enumNode = enumNode;
-    this.type = type;
+    this.backingType = backingType;
     this.enumValues = enumValues;
+    this.type = type;
+  }
+
+  public JType getBackingType() {
+    return backingType;
   }
 
   public JsonNode getEnumNode() {
@@ -28,7 +46,7 @@ public class EnumDefinition {
     return nodeName;
   }
 
-  public JType getType() {
+  public EnumDefinitionExtensionType getType() {
     return type;
   }
 
