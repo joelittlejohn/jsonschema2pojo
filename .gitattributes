@@ -1,6 +1,0 @@
-
-# Batch Scripts should always be using Windows line endings.
-*.bat text eol=crlf
-
-# Shell Scripts should always be using Linux line endings.
-*.sh text eol=lf
