@@ -240,7 +240,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
       return enumDefinition;
     }
 
-    private EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, JType backingType) {
+    protected EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, JType backingType) {
         ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
 
         Collection<String> existingConstantNames = new ArrayList<>();
@@ -407,7 +407,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return lookupMap;
     }
 
-    private void addToString(JDefinedClass _enum, JFieldVar valueField) {
+    protected void addToString(JDefinedClass _enum, JFieldVar valueField) {
         JMethod toString = _enum.method(JMod.PUBLIC, String.class, "toString");
         JBlock body = toString.body();
 
@@ -421,7 +421,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         toString.annotate(Override.class);
     }
 
-    private boolean isString(JType type){
+    protected boolean isString(JType type){
         return type.fullName().equals(String.class.getName());
     }
 
