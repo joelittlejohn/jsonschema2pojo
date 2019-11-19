@@ -44,6 +44,7 @@ import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -870,8 +871,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             getLog().warn("useCommonsLang3 is deprecated. Please remove it from your config.");
         }
 
+        RuleLogger logger = new MojoRuleLogger(getLog());
+
         try {
-            Jsonschema2Pojo.generate(this);
+            Jsonschema2Pojo.generate(this, logger);
         } catch (IOException e) {
             throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory, e);
         }

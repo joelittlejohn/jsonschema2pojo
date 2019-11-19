@@ -20,6 +20,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.Jsonschema2Pojo
 
 /**
@@ -46,14 +47,15 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
       outputDir.mkdirs()
     }
 
-    def configuration = project.jsonSchema2Pojo
+    GenerationConfig configuration = project.jsonSchema2Pojo
     configuration.targetDirectory = outputDir
 
-    if (Boolean.TRUE.equals(configuration.properties.get("useCommonsLang3"))) {
+    if (Boolean.TRUE == configuration.properties.get("useCommonsLang3")) {
       logger.warn 'useCommonsLang3 is deprecated. Please remove it from your config.'
     }
 
     logger.info 'Using this configuration:\n{}', configuration
-    Jsonschema2Pojo.generate(configuration)
+
+    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
   }
 }

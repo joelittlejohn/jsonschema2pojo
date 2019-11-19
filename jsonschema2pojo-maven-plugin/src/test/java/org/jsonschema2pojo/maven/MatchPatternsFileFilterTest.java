@@ -159,7 +159,7 @@ public class MatchPatternsFileFilterTest {
 
         File[] files = basedir.listFiles(fileFilter);
 
-        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file(".svn"))));
+        assertThat("the files in .svn directory were excluded.", asList(files), not(hasItems(file(".svn"))));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class MatchPatternsFileFilterTest {
 
         File[] files = new File(basedir, ".svn").listFiles(fileFilter);
 
-        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file("svn-file.json"))));
+        assertThat("the files in .svn directory were excluded.", asList(files), not(hasItems(file("svn-file.json"))));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class MatchPatternsFileFilterTest {
 
         File[] files = new File(basedir, ".svn/sub").listFiles(fileFilter);
 
-        assertThat("the files in .svn directory were execluded.", asList(files), not(hasItems(file("sub-svn-file.json"))));
+        assertThat("the files in .svn directory were excluded.", asList(files), not(hasItems(file("sub-svn-file.json"))));
     }
     
     private File file(String relativePath) {

@@ -15,6 +15,7 @@
  */
 package org.jsonschema2pojo.gradle
 
+import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.Jsonschema2Pojo
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -26,7 +27,7 @@ import org.gradle.api.tasks.TaskAction
  * @author Ben Manes (ben.manes@gmail.com)
  */
 class GenerateJsonSchemaJavaTask extends DefaultTask {
-  def configuration
+  GenerationConfig configuration
 
   GenerateJsonSchemaJavaTask() {
     description = 'Generates Java classes from a json schema.'
@@ -62,11 +63,12 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
 
   @TaskAction
   def generate() {
-    if (Boolean.TRUE.equals(configuration.properties.get("useCommonsLang3"))) {
+    if (Boolean.TRUE == configuration.properties.get("useCommonsLang3")) {
       logger.warn 'useCommonsLang3 is deprecated. Please remove it from your config.'
     }
 
     logger.info 'Using this configuration:\n{}', configuration
-    Jsonschema2Pojo.generate(configuration)
+
+    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
   }
 }

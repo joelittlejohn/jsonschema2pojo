@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
@@ -44,12 +45,14 @@ public class EnumRuleTest {
     private Annotator annotator = mock(Annotator.class);
     private RuleFactory ruleFactory = mock(RuleFactory.class);
     private TypeRule typeRule = mock(TypeRule.class);
+    private RuleLogger logger = mock(RuleLogger.class);
 
     private EnumRule rule = new EnumRule(ruleFactory);
 
     @Before
     public void wireUpConfig() {
         when(ruleFactory.getNameHelper()).thenReturn(nameHelper);
+        when(ruleFactory.getLogger()).thenReturn(logger);
         when(ruleFactory.getAnnotator()).thenReturn(annotator);
         when(ruleFactory.getTypeRule()).thenReturn(typeRule);
     }

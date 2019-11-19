@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.jsonschema2pojo.RuleLogger;
 import org.junit.Test;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
@@ -76,11 +77,25 @@ public class RuleFactoryImplTest {
     public void generationConfigIsReturned() {
 
         GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
+        RuleLogger mockRuleLogger = mock(RuleLogger.class);
 
         RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator(), new SchemaStore());
+        ruleFactory.setLogger(mockRuleLogger);
 
         assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
+        assertThat(ruleFactory.getLogger(), is(sameInstance(mockRuleLogger)));
+    }
 
+    @Test
+    public void generationRuleLoggerIsReturned() {
+
+        GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
+        RuleLogger mockRuleLogger = mock(RuleLogger.class);
+
+        RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), new SchemaStore());
+        ruleFactory.setLogger(mockRuleLogger);
+
+        assertThat(ruleFactory.getLogger(), is(sameInstance(mockRuleLogger)));
     }
 
     @Test
@@ -91,7 +106,5 @@ public class RuleFactoryImplTest {
         RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), mockSchemaStore);
 
         assertThat(ruleFactory.getSchemaStore(), is(sameInstance(mockSchemaStore)));
-
     }
-
 }

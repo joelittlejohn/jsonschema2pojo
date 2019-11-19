@@ -48,6 +48,7 @@ import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.URLProtocol;
@@ -242,8 +243,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         ClassLoader extendedClassloader = buildExtendedClassloader();
         Thread.currentThread().setContextClassLoader(extendedClassloader);
 
+        RuleLogger ruleLogger = new AntRuleLogger(this);
+
         try {
-            Jsonschema2Pojo.generate(this);
+            Jsonschema2Pojo.generate(this, ruleLogger);
         } catch (IOException e) {
             throw new BuildException("Error generating classes from JSON Schema file(s) " + source, e);
         }

@@ -29,6 +29,7 @@ class JsonSchemaPluginSpec {
 
   void build(String projectDir) {
     GradleConnector connector = GradleConnector.newConnector()
+    connector.useDistribution(new URI("https://services.gradle.org/distributions/gradle-2.3-bin.zip"))
     connector.forProjectDirectory(new File(projectDir))
     ProjectConnection connection = connector.connect()
     try {
