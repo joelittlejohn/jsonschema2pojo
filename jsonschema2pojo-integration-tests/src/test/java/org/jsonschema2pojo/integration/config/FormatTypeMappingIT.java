@@ -78,6 +78,17 @@ public class FormatTypeMappingIT {
         assertThat(getter.getReturnType(), typeCompatibleWith(URL.class));
     }
 
+    @Test
+    public void canOverrideArrayTypes() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/arrayFormat.json", "com.example",
+                config("formatTypeMapping", mapping("base64", byte[].class)));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.ArrayFormat");
+
+        Method getter = generatedType.getMethod("getArrayFormat");
+        assertThat(getter.getReturnType(), typeCompatibleWith(byte[].class));
+    }
+
     private static Map<String, String> mapping(Object... keyValues) {
         return config(keyValues)
                 .entrySet()

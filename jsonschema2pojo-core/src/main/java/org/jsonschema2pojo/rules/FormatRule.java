@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -165,7 +166,7 @@ public class FormatRule implements Rule<JType, JType> {
     private static Class<?> tryLoadType(String typeName, String format) {
         if (!isEmpty(typeName)) {
             try {
-                Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(typeName);
+                Class<?> type = ClassUtils.getClass(Thread.currentThread().getContextClassLoader(), typeName);
                 return type;
             }
             catch (ClassNotFoundException e) {
