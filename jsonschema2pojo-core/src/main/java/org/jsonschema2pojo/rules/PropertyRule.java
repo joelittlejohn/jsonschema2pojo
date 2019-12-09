@@ -28,6 +28,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
+import scala.annotation.meta.field;
 
 
 /**
@@ -68,6 +69,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
 
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, schema);
+
+        if(!isRequired(nodeName, node, schema) && ruleFactory.getGenerationConfig().isUseOptionalForFields() && propertyType.isReference()){
+            propertyType = jclass.owner().ref("java.util.Optional").narrow(propertyType);
+        }
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
@@ -220,8 +225,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
 
         JBlock body = getter.body();
-        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) && !isRequired
-                && field.type().isReference()) {
+        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) && !isRequired && field.type().isReference() && !ruleFactory.getGenerationConfig().isUseOptionalForFields()) {
             body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(field));
         } else {
             body._return(field);

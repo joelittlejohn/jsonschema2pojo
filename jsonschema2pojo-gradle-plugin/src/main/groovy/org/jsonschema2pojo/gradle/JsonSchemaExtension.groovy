@@ -64,6 +64,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeJsr303Annotations
   boolean includeJsr305Annotations
   boolean useOptionalForGetters
+  boolean useOptionalForFields
   boolean includeToString
   String[] toStringExcludes
   boolean initializeCollections
@@ -126,6 +127,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeJsr303Annotations = false
     includeJsr305Annotations = false
     useOptionalForGetters = false
+    useOptionalForFields = false
     sourceType = SourceType.JSONSCHEMA
     outputEncoding = 'UTF-8'
     useJodaDates = false
@@ -251,6 +253,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |includeJsr305Annotations = ${includeJsr305Annotations}
        |useOptionalForGetters = ${useOptionalForGetters}
+       |useOptionalForFields = ${useOptionalForFields}
        |sourceType = ${sourceType.toString().toLowerCase()}
        |removeOldOutput = ${removeOldOutput}
        |outputEncoding = ${outputEncoding}
@@ -287,7 +290,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
      """.stripMargin()
   }
-  
+
   public boolean isFormatDateTimes() {
     return formatDateTimes
   }

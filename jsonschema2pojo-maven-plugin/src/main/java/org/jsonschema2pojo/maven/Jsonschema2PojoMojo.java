@@ -364,6 +364,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      private boolean useOptionalForGetters = false;
 
     /**
+     * Whether to use {@link java.util.Optional} as type for
+     * non-required fields.
+     *
+     * @parameter property="jsonschema2pojo.useOptionalForGetters"
+     *            default-value="false"
+     */
+     private boolean useOptionalForFields = false;
+
+    /**
      * The type of input documents that will be read
      * <p>
      * Supported values:
@@ -1024,6 +1033,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     @Override
     public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
+
+    @Override
+    public boolean isUseOptionalForFields() { return useOptionalForFields; }
 
     @Override
     public SourceType getSourceType() {

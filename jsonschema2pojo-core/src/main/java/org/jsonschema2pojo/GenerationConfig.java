@@ -257,6 +257,13 @@ public interface GenerationConfig {
   boolean isUseOptionalForGetters();
 
   /**
+   * Gets the 'useOptionalForFields' configuration option.
+   *
+   * @return Whether to use {@link java.util.Optional} as type and return type for non-required fields.
+   */
+  boolean isUseOptionalForFields();
+
+  /**
    * Gets the 'sourceType' configuration option.
    *
    * @return The type of input documents that will be read

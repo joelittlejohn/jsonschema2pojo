@@ -120,6 +120,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useOptionalForGetters;
 
+    private boolean useOptionalForFields;
+
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
@@ -617,6 +619,18 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.useOptionalForGetters = useOptionalForGetters;
     }
 
+
+    /**
+     * Sets the 'useOptionalForFields' property of this class
+     *
+     * @param useOptionalForFields
+     *         Whether to use {@link java.util.Optional} as field type for
+     *         non-required fields.
+     */
+    public void setUseOptionalForFields(boolean useOptionalForFields) {
+        this.useOptionalForFields = useOptionalForFields;
+    }
+
     /**
      * Sets the 'sourceType' property of this class
      *
@@ -954,7 +968,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
-    
+
     public void setTargetLanguage(Language targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
@@ -1085,6 +1099,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseOptionalForGetters() {
         return useOptionalForGetters;
+    }
+
+    @Override
+    public boolean isUseOptionalForFields() {
+        return useOptionalForFields;
     }
 
     @Override
@@ -1304,7 +1323,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Language getTargetLanguage() {
         return targetLanguage;
