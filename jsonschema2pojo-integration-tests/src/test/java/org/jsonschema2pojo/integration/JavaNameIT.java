@@ -24,6 +24,7 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
@@ -203,4 +204,47 @@ public class JavaNameIT {
         assertThat(javaFieldWithJavaName.getComment(), containsString("(Required)"));
     }
 
+    @Test
+    public void generateClassInTargetPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+
+        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
+        Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.OCSPRequestData");
+
+        assertEquals("com.example.javaname.OCSPRequestData", classWithTargetPackage.getName());
+    }
+
+    @Test
+    public void generateClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+
+        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
+        Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo");
+
+        assertEquals("com.apetecan.javaname.AdditionalInfo", classWithJavaTypePackage.getName());
+    }
+
+    @Test
+    public void generateClassInTargetPackageReferencingClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+
+        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
+        Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.AuthorizeRequestV1p02");
+
+        assertEquals("com.example.javaname.AuthorizeRequestV1p02", classWithTargetPackage.getName());
+
+        classWithTargetPackage.newInstance();
+
+        assertThat(classWithTargetPackage.getDeclaredField("idToken").getType(), typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken")));
+    }
+
+    @Test
+    public void generateReferencedClassUsesParentClassPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+
+        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
+        Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken");
+
+        assertEquals("com.apetecan.javaname.IdToken", classWithJavaTypePackage.getName());
+
+        classWithJavaTypePackage.newInstance();
+
+        assertThat((Class<?>)((ParameterizedType)classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
+    }
 }

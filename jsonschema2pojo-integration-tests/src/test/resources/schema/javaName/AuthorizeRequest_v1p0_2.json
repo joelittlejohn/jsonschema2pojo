@@ -45,7 +45,7 @@
       ]
     },
     "IdTokenType": {
-      "javaType": "IdToken",
+      "javaType": "com.apetecan.javaname.IdToken",
       "type": "object",
       "additionalProperties": true,
       "properties": {
