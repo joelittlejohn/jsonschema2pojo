@@ -219,6 +219,11 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
 
                 int index = fqn.lastIndexOf(".") + 1;
+                if(index == 0){ //Actually not a fully qualified name
+                    fqn = _package.name() + "." + fqn;
+                    index = fqn.lastIndexOf(".") + 1;
+                }
+
                 if (index >= 0 && index < fqn.length()) {
                     fqn = fqn.substring(0, index) + ruleFactory.getGenerationConfig().getClassNamePrefix() + fqn.substring(index) + ruleFactory.getGenerationConfig().getClassNameSuffix();
                 }

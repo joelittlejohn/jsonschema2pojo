@@ -1,0 +1,133 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "urn:OCPP:Cp:2:2018:4:AuthorizeRequest",
+  "comment": "OCPP 2.0 - v1p0",
+  "definitions": {
+    "HashAlgorithmEnumType": {
+      "type": "string",
+      "additionalProperties": true,
+      "enum": [
+        "SHA256",
+        "SHA384",
+        "SHA512"
+      ]
+    },
+    "IdTokenEnumType": {
+      "type": "string",
+      "additionalProperties": true,
+      "enum": [
+        "Central",
+        "eMAID",
+        "ISO14443",
+        "KeyCode",
+        "Local",
+        "NoAuthorization",
+        "ISO15693"
+      ]
+    },
+    "AdditionalInfoType": {
+      "javaType": "AdditionalInfo",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "additionalIdToken": {
+          "type": "string",
+          "maxLength": 36
+        },
+        "type": {
+          "type": "string",
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "additionalIdToken",
+        "type"
+      ]
+    },
+    "IdTokenType": {
+      "javaType": "com.apetecan.javaname.IdToken",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "additionalInfo": {
+          "type": "array",
+          "additionalItems": false,
+          "items": {
+            "$ref": "#/definitions/AdditionalInfoType"
+          },
+          "minItems": 1
+        },
+        "idToken": {
+          "type": "string",
+          "maxLength": 36
+        },
+        "type": {
+          "$ref": "#/definitions/IdTokenEnumType"
+        }
+      },
+      "required": [
+        "idToken",
+        "type"
+      ]
+    },
+    "OCSPRequestDataType": {
+      "javaType": "OCSPRequestData",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "hashAlgorithm": {
+          "$ref": "#/definitions/HashAlgorithmEnumType"
+        },
+        "issuerNameHash": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "issuerKeyHash": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "serialNumber": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "responderURL": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "hashAlgorithm",
+        "issuerNameHash",
+        "issuerKeyHash",
+        "serialNumber"
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "15118CertificateHashData": {
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "$ref": "#/definitions/OCSPRequestDataType"
+      },
+      "minItems": 1,
+      "maxItems": 4
+    },
+    "idToken": {
+      "$ref": "#/definitions/IdTokenType"
+    },
+    "evseId": {
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "idToken"
+  ]
+}
