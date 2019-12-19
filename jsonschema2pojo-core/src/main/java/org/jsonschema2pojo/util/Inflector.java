@@ -99,7 +99,8 @@ public class Inflector {
             .singular("men$", "man")
             .singular("(.+)list$", "$1")
             .singular("specimen", "specimen")
-            .singular("status$", "status");
+            .singular("status$", "status")
+            .singular("(slave)s$", "$1");
 
         builder.irregular("curve", "curves")
             .irregular("leaf", "leaves")
