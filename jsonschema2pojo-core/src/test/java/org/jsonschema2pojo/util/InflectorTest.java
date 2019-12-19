@@ -64,6 +64,7 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("LineItemTaxes"), is("LineItemTax"));
         assertThat(Inflector.getInstance().singularize("WidgetList"), is("Widget"));
 
+        assertThat(Inflector.getInstance().singularize("slaves"), is("slave"));
     }
 
     @Test
