@@ -71,11 +71,11 @@ public class IncludeJsr303AnnotationsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Minimum");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "minimum", 2.0d);
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "minimum", 2);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minimum", 0.9d);
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minimum", 0);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 
@@ -89,11 +89,11 @@ public class IncludeJsr303AnnotationsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Maximum");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8.9d);
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10.9d);
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 
@@ -331,15 +331,15 @@ public class IncludeJsr303AnnotationsIT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void jsr303AnnotionsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void jar303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example", config("includeJsr303Annotations", true));
 
         Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
         Object parent = parentType.newInstance();
 
         Class subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
-        Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9.0D);
-        Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11.0D);
+        Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9);
+        Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11);
 
         Method setter = parentType.getMethod("setAdditionalProperty", String.class, subPropertyType);
 

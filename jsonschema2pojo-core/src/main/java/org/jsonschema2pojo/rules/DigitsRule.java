@@ -22,7 +22,6 @@ import com.sun.codemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 
 import javax.validation.constraints.Digits;
-import java.util.NoSuchElementException;
 
 public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
 
@@ -36,7 +35,8 @@ public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-            && node.has("integerDigits") && node.has("fractionalDigits")) {
+            && node.has("integerDigits") && node.has("fractionalDigits")
+            && isApplicableType(field)) {
 
             JAnnotationUse annotation = field.annotate(Digits.class);
 
@@ -45,6 +45,18 @@ public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
         }
 
         return field;
+    }
+
+    private boolean isApplicableType(JFieldVar field) {
+        try {
+            Class<?> fieldClass = Class.forName(field.type().boxify().fullName());
+            // Support Strings and most number types except Double and Float, per docs on Digits annotations
+            return String.class.isAssignableFrom(fieldClass) ||
+                    (Number.class.isAssignableFrom(fieldClass) &&
+                            !Float.class.isAssignableFrom(fieldClass) && !Double.class.isAssignableFrom(fieldClass));
+        } catch (ClassNotFoundException ignore) {
+            return false;
+        }
     }
 
 }

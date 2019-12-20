@@ -22,7 +22,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
-import scala.annotation.meta.field;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
 
 public class MinItemsMaxItemsRule implements Rule<JFieldVar, JFieldVar> {
 
@@ -36,7 +39,8 @@ public class MinItemsMaxItemsRule implements Rule<JFieldVar, JFieldVar> {
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-                && (node.has("minItems") || node.has("maxItems"))) {
+                && (node.has("minItems") || node.has("maxItems"))
+                && isApplicableType(field)) {
 
             JAnnotationUse annotation = field.annotate(Size.class);
 
@@ -50,6 +54,27 @@ public class MinItemsMaxItemsRule implements Rule<JFieldVar, JFieldVar> {
         }
 
         return field;
+    }
+
+    private boolean isApplicableType(JFieldVar field) {
+        try {
+            String typeName = field.type().boxify().fullName();
+            // For collections, the full name will be something like 'java.util.List<String>' and we
+            // need just 'java.util.List'.
+            int genericsPos = typeName.indexOf('<');
+            if (genericsPos > -1) {
+                typeName = typeName.substring(0, genericsPos);
+            }
+
+            Class<?> fieldClass = Class.forName(typeName);
+            return String.class.isAssignableFrom(fieldClass)
+                    || Collection.class.isAssignableFrom(fieldClass)
+                    || Map.class.isAssignableFrom(fieldClass)
+                    || Array.class.isAssignableFrom(fieldClass)
+                    || field.type().isArray();
+        } catch (ClassNotFoundException ignore) {
+            return false;
+        }
     }
 
 }

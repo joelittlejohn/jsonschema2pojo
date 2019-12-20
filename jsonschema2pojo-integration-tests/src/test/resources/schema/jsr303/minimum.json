@@ -2,8 +2,8 @@
     "type" : "object",
     "properties" : {
         "minimum" : {
-            "type" : "number",
-            "minimum" : 1.1
+            "type" : "integer",
+            "minimum" : 1
         }
     }
 }
