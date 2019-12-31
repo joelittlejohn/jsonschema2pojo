@@ -4,6 +4,10 @@
         "maximum" : {
             "type" : "integer",
             "maximum" : 9
+        },
+        "maximumNotConstrained" : {
+            "type" : "number",
+            "maximum" : 9.5
         }
     }
 }

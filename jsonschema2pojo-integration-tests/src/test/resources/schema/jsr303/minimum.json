@@ -4,6 +4,10 @@
         "minimum" : {
             "type" : "integer",
             "minimum" : 1
+        },
+        "minimumNotConstrained" : {
+            "type" : "number",
+            "minimum" : 2.1
         }
     }
 }
