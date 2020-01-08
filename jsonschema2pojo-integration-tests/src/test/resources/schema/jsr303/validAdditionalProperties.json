@@ -3,8 +3,8 @@
     "additionalProperties" : {
         "properties" : {
             "maximum" : {
-                "type" : "number",
-                "maximum" : 9.9
+                "type" : "integer",
+                "maximum" : 9
             }
         },
         "additionalProperties" : false

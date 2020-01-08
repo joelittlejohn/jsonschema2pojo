@@ -2,8 +2,12 @@
     "type" : "object",
     "properties" : {
         "maximum" : {
+            "type" : "integer",
+            "maximum" : 9
+        },
+        "maximumNotConstrained" : {
             "type" : "number",
-            "maximum" : 9.9
+            "maximum" : 9.5
         }
     }
 }
