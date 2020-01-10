@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2017 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,6 @@
 
 package org.jsonschema2pojo.util;
 
-import static java.lang.Character.isDigit;
-import static java.lang.Character.toLowerCase;
-import static javax.lang.model.SourceVersion.isKeyword;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.containsAny;
-import static org.apache.commons.lang3.StringUtils.remove;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -31,6 +24,11 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
+
+import static java.lang.Character.isDigit;
+import static java.lang.Character.toLowerCase;
+import static javax.lang.model.SourceVersion.isKeyword;
+import static org.apache.commons.lang3.StringUtils.*;
 
 public class NameHelper {
 
@@ -57,6 +55,10 @@ public class NameHelper {
     }
 
     public String capitalizeTrailingWords(String name) {
+        if (generationConfig.isGetterSetterExact()) {
+            return name;
+        }
+
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
 
         if (containsAny(name, wordDelimiters)) {
@@ -105,7 +107,10 @@ public class NameHelper {
 
         jsonFieldName = replaceIllegalCharacters(jsonFieldName);
         jsonFieldName = normalizeName(jsonFieldName);
-        jsonFieldName = makeLowerCamelCase(jsonFieldName);
+
+        if (!generationConfig.isGetterSetterExact()) {
+            jsonFieldName = makeLowerCamelCase(jsonFieldName);
+        }
 
         if (isKeyword(jsonFieldName)) {
             jsonFieldName = "_" + jsonFieldName;
@@ -134,7 +139,8 @@ public class NameHelper {
         if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
             setterName = prefix + propertyName;
         } else {
-            setterName = prefix + capitalize(propertyName);
+            setterName = prefix + (generationConfig.isGetterSetterExact() ?
+                    propertyName : capitalize(propertyName));
         }
 
         if (setterName.equals("setClass")) {
@@ -203,7 +209,8 @@ public class NameHelper {
         if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
             getterName = prefix + propertyName;
         } else {
-            getterName = prefix + capitalize(propertyName);
+            getterName = prefix + (generationConfig.isGetterSetterExact() ?
+                    propertyName : capitalize(propertyName));
         }
 
         if (getterName.equals("getClass")) {

@@ -30,6 +30,7 @@
                          generateBuilders="true"
                          usePrimitives="true"
                          propertyWordDelimiters="_- "
+                         getterSetterExact="false"
                          useLongIntegers="true"
                          includeHashcodeAndEquals="false"
                          includeToString="false"

@@ -90,6 +90,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private char[] propertyWordDelimiters = new char[] { '-', ' ', '_' };
 
+    private boolean getterSetterExact = false;
+
     private boolean useLongIntegers;
 
     private boolean useBigIntegers = false;
@@ -493,6 +495,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setPropertyWordDelimiters(String propertyWordDelimiters) {
         this.propertyWordDelimiters = defaultString(propertyWordDelimiters).toCharArray();
+    }
+
+    /**
+     * @param getterSetterExact
+     *            Set whether or not the getters and setters generated for
+     *            fields are camel cased.
+     *            (e.g. 't' has a getter of 'gett()')
+     */
+    public void setGetterSetterExact(boolean getterSetterExact) {
+        this.getterSetterExact = getterSetterExact;
     }
 
     /**
@@ -1011,6 +1023,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.clone();
+    }
+
+    @Override
+    public boolean isGetterSetterExact() {
+        return getterSetterExact;
     }
 
     /**

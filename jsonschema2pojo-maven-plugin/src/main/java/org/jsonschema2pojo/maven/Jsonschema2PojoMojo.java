@@ -168,6 +168,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String propertyWordDelimiters = "- _";
 
     /**
+     * Set whether or not the getters and setters generated for fields are
+     * camel cased (e.g. 't' has a getter of 'gett()')
+     *
+     * @parameter property="jsonschema2pojo.getterSetterExact"
+     *            default-value="false"
+     * @since 1.0.2
+     */
+    private boolean getterSetterExact = false;
+
+    /**
      * Whether to use the java type <code>long</code> (or <code>Long</code>)
      * instead of <code>int</code> (or <code>Integer</code>) when representing
      * the JSON Schema type 'integer'.
@@ -942,6 +952,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public char[] getPropertyWordDelimiters() {
         return propertyWordDelimiters.toCharArray();
+    }
+
+    @Override
+    public boolean isGetterSetterExact() {
+        return getterSetterExact;
     }
 
     @Override

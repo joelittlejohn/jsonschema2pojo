@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -199,5 +200,25 @@ public class PropertiesIT {
         assertThat(jsonified.has("PROPERTY_ONE_TWO"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE_four"), is(true));
+    }
+
+    @Test
+    public void singlePropertyNamesCanBeUpperOrLowerCase() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/singleNamesUpperOrLowerCase.json", "com.example",
+                config("sourceType", "json", "propertyWordDelimiters", "", "getterSetterExact", true));
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SingleNamesUpperOrLowerCase");
+
+        Object instance = generatedType.newInstance();
+
+        instance.getClass().getDeclaredMethod("setT", String.class).invoke(instance, "AAPL");
+        instance.getClass().getDeclaredMethod("sett", Integer.class).invoke(instance, 0);
+
+        JsonNode jsonified = mapper.valueToTree(instance);
+
+        assertNotNull(generatedType.getDeclaredField("T"));
+        assertNotNull(generatedType.getDeclaredField("t"));
+
+        assertThat(jsonified.has("T"), is(true));
+        assertThat(jsonified.has("t"), is(true));
     }
 }
