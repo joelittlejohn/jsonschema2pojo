@@ -46,7 +46,7 @@ public class TitleRuleTest {
 
         assertThat(result, sameInstance(jclass.javadoc()));
         assertThat(result.size(), is(1));
-        assertThat((String) result.get(0), is("some title\n<p>\n"));
+        assertThat(result.get(0), is("some title\n<p>\n"));
 
     }
 }
