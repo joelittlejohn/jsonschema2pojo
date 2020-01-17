@@ -146,7 +146,7 @@
                         <include>**/src/main/java/**</include>
                         <include>**/src/test/java/**</include>
                     </includes>
-                    <skipExistingHeaders>true</skipExistingHeaders>
+                    <skipExistingHeaders>false</skipExistingHeaders>
                     <strictCheck>true</strictCheck>
                 </configuration>
                 <executions>
