@@ -36,6 +36,8 @@ import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.cli.CommandLineLogger.LogLevel;
+import org.jsonschema2pojo.cli.CommandLineLogger.LogLevelValidator;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.beust.jcommander.JCommander;
@@ -239,10 +241,15 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
     private List<String> formatTypeMapping = new ArrayList<>();
-    
+
+    @Parameter(names = { "-log" }, description = "Configure log level. Defaults to info. Available options are: off, error, warn, info, debug, trace", validateWith = LogLevelValidator.class )
+    private String logLevel = CommandLineLogger.DEFAULT_LOG_LEVEL;
+
+    @Parameter(names = {"--print-log-levels"}, description = "Prints available log levels and exit.")
+    private boolean printLogLevels = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
-
 
     /**
      * Parses command line arguments and populates this command line instance.
@@ -300,6 +307,10 @@ public class Arguments implements GenerationConfig {
     public boolean isIncludeTypeInfo()
     {
         return includeTypeInfo;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
     }
 
     @Override
@@ -466,6 +477,10 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isConstructorsRequiredPropertiesOnly() {
         return constructorsRequiredPropertiesOnly;
+    }
+
+    public boolean isPrintLogLevels() {
+        return printLogLevels;
     }
 
     @Override

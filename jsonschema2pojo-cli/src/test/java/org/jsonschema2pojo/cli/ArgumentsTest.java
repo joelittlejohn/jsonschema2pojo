@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 import org.jsonschema2pojo.InclusionLevel;
 import org.junit.After;
@@ -130,9 +131,9 @@ public class ArgumentsTest {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {});
 
         assertThat(args.status, is(1));
-        assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--target")));
-        assertThat(new String(systemErrCapture.toByteArray(), "UTF-8"), is(containsString("--source")));
-        assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
+        assertThat(new String(systemErrCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("--target")));
+        assertThat(new String(systemErrCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("--source")));
+        assertThat(new String(systemOutCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("Usage: jsonschema2pojo")));
     }
 
     @Test
@@ -140,7 +141,7 @@ public class ArgumentsTest {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--help" });
 
         assertThat(args.status, is(notNullValue()));
-        assertThat(new String(systemOutCapture.toByteArray(), "UTF-8"), is(containsString("Usage: jsonschema2pojo")));
+        assertThat(new String(systemOutCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("Usage: jsonschema2pojo")));
     }
 
     private File theFile(String path) {

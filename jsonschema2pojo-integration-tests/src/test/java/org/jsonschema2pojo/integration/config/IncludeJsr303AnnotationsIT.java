@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -71,11 +72,12 @@ public class IncludeJsr303AnnotationsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Minimum");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "minimum", 2.0d);
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "minimum", 2);
+        setInstancePropertyValue(validInstance, "minimumNotConstrained", 1.5);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minimum", 0.9d);
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "minimum", 0);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 
@@ -89,11 +91,12 @@ public class IncludeJsr303AnnotationsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Maximum");
 
-        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8.9d);
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "maximum", 8);
+        setInstancePropertyValue(validInstance, "maximumNotConstrained", 10.6);
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
-        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10.9d);
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "maximum", 10);
 
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
 
@@ -108,6 +111,7 @@ public class IncludeJsr303AnnotationsIT {
         Class generatedType = resultsClassLoader.loadClass("com.example.MinItems");
 
         Object validInstance = createInstanceWithPropertyValue(generatedType, "minItems", asList(1, 2, 3, 4, 5, 6));
+        setInstancePropertyValue(validInstance, "minItemsNotApplicable", UUID.randomUUID());
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -126,6 +130,7 @@ public class IncludeJsr303AnnotationsIT {
         Class generatedType = resultsClassLoader.loadClass("com.example.MaxItems");
 
         Object validInstance = createInstanceWithPropertyValue(generatedType, "maxItems", asList(1, 2, 3));
+        setInstancePropertyValue(validInstance, "maxItemsNotApplicable", UUID.randomUUID());
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -165,6 +170,7 @@ public class IncludeJsr303AnnotationsIT {
         Class generatedType = resultsClassLoader.loadClass("com.example.Pattern");
 
         Object validInstance = createInstanceWithPropertyValue(generatedType, "pattern", "abc123");
+        setInstancePropertyValue(validInstance, "patternNotApplicable", UUID.randomUUID());
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -199,6 +205,7 @@ public class IncludeJsr303AnnotationsIT {
         Class generatedType = resultsClassLoader.loadClass("com.example.MinLength");
 
         Object validInstance = createInstanceWithPropertyValue(generatedType, "minLength", "Long enough");
+        setInstancePropertyValue(validInstance, "minLengthNotApplicable", UUID.randomUUID());
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -216,6 +223,7 @@ public class IncludeJsr303AnnotationsIT {
         Class generatedType = resultsClassLoader.loadClass("com.example.MaxLength");
 
         Object validInstance = createInstanceWithPropertyValue(generatedType, "maxLength", "Short");
+        setInstancePropertyValue(validInstance, "maxLengthNotApplicable", UUID.randomUUID());
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -234,6 +242,7 @@ public class IncludeJsr303AnnotationsIT {
 
         // positive value
         Object validInstance = createInstanceWithPropertyValue(generatedType, "decimal", new BigDecimal("12345.1234567890"));
+        setInstancePropertyValue(validInstance, "digitsNotApplicable", Collections.singletonList("12345.12345678901"));
 
         assertNumberOfConstraintViolationsOn(validInstance, is(0));
 
@@ -331,15 +340,15 @@ public class IncludeJsr303AnnotationsIT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void jsr303AnnotionsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void jar303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example", config("includeJsr303Annotations", true));
 
         Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
         Object parent = parentType.newInstance();
 
         Class subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
-        Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9.0D);
-        Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11.0D);
+        Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9);
+        Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11);
 
         Method setter = parentType.getMethod("setAdditionalProperty", String.class, subPropertyType);
 
@@ -362,6 +371,16 @@ public class IncludeJsr303AnnotationsIT {
             propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
 
             return instance;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setInstancePropertyValue(Object instance, String propertyName, Object propertyValue) {
+        try {
+            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, instance.getClass());
+            propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

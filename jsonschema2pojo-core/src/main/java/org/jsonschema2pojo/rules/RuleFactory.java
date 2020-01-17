@@ -20,6 +20,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
@@ -40,6 +41,7 @@ import sun.reflect.Reflection;
  */
 public class RuleFactory {
 
+    private RuleLogger logger;
     private NameHelper nameHelper;
     private ReflectionHelper reflectionHelper;
     private GenerationConfig generationConfig;
@@ -348,6 +350,25 @@ public class RuleFactory {
      */
     public void setAnnotator(final Annotator annotator) {
         this.annotator = annotator;
+    }
+
+    /**
+     * Provides a rule logger that abstracts the logging method of invoking frameworks
+     *
+     * @return a logger interface to native logging framework
+     */
+    public RuleLogger getLogger() {
+        return logger;
+    }
+
+    /**
+     * The logger the factory will provide to rules.
+     *
+     * @param logger
+     *            the logger
+     */
+    public void setLogger(RuleLogger logger) {
+        this.logger = logger;
     }
 
     /**

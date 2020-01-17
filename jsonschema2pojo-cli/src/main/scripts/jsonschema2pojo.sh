@@ -18,4 +18,4 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
-java -jar ${SCRIPTPATH}/../lib/${project.build.finalName}.jar "$@"
+java -jar "${SCRIPTPATH}"/../lib/"${project.build.finalName}".jar "$@"

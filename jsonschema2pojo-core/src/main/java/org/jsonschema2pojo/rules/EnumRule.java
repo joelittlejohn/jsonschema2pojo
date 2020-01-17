@@ -28,9 +28,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.model.EnumDefinition;
+import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
+import org.jsonschema2pojo.model.EnumValueDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -108,6 +112,15 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         schema.setJavaTypeIfEmpty(_enum);
 
+        // Add JavaDocs
+        if (node.has("title")) {
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, _enum, schema);
+        }
+
+        if (node.has("description")) {
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, _enum, schema);
+        }
+
         if (node.has("javaInterfaces")) {
             addInterfaces(_enum, node.get("javaInterfaces"));
         }
@@ -122,30 +135,182 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) :
                     container.owner().ref(String.class);
 
-        JFieldVar valueField = addValueField(_enum, backingType);
+        EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
+
+        JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);
 
         // override toString only if we have a sensible string to return
         if(isString(backingType)){
             addToString(_enum, valueField);
         }
 
-        addValueMethod(_enum, valueField);
+        addFieldAccessors(_enum, valueField);
+        addEnumConstants(enumDefinition, _enum, schema);
+        addFactoryMethod(enumDefinition, _enum);
 
-        addEnumConstants(node.path("enum"), _enum, node.path("javaEnumNames"), backingType);
-        addFactoryMethod(_enum, backingType);
-
-        if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, _enum, schema);
-        }
-
-        if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, _enum, schema);
-        }
+        applyCustomizations(enumDefinition, _enum);
 
         return _enum;
     }
 
-    private JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
+    protected void addEnumConstants(EnumDefinition enumDefinition, JDefinedClass _enum, Schema schema) {
+
+        JType type = enumDefinition.getBackingType();
+
+        String nodeName = enumDefinition.getNodeName();
+        JsonNode parentNode = enumDefinition.getEnumNode();
+
+        for(EnumValueDefinition enumValueDefinition : enumDefinition.values()) {
+
+            JEnumConstant constant = _enum.enumConstant(enumValueDefinition.getName());
+            String value = enumValueDefinition.getValue();
+            constant.arg(DefaultRule.getDefaultValue(type, value));
+
+            Annotator annotator = ruleFactory.getAnnotator();
+            annotator.enumConstant(_enum, constant, value);
+
+            String enumNodeName = nodeName + "#" + value;
+
+            if(enumValueDefinition.hasTitle()) {
+                JsonNode titleNode = enumValueDefinition.getTitleNode();
+                ruleFactory.getTitleRule().apply(enumNodeName, titleNode, parentNode, constant, schema);
+            }
+
+            if(enumValueDefinition.hasDescription()) {
+                JsonNode descriptionNode = enumValueDefinition.getDescriptionNode();
+                ruleFactory.getDescriptionRule().apply(enumNodeName, descriptionNode, parentNode, constant, schema);
+            }
+        }
+    }
+
+    /**
+     * Allows a custom {@link EnumRule} implementation to extend {@link EnumRule} and do some custom behaviors.
+     * <p>
+     * This method is specifically added so that custom enum rule developers do not need to override the apply method.
+     *
+     * @param enumDefinition the enum definition.
+     * @param _enum          the generated class model
+     */
+    protected void applyCustomizations(EnumDefinition enumDefinition, JDefinedClass _enum) {
+        // Default Implementation does not have any customizations, this is for custom enum rule implementations.
+    }
+
+    /**
+     * Builds the effective definition of an enumeration is based on what schema elements are provided.
+     * <p/>
+     * This function determines which method it should delegate creating of the definition to:
+     *
+     * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
+     * For "enum" and "javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" and "javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     *
+     * @param nodeName
+     *            the name of the property which is an "enum"
+     * @param node
+     *            the enum node
+     * @param backingType
+     *            the object backing the value of enum, most commonly this is a string
+     *
+     * @return the effective definition for enumeration
+     */
+    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType) {
+
+      JsonNode enums = node.path("enum");
+      JsonNode javaEnumNames = node.path("javaEnumNames");
+      JsonNode javaEnums = node.path("javaEnums");
+
+      if(!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode()) {
+        System.err.println("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+      }
+
+      if(!javaEnumNames.isMissingNode()) {
+        System.err.println("javaEnumNames is deprecated; please migrate to javaEnums.");
+      }
+
+      EnumDefinition enumDefinition;
+
+      if(!javaEnums.isMissingNode()) {
+          enumDefinition = buildEnumDefinitionWithJavaEnumsExtension(nodeName, node, enums, javaEnums, backingType);
+      } else if(!javaEnumNames.isMissingNode()) {
+          enumDefinition = buildEnumDefinitionWithJavaEnumNamesExtension(nodeName, node, enums, javaEnumNames, backingType);
+      } else {
+          enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, enums, backingType);
+      }
+
+      return enumDefinition;
+    }
+
+    protected EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, JType backingType) {
+        ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
+
+        Collection<String> existingConstantNames = new ArrayList<>();
+
+        for (int i = 0; i < enums.size(); i++) {
+            JsonNode value = enums.path(i);
+
+            if (!value.isNull()) {
+                String constantName = getConstantName(value.asText(), null);
+                constantName = makeUnique(constantName, existingConstantNames);
+                existingConstantNames.add(constantName);
+
+                enumValues.add(new EnumValueDefinition(constantName, value.asText()));
+            }
+        }
+
+        return new EnumDefinition(nodeName, parentNode, backingType, enumValues, EnumDefinitionExtensionType.NONE);
+    }
+
+    protected EnumDefinition buildEnumDefinitionWithJavaEnumNamesExtension(String nodeName, JsonNode parentNode, JsonNode enums, JsonNode javaEnumNames, JType backingType) {
+
+        ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
+
+        Collection<String> existingConstantNames = new ArrayList<>();
+
+        for (int i = 0; i < enums.size(); i++) {
+            JsonNode value = enums.path(i);
+
+            if (!value.isNull()) {
+                String constantName = getConstantName(value.asText(), javaEnumNames.path(i).asText());
+                constantName = makeUnique(constantName, existingConstantNames);
+                existingConstantNames.add(constantName);
+
+                enumValues.add(new EnumValueDefinition(constantName, value.asText(), javaEnumNames));
+            }
+        }
+
+        return new EnumDefinition(nodeName, parentNode, backingType, enumValues, EnumDefinitionExtensionType.JAVA_ENUM_NAMES);
+    }
+
+    protected EnumDefinition buildEnumDefinitionWithJavaEnumsExtension(String nodeName, JsonNode enumNode, JsonNode enums, JsonNode javaEnums, JType type) {
+        ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
+
+        Collection<String> existingConstantNames = new ArrayList<>();
+
+        for (int i = 0; i < enums.size(); i++) {
+            JsonNode value = enums.path(i);
+
+            if (!value.isNull()) {
+                JsonNode javaEnumNode = javaEnums.path(i);
+
+                if(javaEnumNode.isMissingNode()) {
+                    System.err.println("javaEnum entry for " + value.asText() + " was not found.");
+                }
+
+                String constantName = getConstantName(value.asText(), javaEnumNode.path("name").asText());
+                constantName = makeUnique(constantName, existingConstantNames);
+                existingConstantNames.add(constantName);
+
+                JsonNode titleNode = javaEnumNode.path("title");
+                JsonNode descriptionNode = javaEnumNode.path("description");
+
+                enumValues.add(new EnumValueDefinition(constantName, value.asText(), javaEnumNode, titleNode, descriptionNode));
+            }
+        }
+
+        return new EnumDefinition(nodeName, enumNode, type, enumValues, EnumDefinitionExtensionType.JAVA_ENUMS);
+    }
+
+    protected JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
         try {
             if (node.has("javaType")) {
@@ -173,8 +338,23 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
     }
 
-    private void addFactoryMethod(JDefinedClass _enum, JType backingType) {
-        JFieldVar quickLookupMap = addQuickLookupMap(_enum, backingType);
+    protected JFieldVar addConstructorAndFields(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
+        JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, backingType, VALUE_FIELD_NAME);
+
+        JMethod constructor = _enum.constructor(JMod.PRIVATE);
+        JVar valueParam = constructor.param(backingType, VALUE_FIELD_NAME);
+        JBlock body = constructor.body();
+        body.assign(JExpr._this().ref(valueField), valueParam);
+
+        return valueField;
+    }
+
+    protected void addFactoryMethod(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
+        JFieldVar quickLookupMap = addQuickLookupMap(enumDefinition, _enum);
 
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
         JVar valueParam = fromValue.param(backingType, "value");
@@ -200,7 +380,18 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         ruleFactory.getAnnotator().enumCreatorMethod(_enum, fromValue);
     }
 
-    private JFieldVar addQuickLookupMap(JDefinedClass _enum, JType backingType) {
+    protected void addFieldAccessors(JDefinedClass _enum, JFieldVar valueField) {
+        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
+
+        JBlock body = fromValue.body();
+        body._return(JExpr._this().ref(valueField));
+
+        ruleFactory.getAnnotator().enumValueMethod(_enum, fromValue);
+    }
+
+    protected JFieldVar addQuickLookupMap(EnumDefinition enumDefinition, JDefinedClass _enum) {
+
+        JType backingType = enumDefinition.getBackingType();
 
         JClass lookupType = _enum.owner().ref(Map.class).narrow(backingType.boxify(), _enum);
         JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "CONSTANTS");
@@ -216,18 +407,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return lookupMap;
     }
 
-    private JFieldVar addValueField(JDefinedClass _enum, JType type) {
-        JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, type, VALUE_FIELD_NAME);
-
-        JMethod constructor = _enum.constructor(JMod.PRIVATE);
-        JVar valueParam = constructor.param(type, VALUE_FIELD_NAME);
-        JBlock body = constructor.body();
-        body.assign(JExpr._this().ref(valueField), valueParam);
-
-        return valueField;
-    }
-
-    private void addToString(JDefinedClass _enum, JFieldVar valueField) {
+    protected void addToString(JDefinedClass _enum, JFieldVar valueField) {
         JMethod toString = _enum.method(JMod.PUBLIC, String.class, "toString");
         JBlock body = toString.body();
 
@@ -241,37 +421,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         toString.annotate(Override.class);
     }
 
-    private void addValueMethod(JDefinedClass _enum, JFieldVar valueField) {
-        JMethod fromValue = _enum.method(JMod.PUBLIC, valueField.type(), "value");
-
-        JBlock body = fromValue.body();
-        body._return(JExpr._this().ref(valueField));
-
-        ruleFactory.getAnnotator().enumValueMethod(_enum, fromValue);
-    }
-
-    private boolean isString(JType type){
+    protected boolean isString(JType type){
         return type.fullName().equals(String.class.getName());
     }
 
-    private void addEnumConstants(JsonNode node, JDefinedClass _enum, JsonNode customNames, JType type) {
-        Collection<String> existingConstantNames = new ArrayList<>();
-        for (int i = 0; i < node.size(); i++) {
-            JsonNode value = node.path(i);
-
-            if (!value.isNull()) {
-                String constantName = getConstantName(value.asText(), customNames.path(i).asText());
-                constantName = makeUnique(constantName, existingConstantNames);
-                existingConstantNames.add(constantName);
-
-                JEnumConstant constant = _enum.enumConstant(constantName);
-                constant.arg(DefaultRule.getDefaultValue(type, value));
-                ruleFactory.getAnnotator().enumConstant(_enum, constant, value.asText());
-            }
-        }
-    }
-
-    private String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
+    protected String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
         String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
@@ -283,17 +437,22 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return makeUnique(normalizedName, existingClassNames);
     }
 
-    private String makeUnique(String name, Collection<String> existingNames) {
+    protected String makeUnique(final String name, Collection<String> existingNames) {
         boolean found = false;
+
         for (String existingName : existingNames) {
             if (name.equalsIgnoreCase(existingName)) {
                 found = true;
                 break;
             }
         }
+
         if (found) {
-            name = makeUnique(name + "_", existingNames);
+            String newName = makeUnique(name + "_", existingNames);
+            System.err.println("Enum name " + name + " already used; trying to replace it with " + newName);
+            return newName;
         }
+
         return name;
     }
 
@@ -322,7 +481,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return enumName;
     }
 
-    private void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
+    protected void addInterfaces(JDefinedClass jclass, JsonNode javaInterfaces) {
         for (JsonNode i : javaInterfaces) {
             jclass._implements(resolveType(jclass._package(), i.asText()));
         }

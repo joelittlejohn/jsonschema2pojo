@@ -5,6 +5,11 @@
       "type": "number",
       "integerDigits": 5,
       "fractionalDigits": 10
+    },
+    "digitsNotApplicable": {
+      "type" : "array",
+      "integerDigits": 5,
+      "fractionalDigits": 10
     }
   }
 }

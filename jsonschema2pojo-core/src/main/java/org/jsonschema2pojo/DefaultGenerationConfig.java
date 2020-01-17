@@ -19,6 +19,7 @@ package org.jsonschema2pojo;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -193,7 +194,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public String getOutputEncoding() {
-        return "UTF-8";
+        return StandardCharsets.UTF_8.toString();
     }
 
     /**

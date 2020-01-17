@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class ScalaSingleStreamCodeWriter extends SingleStreamCodeWriter {
 
@@ -42,11 +43,11 @@ public class ScalaSingleStreamCodeWriter extends SingleStreamCodeWriter {
             public void close() throws IOException {
                 super.close();
 
-                final String javaSource = new String(javaSourceStream.toByteArray(), "utf-8");
+                final String javaSource = new String(javaSourceStream.toByteArray(), StandardCharsets.UTF_8);
                 final String scalaSource = Converter.instance210().convert(javaSource, new ConversionSettings(false));
 
                 OutputStream parentStream = ScalaSingleStreamCodeWriter.super.openBinary(pkg, scalaFileName);
-                parentStream.write(scalaSource.getBytes("utf-8"));
+                parentStream.write(scalaSource.getBytes(StandardCharsets.UTF_8));
             }
         };
     }

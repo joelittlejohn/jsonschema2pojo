@@ -2,8 +2,12 @@
     "type" : "object",
     "properties" : {
         "minimum" : {
+            "type" : "integer",
+            "minimum" : 1
+        },
+        "minimumNotConstrained" : {
             "type" : "number",
-            "minimum" : 1.1
+            "minimum" : 2.1
         }
     }
 }
