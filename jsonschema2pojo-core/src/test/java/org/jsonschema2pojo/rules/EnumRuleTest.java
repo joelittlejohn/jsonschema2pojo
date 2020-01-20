@@ -26,7 +26,7 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -61,7 +61,7 @@ public class EnumRuleTest {
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
 
         Answer<String> firstArgAnswer = new FirstArgAnswer<>();
-        when(nameHelper.getClassName(anyString(), Matchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
+        when(nameHelper.getClassName(anyString(), ArgumentMatchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
 

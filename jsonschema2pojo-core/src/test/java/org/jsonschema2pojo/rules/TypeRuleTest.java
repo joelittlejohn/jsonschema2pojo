@@ -76,7 +76,7 @@ public class TypeRuleTest {
 
         JType mockDateType = mock(JType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);
-        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(JType.class), isNull())).thenReturn(mockDateType);
         when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
@@ -561,7 +561,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
-        assertThat(result, is((JType) mockArrayType));
+        assertThat(result, is(mockArrayType));
     }
 
     @Test
@@ -579,7 +579,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
-        assertThat(result, is((JType) mockObjectType));
+        assertThat(result, is(mockObjectType));
     }
 
     @Test
