@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "x-excludedFromEqualsAndHashCode" : [ "excludedByArray" ],
+  "properties": {
+    "notExcluded" : {
+      "type" : "string"
+    },
+    "excludedByProperty" : {
+      "type" : "string",
+      "x-excludedFromEqualsAndHashCode" : true
+    },
+    "notExcludedByProperty" : {
+      "type" : "string",
+      "x-excludedFromEqualsAndHashCode" : false
+    },
+    "excludedByArray" : {
+      "type" : "string"
+    }
+  }
+}

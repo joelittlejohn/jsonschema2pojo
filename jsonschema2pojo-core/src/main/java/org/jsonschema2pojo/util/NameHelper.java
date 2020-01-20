@@ -22,6 +22,8 @@ import static javax.lang.model.SourceVersion.isKeyword;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.StringUtils.remove;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClass;
@@ -165,8 +167,8 @@ public class NameHelper {
      */
     public String getFieldName(String propertyName, JsonNode node) {
 
-        if (node != null && node.has("javaName")) {
-            propertyName = node.get("javaName").textValue();
+        if (node != null && hasExtensionProperty(node, "javaName")) {
+            propertyName = getExtensionProperty(node, "javaName").textValue();
         }
 
         return propertyName;
@@ -175,8 +177,8 @@ public class NameHelper {
     public String getClassName(String propertyName, JsonNode node) {
 
         if (node != null) {
-            if (node.has("javaName")) {
-                propertyName = node.get("javaName").textValue();
+            if (hasExtensionProperty(node, "javaName")) {
+                propertyName = getExtensionProperty(node, "javaName").textValue();
             } else if (generationConfig.isUseTitleAsClassname() && node.has("title")) {
                 String title = node.get("title").textValue();
                 propertyName = WordUtils.capitalize(title).replaceAll(" ", "");

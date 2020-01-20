@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright © 2010-2017 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,11 @@ package org.jsonschema2pojo.rules;
 import static java.util.Arrays.*;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.ExtensionsHelper.X_PREFIX;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionPropertyNameUsed;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.pathExtensionProperty;
 import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.util.ArrayList;
@@ -121,13 +126,14 @@ public class EnumRule implements Rule<JClassContainer, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, _enum, schema);
         }
 
-        if (node.has("javaInterfaces")) {
-            addInterfaces(_enum, node.get("javaInterfaces"));
+        if (hasExtensionProperty(node, "javaInterfaces")) {
+            addInterfaces(_enum, getExtensionProperty(node, "javaInterfaces"));
         }
 
         // copy our node; remove the javaType as it will throw off the TypeRule for our case
-        ObjectNode typeNode = (ObjectNode)node.deepCopy();
+        ObjectNode typeNode = node.deepCopy();
         typeNode.remove("javaType");
+        typeNode.remove(X_PREFIX + "javaType");
 
         // If type is specified on the enum, get a type rule for it.  Otherwise, we're a string.
         // (This is different from the default of Object, which is why we don't do this for every case.)
@@ -201,8 +207,8 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      * This function determines which method it should delegate creating of the definition to:
      *
      * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" and "x-javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" and "x-javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
      *
      * @param nodeName
      *            the name of the property which is an "enum"
@@ -216,15 +222,18 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType) {
 
       JsonNode enums = node.path("enum");
-      JsonNode javaEnumNames = node.path("javaEnumNames");
-      JsonNode javaEnums = node.path("javaEnums");
+      JsonNode javaEnumNames = pathExtensionProperty(node, "javaEnumNames");
+      JsonNode javaEnums = pathExtensionProperty(node, "javaEnums");
 
       if(!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode()) {
-        System.err.println("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+          String javaEnumName = getExtensionPropertyNameUsed(node, "javaEnums");
+          String javaEnumNamesName = getExtensionPropertyNameUsed(node, "javaEnumNames");
+          System.err.println(String.format("Both %s and %s provided; the property %s will be ignored when both %s and %s are provided.",
+                  javaEnumName, javaEnumNamesName, javaEnumNamesName, javaEnumName, javaEnumNamesName));
       }
 
       if(!javaEnumNames.isMissingNode()) {
-        System.err.println("javaEnumNames is deprecated; please migrate to javaEnums.");
+          System.err.println(String.format("%s is deprecated; please migrate to x-javaEnums.", getExtensionPropertyNameUsed(node, "javaEnumNames")));
       }
 
       EnumDefinition enumDefinition;
@@ -313,8 +322,8 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     protected JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
         try {
-            if (node.has("javaType")) {
-                String fqn = node.get("javaType").asText();
+            if (hasExtensionProperty(node, "javaType")) {
+                String fqn = getExtensionProperty(node, "javaType").asText();
 
                 if (isPrimitive(fqn, container.owner())) {
                     throw new GenerationException("Primitive type '" + fqn + "' cannot be used as an enum.");
@@ -463,7 +472,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         List<String> enumNameGroups = new ArrayList<>(asList(splitByCharacterTypeCamelCase(nodeName)));
 
-        String enumName = "";
+        String enumName;
         for (Iterator<String> iter = enumNameGroups.iterator(); iter.hasNext();) {
             if (containsOnly(ruleFactory.getNameHelper().replaceIllegalCharacters(iter.next()), "_")) {
                 iter.remove();

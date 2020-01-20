@@ -22,13 +22,35 @@ import static org.junit.Assert.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class JacksonViewIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                /* { schemaFile, className } */
+                { "/schema/views/views.json", "com.example.Views" },
+                { "/schema/views/x-views.json", "com.example.XViews" },
+        });
+    }
+
+    private String schemaFile;
+    private String className;
+
+    public JacksonViewIT(String schemaFile, String className) {
+        this.schemaFile = schemaFile;
+        this.className = className;
+    }
 
     @Test
     public void javaJsonViewWithJackson1x() throws Exception {
@@ -51,11 +73,11 @@ public class JacksonViewIT {
 
     private Annotation jsonViewTest(String annotationStyle, Class<? extends Annotation> annotationType) throws ClassNotFoundException, NoSuchFieldException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/views/views.json",
+                schemaFile,
                 "com.example",
                 config("annotationStyle", annotationStyle));
 
-        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Views");
+        Class<?> generatedType = resultsClassLoader.loadClass(className);
         Field fieldInView = generatedType.getDeclaredField("inView");
         assertThat(fieldInView.getAnnotation(annotationType), notNullValue());
 

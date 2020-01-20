@@ -119,6 +119,17 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
+    public void testDefaultWithXCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
+
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setDefaultFormatCustomTZX", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"defaultFormatCustomTZX\":\"2001-09-08T18:46:39.999-07:00\"}"));
+    }
+
+    @Test
     public void testCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatDefaultTZ", Date.class).invoke(instance, new Date(999999999999L));
@@ -129,6 +140,26 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
+    public void testXCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatDefaultTZX", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatDefaultTZX\":\"2001-09-09T01:46:39\"}"));
+    }
+
+    @Test
+    public void testXCustomPatternWithDefaultTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatDefaultTZXcP", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatDefaultTZXcP\":\"2001-09-09T01:46:39\"}"));
+    }
+
+    @Test
     public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
@@ -136,6 +167,16 @@ public class CustomDateTimeFormatIT {
         final String json = new ObjectMapper().writeValueAsString(instance);
 
         assertThat(json, is("{\"customFormatCustomTZ\":\"2001-09-08T18:46:39\"}"));
+    }
+
+    @Test
+    public void testXCustomDateTimePatternWithXCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZX", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomTZX\":\"2001-09-08T18:46:39\"}"));
     }
 
     @Test
@@ -219,6 +260,26 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
+    public void testXCustomDatePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomDateX", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomDateX\":\"09-09-2001\"}"));
+    }
+
+    @Test
+    public void testXCustomPatternOnDate() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomDateXcP", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomDateXcP\":\"09-09-2001\"}"));
+    }
+
+    @Test
     public void testCustomTimePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTime", Date.class).invoke(instance, new Date(999999999999L));
@@ -226,5 +287,25 @@ public class CustomDateTimeFormatIT {
         final String json = new ObjectMapper().setLocale(Locale.ENGLISH).writeValueAsString(instance);
 
         assertThat(json, is("{\"customFormatCustomTime\":\"1:46 AM\"}"));
+    }
+
+    @Test
+    public void testXCustomTimePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTimeX", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().setLocale(Locale.ENGLISH).writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomTimeX\":\"1:46 AM\"}"));
+    }
+
+    @Test
+    public void testXCustomPatternOnTime() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
+        final Object instance = classWhenFormatDatesTrue.newInstance();
+        classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTimeXcP", Date.class).invoke(instance, new Date(999999999999L));
+
+        final String json = new ObjectMapper().setLocale(Locale.ENGLISH).writeValueAsString(instance);
+
+        assertThat(json, is("{\"customFormatCustomTimeXcP\":\"1:46 AM\"}"));
     }
 }

@@ -29,6 +29,9 @@ import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
+
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -158,8 +161,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, generatedJavaConstruct, schema);
         }
 
-        if (node.has("javaName")) {
-            ruleFactory.getJavaNameRule().apply(nodeName, node.get("javaName"), node, generatedJavaConstruct, schema);
+        if (hasExtensionProperty(node, "javaName")) {
+            ruleFactory.getJavaNameRule().apply(nodeName, getExtensionProperty(node, "javaName"), node, generatedJavaConstruct, schema);
         }
 
         if (node.has("description")) {

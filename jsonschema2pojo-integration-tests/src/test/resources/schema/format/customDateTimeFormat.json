@@ -10,16 +10,37 @@
             "format" : "date-time",
             "customTimezone" : "PST"
         },
+        "defaultFormatCustomTZX" : {
+            "type" : "string",
+            "format" : "date-time",
+            "x-customTimezone" : "PST"
+        },
         "customFormatDefaultTZ" : {
             "type" : "string",
             "format" : "date-time",
             "customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss"
+        },
+        "customFormatDefaultTZX" : {
+            "type" : "string",
+            "format" : "date-time",
+            "x-customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss"
+        },
+        "customFormatDefaultTZXcP" : {
+            "type" : "string",
+            "format" : "date-time",
+            "x-customPattern" : "yyyy-MM-dd'T'HH:mm:ss"
         },
         "customFormatCustomTZ" : {
             "type" : "string",
             "format" : "date-time",
             "customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss",
             "customTimezone" : "PST"
+        },
+        "customFormatCustomTZX" : {
+            "type" : "string",
+            "format" : "date-time",
+            "x-customDateTimePattern" : "yyyy-MM-dd'T'HH:mm:ss",
+            "x-customTimezone" : "PST"
         },
         "defaultFormatDate" : {
             "type" : "string",
@@ -34,10 +55,30 @@
             "format" : "date",
             "customDatePattern" : "dd-MM-yyyy"
         },
+        "customFormatCustomDateX" : {
+            "type" : "string",
+            "format" : "date",
+            "x-customDatePattern" : "dd-MM-yyyy"
+        },
+        "customFormatCustomDateXcP" : {
+            "type" : "string",
+            "format" : "date",
+            "x-customPattern" : "dd-MM-yyyy"
+        },
         "customFormatCustomTime" : {
             "type" : "string",
             "format" : "time",
             "customTimePattern" : "H:mm a"
+        },
+        "customFormatCustomTimeX" : {
+            "type" : "string",
+            "format" : "time",
+            "x-customTimePattern" : "H:mm a"
+        },
+        "customFormatCustomTimeXcP" : {
+            "type" : "string",
+            "format" : "time",
+            "x-customPattern" : "H:mm a"
         }
     }
 }

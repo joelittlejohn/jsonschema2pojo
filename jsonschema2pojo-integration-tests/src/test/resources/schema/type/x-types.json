@@ -1,0 +1,98 @@
+{
+    "type" : "object",
+    "properties" : {
+        "booleanProperty" : {
+            "type" : "boolean"
+        },
+        "stringProperty" : {
+            "type" : "string"
+        },
+        "integerProperty" : {
+            "type" : "integer"
+        },
+        "numberProperty" : {
+            "type" : "number"
+        },
+        "arrayProperty" : {
+            "type" : "array"
+        },
+        "nullProperty" : {
+            "type" : "null"
+        },
+        "anyProperty" : {
+            "type" : "any"
+        },
+        "objectProperty" : {
+            "type" : "object",
+            "properties" : {
+                "property" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "defaultProperty" : {
+        },
+        "impliedObjectProperty" : {
+            "properties" : {
+                "property" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "unknownProperty" : {
+            "type" : "some-unknown-type"
+        },
+        "reusedClasspathType" : {
+            "type" : "object",
+            "x-existingJavaType" : "java.util.Locale"
+        },
+        "reusedGeneratedType" : {
+            "type" : "object",
+            "x-javaType" : "com.example.ObjectProperty"
+        },
+        "primitiveJavaType" : {
+            "type" : "object",
+            "x-existingJavaType" : "long"
+        },
+        "integerWithJavaType" : {
+          "type" : "integer",
+          "x-existingJavaType" : "java.math.BigDecimal"
+        },
+        "numberWithJavaType" : {
+          "type" : "number",
+          "x-existingJavaType" : "java.util.UUID"
+        },
+        "stringWithJavaType" : {
+          "type" : "string",
+          "x-existingJavaType" : "java.lang.Boolean"
+        },
+        "booleanWithJavaType" : {
+          "type" : "boolean",
+          "x-existingJavaType" : "long"
+        },
+        "dateWithJavaType" : {
+          "type" : "string",
+          "format" : "date-time",
+          "x-existingJavaType" : "int"
+        },
+        "typeWithInterfaces" : {
+            "type" : "object",
+            "x-javaInterfaces" : ["java.io.Serializable", "Cloneable"]
+        },
+        "typeWithGenericInterface" : {
+            "type" : "object",
+            "x-javaInterfaces" : ["org.jsonschema2pojo.integration.TypeIT.InterfaceWithGenerics<String,Integer,Boolean>"]
+        },
+        "typeWithInheritedClass" : {
+            "type" : "object",
+            "x-extendsJavaClass" : "org.jsonschema2pojo.integration.TypeIT.InheritedClass"
+        },
+        "typeWithInheritedClassWithGenerics" : {
+            "type" : "object",
+            "x-extendsJavaClass" : "org.jsonschema2pojo.integration.TypeIT.InheritedClassWithGenerics<String,Integer,Boolean>"
+        },
+        "nullableStringProperty" : {
+          "type" : ["null", "string"]
+        }
+    }
+}

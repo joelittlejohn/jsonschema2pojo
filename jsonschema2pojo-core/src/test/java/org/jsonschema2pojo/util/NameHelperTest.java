@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.util;
 
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.util.ExtensionsHelper.X_PREFIX;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,8 @@ public class NameHelperTest {
         assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("foo"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node(X_PREFIX + "javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node(X_PREFIX + "javaName", "bar").put("title", "abc")), is("bar"));
 
         // TITLE_ATTRIBUTE
         NameHelper nameHelper = helper(true);
@@ -70,6 +73,8 @@ public class NameHelperTest {
         assertThat(nameHelper.getClassName("foo", node("title", "i am bar")), is("IAmBar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node(X_PREFIX + "javaName", "bar")), is("bar"));
+        assertThat(nameHelper.getClassName("foo", node(X_PREFIX + "javaName", "bar").put("title", "abc")), is("bar"));
     }
 
     private NameHelper helper(boolean useTitleAsClassname) {

@@ -1,0 +1,26 @@
+{
+  "type" : "object",
+  "properties" : {
+    "propertyWithJavaName" : {
+      "x-javaName" : "javaProperty",
+      "type" : "string"
+    },
+    "propertyWithoutJavaName" : {
+      "type" : "string"
+    },
+    "enumWithJavaName" : {
+      "x-javaName" : "javaEnum",
+      "enum" : [ "a", "b" ]
+    },
+    "enumWithoutJavaName" : {
+      "enum" : [ "c", "d" ]
+    },
+    "objectWithJavaName" : {
+      "x-javaName" : "javaObject",
+      "type" : "object"
+    },
+    "objectWithoutJavaName" : {
+      "type" : "object"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright Â© 2010-2017 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,9 @@
  */
 package org.jsonschema2pojo.util;
 
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionPropertyNameUsed;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,28 +45,30 @@ public class ReflectionHelper {
   }
 
   public JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
-    if (node.has("extends") && node.has("extendsJavaClass")) {
-      throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
+    if (hasExtensionProperty(node, "extends") && hasExtensionProperty(node, "extendsJavaClass")) {
+      String errMsg = String.format("'%s' and '%s' defined simultaneously",
+              getExtensionPropertyNameUsed(node, "extends"), getExtensionPropertyNameUsed(node, "extendsJavaClass"));
+      throw new IllegalStateException(errMsg);
     }
 
     JType superType = jPackage.owner().ref(Object.class);
     Schema superTypeSchema = getSuperSchema(node, schema, false);
     if (superTypeSchema != null) {
-      superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
-    } else if (node.has("extendsJavaClass")) {
-      superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
+      superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", getExtensionProperty(node, "extends"), node, jPackage, superTypeSchema);
+    } else if (hasExtensionProperty(node, "extendsJavaClass")) {
+      superType = resolveType(jPackage, getExtensionProperty(node, "extendsJavaClass").asText());
     }
 
     return superType;
   }
 
   public Schema getSuperSchema(JsonNode node, Schema schema, boolean followRefs) {
-    if (node.has("extends")) {
+    if (hasExtensionProperty(node, "extends")) {
       String path;
       if (schema.getId().getFragment() == null) {
-        path = "#extends";
+        path = "#" + getExtensionPropertyNameUsed(node, "extends");
       } else {
-        path = "#" + schema.getId().getFragment() + "/extends";
+        path = "#" + schema.getId().getFragment() + "/" + getExtensionPropertyNameUsed(node, "extends");
       }
 
       Schema superSchema = ruleFactory.getSchemaStore().create(schema, path, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());

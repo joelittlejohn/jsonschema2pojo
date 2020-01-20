@@ -14,6 +14,8 @@
 package org.jsonschema2pojo.rules;
 
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.pathExtensionProperty;
 import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.math.BigDecimal;
@@ -78,8 +80,8 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
       type = ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
-    } else if (node.has("existingJavaType")) {
-      String typeName = node.path("existingJavaType").asText();
+    } else if (hasExtensionProperty(node, "existingJavaType")) {
+      String typeName = pathExtensionProperty(node, "existingJavaType").asText();
 
       if (isPrimitive(typeName, jClassContainer.owner())) {
         type = primitiveType(typeName, jClassContainer.owner());
@@ -106,9 +108,9 @@ public class TypeRule implements Rule<JClassContainer, JType> {
       type = jClassContainer.owner().ref(Object.class);
     }
 
-    if (!node.has("javaType") && !node.has("existingJavaType") && node.has("format")) {
+    if (!hasExtensionProperty(node, "javaType") && !hasExtensionProperty(node, "existingJavaType") && node.has("format")) {
       type = ruleFactory.getFormatRule().apply(nodeName, node.get("format"), node, type, schema);
-    } else if (!node.has("javaType") && !node.has("existingJavaType") && propertyTypeName.equals("string") && node.has("media")) {
+    } else if (!hasExtensionProperty(node, "javaType") && !hasExtensionProperty(node, "existingJavaType") && propertyTypeName.equals("string") && node.has("media")) {
       type = ruleFactory.getMediaRule().apply(nodeName, node.get("media"), node, type, schema);
     }
 

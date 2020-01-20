@@ -21,27 +21,46 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
+@RunWith(Parameterized.class)
 public class ExcludedFromEqualsAndHashCodeIT {
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
-    private static Class<?> clazz;
+    private static ClassLoader resultsClassLoader;
 
     @BeforeClass
-    public static void generateAndCompileEnum() throws ClassNotFoundException {
+    public static void generateAndCompileEnum() {
+        classSchemaRule.generate("/schema/excludedFromEqualsAndHashCode/excludedFromEqualsAndHashCode.json", "com.example");
+        classSchemaRule.generate("/schema/excludedFromEqualsAndHashCode/x-excludedFromEqualsAndHashCode.json", "com.example");
+        resultsClassLoader = classSchemaRule.compile();
+    }
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/excludedFromEqualsAndHashCode/excludedFromEqualsAndHashCode.json", "com.example");
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                /* { className } */
+                { "com.example.ExcludedFromEqualsAndHashCode" },
+                { "com.example.XExcludedFromEqualsAndHashCode" },
+        });
+    }
 
-        clazz = resultsClassLoader.loadClass("com.example.ExcludedFromEqualsAndHashCode");
+    private Class<?> clazz;
+
+    public ExcludedFromEqualsAndHashCodeIT(String className) throws ClassNotFoundException {
+        this.clazz = resultsClassLoader.loadClass(className);
     }
 
     @Test
@@ -90,7 +109,7 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void exludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
+    public void excludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
         Object instanceOne = clazz.newInstance();
         Object instanceTwo = clazz.newInstance();
 
@@ -108,7 +127,7 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void exludedByArrayTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
+    public void excludedByArrayTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
         Object instanceOne = clazz.newInstance();
         Object instanceTwo = clazz.newInstance();
 
@@ -144,7 +163,7 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void notExludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
+    public void notExcludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
         Object instanceOne = clazz.newInstance();
         Object instanceTwo = clazz.newInstance();
 
@@ -161,7 +180,7 @@ public class ExcludedFromEqualsAndHashCodeIT {
         assertThat(instanceOne.equals(instanceTwo), is(false));
     }
 
-    private static void setProperty(Object instance, String property, String value) throws IllegalAccessException, InvocationTargetException, IntrospectionException {
+    private void setProperty(Object instance, String property, String value) throws IllegalAccessException, InvocationTargetException, IntrospectionException {
         new PropertyDescriptor(property, clazz).getWriteMethod().invoke(instance, value);
     }
 

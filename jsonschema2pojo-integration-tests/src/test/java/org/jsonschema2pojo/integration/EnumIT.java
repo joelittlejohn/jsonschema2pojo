@@ -283,12 +283,61 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings({ "unchecked" })
+    public void enumWithCustomXJavaNames() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithCustomXJavaNames.json", "com.example");
+
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithCustomXJavaNames");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithCustomXJavaNames$EnumProperty");
+
+        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Method enumSetter = typeWithEnumProperty.getMethod("setEnumProperty", enumClass);
+        enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[2]);
+        assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
+        assertThat(enumClass.getEnumConstants()[1].name(), is("TWO"));
+        assertThat(enumClass.getEnumConstants()[2].name(), is("THREE"));
+        assertThat(enumClass.getEnumConstants()[3].name(), is("FOUR"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String jsonString = objectMapper.writeValueAsString(valueWithEnumProperty);
+        JsonNode jsonTree = objectMapper.readTree(jsonString);
+
+        assertThat(jsonTree.size(), is(1));
+        assertThat(jsonTree.has("enum_Property"), is(true));
+        assertThat(jsonTree.get("enum_Property").isTextual(), is(true));
+        assertThat(jsonTree.get("enum_Property").asText(), is("3"));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked" })
     public void enumWithJavaEnumsExtension() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithJavaEnumsExtension.json", "com.example");
 
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension");
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension$EnumProperty");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 0, "1", objectMapper);
+        assertThat(enumClass.getEnumConstants()[1].name(), is("TWO"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 1, "2", objectMapper);
+        assertThat(enumClass.getEnumConstants()[2].name(), is("THREE"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 2, "3", objectMapper);
+        assertThat(enumClass.getEnumConstants()[3].name(), is("FOUR"));
+        checkValueOfEnum(typeWithEnumProperty, enumClass, 3, "4", objectMapper);
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked" })
+    public void enumWithXJavaEnumsExtension() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithXJavaEnumsExtension.json", "com.example");
+
+        Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithXJavaEnumsExtension");
+        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithXJavaEnumsExtension$EnumProperty");
 
         ObjectMapper objectMapper = new ObjectMapper();
 

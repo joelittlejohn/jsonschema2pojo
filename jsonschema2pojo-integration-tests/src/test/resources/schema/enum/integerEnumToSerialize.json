@@ -4,7 +4,7 @@
        "testEnum" : { 
           "type" : "integer",
           "enum" : [1, 2, 3],
-          "javaEnumNames" : ["One", "Two", "Three"]
+          "x-javaEnumNames" : ["One", "Two", "Three"]
       }
     }
 }

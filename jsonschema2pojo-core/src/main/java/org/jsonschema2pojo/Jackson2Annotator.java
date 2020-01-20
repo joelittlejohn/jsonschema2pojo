@@ -17,6 +17,8 @@
 package org.jsonschema2pojo;
 
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -105,9 +107,9 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
             field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
         }
 
-        if (propertyNode.has("javaJsonView")) {
+        if (hasExtensionProperty(propertyNode, "javaJsonView")) {
             field.annotate(JsonView.class).param(
-                    "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+                    "value", field.type().owner().ref(getExtensionProperty(propertyNode, "javaJsonView").asText()));
         }
 
         if (propertyNode.has("description")) {
@@ -163,10 +165,10 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
     public void dateField(JFieldVar field, JDefinedClass clazz, JsonNode node) {
 
         String pattern = null;
-        if (node.has("customDatePattern")) {
-            pattern = node.get("customDatePattern").asText();
-        } else if (node.has("customPattern")) {
-            pattern = node.get("customPattern").asText();
+        if (hasExtensionProperty(node, "customDatePattern")) {
+            pattern = getExtensionProperty(node, "customDatePattern").asText();
+        } else if (hasExtensionProperty(node, "customPattern")) {
+            pattern = getExtensionProperty(node, "customPattern").asText();
         } else if (isNotEmpty(getGenerationConfig().getCustomDatePattern())) {
             pattern = getGenerationConfig().getCustomDatePattern();
         } else if (getGenerationConfig().isFormatDates()) {
@@ -182,10 +184,10 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
     public void timeField(JFieldVar field, JDefinedClass clazz, JsonNode node) {
 
         String pattern = null;
-        if (node.has("customTimePattern")) {
-            pattern = node.get("customTimePattern").asText();
-        } else if (node.has("customPattern")) {
-            pattern = node.get("customPattern").asText();
+        if (hasExtensionProperty(node, "customTimePattern")) {
+            pattern = getExtensionProperty(node, "customTimePattern").asText();
+        } else if (hasExtensionProperty(node, "customPattern")) {
+            pattern = getExtensionProperty(node, "customPattern").asText();
         } else if (isNotEmpty(getGenerationConfig().getCustomTimePattern())) {
             pattern = getGenerationConfig().getCustomTimePattern();
         } else if (getGenerationConfig().isFormatDates()) {
@@ -199,13 +201,13 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
 
     @Override
     public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode node) {
-        String timezone = node.has("customTimezone") ? node.get("customTimezone").asText() : "UTC";
+        String timezone = hasExtensionProperty(node, "customTimezone") ? getExtensionProperty(node, "customTimezone").asText() : "UTC";
 
         String pattern = null;
-        if (node.has("customDateTimePattern")) {
-            pattern = node.get("customDateTimePattern").asText();
-        } else if (node.has("customPattern")) {
-            pattern = node.get("customPattern").asText();
+        if (hasExtensionProperty(node, "customDateTimePattern")) {
+            pattern = getExtensionProperty(node, "customDateTimePattern").asText();
+        } else if (hasExtensionProperty(node, "customPattern")) {
+            pattern = getExtensionProperty(node, "customPattern").asText();
         } else if (isNotEmpty(getGenerationConfig().getCustomDateTimePattern())) {
             pattern = getGenerationConfig().getCustomDateTimePattern();
         } else if (getGenerationConfig().isFormatDateTimes()) {

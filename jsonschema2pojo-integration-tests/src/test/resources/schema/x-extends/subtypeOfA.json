@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "x-extends": {
+        "$ref": "a.json"
+    },
+    "properties": {
+        "parent": {
+            "type": "string"
+        }
+    }
+}

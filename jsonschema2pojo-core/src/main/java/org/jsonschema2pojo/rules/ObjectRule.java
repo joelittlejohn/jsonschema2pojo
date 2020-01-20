@@ -19,6 +19,9 @@ import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.pathExtensionProperty;
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -114,8 +117,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
-        if (node.has("javaInterfaces")) {
-            addInterfaces(jclass, node.get("javaInterfaces"));
+        if (hasExtensionProperty(node, "javaInterfaces")) {
+            addInterfaces(jclass, getExtensionProperty(node, "javaInterfaces"));
         }
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, jclass, schema);
@@ -194,21 +197,21 @@ public class ObjectRule implements Rule<JPackage, JType> {
         Annotator annotator = ruleFactory.getAnnotator();
 
         try {
-            if (node.has("existingJavaType")) {
-                String fqn = substringBefore(node.get("existingJavaType").asText(), "<");
+            if (hasExtensionProperty(node, "existingJavaType")) {
+                String fqn = substringBefore(getExtensionProperty(node, "existingJavaType").asText(), "<");
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
 
-                JClass existingClass = resolveType(_package, fqn + (node.get("existingJavaType").asText().contains("<") ? "<" + substringAfter(node.get("existingJavaType").asText(), "<") : ""));
+                JClass existingClass = resolveType(_package, fqn + (getExtensionProperty(node, "existingJavaType").asText().contains("<") ? "<" + substringAfter(getExtensionProperty(node, "existingJavaType").asText(), "<") : ""));
                 throw new ClassAlreadyExistsException(existingClass);
             }
 
             boolean usePolymorphicDeserialization = annotator.isPolymorphicDeserializationSupported(node);
 
-            if (node.has("javaType")) {
-                String fqn = node.path("javaType").asText();
+            if (hasExtensionProperty(node, "javaType")) {
+                String fqn = pathExtensionProperty(node, "javaType").asText();
 
                 if (isPrimitive(fqn, _package.owner())) {
                     throw new GenerationException("javaType cannot refer to a primitive type (" + fqn + "), did you mean to use existingJavaType?");
@@ -421,8 +424,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JsonNode properties = node.get("properties");
 
         if (properties != null) {
-            if (node.has("excludedFromEqualsAndHashCode")) {
-                JsonNode excludedArray = node.get("excludedFromEqualsAndHashCode");
+            if (hasExtensionProperty(node, "excludedFromEqualsAndHashCode")) {
+                JsonNode excludedArray = getExtensionProperty(node, "excludedFromEqualsAndHashCode");
 
                 for (Iterator<JsonNode> iterator = excludedArray.elements(); iterator.hasNext(); ) {
                     String excludedPropertyName = iterator.next().asText();
@@ -436,8 +439,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 String propertyName = entry.getKey();
                 JsonNode propertyNode = entry.getValue();
 
-                if (propertyNode.has("excludedFromEqualsAndHashCode") &&
-                        propertyNode.get("excludedFromEqualsAndHashCode").asBoolean()) {
+                if (hasExtensionProperty(propertyNode, "excludedFromEqualsAndHashCode") &&
+                        getExtensionProperty(propertyNode, "excludedFromEqualsAndHashCode").asBoolean()) {
                     filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(propertyName, propertyNode));
                 }
             }

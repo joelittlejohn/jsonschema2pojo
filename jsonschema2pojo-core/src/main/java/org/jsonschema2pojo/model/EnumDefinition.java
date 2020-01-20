@@ -12,8 +12,8 @@ import java.util.Collections;
  *
  * The definition of the enum can be decided by:
  *    "enum" (JSON-Schema)
- *    "enum" and "javaEnums" (JSON-Schema + jsonschema2pojo extension)
- *    "enum" and "javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
+ *    "enum" and "x-javaEnums" (JSON-Schema + jsonschema2pojo extension)
+ *    "enum" and "x-javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
  */
 public class EnumDefinition {
   private final JType backingType;

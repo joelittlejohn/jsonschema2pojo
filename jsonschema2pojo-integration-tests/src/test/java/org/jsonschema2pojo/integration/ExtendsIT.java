@@ -23,19 +23,40 @@ import static org.junit.Assert.*;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class ExtendsIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                /* { schemaDir } */
+                { "/schema/extends/" },
+                { "/schema/x-extends/" },
+        });
+    }
+
+    private final String schemaDir;
+
+    public ExtendsIT(String schemaDir) {
+        this.schemaDir = schemaDir;
+    }
+
 
     @Test
     @SuppressWarnings("rawtypes")
     public void extendsWithEmbeddedSchemaGeneratesParentType() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsEmbeddedSchema.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "extendsEmbeddedSchema.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.ExtendsEmbeddedSchema");
         Class supertype = resultsClassLoader.loadClass("com.example.ExtendsEmbeddedSchemaParent");
@@ -48,7 +69,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithRefToAnotherSchema() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfA.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfA.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.A");
@@ -61,7 +82,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsWithRefToAnotherSchemaThatIsAlreadyASubtype() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfA.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
@@ -73,7 +94,7 @@ public class ExtendsIT {
     @Test(expected = ClassNotFoundException.class)
     public void extendsStringCausesNoNewTypeToBeGenerated() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsString.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "extendsString.json", "com.example");
         resultsClassLoader.loadClass("com.example.ExtendsString");
 
     }
@@ -81,7 +102,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings("rawtypes")
     public void extendsEquals() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example2");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfA.json", "com.example2");
 
         Class generatedType = resultsClassLoader.loadClass("com.example2.SubtypeOfSubtypeOfA");
         Object instance = generatedType.newInstance();
@@ -100,7 +121,7 @@ public class ExtendsIT {
     @SuppressWarnings("rawtypes")
     public void extendsSchemaWithinDefinitions() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsSchemaWithinDefinitions.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "extendsSchemaWithinDefinitions.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.Child");
         assertNotNull("no propertyOfChild field", subtype.getDeclaredField("propertyOfChild"));
@@ -114,7 +135,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsProperties() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("includeConstructors", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfB.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
         Class supertype = resultsClassLoader.loadClass("com.example.B");
@@ -140,7 +161,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsParentProperties() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfB.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfB");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfB");
@@ -172,7 +193,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorHasParentsParentPropertiesInCorrectOrder() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfBDifferentType.json", "com.example", config("includeConstructors", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfBDifferentType.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfBDifferentType");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfB");
@@ -204,7 +225,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void constructorDoesNotDuplicateArgsFromDuplicatedParentProperties() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfC.json", "com.example", config("includeConstructors", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfC");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfC");
@@ -236,7 +257,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings("rawtypes")
     public void extendsBuilderMethods() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfSubtypeOfA.json", "com.example", config("generateBuilders", true));
 
         Class subtype = resultsClassLoader.loadClass("com.example.SubtypeOfSubtypeOfA");
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfA");
@@ -247,7 +268,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings("rawtypes")
     public void builderMethodsOnChildWithProperties() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfB.json", "com.example", config("generateBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfB.json", "com.example", config("generateBuilders", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfB");
         Class supertype = resultsClassLoader.loadClass("com.example.B");
@@ -258,7 +279,7 @@ public class ExtendsIT {
     @Test
     @SuppressWarnings("rawtypes")
     public void builderMethodsOnChildWithNoProperties() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfBWithNoProperties.json", "com.example", config("generateBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaDir + "subtypeOfBWithNoProperties.json", "com.example", config("generateBuilders", true));
 
         Class type = resultsClassLoader.loadClass("com.example.SubtypeOfBWithNoProperties");
         Class supertype = resultsClassLoader.loadClass("com.example.B");

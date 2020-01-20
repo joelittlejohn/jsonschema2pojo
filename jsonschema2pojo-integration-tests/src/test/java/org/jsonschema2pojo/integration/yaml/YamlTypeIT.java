@@ -24,24 +24,45 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class YamlTypeIT {
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private static Class<?> classWithManyTypes;
+    private static ClassLoader classLoader;
 
     @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
-        classWithManyTypes = classSchemaRule.generateAndCompile("/schema/yaml/type/types.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.Types");
+    public static void generateAndCompileClass() {
+        classSchemaRule.generate("/schema/yaml/type/types.yaml", "com.example", config("sourceType", "yamlschema"));
+        classSchemaRule.generate("/schema/yaml/type/x-types.yaml", "com.example", config("sourceType", "yamlschema"));
+        classLoader = classSchemaRule.compile();
+    }
+
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                /* { className } */
+                { "com.example.Types" },
+                { "com.example.XTypes" },
+        });
+    }
+
+    private Class<?> classWithManyTypes;
+
+    public YamlTypeIT(String className) throws ClassNotFoundException {
+        classWithManyTypes = classLoader.loadClass(className);
     }
 
     @Test
@@ -182,120 +203,6 @@ public class YamlTypeIT {
         assertThat(classWithManyTypes.getMethod("getBooleanWithJavaType").getReturnType().getName(), is("long"));
         assertThat(classWithManyTypes.getMethod("getDateWithJavaType").getReturnType().getName(), is("int"));
 
-    }
-
-    @Test
-    public void maximumGreaterThanIntegerMaxCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMaximumAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
-
-    }
-
-    @Test
-    public void maximumGreaterThanIntegerMaxCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMaximumAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("long"));
-
-    }
-
-    @Test
-    public void minimumLessThanIntegerMinCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMinimumAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
-
-    }
-
-    @Test
-    public void minimumLessThanIntegerMinCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMinimumAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("long"));
-
-    }
-
-    @Test
-    public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Long"));
-
-    }
-
-    @Test
-    public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerAsLong");
-
-        Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("long"));
-    }
-
-    @Test
-    public void useDoubleNumbersFalseCausesNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "sourceType", "yamlschema"))
-                .loadClass("com.example.NumberAsFloat");
-
-        Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("java.lang.Float"));
-
-    }
-
-    @Test
-    public void useDoubleNumbersFalseCausesPrimitiveNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.NumberAsFloat");
-
-        Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
-
-        assertThat(getterMethod.getReturnType().getName(), is("float"));
-    }
-
-    @Test
-    public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-
-        Class<?> classWithUnionProperties = schemaRule.generateAndCompile("/schema/yaml/type/unionTypes.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.UnionTypes");
-
-        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
-
-        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
-
-        Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
-
-        assertThat(stringGetter.getReturnType().getName(), is("java.lang.String"));
-
-        Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
-
-        assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Test
-    public void typeNameConflictDoesNotCauseTypeReuse() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithNameConflict = schemaRule.generateAndCompile("/schema/yaml/type/typeNameConflict.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.TypeNameConflict");
-
-        Method getterMethod = classWithNameConflict.getMethod("getTypeNameConflict");
-
-        assertThat((Class) getterMethod.getReturnType(), is(not((Class) classWithNameConflict)));
     }
 
     @Test

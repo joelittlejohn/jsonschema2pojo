@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "x-extends": {
+        "$ref": "subtypeOfA.json"
+    },
+    "properties": {
+        "parent" : {
+            "type": "string"
+        },
+        "child": {
+            "type": "string"
+        }
+    }
+}

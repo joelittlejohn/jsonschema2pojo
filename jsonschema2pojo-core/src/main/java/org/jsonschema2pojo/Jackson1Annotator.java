@@ -40,6 +40,9 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 
+import static org.jsonschema2pojo.util.ExtensionsHelper.getExtensionProperty;
+import static org.jsonschema2pojo.util.ExtensionsHelper.hasExtensionProperty;
+
 /**
  * Annotates generated Java types using the Jackson 1.x mapping annotations.
  *
@@ -97,9 +100,9 @@ public class Jackson1Annotator extends AbstractTypeInfoAwareAnnotator {
             field.annotate(JsonDeserialize.class).param("as", LinkedHashSet.class);
         }
 
-        if (propertyNode.has("javaJsonView")) {
+        if (hasExtensionProperty(propertyNode, "javaJsonView")) {
             field.annotate(JsonView.class).param(
-                    "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+                    "value", field.type().owner().ref(getExtensionProperty(propertyNode, "javaJsonView").asText()));
         }
     }
 

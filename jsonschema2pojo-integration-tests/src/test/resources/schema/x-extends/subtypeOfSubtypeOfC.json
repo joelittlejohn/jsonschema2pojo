@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "x-extends": {
+        "$ref": "subtypeOfC.json"
+    },
+    "properties": {
+        "duplicatedProp": {
+            "type": "string"
+        },
+        "cSubtypeSubtypeProp": {
+            "type": "integer"
+        }
+    }
+}

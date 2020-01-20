@@ -23,23 +23,43 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class GenericTypeIT {
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
-    private static Class<?> classWithGenericTypes;
+    private static ClassLoader classLoader;
 
     @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    public static void generateAndCompileClass() {
+        classSchemaRule.generate("/schema/type/genericJavaType.json", "com.example");
+        classSchemaRule.generate("/schema/type/x-genericJavaType.json", "com.example");
+        classLoader = classSchemaRule.compile();
+    }
 
-        classWithGenericTypes = classSchemaRule.generateAndCompile("/schema/type/genericJavaType.json", "com.example").loadClass("com.example.GenericJavaType");
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                /* { className } */
+                { "com.example.GenericJavaType" },
+                { "com.example.XGenericJavaType" },
+        });
+    }
 
+    private Class<?> classWithGenericTypes;
+
+    public GenericTypeIT(String className) throws ClassNotFoundException {
+        classWithGenericTypes = classLoader.loadClass(className);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
