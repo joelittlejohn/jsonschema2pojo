@@ -435,6 +435,16 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     @Override
+    public String getListType() {
+        return null;
+    }
+
+	@Override
+	public String getSetType() {
+		return null;
+	}
+
+    @Override
     public String getCustomDatePattern() {
         return null;
     }

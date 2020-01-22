@@ -741,6 +741,24 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private String refFragmentPathDelimiters = "#/.";
 
+    /**
+     * What type to use instead of java.util.List when adding list type fields
+     * to generated Java types.
+     *
+     * @parameter property="jsonschema2pojo.listType"
+     * @since 1.0.3
+     */
+    private String listType = null;
+
+	/**
+	 * What type to use instead of java.util.Set when adding set type fields
+	 * to generated Java types.
+	 *
+	 * @parameter property="jsonschema2pojo.setType"
+	 * @since 1.0.3
+	 */
+	private String setType = null;
+
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
@@ -1227,6 +1245,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
     }
+
+    @Override
+	public String getListType() {
+		return listType;
+	}
+
+	@Override
+	public String getSetType() {
+		return setType;
+	}
 
     @Override
     public SourceSortOrder getSourceSortOrder() {

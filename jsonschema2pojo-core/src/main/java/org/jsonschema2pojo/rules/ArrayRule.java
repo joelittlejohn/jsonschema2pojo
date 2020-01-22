@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.Inflector;
 import com.sun.codemodel.JClass;
@@ -87,9 +88,13 @@ public class ArrayRule implements Rule<JPackage, JClass> {
 
         JClass arrayType;
         if (uniqueItems) {
-            arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
+            final String setClass = ruleFactory.getGenerationConfig().getSetType();
+
+            arrayType = jpackage.owner().ref(StringUtils.isBlank(setClass) ? Set.class.getName() : setClass).narrow(itemType);
         } else {
-            arrayType = jpackage.owner().ref(List.class).narrow(itemType);
+            final String listClass = ruleFactory.getGenerationConfig().getListType();
+
+            arrayType = jpackage.owner().ref(StringUtils.isBlank(listClass) ? List.class.getName() : listClass).narrow(itemType);
         }
 
         if (rootSchemaIsArray) {
@@ -102,5 +107,4 @@ public class ArrayRule implements Rule<JPackage, JClass> {
     private String makeSingular(String nodeName) {
         return Inflector.getInstance().singularize(nodeName);
     }
-
 }

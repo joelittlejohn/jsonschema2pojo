@@ -576,6 +576,34 @@ public interface GenerationConfig {
   String getRefFragmentPathDelimiters();
 
   /**
+   * Gets the `listType` configuration option.
+   * <p>
+   * Example values:
+   * <ul>
+   * <li><code>*anything*</code> (no compile time check)</li>
+   * <li><code>null</code> (default behavior)</li>
+   * </ul>
+   *
+   * @return The java type to use instead of java.util.List when adding list type
+   *         fields to generated Java types.
+   */
+  String getListType();
+
+  /**
+   * Gets the `setType` configuration option.
+   * <p>
+   * Example values:
+   * <ul>
+   * <li><code>*anything*</code> (no compile time check)</li>
+   * <li><code>null</code> (default behavior)</li>
+   * </ul>
+   *
+   * @return The java type to use instead of java.util.Set when adding set type
+   *         fields to generated Java types.
+   */
+  String getSetType();
+
+  /**
    * Gets the 'sourceSortOrder' configuration option.
    *
    * @return
