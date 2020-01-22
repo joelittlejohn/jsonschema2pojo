@@ -55,7 +55,7 @@ public class SchemaStore {
 
         if (!schemas.containsKey(id)) {
 
-            URI baseId = removeFragment(id);
+            URI baseId = removeFragment(id).normalize();
             JsonNode baseContent = contentResolver.resolve(baseId);
             Schema baseSchema = new Schema(baseId, baseContent, null);
 
