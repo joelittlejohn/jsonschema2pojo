@@ -1,0 +1,24 @@
+{
+  "type" : "object",
+  "properties" : {
+    "propertyOfChild" : {
+      "type" : "string"
+    }
+  },
+  "extends" : {
+    "type" : "object",
+    "properties" : {
+      "propertyOfParent" : {
+        "type" : "string"
+      }
+    }
+  },
+ "x-extends" : {
+    "type" : "object",
+    "properties" : {
+      "propertyOfParent" : {
+        "type" : "string"
+      }
+    }
+  }
+}
