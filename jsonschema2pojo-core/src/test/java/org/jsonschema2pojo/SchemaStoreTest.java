@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import org.junit.Test;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+import org.mockito.internal.matchers.Same;
 
 public class SchemaStoreTest {
 
@@ -81,6 +82,7 @@ public class SchemaStoreTest {
 
         //Both schema objects should have the same Id value since their URI's point to the same resource
         assertThat(schemaWithoutRelativeSegment.getId(), is(schemaWithRelativeSegment.getId()));
+        assertThat(schemaWithoutRelativeSegment, sameInstance(schemaWithRelativeSegment));
     }
 
     @Test

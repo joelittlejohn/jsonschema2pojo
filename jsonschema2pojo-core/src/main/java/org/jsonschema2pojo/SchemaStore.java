@@ -53,21 +53,24 @@ public class SchemaStore {
      */
     public synchronized Schema create(URI id, String refFragmentPathDelimiters) {
 
-        if (!schemas.containsKey(id)) {
+        URI normalizedId = id.normalize();
+
+        if (!schemas.containsKey(normalizedId)) {
 
             URI baseId = removeFragment(id).normalize();
             JsonNode baseContent = contentResolver.resolve(baseId);
+
             Schema baseSchema = new Schema(baseId, baseContent, null);
 
-            if (id.toString().contains("#")) {
+            if (normalizedId.toString().contains("#")) {
                 JsonNode childContent = fragmentResolver.resolve(baseContent, '#' + id.getFragment(), refFragmentPathDelimiters);
-                schemas.put(id, new Schema(id, childContent, baseSchema));
+                schemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema));
             } else {
-                schemas.put(id, baseSchema);
+                schemas.put(normalizedId, baseSchema);
             }
         }
 
-        return schemas.get(id);
+        return schemas.get(normalizedId);
     }
 
     protected URI removeFragment(URI id) {
