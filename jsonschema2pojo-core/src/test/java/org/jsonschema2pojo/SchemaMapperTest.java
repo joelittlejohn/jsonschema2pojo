@@ -22,8 +22,10 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.example.Example;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.rules.SchemaRule;
 import org.junit.Test;
@@ -36,8 +38,23 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 public class SchemaMapperTest {
+
+    @Test
+    public void whenGeneratingRecursiveSchemasDoNotReGenerateClasses() throws IOException {
+
+        JCodeModel codeModel = new JCodeModel();
+        URL source = this.getClass().getResource("/schema/person.json");
+
+        GenerationConfig config = new DefaultGenerationConfig();
+
+        SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new GsonAnnotator(config), new SchemaStore()), new SchemaGenerator());
+
+        JType generatedClass = mapper.generate(codeModel, "ClassName", "com.example", source);
+
+    }
 
     @Test
     public void generateReadsSchemaAsObject() throws IOException {

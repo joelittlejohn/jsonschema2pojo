@@ -72,7 +72,7 @@ public class FragmentRefIT {
         JsonNode schema = new ObjectMapper().readTree("{\"type\":\"object\", \"properties\":{\"a\":{\"$ref\":\"#/b\"}}, \"b\":\"string\"}");
         
         JPackage p = codeModel._package("com.example");
-        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
+        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null, null));
     }
     
     @Test
@@ -101,7 +101,7 @@ public class FragmentRefIT {
               "}");
         
         JPackage p = codeModel._package("com.example");
-        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
+        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null,null));
     }
 
 }

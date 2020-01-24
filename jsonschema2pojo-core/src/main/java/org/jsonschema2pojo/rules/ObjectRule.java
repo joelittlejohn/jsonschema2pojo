@@ -83,6 +83,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage _package, Schema schema) {
 
+        if(ruleFactory.getGenerationConfig().isUseTitleAsClassname() && node.has("title")) {
+            if(ruleFactory.getSchemaStore().isTypeGenerated(schema.getSha256key())) {
+                schema.setJavaTypeIfEmpty(ruleFactory.getSchemaStore().getType(schema.getSha256key()));
+                return schema.getJavaType();
+            }
+        }
+
         JType superType = reflectionHelper.getSuperType(nodeName, node, _package, schema);
         if (superType.isPrimitive() || reflectionHelper.isFinal(superType)) {
             return superType;

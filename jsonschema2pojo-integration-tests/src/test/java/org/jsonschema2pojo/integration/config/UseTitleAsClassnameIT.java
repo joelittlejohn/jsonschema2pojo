@@ -82,4 +82,51 @@ public class UseTitleAsClassnameIT {
         assertThat(generatedType, is(notNullValue()));
     }
 
+    @Test
+    public void useTitleAsClassnameDoesNotCreateDuplicateClasses() throws ClassNotFoundException, NoSuchMethodException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/title/repeatedSubschemas.json", "com.example",
+                config("useTitleAsClassname", true));
+
+        Class car = resultsClassLoader.loadClass("com.example.Car");
+        assertThat(car, notNullValue());
+
+        Class wheel = resultsClassLoader.loadClass("com.example.Wheel");
+        assertThat(wheel, notNullValue());
+
+        Method frontRightWheel = car.getMethod("getFrontRightWheel");
+        assertThat(frontRightWheel.getReturnType(), typeCompatibleWith(wheel));
+
+        Method frontLeftWheel = car.getMethod("getFrontLeftWheel");
+        assertThat(frontLeftWheel.getReturnType(), typeCompatibleWith(wheel));
+
+        Method backRightWheel = car.getMethod("getBackRightWheel");
+        assertThat(backRightWheel.getReturnType(), typeCompatibleWith(wheel));
+
+        Method backLeftWheel = car.getMethod("getBackLeftWheel");
+        assertThat(backLeftWheel.getReturnType(), typeCompatibleWith(wheel));
+    }
+
+    @Test
+    public void doNotUseTitleAsClassnameCreatesDuplicateClasses() throws ClassNotFoundException, NoSuchMethodException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/title/repeatedSubschemas.json", "com.example",
+                config("useTitleAsClassname", false));
+
+        Class car = resultsClassLoader.loadClass("com.example.RepeatedSubschemas");
+        assertThat(car, notNullValue());
+
+        Method frontRightWheel = car.getMethod("getFrontRightWheel");
+        assertThat(frontRightWheel.getReturnType(), typeCompatibleWith(resultsClassLoader.loadClass("com.example.FrontRightWheel")));
+
+        Method frontLeftWheel = car.getMethod("getFrontLeftWheel");
+        assertThat(frontLeftWheel.getReturnType(), typeCompatibleWith(resultsClassLoader.loadClass("com.example.FrontLeftWheel")));
+
+        Method backRightWheel = car.getMethod("getBackRightWheel");
+        assertThat(backRightWheel.getReturnType(), typeCompatibleWith(resultsClassLoader.loadClass("com.example.BackRightWheel")));
+
+        Method backLeftWheel = car.getMethod("getBackLeftWheel");
+        assertThat(backLeftWheel.getReturnType(), typeCompatibleWith(resultsClassLoader.loadClass("com.example.BackLeftWheel")));
+    }
+
 }

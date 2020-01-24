@@ -17,9 +17,12 @@
 package org.jsonschema2pojo;
 
 import java.net.URI;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * A JSON Schema document.
@@ -29,12 +32,24 @@ public class Schema {
     private final URI id;
     private final JsonNode content;
     private final Schema parent;
+    private final BiConsumer<String, JType> typeCacheCallback;
+    private final String sha256key;
     private JType javaType;
 
-    public Schema(URI id, JsonNode content, Schema parent) {
+    public Schema(URI id, JsonNode content, Schema parent, BiConsumer<String, JType> typeCacheCallback) {
         this.id = id;
         this.content = content;
         this.parent = parent != null ? parent : this;
+        this.sha256key = DigestUtils.sha256Hex(content.toString());
+        if(typeCacheCallback == null) {
+            this.typeCacheCallback = (k, v) -> {}; //bit bucket
+        } else {
+            this.typeCacheCallback = typeCacheCallback;
+        }
+    }
+
+    public String getSha256key() {
+        return sha256key;
     }
 
     public JType getJavaType() {
@@ -43,6 +58,7 @@ public class Schema {
 
     public void setJavaType(JType javaType) {
         this.javaType = javaType;
+        typeCacheCallback.accept(sha256key, javaType);
     }
 
     public void setJavaTypeIfEmpty(JType javaType) {
@@ -79,7 +95,7 @@ public class Schema {
      */
     public Schema deriveChildSchema(JsonNode content) {
         if (content != this.content) {
-            return new Schema(id, content, this);
+            return new Schema(id, content, this, typeCacheCallback);
         } else {
             return this;
         }

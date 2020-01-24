@@ -34,6 +34,50 @@ import org.mockito.internal.matchers.Same;
 public class SchemaStoreTest {
 
     @Test
+    public void assertTypeIsCached() throws URISyntaxException {
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        SchemaStore schemaStore = new SchemaStore();
+        JType type = mock(JDefinedClass.class);
+
+        Schema schema = schemaStore.create(schemaUri, "#/.");
+        schema.setJavaType(type);
+
+        assertThat(schemaStore.getType(schema.getSha256key()), sameInstance(type));
+    }
+
+    @Test
+    public void assertTypeIsNotCached() throws URISyntaxException {
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        SchemaStore schemaStore = new SchemaStore();
+
+        Schema schema = schemaStore.create(schemaUri, "#/.");
+
+        assertThat(schemaStore.getType(schema.getSha256key()), nullValue());
+    }
+
+    @Test
+    public void assetTypeIsGenerated() throws URISyntaxException {
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        SchemaStore schemaStore = new SchemaStore();
+        JType type = mock(JDefinedClass.class);
+
+        Schema schema = schemaStore.create(schemaUri, "#/.");
+        schema.setJavaType(type);
+
+        assertTrue(schemaStore.isTypeGenerated(schema.getSha256key()));
+    }
+
+    @Test
+    public void assertTypeIsNotGenerated() throws URISyntaxException {
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        SchemaStore schemaStore = new SchemaStore();
+
+        Schema schema = schemaStore.create(schemaUri, "#/.");
+
+        assertFalse(schemaStore.isTypeGenerated(schema.getSha256key()));
+    }
+
+    @Test
     public void createWithAbsolutePath() throws URISyntaxException {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();

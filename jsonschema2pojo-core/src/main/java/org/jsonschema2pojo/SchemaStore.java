@@ -24,10 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JType;
 
 public class SchemaStore {
 
     protected final Map<URI, Schema> schemas = new HashMap<>();
+    protected final Map<String, JType> types = new HashMap<>();
 
     protected final FragmentResolver fragmentResolver = new FragmentResolver();
     protected final ContentResolver contentResolver;
@@ -59,12 +61,11 @@ public class SchemaStore {
 
             URI baseId = removeFragment(id).normalize();
             JsonNode baseContent = contentResolver.resolve(baseId);
-
-            Schema baseSchema = new Schema(baseId, baseContent, null);
+            Schema baseSchema = new Schema(baseId, baseContent, null, this::cacheType);
 
             if (normalizedId.toString().contains("#")) {
                 JsonNode childContent = fragmentResolver.resolve(baseContent, '#' + id.getFragment(), refFragmentPathDelimiters);
-                schemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema));
+                schemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema, this::cacheType));
             } else {
                 schemas.put(normalizedId, baseSchema);
             }
@@ -127,7 +128,7 @@ public class SchemaStore {
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
             JsonNode parentContent = parent.getParent().getContent();
-            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getParent());
+            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getParent(), this::cacheType);
             schemas.put(id, schema);
             return schema;
         }
@@ -144,4 +145,17 @@ public class SchemaStore {
         schemas.clear();
     }
 
+    protected synchronized void cacheType(String sha256Key, JType type) {
+        if(!types.containsKey(sha256Key)) {
+            types.put(sha256Key, type);
+        }
+    }
+
+    public synchronized boolean isTypeGenerated(String sha256Key) {
+        return types.containsKey(sha256Key);
+    }
+
+    public synchronized JType getType(String sha256Key) {
+        return types.get(sha256Key);
+    }
 }

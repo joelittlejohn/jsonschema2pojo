@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://example.com/car.json",
+  "type": "object",
+  "title": "Car",
+  "properties": {
+    "frontRightWheel": {
+      "$id": "#wheel.json",
+      "title": "Wheel",
+      "type": "object",
+      "properties": {
+        "pressure": {
+          "$id": "#pressure",
+          "title": "Pressure",
+          "type": "integer"
+        },
+        "size": {
+          "$id": "#size",
+          "title": "Size",
+          "type": "integer"
+        }
+      }
+    },
+    "frontLeftWheel": {
+      "$id": "#wheel.json",
+      "title": "Wheel",
+      "type": "object",
+      "properties": {
+        "pressure": {
+          "$id": "#pressure",
+          "title": "Pressure",
+          "type": "integer"
+        },
+        "size": {
+          "$id": "#size",
+          "title": "Size",
+          "type": "integer"
+        }
+      }
+    },
+    "backRightWheel": {
+      "$id": "#wheel.json",
+      "title": "Wheel",
+      "type": "object",
+      "properties": {
+        "pressure": {
+          "$id": "#pressure",
+          "title": "Pressure",
+          "type": "integer"
+        },
+        "size": {
+          "$id": "#size",
+          "title": "Size",
+          "type": "integer"
+        }
+      }
+    },
+    "backLeftWheel": {
+      "$id": "#wheel.json",
+      "title": "Wheel",
+      "type": "object",
+      "properties": {
+        "pressure": {
+          "$id": "#pressure",
+          "title": "Pressure",
+          "type": "integer"
+        },
+        "size": {
+          "$id": "#size",
+          "title": "Size",
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
