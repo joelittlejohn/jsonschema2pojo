@@ -1,0 +1,665 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-Language" content="en-gb">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="http://ant.apache.org/manual/stylesheets/style.css">
+  <title>Jsonschema2Pojo Task</title>
+</head>
+
+<body>
+
+<h2><a name="taskname">Jsonschema2Pojo</a></h2>
+<h3>Description</h3>
+<p>jsonschema2pojo uses the structural rules present in a JSON Schema document to generate DTO style
+  Java classes.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">source</td>
+    <td valign="top">The input JSON schema.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">targetDirectory</td>
+    <td valign="top">The directory that generated .java source files will be saved to.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">annotationStyle</td>
+    <td valign="top">The style of annotations to use in the generated Java types. Supported values:
+      <ul>
+        <li><code>JACKSON2</code> (apply annotations from the <a
+            href="https://github.com/FasterXML/jackson-annotations">Jackson 2.x</a> library)
+        </li>
+        <li><code>JACKSON1</code> (apply annotations from the <a
+            href="http://jackson.codehaus.org/">Jackson
+          1.x</a> library)
+        </li>
+        <li><code>GSON</code> (apply annotations from the <a
+            href="https://code.google.com/p/google-gson//">Gson</a> library)
+        </li>
+        <li><code>MOSHI1</code> (apply annotations from the <a
+            href="https://github.com/square/moshi//">Moshi
+          1.x</a> library)
+        </li>
+        <li><code>NONE</code> (apply no annotations at all)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No (default <code>JACKSON2</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useTitleAsClassname</td>
+    <td valign="top">When set the title is used as classname.</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">inclusionLevel</td>
+    <td valign="top">The level of inclusion to be set for generated java types (to control level of
+      inclusion in
+      case of Jackson1 or Jackson2 serializator). Each level will have its own set of mapping
+      annotations.
+      Supported values:
+      <ul>
+        <li><code>ALWAYS</code> Value that indicates that property is to be always included,
+          independent of
+          value of the property. Valid for both versions of Jackson.
+        </li>
+        <li><code>NON_ABSENT</code> Value that indicates that properties are included unless their
+          value is:
+          null "absent" value of a referential type (like Java 8 `Optional`, or {link
+          java.utl.concurrent.atomic.AtomicReference}); that is, something that would not deference
+          to a
+          non-null value. Valid only for jackson2, for Jackson1 NON_NUL is used.
+        </li>
+        <li><code>NON_DEFAULT</code> Meaning of this setting depends on context: whether annotation
+          is specified
+          for POJO type (class), or not Valid for both versions of Jackson.
+        </li>
+        <li><code>NON_EMPTY</code> Value that indicates that only properties with null value, or
+          what is
+          considered empty, are not to be included. Valid for both versions of Jackson.
+        </li>
+        <li><code>NON_NULL</code> Value that indicates that only properties with non-null values are
+          to be
+          included. Valid for both versions of Jackson.
+        </li>
+        <li><code>USE_DEFAULTS</code> Pseudo-value used to indicate that the higher-level defaults
+          make sense,
+          to avoid overriding inclusion value. Valid only for jackson2, for Jackson1 NON_NUL is
+          used.
+        </li>
+      </ul>
+    </td>
+    <td align="center" valign="top">Default value <code>NON_NULL</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">classNamePrefix</td>
+    <td valign="top">Whether to add a prefix to generated classes</td>
+    <td align="center" valign="top">No (default <code>""</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">classNameSuffix</td>
+    <td valign="top">Whether to add a suffix to generated classes</td>
+    <td align="center" valign="top">No (default <code>""</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">fileExtensions</td>
+    <td valign="top">A string containing file extensions that should be considered full extensions
+      and therefore
+      ignored when generating classnames.
+    </td>
+    <td align="center" valign="top">No (default <code>""</code> (none))</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">Additional classpath to use. Any path elements provided here will be added to
+      the classpath
+      when this task is invoked.
+      <p>
+        If a support for filesets/filelists/dirsets etc is required, this property can also be set
+        as a nested
+        element like:
+      <pre>
+&lt;jsonschema2pojo ...
+    &lt;classpath>
+        &lt;fileset dir="custom-libs">
+            &lt;include name="**/*.jar" />
+        &lt;/fileset>
+    &lt;/classpath>
+&lt;jsonschema2pojo/>
+</pre>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathRef</td>
+    <td valign="top">Additional classpath to use, given as a reference to a path defined elsewhere.
+      Can be used in
+      conjuction with the <code>classpath</code> option (the result is the union of all paths).
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">customAnnotator</td>
+    <td valign="top">
+      <p>A fully qualified class name, referring to a custom annotator class that implements <code>org.jsonschema2pojo.Annotator</code>
+        and will be used in addition to the one chosen by <code>annotationStyle</code>.</p>
+      <p>If you want to use the custom annotator alone, set <code>annotationStyle</code> to <code>none</code>.
+      </p>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">customRuleFactory</td>
+    <td valign="top">
+      <p>A fully qualified class name, referring to a custom rule factory class that extends <code>org.jsonschema2pojo.rules.RuleFactory</code>.
+      </p>
+      <p>By specifying a custom implementation you can customize most aspects of code generation by
+        returning
+        custom instances of rules.</p>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">generateBuilders</td>
+    <td valign="top">Whether to generate builder-style methods of the form
+      <code>withXxx(value)</code> (that return
+      <code>this</code>), alongside the standard, void-return setters.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeTypeInfo</td>
+    <td valign="top">
+      <p>Whether to include json type information; often required to support polymorphic type
+        handling.</p>
+      <p>By default the type information is stored in the @class property, this can be overridden in
+        the deserializationClassProperty of the schema.</p>
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useInnerClassBuilders</td>
+    <td valign="top">Determines whether builders will be chainable setters or embedded classes when
+      generateBuilders is used.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeConstructorPropertiesAnnotation</td>
+    <td valign="top">Determines if constructors will be annotated with JDK-provided ConstructorProperties annotation. (Not Available on Android)</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeGetters</td>
+    <td valign="top">Whether to include getters or to omit these accessor methods and create public
+      fields instead.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeSetters</td>
+    <td valign="top">Whether to include setters or to omit these accessor methods and create public
+      fields instead.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeAdditionalProperties</td>
+    <td valign="top">Whether to allow 'additional properties' support in objects. Setting this to
+      false will disable
+      additional properties support, regardless of the input schema(s).
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeDynamicAccessors</td>
+    <td valign="top">Whether to include dynamic getters, setters, and builders or to omit these
+      methods.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeDynamicGetters</td>
+    <td valign="top">Whether to include dynamic getters or to omit these methods.</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeDynamicSetters</td>
+    <td valign="top">Whether to include dynamic setters or to omit these methods.</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeDynamicBuilders</td>
+    <td valign="top">Whether to include dynamic builders or to omit these methods.</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeConstructors</td>
+    <td valign="top">Whether to generate constructors for generated Java types</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">constructorsRequiredPropertiesOnly</td>
+    <td valign="top">This is a legacy configuration option used to turn on the {@link
+      #isConstructorsIncludeAllPropertiesConstructor()} and off the {@link
+      #isConstructorsIncludeAllPropertiesConstructor()} configuration options.
+      It is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing
+      if that property is not enabled
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeRequiredPropertiesConstructor</td>
+    <td valign="top">The 'constructorsIncludeRequiredPropertiesConstructor' configuration option
+      works in collaboration with the {@link #isIncludeConstructors()} configuration option and is
+      incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect if
+      {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is
+      set to true then this configuration determines whether the resulting object should include a
+      constructor with only the required properties as parameters
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeAllPropertiesConstructor</td>
+    <td valign="top">The 'constructorsIncludeRequiredPropertiesConstructor' configuration option
+      works in collaboration with the {@link #isIncludeConstructors()} configuration option and is
+      incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect if
+      {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is
+      set to true then this configuration determines whether the resulting object should include a
+      constructor with all listed properties as parameters.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeCopyConstructor</td>
+    <td valign="top">The 'constructorsIncludeRequiredPropertiesConstructor' configuration option
+      works in collaboration with the {@link #isIncludeConstructors()} configuration option and is
+      incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect if
+      {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is
+      set to true then this configuration determines whether the resulting object should include a
+      constructor the class itself as a parameter, with the expectation that all properties from the
+      originating class will assigned to the new class.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeHashcodeAndEquals</td>
+    <td valign="top">Whether to use include <code>hashCode</code> and <code>equals</code> methods in
+      generated Java
+      types.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeJsr303Annotations</td>
+    <td valign="top">Whether to include <a
+        href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations
+      (for schema rules like minimum, maximum, etc) in generated Java types.
+      <p>
+        Schema rules and the annotation they produce:
+      <ul>
+        <li>maximum = <code>@DecimalMax</code>
+        <li>minimum = <code>@DecimalMin</code>
+        <li>minItems,maxItems = <code>@Size</code>
+        <li>minLength,maxLength = <code>@Size</code>
+        <li>pattern = <code>@Pattern</code>
+        <li>required = <code>@NotNull</code>
+      </ul>
+      Any Java fields which are an object or array of objects will be annotated with
+      <code>@Valid</code> to
+      support validation of an entire document tree.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeJsr305Annotations</td>
+    <td valign="top">Whether to include <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a>
+      annotations (for
+      defect detection) in generated Java types.
+      <p>
+        Schema rules and the annotation they produce:
+      <ul>
+        <li>required = <code>@NonNull</code>
+      </ul>
+      A Java field which is required will have the <code>@NonNull</code> added, and
+      <code>@Nullable</code> on all
+      other fields.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useOptionalForGetters</td>
+    <td valign="top">Whether to use <a
+        href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html">Optional</a> as
+      return type for
+      getters of non-required fields.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">includeToString</td>
+    <td valign="top">Whether to use include a <code>toString</code> method in generated Java types.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">toStringExcludes</td>
+    <td valign="top">A string containing fields to be excluded from toString generation.</td>
+    <td align="center" valign="top">No (default <code>""</code> (none))</td>
+  </tr>
+  <tr>
+    <td valign="top">initializeCollections</td>
+    <td valign="top">Whether to initialize Set and List fields as empty collections, or leave them
+      as
+      <code>null</code>.
+    </td>
+    <td align="center" valign="top">Yes (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">outputEncoding</td>
+    <td valign="top">The character encoding that should be used when writing the generated Java
+      source files.
+    </td>
+    <td align="center" valign="top">No (default <code>UTF-8</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">parcelable</td>
+    <td valign="top">**EXPERIMENTAL** Whether to make the generated types 'parcelable' (for Android
+      development).
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">serializable</td>
+    <td valign="top">Whether to make the generated types 'serializable'.</td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">propertyWordDelimiters</td>
+    <td valign="top">A string containing any characters that should act as word delimiters when
+      choosing Java bean
+      property names.
+    </td>
+    <td align="center" valign="top">No (default "- _" (hyphen, space, underscore))</td>
+  </tr>
+  <tr>
+    <td valign="top">removeOldOutput</td>
+    <td valign="top">Whether to empty the target directory before generation occurs, to clear out
+      all source files
+      that have been generated previously.
+      <p>
+        <strong>Be warned</strong>, when activated this option will cause jsonschema2pojo to
+        <strong>indiscriminately
+          delete the entire contents of the target directory (all files and folders)</strong> before
+        it begins
+        generating sources.
+    </td>
+    <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">skip</td>
+    <td valign="top">Whether to skip type generation entirely (useful when set via a build property
+      to allow quick
+      disabling of this task using a command line property).
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">sourceType</td>
+    <td valign="top">The type of input documents that will be read
+      <p>
+        Supported values:
+      <ul>
+        <li><code>JSONSCHEMA</code> (schema documents, containing formal rules that describe the
+          structure of JSON data)
+        </li>
+        <li><code>JSON</code> (documents that represent an example of the kind of JSON data that the
+          generated Java types will be mapped to)
+        </li>
+        <li><code>YAMLSCHEMA</code> (JSON schema documents, represented as YAML)</li>
+        <li><code>YAML</code> (documents that represent an example of the kind of YAML (or JSON)
+          data that the generated Java types will be mapped to)
+        </li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">targetLanguage</td>
+    <td valign="top">The type of code that will be generated.
+      <p>
+        Supported values:
+      <ul>
+        <li><code>JAVA</code></li>
+        <li><code>SCALA</code></li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">targetPackage</td>
+    <td valign="top">Package name used for generated Java classes (for types where a fully qualified
+      name has not
+      been supplied in the schema using the 'javaType' property).
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">useDoubleNumbers</td>
+    <td valign="top">Whether to use the java type <code>double</code> (or <code>Double</code>)
+      instead of <code>float</code>
+      (or <code>Float</code>) when representing the JSON Schema type 'number'.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useBigDecimals</td>
+    <td valign="top">Whether to use the java type <code>BigDecimal</code> instead of
+      <code>float</code> (or <code>java.lang.Float</code>)
+      when representing the JSON Schema type 'number'. Note that this overrides <code>useDoubleNumbers</code>.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useJodaDates</td>
+    <td valign="top">Whether to use <code>org.joda.time.DateTime</code> instead of <code>java.util.Date</code>
+      when
+      adding date-time type fields to generated Java types.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useJodaLocalDates</td>
+    <td valign="top">Whether to use <code>org.joda.time.LocalDate</code> instead of <code>java.lang.String</code>
+      when adding string fields with format date to generated Java types.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useJodaLocalTimes</td>
+    <td valign="top">Whether to use <code>org.joda.time.LocalTime</code> instead of <code>java.lang.String</code>
+      when adding string fields with format time to generated Java types.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useLongIntegers</td>
+    <td valign="top">Whether to use the java type <code>long</code> (or <code>Long</code>) instead
+      of
+      <code>int</code> (or <code>Integer</code>) when representing the JSON Schema type 'integer'.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">useBigIntegers</td>
+    <td valign="top">Whether to use the java type <code>BigInteger</code> instead of
+      <code>int</code> (or <code>java.lang.Integer</code>)
+      when representing the JSON Schema type 'integer'. Note that this overrides <code>useLongIntegers</code>.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">usePrimitives</td>
+    <td valign="top">Whether to use primitives (<code>long</code>, <code>double</code>, <code>boolean</code>)
+      instead of wrapper types where possible when generating bean properties (has the side-effect
+      of making
+      those.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">targetVersion</td>
+    <td valign="top">The target version for generated source files.</td>
+    <td align="center" valign="top">No (default <code>1.6</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">dateTimeType</td>
+    <td valign="top">The java type to use instead of <code>java.util.Date</code> when adding
+      date-time type fields
+      to generated Java types.
+      <ul>
+        <li><code>org.joda.time.LocalDateTime</code> (Joda)</li>
+        <li><code>java.time.LocalDateTime</code> (JSR310)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">dateType</td>
+    <td valign="top">The java type to use instead of <code>java.lang.String</code> when adding
+      string fields with
+      format date to generated Java types.
+      <ul>
+        <li><code>org.joda.time.LocalDate</code> (Joda)</li>
+        <li><code>java.time.LocalDate</code> (JSR310)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">timeType</td>
+    <td valign="top">The java type to use instead of <code>java.lang.String</code> when adding
+      string fields with
+      format time to generated Java types.
+      <ul>
+        <li><code>org.joda.time.LocalTime</code> (Joda)</li>
+        <li><code>java.time.LocalTime</code> (JSR310)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">formatDates</td>
+    <td valign="top">Whether the fields of type `date` are formatted during serialization with a
+      default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">formatTimes</td>
+    <td valign="top">Whether the fields of type `time` are formatted during serialization with a
+      default pattern of HH:mm:ss.SSS.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">formatDateTimes</td>
+    <td valign="top">Whether the fields of type `date` are formatted during serialization with a
+      default pattern of yyyy-MM-dd'T'HH:mm:ss.SSSZ.
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">customDatePattern</td>
+    <td valign="top">A custom pattern to use when formatting date fields during serialization.
+      Requires support from your JSON binding library.
+    </td>
+    <td align="center" valign="top">No (default none)</td>
+  </tr>
+  <tr>
+    <td valign="top">customTimePattern</td>
+    <td valign="top">A custom pattern to use when formatting time fields during serialization.
+      Requires support from your JSON binding library.
+    </td>
+    <td align="center" valign="top">No (default none)</td>
+  </tr>
+  <tr>
+    <td valign="top">customDateTimePattern</td>
+    <td valign="top">A custom pattern to use when formatting date fields during serialization.
+      Requires support from your JSON binding library.
+    </td>
+    <td align="center" valign="top">No (default none)</td>
+  </tr>
+  <tr>
+    <td valign="top">refFragmentPathDelimiters</td>
+    <td valign="top">A string containing any characters that should act as path delimiters when
+      resolving $ref
+      fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON
+      Path.
+    </td>
+    <td align="center" valign="top">No (default <code>#/.</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">sourceSortOrder</td>
+    <td valign="top">The sort order to be applied to the source files when being processed, by
+      default the OS can
+      influence the ordering.
+      <ul>
+        <li><code>OS</code> (Let the OS influence the order that the source files are processed.)
+        </li>
+        <li><code>FILES_FIRST</code> (Case sensitive sort, visit the files first. The source files
+          are processed
+          in a breadth first sort order.)
+        </li>
+        <li><code>SUBDIRS_FIRST</code> (Case sensitive sort, visit the sub-directories before the
+          files. The
+          source files are processed in a depth first sort order.)
+        </li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No (default <code>OS</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">formatTypeMapping</td>
+    <td valign="top">A mapping from format identifier (e.g. 'uri') to Java type (e.g.
+      'java.net.URI'):
+      <code>&gt;format&lt;:&gt;fully.qualified.Type&lt;</code>.
+    </td>
+    <td align="center" valign="top">None (default <code>''</code> (none))</td>
+  </tr>
+
+</table>
+
+<h3>Examples</h3>
+<pre>
+&lt;taskdef name="jsonschema2pojo" classname="org.jsonschema2pojo.ant.Jsonschema2PojoTask">
+    &lt;classpath> &lt;!-- classpath only required if jars have *NOT* been added to $ANT_HOME/lib -->
+        &lt;fileset dir="my-downloaded-libs">
+            &lt;include name="**/*.jar" />
+        &lt;/fileset>
+    &lt;/classpath>
+&lt;/taskdef>
+
+&lt;target name="generate">
+    &lt;jsonschema2pojo source="address.json"
+                     targetDirectory="build/generated-types"
+                     targetPackage="com.example"/>
+&lt;/target>
+    </pre>
+<p>
+  The above uses the taskdef task to make the jsonschema2pojo task available. The generate target
+  invokes the
+  jsonschema2pojo task to generate java classes based on an input schema called <a
+    href="http://json-schema.org/address">address.json</a>.
+</p>
+</body>
+</html>
