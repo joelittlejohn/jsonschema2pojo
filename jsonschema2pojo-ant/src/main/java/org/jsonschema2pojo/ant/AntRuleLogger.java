@@ -89,7 +89,9 @@ public class AntRuleLogger extends AbstractRuleLogger {
       }
     } else {
       System.err.println(levelPrefix + msg);
-      e.printStackTrace(System.err);
+      if(e != null) {
+        e.printStackTrace(System.err);
+      }
     }
   }
 }
