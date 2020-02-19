@@ -33,8 +33,12 @@ public class MojoRuleLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doError(String msg) {
-    log.error(msg);
+  protected void doError(String msg, Throwable e) {
+    if(e != null) {
+      log.error(msg, e);
+    } else {
+      log.error(msg);
+    }
   }
 
   @Override
@@ -48,8 +52,12 @@ public class MojoRuleLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doWarn(String msg) {
-    log.warn(msg);
+  protected void doWarn(String msg, Throwable e) {
+    if(e != null) {
+      log.warn(msg, e);
+    } else {
+      log.warn(msg);
+    }
   }
 
   @Override

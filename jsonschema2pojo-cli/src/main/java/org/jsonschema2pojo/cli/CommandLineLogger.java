@@ -76,8 +76,9 @@ public class CommandLineLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doError(String msg) {
+  protected void doError(String msg, Throwable e) {
     System.err.println(msg);
+    e.printStackTrace(System.err);
   }
 
   @Override
@@ -91,8 +92,9 @@ public class CommandLineLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doWarn(String msg) {
+  protected void doWarn(String msg, Throwable e) {
     System.err.println(msg);
+    e.printStackTrace(System.err);
   }
 
   public enum LogLevel {
