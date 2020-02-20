@@ -16,26 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
-import static org.jsonschema2pojo.util.TypeUtil.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.model.EnumDefinition;
-import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
-import org.jsonschema2pojo.model.EnumValueDefinition;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.ClassType;
@@ -55,6 +35,31 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.model.EnumDefinition;
+import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
+import org.jsonschema2pojo.model.EnumValueDefinition;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.containsOnly;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
+import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the "enum" schema rule.
@@ -213,31 +218,37 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      *
      * @return the effective definition for enumeration
      */
-    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType) {
+    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType)
+    {
 
-      JsonNode enums = node.path("enum");
-      JsonNode javaEnumNames = node.path("javaEnumNames");
-      JsonNode javaEnums = node.path("javaEnums");
+        JsonNode enums = node.path("enum");
+        JsonNode javaEnumNames = node.path("javaEnumNames");
+        JsonNode javaEnums = node.path("javaEnums");
 
-      if(!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode()) {
-        System.err.println("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
-      }
+        if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode())
+        {
+            System.err.println("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+        }
 
-      if(!javaEnumNames.isMissingNode()) {
-        System.err.println("javaEnumNames is deprecated; please migrate to javaEnums.");
-      }
+        if (!javaEnumNames.isMissingNode())
+        {
+            System.err.println("javaEnumNames is deprecated; please migrate to javaEnums.");
+        }
 
-      EnumDefinition enumDefinition;
+        EnumDefinition enumDefinition;
 
-      if(!javaEnums.isMissingNode()) {
-          enumDefinition = buildEnumDefinitionWithJavaEnumsExtension(nodeName, node, enums, javaEnums, backingType);
-      } else if(!javaEnumNames.isMissingNode()) {
-          enumDefinition = buildEnumDefinitionWithJavaEnumNamesExtension(nodeName, node, enums, javaEnumNames, backingType);
-      } else {
-          enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, enums, backingType);
-      }
+        if (!javaEnums.isMissingNode())
+        {
+            enumDefinition = buildEnumDefinitionWithJavaEnumsExtension(nodeName, node, enums, javaEnums, backingType);
+        } else if (!javaEnumNames.isMissingNode())
+        {
+            enumDefinition = buildEnumDefinitionWithJavaEnumNamesExtension(nodeName, node, enums, javaEnumNames, backingType);
+        } else
+        {
+            enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, enums, backingType);
+        }
 
-      return enumDefinition;
+        return enumDefinition;
     }
 
     protected EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, JType backingType) {
