@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Holds the an enum types effective definition.
+ * Holds an enum types effective definition.
  *
  * The definition of the enum can be decided by:
  *    "enum" (JSON-Schema)
@@ -48,6 +48,30 @@ public class EnumDefinition {
     this.backingType = backingType;
     this.enumValues = enumValues;
     this.type = type;
+  }
+
+  /**
+   * Copy constructor
+   *
+   * Used primarily for custom rule enum implementations.
+   *
+   */
+  public EnumDefinition(EnumDefinition enumDefinition) {
+    this(enumDefinition, enumDefinition.enumValues);
+  }
+
+  /**
+   * Copy constructor with an override for enumValues.
+   *
+   * Used primarily for custom enum rule implementations.
+   *
+   */
+  public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
+    this.nodeName = enumDefinition.nodeName;
+    this.enumNode = enumDefinition.enumNode;
+    this.backingType = enumDefinition.backingType;
+    this.enumValues = enumValueDefinitions;
+    this.type = enumDefinition.type;
   }
 
   public JType getBackingType() {
