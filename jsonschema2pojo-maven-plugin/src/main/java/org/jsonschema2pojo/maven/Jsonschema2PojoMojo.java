@@ -574,6 +574,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with only the required properties as parameters.
+     *
+     * @parameter property="jsonschema2pojo.includeRequiredPropertiesConstructor"
+     *            default-value="false"
+     * @since 1.0.3
      */
     boolean includeRequiredPropertiesConstructor = false;
 
@@ -582,6 +586,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with all listed properties as parameters.
+     *
+     * @parameter property="jsonschema2pojo.includeAllPropertiesConstructor"
+     *            default-value="true"
+     * @since 1.0.3
      */
     boolean includeAllPropertiesConstructor = true;
 
@@ -591,6 +599,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
      * originating class will assigned to the new class.
+     *
+     * @parameter property="jsonschema2pojo.includeCopyConstructor"
+     *            default-value="false"
+     * @since 1.0.3
      */
     boolean includeCopyConstructor = false;
 
@@ -786,6 +798,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * If set to true, then the gang of four builder pattern will be used to generate builders on generated classes. Note: This property works
      * in collaboration with the {@link #isGenerateBuilders()} method. If the {@link #isGenerateBuilders()} is false,
      * then this property will not do anything.
+     *
      * @parameter property="jsonschema2pojo.useInnerClassBuilders"
      *            default-value="false"
      * @since 1.0.0
