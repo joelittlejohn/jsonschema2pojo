@@ -67,11 +67,11 @@ public class EnumDefinition {
    *
    */
   public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
-    this.nodeName = enumDefinition.nodeName;
-    this.enumNode = enumDefinition.enumNode;
-    this.backingType = enumDefinition.backingType;
-    this.enumValues = enumValueDefinitions;
-    this.type = enumDefinition.type;
+    this(enumDefinition.nodeName,
+         enumDefinition.enumNode,
+         enumDefinition.backingType,
+         enumValueDefinitions,
+         enumDefinition.type);
   }
 
   public JType getBackingType() {
