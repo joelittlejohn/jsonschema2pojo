@@ -36,6 +36,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -112,6 +113,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         try {
             _enum = createEnum(node, nodeName, container);
         } catch (ClassAlreadyExistsException e) {
+            ruleFactory.getLogger().error("Could not create enum.", e);
             return e.getExistingClass();
         }
 
@@ -225,14 +227,16 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JsonNode javaEnumNames = node.path("javaEnumNames");
         JsonNode javaEnums = node.path("javaEnums");
 
+        RuleLogger logger = ruleFactory.getLogger();
+
         if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode())
         {
-            System.err.println("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+            logger.error("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
         }
 
         if (!javaEnumNames.isMissingNode())
         {
-            System.err.println("javaEnumNames is deprecated; please migrate to javaEnums.");
+            logger.error("javaEnumNames is deprecated; please migrate to javaEnums.");
         }
 
         EnumDefinition enumDefinition;
@@ -304,7 +308,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                 JsonNode javaEnumNode = javaEnums.path(i);
 
                 if(javaEnumNode.isMissingNode()) {
-                    System.err.println("javaEnum entry for " + value.asText() + " was not found.");
+                    ruleFactory.getLogger().error("javaEnum entry for " + value.asText() + " was not found.");
                 }
 
                 String constantName = getConstantName(value.asText(), javaEnumNode.path("name").asText());
