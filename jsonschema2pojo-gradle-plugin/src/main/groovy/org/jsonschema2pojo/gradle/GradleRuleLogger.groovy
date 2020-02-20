@@ -31,8 +31,12 @@ class GradleRuleLogger extends AbstractRuleLogger {
     }
 
     @Override
-    void doError(String msg) {
-        logger.error(msg)
+    void doError(String msg, Throwable e) {
+        if(e != null) {
+            logger.error(msg, e)
+        } else {
+            logger.error(msg)
+        }
     }
 
     @Override
@@ -46,8 +50,12 @@ class GradleRuleLogger extends AbstractRuleLogger {
     }
 
     @Override
-    void doWarn(String msg) {
-        logger.warn(msg)
+    void doWarn(String msg, Throwable e) {
+        if(e != null) {
+            logger.warn(msg, e)
+        } else {
+            logger.warn(msg)
+        }
     }
 
     @Override

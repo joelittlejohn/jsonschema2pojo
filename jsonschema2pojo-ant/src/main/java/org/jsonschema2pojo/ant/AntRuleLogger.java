@@ -61,30 +61,37 @@ public class AntRuleLogger extends AbstractRuleLogger {
   }
 
   protected void doDebug(String msg) {
-    log(msg, Project.MSG_DEBUG, DEBUG_LEVEL_PREFIX);
+    log(msg, null, Project.MSG_DEBUG, DEBUG_LEVEL_PREFIX);
   }
 
-  protected void doError(String msg) {
-    log(msg, Project.MSG_ERR, ERROR_LEVEL_PREFIX);
+  protected void doError(String msg, Throwable e) {
+    log(msg, e, Project.MSG_ERR, ERROR_LEVEL_PREFIX);
   }
 
   protected void doInfo(String msg) {
-    log(msg, Project.MSG_INFO, INFO_LEVEL_PREFIX);
+    log(msg, null, Project.MSG_INFO, INFO_LEVEL_PREFIX);
   }
 
   protected void doTrace(String msg) {
-    log(msg, Project.MSG_VERBOSE, TRACE_LEVEL_PREFIX);
+    log(msg, null, Project.MSG_VERBOSE, TRACE_LEVEL_PREFIX);
   }
 
-  protected void doWarn(String msg) {
-    log(msg, Project.MSG_WARN, WARN_LEVEL_PREFIX);
+  protected void doWarn(String msg, Throwable e) {
+    log(msg, null, Project.MSG_WARN, WARN_LEVEL_PREFIX);
   }
 
-  private void log(String msg, int level, String levelPrefix) {
+  private void log(String msg, Throwable e, int level, String levelPrefix) {
     if (task != null && task.getProject() != null) {
-      task.getProject().log(msg, level);
+      if(e != null) {
+        task.getProject().log(msg, e, level);
+      } else {
+        task.getProject().log(msg, level);
+      }
     } else {
       System.err.println(levelPrefix + msg);
+      if(e != null) {
+        e.printStackTrace(System.err);
+      }
     }
   }
 }
