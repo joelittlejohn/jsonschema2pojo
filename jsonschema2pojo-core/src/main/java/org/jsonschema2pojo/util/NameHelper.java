@@ -42,6 +42,10 @@ public class NameHelper {
         this.generationConfig = generationConfig;
     }
 
+    public String getBuilderTypeParameterName(JDefinedClass instanceClass) {
+        return "T";
+    }
+
     public String replaceIllegalCharacters(String name) {
         return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
     }
@@ -220,8 +224,20 @@ public class NameHelper {
         return jsonPropertyName;
     }
 
-    public String getBuilderClassName(JClass outterClass) {
-        return outterClass.name() + "Builder";
+    public String getBaseBuilderClassName(JClass outerClass) {
+        return outerClass.name() + getBuilderClassNameSuffix(outerClass) + getBaseBuilderClassNameSuffix(outerClass);
+    }
+
+    public String getBaseBuilderClassNameSuffix(JClass outerClass) {
+        return "Base";
+    }
+
+    public String getBuilderClassName(JClass outerClass) {
+        return outerClass.name() + getBuilderClassNameSuffix(outerClass);
+    }
+
+    public String getBuilderClassNameSuffix(JClass outerClass) {
+        return "Builder";
     }
 
     public String getUniqueClassName(String nodeName, JsonNode node, JPackage _package) {

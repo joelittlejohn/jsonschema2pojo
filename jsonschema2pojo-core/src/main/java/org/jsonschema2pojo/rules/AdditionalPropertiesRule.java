@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
-import org.apache.commons.collections15.CollectionUtils;
+
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -213,7 +213,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     }
 
     private String getBuilderClassName(JDefinedClass c) {
-        return ruleFactory.getNameHelper().getBuilderClassName(c);
+        return ruleFactory.getNameHelper().getBaseBuilderClassName(c);
     }
 
 }
