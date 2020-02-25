@@ -41,6 +41,14 @@ public class EnumValueDefinition {
     this.descriptionNode = descriptionNode;
   }
 
+  public EnumValueDefinition(EnumValueDefinition enumValueDefinition) {
+    this.name = enumValueDefinition.name;
+    this.value = enumValueDefinition.value;
+    this.extensionNode = enumValueDefinition.extensionNode;
+    this.titleNode = enumValueDefinition.titleNode;
+    this.descriptionNode = enumValueDefinition.descriptionNode;
+  }
+
   public JsonNode getDescriptionNode() {
     return descriptionNode;
   }
