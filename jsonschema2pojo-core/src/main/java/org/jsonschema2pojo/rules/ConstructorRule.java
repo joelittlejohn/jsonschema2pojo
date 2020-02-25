@@ -147,9 +147,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // If we're using InnerClassBuilder implementations then we also need to generate those
     if (generationConfig.isGenerateBuilders() && generationConfig.isUseInnerClassBuilders()) {
-      JDefinedClass builderClass = ruleFactory.getReflectionHelper()
-          .getBuilderClass(instanceClass);
-      generateFieldsBuilderConstructor(builderClass, instanceClass, instanceConstructor);
+      JDefinedClass baseBuilderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(instanceClass);
+      JDefinedClass concreteBuilderClass = ruleFactory.getReflectionHelper().getConcreteBuilderClass(instanceClass);
+
+      generateFieldsBuilderConstructor(baseBuilderClass, concreteBuilderClass, instanceClass, instanceConstructor);
     }
   }
 
@@ -161,9 +162,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // If we're using InnerClassBuilder implementations then we also need to generate those
     if (generationConfig.isGenerateBuilders() && generationConfig.isUseInnerClassBuilders()) {
-      JDefinedClass builderClass = ruleFactory.getReflectionHelper()
-          .getBuilderClass(instanceClass);
-      generateFieldsBuilderConstructor(builderClass, instanceClass, instanceConstructor);
+      JDefinedClass baseBuilderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(instanceClass);
+      JDefinedClass concreteBuilderClass = ruleFactory.getReflectionHelper().getConcreteBuilderClass(instanceClass);
+
+      generateFieldsBuilderConstructor(baseBuilderClass, concreteBuilderClass, instanceClass, instanceConstructor);
     }
   }
 
@@ -234,7 +236,8 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     return rtn;
   }
 
-  private void generateFieldsBuilderConstructor(JDefinedClass builderClass, JDefinedClass instanceClass, JMethod instanceConstructor) {
+  private void generateFieldsBuilderConstructor(JDefinedClass builderClass, JDefinedClass concreteBuilderClass, JDefinedClass instanceClass, JMethod instanceConstructor) {
+
     // Locate the instance field since we'll need it to assign a value
     JFieldVar instanceField = reflectionHelper.searchClassAndSuperClassesForField("instance", builderClass);
 
@@ -268,11 +271,34 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     JInvocation comparison = JExpr._this()
         .invoke("getClass")
         .invoke("equals")
-        .arg(JExpr.dotclass(builderClass));
+        .arg(JExpr.dotclass(concreteBuilderClass));
     JConditional ifNotSubclass = constructorBlock._if(comparison);
     ifNotSubclass._then()
         .assign(JExpr._this()
             .ref(instanceField), JExpr.cast(instanceField.type(), instanceConstructorInvocation));
+
+    generateFieldsConcreteBuilderConstructor(builderClass, concreteBuilderClass, instanceConstructor);
+
+  }
+
+  private void generateFieldsConcreteBuilderConstructor(JDefinedClass baseBuilderClass, JDefinedClass builderClass, JMethod instanceConstructor) {
+
+    // Create Typed Builder Constructor
+    JMethod builderConstructor = builderClass.constructor(JMod.PUBLIC);
+    JBlock builderConstructorBlock = builderConstructor.body();
+
+    // The typed builder constructor should have the exact same parameters as the inheritable builder.
+    for (JVar param : instanceConstructor.params()) {
+      builderConstructor.param(param.type(), param.name());
+    }
+
+    if (!(baseBuilderClass.isPrimitive() || reflectionHelper.isFinal(baseBuilderClass) || Objects.equals(baseBuilderClass.fullName(), "java.lang.Object"))) {
+      JInvocation superMethod = builderConstructorBlock.invoke("super");
+
+      for (JVar param : builderConstructor.params()) {
+        superMethod.arg(param);
+      }
+    }
   }
 
   private JMethod generateCopyConstructor(JDefinedClass jclass, Set<String> classProperties, Set<String> combinedSuperProperties) {
