@@ -47,7 +47,11 @@ public class NameHelper {
     }
 
     public String replaceIllegalCharacters(String name) {
-        return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        if (generationConfig.isAllowNonLatinNames()) {
+            return name;
+        } else {
+            return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        }
     }
 
     public String normalizeName(String name) {
