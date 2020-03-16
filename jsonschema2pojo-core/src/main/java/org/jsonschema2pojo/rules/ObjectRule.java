@@ -140,9 +140,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addParcelSupport(jclass);
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
+        if (ruleFactory.getGenerationConfig().isIncludeConstructors() || ruleFactory.getGenerationConfig().getAnnotationStyle() == AnnotationStyle.VERTX) {
             ruleFactory.getConstructorRule().apply(nodeName, node, parent, jclass, schema);
-
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
