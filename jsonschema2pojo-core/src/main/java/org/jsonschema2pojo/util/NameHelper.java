@@ -48,10 +48,35 @@ public class NameHelper {
 
     public String replaceIllegalCharacters(String name) {
         if (generationConfig.isAllowNonLatinNames()) {
-            return name;
+            return removeNotValidJavaIdentPartsStartingFrom(name, getValidJavaIdentifierStartIndex(name));
         } else {
             return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
         }
+    }
+
+    private String removeNotValidJavaIdentPartsStartingFrom(String name, int validStartPosition) {
+        StringBuilder sb = new StringBuilder();
+        int length = name.length();
+        sb.append(name.charAt(validStartPosition));
+        for (int j = validStartPosition + 1; j < length; j++) {
+            char curChar = name.charAt(j);
+            if (Character.isJavaIdentifierPart(curChar)) {
+                sb.append(curChar);
+            }
+        }
+        return sb.toString();
+    }
+
+    private int getValidJavaIdentifierStartIndex(String name) {
+        int i = 0;
+        int length = name.length();
+        while (!Character.isJavaIdentifierStart(name.charAt(i))) {
+            i++;
+            if (i == length) {
+                throw new IllegalStateException("No chars in '" + name + "' are identified as suitable start for field name");
+            }
+        }
+        return i;
     }
 
     public String normalizeName(String name) {
