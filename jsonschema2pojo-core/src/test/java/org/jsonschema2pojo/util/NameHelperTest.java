@@ -105,23 +105,17 @@ public class NameHelperTest {
         assertThat(nameHelper.getBuilderName("foo", NODE), is("withFoo"));
         assertThat(nameHelper.getBuilderName("ƈoƅ", NODE), is("withƇoƅ"));
         assertThat(nameHelper.getBuilderName("URL", NODE), is("withUrl"));
-        assertThat(nameHelper.getBuilderName("  *   УРЛ", NODE), is("withУрл"));
+        assertThat(nameHelper.getBuilderName("  *   УРЛ", NODE), is("with______урл"));
 
         assertThat(nameHelper.getGetterName("foo", new JCodeModel().BOOLEAN, NODE), is("isFoo"));
         assertThat(nameHelper.getGetterName("ƈoƅ", new JCodeModel().BOOLEAN, NODE), is("isƇoƅ"));
         assertThat(nameHelper.getGetterName("URL", new JCodeModel().INT, NODE), is("getUrl"));
-        assertThat(nameHelper.getGetterName("  *   УРЛ", new JCodeModel().INT, NODE), is("getУрл"));
+        assertThat(nameHelper.getGetterName("  *   УРЛ", new JCodeModel().INT, NODE), is("get______урл"));
 
         assertThat(nameHelper.getSetterName("foo", NODE), is("setFoo"));
         assertThat(nameHelper.getSetterName("ƈoƅ", NODE), is("setƇoƅ"));
         assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
-        assertThat(nameHelper.getSetterName("  *   УРЛ", NODE), is("setУрл"));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testExceptionalNonLatinNames() {
-        NameHelper nameHelper = helper(false, true);
-        assertThat(nameHelper.getBuilderName("  *       *", NODE), is("withУрл"));
+        assertThat(nameHelper.getSetterName("  *   УРЛ", NODE), is("set______урл"));
     }
 
     private NameHelper helper(boolean useTitleAsClassname) {

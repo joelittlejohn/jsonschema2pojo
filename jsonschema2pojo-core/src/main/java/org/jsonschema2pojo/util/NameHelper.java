@@ -57,11 +57,16 @@ public class NameHelper {
     private String removeNotValidJavaIdentPartsStartingFrom(String name, int validStartPosition) {
         StringBuilder sb = new StringBuilder();
         int length = name.length();
+        for (int i = 0; i < validStartPosition; i++) {
+            sb.append("_");
+        }
         sb.append(name.charAt(validStartPosition));
         for (int j = validStartPosition + 1; j < length; j++) {
             char curChar = name.charAt(j);
             if (Character.isJavaIdentifierPart(curChar)) {
                 sb.append(curChar);
+            } else {
+                sb.append("_");
             }
         }
         return sb.toString();
