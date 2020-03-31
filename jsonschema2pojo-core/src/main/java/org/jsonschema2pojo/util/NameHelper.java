@@ -48,40 +48,27 @@ public class NameHelper {
 
     public String replaceIllegalCharacters(String name) {
         if (generationConfig.isAllowNonLatinNames()) {
-            return removeNotValidJavaIdentPartsStartingFrom(name, getValidJavaIdentifierStartIndex(name));
+            return validJavaIdentifierFrom(name);
         } else {
             return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
         }
     }
 
-    private String removeNotValidJavaIdentPartsStartingFrom(String name, int validStartPosition) {
+    private String validJavaIdentifierFrom(String name) {
         StringBuilder sb = new StringBuilder();
         int length = name.length();
-        for (int i = 0; i < validStartPosition; i++) {
-            sb.append("_");
-        }
-        sb.append(name.charAt(validStartPosition));
-        for (int j = validStartPosition + 1; j < length; j++) {
-            char curChar = name.charAt(j);
+        for (int i = 0; i < length; i++) {
+            char curChar = name.charAt(i);
             if (Character.isJavaIdentifierPart(curChar)) {
                 sb.append(curChar);
             } else {
                 sb.append("_");
             }
         }
-        return sb.toString();
-    }
-
-    private int getValidJavaIdentifierStartIndex(String name) {
-        int i = 0;
-        int length = name.length();
-        while (!Character.isJavaIdentifierStart(name.charAt(i))) {
-            i++;
-            if (i == length) {
-                throw new IllegalStateException("No chars in '" + name + "' are identified as suitable start for field name");
-            }
+        if (!Character.isJavaIdentifierStart(sb.charAt(0))) {
+            return "_" + sb.toString();
         }
-        return i;
+        return sb.toString();
     }
 
     public String normalizeName(String name) {

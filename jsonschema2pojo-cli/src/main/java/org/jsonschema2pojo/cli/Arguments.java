@@ -242,7 +242,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
     private List<String> formatTypeMapping = new ArrayList<>();
 
-    @Parameter(names = { "-anln", "--allow-non-latin-names" }, description = "Allow usage of char not in [0-9A-Za-z] of source JSON schema in target source code", variableArity = true)
+    @Parameter(names = { "-anln", "--allow-non-latin-names" }, description = "Allow usage of char not in [0-9A-Za-z] of source JSON schema in target source code, default is false", variableArity = true)
     private boolean allowNonLatinNames = false;
 
     @Parameter(names = { "-log" }, description = "Configure log level. Defaults to info. Available options are: off, error, warn, info, debug, trace", validateWith = LogLevelValidator.class )
