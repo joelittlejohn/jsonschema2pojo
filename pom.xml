@@ -70,8 +70,8 @@
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>com.mycila.maven-license-plugin</groupId>
-                                        <artifactId>maven-license-plugin</artifactId>
+                                        <groupId>com.mycila</groupId>
+                                        <artifactId>license-maven-plugin</artifactId>
                                         <versionRange>[0.0,)</versionRange>
                                         <goals>
                                              <goal>format</goal>
@@ -131,9 +131,9 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.8.0</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <aggregate>true</aggregate>
                     <encoding>UTF-8</encoding>
@@ -142,10 +142,16 @@
                     </excludes>
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>
+                    <headerDefinitions>
+                        <headerDefinition>license-plugin-definition.xml</headerDefinition>
+                    </headerDefinitions>
                     <includes>
                         <include>**/src/main/java/**</include>
                         <include>**/src/test/java/**</include>
                     </includes>
+                    <mapping>
+                        <java>JAVA_STYLE</java>
+                    </mapping>
                     <skipExistingHeaders>false</skipExistingHeaders>
                     <strictCheck>true</strictCheck>
                 </configuration>

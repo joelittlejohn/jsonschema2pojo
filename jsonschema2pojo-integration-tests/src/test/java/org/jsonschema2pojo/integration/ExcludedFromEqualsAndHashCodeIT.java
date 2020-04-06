@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.jsonschema2pojo.integration;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
