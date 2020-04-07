@@ -579,7 +579,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="false"
      * @since 1.0.3
      */
-    boolean includeRequiredPropertiesConstructor = false;
+    private boolean includeRequiredPropertiesConstructor = false;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -591,7 +591,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="true"
      * @since 1.0.3
      */
-    boolean includeAllPropertiesConstructor = true;
+    private boolean includeAllPropertiesConstructor = true;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -604,7 +604,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="false"
      * @since 1.0.3
      */
-    boolean includeCopyConstructor = false;
+    private boolean includeCopyConstructor = false;
 
     /**
      * Whether to allow 'additional properties' support in objects. Setting this
