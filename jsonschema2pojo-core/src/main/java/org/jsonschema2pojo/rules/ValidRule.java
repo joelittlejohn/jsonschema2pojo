@@ -23,12 +23,10 @@ import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JFieldVar;
 import scala.annotation.meta.field;
 
-public class ValidRule implements Rule<JFieldVar, JFieldVar> {
-    
-    private final RuleFactory ruleFactory;
-    
+public class ValidRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
+
     public ValidRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+       super(ruleFactory);
     }
 
     @Override

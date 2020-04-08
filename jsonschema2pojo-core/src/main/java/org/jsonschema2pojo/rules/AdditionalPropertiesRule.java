@@ -45,12 +45,10 @@ import com.sun.codemodel.JVar;
  *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6">http:/
  *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.6</a>
  */
-public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
-
-    private final RuleFactory ruleFactory;
+public class AdditionalPropertiesRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
     protected AdditionalPropertiesRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

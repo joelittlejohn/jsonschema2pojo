@@ -28,9 +28,18 @@ import com.sun.codemodel.JDocCommentable;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
-public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
+public class DescriptionRule extends AbstractRuleFactoryRule<JDocCommentable, JDocComment> {
 
+    /**
+     * @deprecated Please switch to {@link DescriptionRule(RuleFactory)}
+     */
+    @Deprecated
     protected DescriptionRule() {
+        super(null);
+    }
+
+    protected DescriptionRule(RuleFactory ruleFactory) {
+        super(ruleFactory);
     }
 
     /**

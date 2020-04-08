@@ -23,12 +23,10 @@ import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
-public class PatternRule implements Rule<JFieldVar, JFieldVar> {
-
-    private RuleFactory ruleFactory;
+public class PatternRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     public PatternRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

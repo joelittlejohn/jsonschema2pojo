@@ -27,12 +27,10 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
-public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
-    
-    private final RuleFactory ruleFactory;
-    
+public class MinLengthMaxLengthRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
+
     protected MinLengthMaxLengthRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
     
     @Override

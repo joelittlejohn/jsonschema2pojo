@@ -34,13 +34,12 @@ import java.util.Objects;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.ReflectionHelper;
 
-public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
+public class BuilderRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
-  private RuleFactory ruleFactory;
   private ReflectionHelper reflectionHelper;
 
   BuilderRule(RuleFactory ruleFactory, ReflectionHelper reflectionHelper) {
-    this.ruleFactory = ruleFactory;
+    super(ruleFactory);
     this.reflectionHelper = reflectionHelper;
   }
 

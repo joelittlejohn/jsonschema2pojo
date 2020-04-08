@@ -32,17 +32,15 @@ import com.sun.codemodel.JFieldVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
+public class NotRequiredRule extends AbstractRuleFactoryRule<JDocCommentable, JDocCommentable> {
 
     /**
      * Text added to JavaDoc to indicate that a field is not required
      */
     public static final String NOT_REQUIRED_COMMENT_TEXT = "\n(Can be null)";
 
-    private final RuleFactory ruleFactory;
-
     protected NotRequiredRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

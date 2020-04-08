@@ -32,12 +32,10 @@ import com.sun.codemodel.JFieldVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
-
-    private final RuleFactory ruleFactory;
+public class RequiredRule extends AbstractRuleFactoryRule<JDocCommentable, JDocCommentable> {
 
     protected RequiredRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

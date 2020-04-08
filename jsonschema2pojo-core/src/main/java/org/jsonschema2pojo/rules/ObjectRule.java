@@ -62,14 +62,13 @@ import org.jsonschema2pojo.util.SerializableHelper;
  *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http:/
  *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
-public class ObjectRule implements Rule<JPackage, JType> {
+public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
 
-    private final RuleFactory ruleFactory;
     private final ReflectionHelper reflectionHelper;
     private final ParcelableHelper parcelableHelper;
 
     protected ObjectRule(RuleFactory ruleFactory, ParcelableHelper parcelableHelper, ReflectionHelper reflectionHelper) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
         this.parcelableHelper = parcelableHelper;
         this.reflectionHelper = reflectionHelper;
     }

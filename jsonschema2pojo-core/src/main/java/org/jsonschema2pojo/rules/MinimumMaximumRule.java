@@ -24,12 +24,10 @@ import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
-public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
-
-    private final RuleFactory ruleFactory;
+public class MinimumMaximumRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     protected MinimumMaximumRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

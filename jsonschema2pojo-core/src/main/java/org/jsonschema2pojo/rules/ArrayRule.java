@@ -34,12 +34,10 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15</a>
  */
-public class ArrayRule implements Rule<JPackage, JClass> {
-
-    private final RuleFactory ruleFactory;
+public class ArrayRule extends AbstractRuleFactoryRule<JPackage, JClass> {
 
     protected ArrayRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

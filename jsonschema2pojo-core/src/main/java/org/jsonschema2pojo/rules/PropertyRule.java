@@ -37,12 +37,10 @@ import org.jsonschema2pojo.Schema;
  * "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
  * /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
-public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
-
-    private final RuleFactory ruleFactory;
+public class PropertyRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
     protected PropertyRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

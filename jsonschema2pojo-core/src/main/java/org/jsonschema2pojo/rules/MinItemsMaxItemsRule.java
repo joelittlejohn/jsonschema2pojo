@@ -27,12 +27,10 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
-public class MinItemsMaxItemsRule implements Rule<JFieldVar, JFieldVar> {
-
-    private final RuleFactory ruleFactory;
+public class MinItemsMaxItemsRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     protected MinItemsMaxItemsRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

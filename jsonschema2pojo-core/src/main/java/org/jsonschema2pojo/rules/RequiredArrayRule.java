@@ -39,14 +39,12 @@ import com.sun.codemodel.JType;
  * @see <a
  * href="http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3">http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3</a>
  */
-public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
-
-    private final RuleFactory ruleFactory;
+public class RequiredArrayRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
     public static final String REQUIRED_COMMENT_TEXT = "\n(Required)";
 
     protected RequiredArrayRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override
