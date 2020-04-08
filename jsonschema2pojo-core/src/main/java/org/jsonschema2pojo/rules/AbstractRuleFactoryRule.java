@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.RuleLogger;
 
 public abstract class AbstractRuleFactoryRule<T, R>
 		implements Rule<T, R>
@@ -33,6 +34,14 @@ public abstract class AbstractRuleFactoryRule<T, R>
 		}
 
 		return ruleFactory.getGenerationConfig();
+	}
+
+	public RuleLogger getLogger() {
+		if (ruleFactory == null) {
+			throw new RuntimeException("Rule does not have rule factory; unable to get rule logger.");
+		}
+
+		return ruleFactory.getLogger();
 	}
 
 	public RuleFactory getRuleFactory() {
