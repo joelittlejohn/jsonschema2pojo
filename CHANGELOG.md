@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.3
+* Add support for configuration maps for Custom Rule Factories ([#1122](https://github.com/joelittlejohn/jsonschema2pojo/pull/1122))
+
 ## 1.0.2
 * Restrict JSR-303 annotations to supported field types ([#1063](https://github.com/joelittlejohn/jsonschema2pojo/pull/1063))
 * **Add package when javaType is not a fully qualified name ([#1054](https://github.com/joelittlejohn/jsonschema2pojo/pull/1054))**
