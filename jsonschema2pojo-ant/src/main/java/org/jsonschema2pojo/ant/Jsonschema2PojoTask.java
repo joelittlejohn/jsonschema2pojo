@@ -114,6 +114,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
+    private Map<String, String> customRuleFactoryConfiguration = new HashMap<>();
+
     private boolean includeJsr303Annotations = false;
 
     private boolean includeJsr305Annotations = false;
@@ -577,6 +579,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         } else {
             this.customRuleFactory = RuleFactory.class;
         }
+    }
+
+    public void setCustomRuleFactoryConfiguration(Map<String, String> formatTypeMapping) {
+        this.formatTypeMapping = formatTypeMapping;
     }
 
     /**
@@ -1070,6 +1076,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public Class<? extends RuleFactory> getCustomRuleFactory() {
         return customRuleFactory;
+    }
+
+    @Override
+    public Map<String, String> getCustomRuleFactoryConfiguration() {
+        return customRuleFactoryConfiguration;
     }
 
     @Override

@@ -320,6 +320,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String customRuleFactory = RuleFactory.class.getName();
 
     /**
+     * A configuration map that can be used by custom rule factories.
+     /
+     * @parameter property="jsonschema2pojo.customRuleFactoryConfiguration"
+     *            default-value=""
+     * @since 1.0.3
+     */
+    private Map<String, String> customRuleFactoryConfiguration = new HashMap<>();
+
+    /**
      * Whether to include
      * <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations
      * (for schema rules like minimum, maximum, etc) in generated Java types.
@@ -1023,6 +1032,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } else {
             return RuleFactory.class;
         }
+    }
+
+    @Override
+    public Map<String, String> getCustomRuleFactoryConfiguration()
+    {
+        return customRuleFactoryConfiguration;
     }
 
     @Override

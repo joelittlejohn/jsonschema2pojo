@@ -69,7 +69,7 @@ public class Jsonschema2PojoRuleTest {
             public org.jsonschema2pojo.rules.Rule<JPackage, JType> getObjectRule() {
                 final org.jsonschema2pojo.rules.Rule<JPackage, JType> workingRule = super.getObjectRule();
 
-                return new org.jsonschema2pojo.rules.Rule<JPackage, JType>() {
+                return new org.jsonschema2pojo.rules.AbstractRuleFactoryRule<JPackage, JType>(this) {
                     @Override
                     public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
                         JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);

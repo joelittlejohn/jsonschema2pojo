@@ -165,6 +165,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return RuleFactory.class;
     }
 
+    @Override
+    public Map<String, String> getCustomRuleFactoryConfiguration() {
+        return Collections.emptyMap();
+    }
+
     /**
      * @return <code>false</code>
      */
