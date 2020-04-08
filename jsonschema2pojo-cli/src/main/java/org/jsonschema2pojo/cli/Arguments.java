@@ -131,7 +131,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-F", "--custom-rule-factory" }, description = "The fully qualified class name of referring to a custom rule factory class that extends org.jsonschema2pojo.rules.RuleFactory " + "to create custom rules for code generation.", converter = ClassConverter.class)
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
-    @Parameter(names = { "-crfc", "--custom-rule-factory-configuration" }, description = "Custom configuration for Custom Rule Factory: <parameter>:<value>.", variableArity = true)
+    @Parameter(names = { "-crfc", "--custom-rule-factory-configuration" }, description = "A custom configuration for Custom Rule Factory: <parameter>:<value>.", variableArity = true)
     private List<String> customRuleFactoryConfiguration = new ArrayList<>();
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
