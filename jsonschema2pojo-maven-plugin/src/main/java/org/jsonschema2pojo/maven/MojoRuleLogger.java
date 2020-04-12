@@ -1,12 +1,12 @@
 /**
- * Copyright © 2010-2017 Nokia
- * <p>
+ * Copyright © 2010-2020 Nokia
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,8 +33,12 @@ public class MojoRuleLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doError(String msg) {
-    log.error(msg);
+  protected void doError(String msg, Throwable e) {
+    if(e != null) {
+      log.error(msg, e);
+    } else {
+      log.error(msg);
+    }
   }
 
   @Override
@@ -48,8 +52,12 @@ public class MojoRuleLogger extends AbstractRuleLogger {
   }
 
   @Override
-  protected void doWarn(String msg) {
-    log.warn(msg);
+  protected void doWarn(String msg, Throwable e) {
+    if(e != null) {
+      log.warn(msg, e);
+    } else {
+      log.warn(msg);
+    }
   }
 
   @Override

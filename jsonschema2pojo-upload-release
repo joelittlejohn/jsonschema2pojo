@@ -41,15 +41,15 @@ mkdir -p $WORKING_DIR
 pushd $WORKING_DIR
 
     # download artifacts
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.jar
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.bat
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo/$VERSION/jsonschema2pojo-$VERSION-javadoc.jar
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.jar
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.bat
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.sh
 
     # download dependencies for cli
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
     mvn dependency:copy-dependencies -DincludeScope=runtime
-    mv target/lib .
+    mv target/dependency ./lib
     mv jsonschema2pojo-cli-$VERSION.jar lib
     rm -r target pom.xml
 
@@ -80,7 +80,7 @@ pushd $WORKING_DIR
 
     popd
 
-    wget -U NoSuchBrowser/1.0 http://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
+    wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
     wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html
     pushd gh-pages
 

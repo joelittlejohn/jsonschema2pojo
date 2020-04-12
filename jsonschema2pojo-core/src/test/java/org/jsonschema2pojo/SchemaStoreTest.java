@@ -1,5 +1,5 @@
 /**
- * Copyright © 2010-2017 Nokia
+ * Copyright © 2010-2020 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,15 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.Test;
-
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+import org.mockito.internal.matchers.Same;
 
 public class SchemaStoreTest {
 
@@ -60,6 +62,27 @@ public class SchemaStoreTest {
         assertThat(enumSchema.getId(), is(equalTo(URI.create(expectedUri))));
         assertThat(enumSchema.getContent().has("enum"), is(true));
 
+    }
+
+    @Test
+    public void createWithRelativeSegmentsInPath() throws URISyntaxException {
+
+        //Get to the directory of the module jsonschema2pojo-core
+        Path basePath = Paths.get(getClass().getResource("/schema/person.json").toURI()).getParent().getParent().getParent().getParent();
+
+        //Now load the resource with a relative path segment
+        File relativePath = new File(Paths.get(basePath.toString(),"target", "..", "src", "test", "resources", "schema", "person.json").toString());
+        //Now load the resource with the same path minus the relative segment
+        File nonRelativePath = new File(Paths.get(basePath.toString(), "src", "test", "resources", "schema", "person.json").toString());
+
+        SchemaStore schemaStore = new SchemaStore();
+
+        Schema schemaWithRelativeSegment = schemaStore.create(relativePath.toURI(), "#/.");
+        Schema schemaWithoutRelativeSegment = schemaStore.create(nonRelativePath.toURI(), "#/.");
+
+        //Both schema objects should have the same Id value since their URI's point to the same resource
+        assertThat(schemaWithoutRelativeSegment.getId(), is(schemaWithRelativeSegment.getId()));
+        assertThat(schemaWithoutRelativeSegment, sameInstance(schemaWithRelativeSegment));
     }
 
     @Test

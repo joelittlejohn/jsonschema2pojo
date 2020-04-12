@@ -1,5 +1,5 @@
 /**
- * Copyright Â© 2010-2017 Nokia
+ * Copyright © 2010-2020 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jsonschema2pojo.util;
 
 import static org.jsonschema2pojo.util.TypeUtil.resolveType;
@@ -27,6 +28,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
@@ -89,15 +91,28 @@ public class ReflectionHelper {
     return searchClassAndSuperClassesForField(property, definedSuperClass);
   }
 
-  public JDefinedClass getBuilderClass(JDefinedClass target) {
+  public JDefinedClass getConcreteBuilderClass(JDefinedClass instanceClass) {
+    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(instanceClass);
+
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instanceClass.classes(), Spliterator.ORDERED), false)
+            .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
+  }
+
+  public JDefinedClass getConcreteBuilderClass(JClass target) {
     String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
+    return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
+            .orElse(null);
+  }
+
+  public JDefinedClass getBaseBuilderClass(JDefinedClass target) {
+    String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
 
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes(), Spliterator.ORDERED), false)
         .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
   }
 
-  public JDefinedClass getBuilderClass(JClass target) {
-    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
+  public JDefinedClass getBaseBuilderClass(JClass target) {
+    String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
     return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
         .orElse(null);
   }
@@ -126,7 +141,20 @@ public class ReflectionHelper {
     }
     JClass fieldClass = type.boxify();
     JPackage jPackage = fieldClass._package();
-    return this._getClass(fieldClass.name(), jPackage);
+    try
+    {
+      return this._getClass(fieldClass.name(), jPackage);
+    } catch (NoClassDefFoundError error) {
+      String name = fieldClass.name();
+      String erasureName = fieldClass.erasure().name();
+
+      if(!Objects.equals(name, erasureName)) {
+        ruleFactory.getLogger().debug("Could not get class for type with name: " + name + " trying " + erasureName + " instead.");
+        return this._getClass(erasureName, jPackage);
+      } else {
+        throw error;
+      }
+    }
   }
 
   private JDefinedClass _getClass(String name, JPackage _package) {

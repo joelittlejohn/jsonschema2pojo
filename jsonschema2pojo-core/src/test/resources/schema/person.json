@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://example.com/person.json",
+  "type": "object",
+  "title": "Person",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lastName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "middleInitial": {
+      "type": "string"
+    },
+    "suffix": {
+      "type": "string"
+    },
+    "children": {
+      "$ref":"person.json"
+    }
+  }
+}

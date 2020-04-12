@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2
+* Restrict JSR-303 annotations to supported field types ([#1063](https://github.com/joelittlejohn/jsonschema2pojo/pull/1063))
+* **Add package when javaType is not a fully qualified name ([#1054](https://github.com/joelittlejohn/jsonschema2pojo/pull/1054))**
+* Feature/format type mapping for array types ([#1044](https://github.com/joelittlejohn/jsonschema2pojo/pull/1044))
+* Implement javaEnums extension  ([#1041](https://github.com/joelittlejohn/jsonschema2pojo/pull/1041))
+* Covariant return types on build() method (avoid having to cast after calling the build() method on a subclass) ([#1014](https://github.com/joelittlejohn/jsonschema2pojo/pull/1014))
+* Add support for @Digits JSR-303 annotation ([#977](https://github.com/joelittlejohn/jsonschema2pojo/issues/977))
+* Add support for title and description on Enums ([#975](https://github.com/joelittlejohn/jsonschema2pojo/issues/975))
+* Add support for including JsonTypeInfo Annotation ([#967](https://github.com/joelittlejohn/jsonschema2pojo/pull/967))
+
 ## 1.0.1
 * Check schema required array before is required flag ([#964](https://github.com/joelittlejohn/jsonschema2pojo/pull/964))
 * Features/builders as inner classes ([#953](https://github.com/joelittlejohn/jsonschema2pojo/pull/953))

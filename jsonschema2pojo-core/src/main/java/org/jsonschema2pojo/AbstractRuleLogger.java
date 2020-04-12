@@ -1,5 +1,5 @@
 /**
- * Copyright © 2010-2017 Nokia
+ * Copyright © 2010-2020 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,14 @@ public abstract class AbstractRuleLogger implements RuleLogger {
   @Override
   public void error(String msg) {
     if (isErrorEnabled()) {
-      doError(msg);
+      doError(msg, null);
+    }
+  }
+
+  @Override
+  public void error(String msg, Throwable e) {
+    if (isErrorEnabled()) {
+      doError(msg, e);
     }
   }
 
@@ -48,17 +55,24 @@ public abstract class AbstractRuleLogger implements RuleLogger {
   @Override
   public void warn(String msg) {
     if (isWarnEnabled()) {
-      doWarn(msg);
+      doWarn(msg, null);
+    }
+  }
+
+  @Override
+  public void warn(String msg, Throwable e) {
+    if (isWarnEnabled()) {
+      doWarn(msg, e);
     }
   }
 
   abstract protected void doDebug(String msg);
 
-  abstract protected void doError(String msg);
+  abstract protected void doError(String msg, Throwable e);
 
   abstract protected void doInfo(String msg);
 
   abstract protected void doTrace(String msg);
 
-  abstract protected void doWarn(String msg);
+  abstract protected void doWarn(String msg, Throwable e);
 }

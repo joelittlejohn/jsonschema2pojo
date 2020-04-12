@@ -10,7 +10,7 @@
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
@@ -70,8 +70,8 @@
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>com.mycila.maven-license-plugin</groupId>
-                                        <artifactId>maven-license-plugin</artifactId>
+                                        <groupId>com.mycila</groupId>
+                                        <artifactId>license-maven-plugin</artifactId>
                                         <versionRange>[0.0,)</versionRange>
                                         <goals>
                                              <goal>format</goal>
@@ -131,9 +131,9 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.8.0</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <aggregate>true</aggregate>
                     <encoding>UTF-8</encoding>
@@ -142,11 +142,17 @@
                     </excludes>
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>
+                    <headerDefinitions>
+                        <headerDefinition>license-plugin-definition.xml</headerDefinition>
+                    </headerDefinitions>
                     <includes>
                         <include>**/src/main/java/**</include>
                         <include>**/src/test/java/**</include>
                     </includes>
-                    <skipExistingHeaders>true</skipExistingHeaders>
+                    <mapping>
+                        <java>JAVA_STYLE</java>
+                    </mapping>
+                    <skipExistingHeaders>false</skipExistingHeaders>
                     <strictCheck>true</strictCheck>
                 </configuration>
                 <executions>
@@ -476,11 +482,11 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
             <id>gradle-workaround</id>
-            <url>http://repo.spring.io/plugins-release</url>
+            <url>https://repo.spring.io/plugins-release</url>
             <snapshots>
               <enabled>false</enabled>
             </snapshots>

@@ -1,12 +1,12 @@
 /**
- * Copyright © 2010-2017 Nokia
- * <p>
+ * Copyright © 2010-2020 Nokia
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,25 +16,29 @@
 
 package org.jsonschema2pojo;
 
-public interface RuleLogger {
+public interface RuleLogger
+{
+	void debug(String msg);
 
-  void debug(String msg);
+	void error(String msg);
 
-  void error(String msg);
+	void error(String s, Throwable e);
 
-  void info(String msg);
+	void info(String msg);
 
-  void trace(String msg);
+	boolean isDebugEnabled();
 
-  void warn(String msg);
+	boolean isErrorEnabled();
 
-  boolean isDebugEnabled();
+	boolean isInfoEnabled();
 
-  boolean isErrorEnabled();
+	boolean isTraceEnabled();
 
-  boolean isInfoEnabled();
+	boolean isWarnEnabled();
 
-  boolean isTraceEnabled();
+	void trace(String msg);
 
-  boolean isWarnEnabled();
+	void warn(String s, Throwable e);
+
+	void warn(String msg);
 }

@@ -1,3 +1,19 @@
+/**
+ * Copyright © 2010-2020 Nokia
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jsonschema2pojo.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,7 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Holds the an enum types effective definition.
+ * Holds an enum types effective definition.
  *
  * The definition of the enum can be decided by:
  *    "enum" (JSON-Schema)
@@ -32,6 +48,30 @@ public class EnumDefinition {
     this.backingType = backingType;
     this.enumValues = enumValues;
     this.type = type;
+  }
+
+  /**
+   * Copy constructor
+   *
+   * Used primarily for custom rule enum implementations.
+   *
+   */
+  public EnumDefinition(EnumDefinition enumDefinition) {
+    this(enumDefinition, enumDefinition.enumValues);
+  }
+
+  /**
+   * Copy constructor with an override for enumValues.
+   *
+   * Used primarily for custom enum rule implementations.
+   *
+   */
+  public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
+    this(enumDefinition.nodeName,
+         enumDefinition.enumNode,
+         enumDefinition.backingType,
+         enumValueDefinitions,
+         enumDefinition.type);
   }
 
   public JType getBackingType() {

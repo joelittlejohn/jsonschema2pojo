@@ -97,3 +97,10 @@
 * Michał Szymborski
 * Duane Zamrok
 * Gleb Averchuk
+* John Tipper
+* Daniel Cruver
+* kullanici0606
+* Francisco Taboada
+* Simon Levermann
+* Rajpaul Bagga
+* Tim Schruben

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additionalHeaders>
+	<java_style>
+		<firstLine>/**</firstLine>
+		<beforeEachLine> * </beforeEachLine>
+		<endLine> */EOL</endLine>
+		<afterEachLine> </afterEachLine>
+		<firstLineDetectionPattern>(\s|\t)*/\*.*$</firstLineDetectionPattern>
+		<lastLineDetectionPattern>.*\*/(\s|\t)*$</lastLineDetectionPattern>
+		<allowBlankLines>false</allowBlankLines>
+		<isMultiline>true</isMultiline>
+		<padLines>false</padLines>
+	</java_style>
+</additionalHeaders>
