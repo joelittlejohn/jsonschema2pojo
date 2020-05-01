@@ -11,6 +11,19 @@
         },
         "defaultNotRequiredProperty" : {
             "type" : "string"
+        },
+        "nested": {
+            "type": "object",
+            "required": ["main"],
+            "properties": {
+                "main": {
+                    "type": "string"
+                },
+                "other": {
+                    "type": "string"
+                }
+            }
         }
-    }
+    },
+    "required": [ "nested"]
 }
