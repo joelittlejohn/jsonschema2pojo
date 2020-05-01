@@ -16,52 +16,98 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocCommentable;
+import com.sun.codemodel.*;
+import org.hamcrest.Matchers;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.*;
 
 public class RequiredRuleTest {
-
     private static final String TARGET_CLASS_NAME = RequiredRuleTest.class.getName() + ".DummyClass";
+    private DefaultGenerationConfig withJsr303andJsr305 = new DefaultGenerationConfig() {
+        @Override
+        public boolean isIncludeJsr303Annotations() {
+            return true;
+        }
 
-    private RequiredRule rule = new RequiredRule(new RuleFactory());
+        @Override
+        public boolean isIncludeJsr305Annotations() {
+            return true;
+        }
+    };
 
-    @Test
-    public void applyAddsTextWhenRequired() throws JClassAlreadyExistsException {
+    private RequiredRule rule;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private JFieldVar fieldVar;
+    private ObjectMapper mapper;
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
-
-        ObjectMapper mapper = new ObjectMapper();
-        BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
-
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
-
-        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
-        assertThat(result.javadoc().size(), is(1));
-        assertThat((String) result.javadoc().get(0), is("\n(Required)"));
-
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        rule = new RequiredRule(new RuleFactory(withJsr303andJsr305, new Jackson2Annotator(withJsr303andJsr305), new SchemaStore()));
+        mapper = new ObjectMapper();
     }
 
     @Test
-    public void applySkipsTextWhenNotRequired() throws JClassAlreadyExistsException {
+    public void applyAddsTextAndAddCanNotBeNullAnnotationsWhenRequiredIsTrue() throws JClassAlreadyExistsException {
+        final JDocComment javadoc = javadoc();
+        when(fieldVar.javadoc()).thenReturn(javadoc);
 
-        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+        JDocCommentable result = rule.apply("nodeName", booleanNodeOfValue(true), null, fieldVar, null);
 
-        ObjectMapper mapper = new ObjectMapper();
-        BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
+        assertThat(result.javadoc(), sameInstance(javadoc));
+        assertThat(javadoc, Matchers.hasItems("\n(Required)"));
+        verify(fieldVar).annotate(Nonnull.class);
+        verify(fieldVar).annotate(NotNull.class);
+    }
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
+    @Test
+    public void applySkipsTextAndAddCanBeNullAnnotationsWhenRequiredIsFalse() throws JClassAlreadyExistsException {
+        final JDocComment javadoc = javadoc();
+        when(fieldVar.javadoc()).thenReturn(javadoc);
 
-        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
-        assertThat(result.javadoc().size(), is(0));
+        JDocCommentable result = rule.apply("nodeName", booleanNodeOfValue(false), null, fieldVar, null);
+
+        assertThat(result.javadoc(), sameInstance(javadoc));
+        assertThat(javadoc, empty());
+        verify(fieldVar).annotate(Nullable.class);
+    }
+
+    private BooleanNode booleanNodeOfValue(boolean value) {
+        return mapper.createObjectNode()
+                .booleanNode(value);
+    }
+
+    private JDocComment javadoc() throws JClassAlreadyExistsException {
+        return new JCodeModel()._class(TARGET_CLASS_NAME)
+                .javadoc();
+    }
+
+    @Test
+    public void shallBeNoopWhenRequiredIsNotBoolean() {
+        final ArrayNode node = mapper.createObjectNode()
+                .arrayNode(2);
+
+        JDocCommentable result = rule.apply("nodeName", node, null, fieldVar, null);
+
+        verifyNoInteractions(fieldVar);
     }
 
 }
