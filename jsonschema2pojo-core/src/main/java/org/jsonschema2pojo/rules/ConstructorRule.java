@@ -445,7 +445,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     toJsonMethod.javadoc().add("Encode to JsonObject");
 
     JBlock constructorBody = toJsonMethod.body();
-    constructorBody.directStatement("JsonObject obj = new JsonObject()");
+    constructorBody.directStatement("JsonObject obj = new JsonObject();");
     constructorBody.add(
         jclass.owner()
             .ref(jclass.fullName() + "Converter")
