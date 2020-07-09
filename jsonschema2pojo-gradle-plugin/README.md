@@ -1,11 +1,10 @@
 # DEPRECATED
 
-Gradle jsonschema2pojo plugin in current repo is deprecated. No new development will be taking place.
+The Gradle jsonschema2pojo plugin in this repo is deprecated, and is unlikely to develop further.
 
-Existing version will _(of course)_ continue to function with Gradle < **7.0**.
+Existing versions of this plugin will (of course) continue to function with Gradle < **7.0**.
 
-New applications should use new official Gradle [jsonschema2pojo](https://github.com/eirnym/js2p-gradle) plugin 
-from a separate repo, which is compatible with Gradle **5.6+**.
+New applications should use the new official [jsonschema2pojo Gradle plugin](https://github.com/eirnym/js2p-gradle), which is compatible with Gradle **5.6+**.
 
 # Gradle jsonschema2pojo plugin
 
