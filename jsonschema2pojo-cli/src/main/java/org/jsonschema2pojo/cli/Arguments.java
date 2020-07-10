@@ -112,7 +112,7 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
     private boolean omitToString = false;
-    
+
     @Parameter(names = { "-tse", "--tostring-excludes" }, description = "The fields that should be excluded from generated toString methods")
     private String toStringExcludes = "";
 
@@ -139,6 +139,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-o", "--use-optional-for-getters"}, description = "Use Optional for getters of non-required fields.")
     private boolean useOptionalForGetters = false;
+
+    @Parameter(names = { "-of", "--use-optional-for-fields"}, description = "Use Optional for non-required fields.")
+    private boolean useOptionalForFields = false;
 
     @Parameter(names = { "-T", "--source-type" })
     private SourceType sourceType = SourceType.JSONSCHEMA;
@@ -357,7 +360,7 @@ public class Arguments implements GenerationConfig {
     public String[] getToStringExcludes() {
         return defaultString(toStringExcludes).split(" ");
     }
-    
+
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
@@ -395,6 +398,9 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
+
+    @Override
+    public boolean isUseOptionalForFields() { return useOptionalForFields; }
 
     @Override
     public SourceType getSourceType() {

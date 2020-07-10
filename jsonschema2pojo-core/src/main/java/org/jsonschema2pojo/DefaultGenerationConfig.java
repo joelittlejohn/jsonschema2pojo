@@ -119,7 +119,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeToString() {
         return true;
     }
-    
+
     /**
      * @return no exclusions
      */
@@ -180,6 +180,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
 
     @Override
     public boolean isUseOptionalForGetters() { return false; }
+
+    @Override
+    public boolean isUseOptionalForFields() { return false; }
 
     /**
      * @return {@link SourceType#JSONSCHEMA}
@@ -456,7 +459,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
-    
+
     /**
      * @return {@link Language#JAVA}
      */
