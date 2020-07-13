@@ -38,6 +38,7 @@ public class AnnotatorFactoryTest {
         assertThat(factory.getAnnotator(JACKSON2), is(instanceOf(Jackson2Annotator.class)));
         assertThat(factory.getAnnotator(GSON), is(instanceOf(GsonAnnotator.class)));
         assertThat(factory.getAnnotator(MOSHI1), is(instanceOf(Moshi1Annotator.class)));
+        assertThat(factory.getAnnotator(VERTX), is(instanceOf(VertxAnnotator.class)));
         assertThat(factory.getAnnotator(NONE), is(instanceOf(NoopAnnotator.class)));
 
     }

@@ -52,6 +52,8 @@ public class AnnotatorFactory {
                 return new GsonAnnotator(generationConfig);
             case MOSHI1:
                 return new Moshi1Annotator(generationConfig);
+            case VERTX:
+                return new VertxAnnotator(generationConfig);
             case NONE:
                 return new NoopAnnotator();
             default:

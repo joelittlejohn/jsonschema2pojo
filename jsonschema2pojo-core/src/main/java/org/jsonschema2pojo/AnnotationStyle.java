@@ -61,6 +61,14 @@ public enum AnnotationStyle {
     MOSHI1,
 
     /**
+     * Vert.x Data object
+     *
+     * @see <a href="https://github.com/vert-x3/vertx-codegen">https://github.com/vert-x3/vertx-codegen</a>
+     *
+     */
+    VERTX,
+
+    /**
      * No-op style, adds no annotations at all.
      */
     NONE,
