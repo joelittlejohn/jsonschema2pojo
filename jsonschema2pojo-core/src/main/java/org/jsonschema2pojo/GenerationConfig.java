@@ -293,6 +293,13 @@ public interface GenerationConfig {
   String getOutputEncoding();
 
   /**
+   * Gets the 'excludeTimezoneFromDateTimeFormat' configuration option.
+   *
+   * @return Whether to exclude the timezone from the date-time format annotations
+   */
+  boolean isExcludeTimezoneFromDateTimeFormat();
+
+  /**
    * Gets the 'useJodaDates' configuration option.
    *
    * @return Whether to use {@link org.joda.time.DateTime} instead of

@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
@@ -34,6 +35,37 @@ import org.junit.Test;
 public class CustomDatesIT {
     
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @Test
+    public void shouldIncludeTimeZoneInDateTime() throws ClassNotFoundException, IntrospectionException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json",
+                                                                "com.example",
+                                                                config("annotationStyle", "jackson", "formatDateTimes", true));
+
+        Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
+
+        Method stringAsDateTime = new PropertyDescriptor("stringAsDateTime", classWithDate).getReadMethod();
+        JsonFormat annotation = stringAsDateTime.getAnnotation(JsonFormat.class);
+        assertEquals("UTC", annotation.timezone());
+    }
+
+    @Test
+    public void shouldNotIncludeTimeZoneInDateTimeWhenExplicitlyExcluded() throws ClassNotFoundException, IntrospectionException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json",
+                                                                "com.example",
+                                                                config("annotationStyle",
+                                                                       "jackson",
+                                                                       "formatDateTimes",
+                                                                       true,
+                                                                       "excludeTimezoneFromDateTimeFormat",
+                                                                       true));
+
+        Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
+
+        Method stringAsDateTime = new PropertyDescriptor("stringAsDateTime", classWithDate).getReadMethod();
+        JsonFormat annotation = stringAsDateTime.getAnnotation(JsonFormat.class);
+        assertEquals("##default", annotation.timezone());
+    }
 
     @Test
     public void defaultTypesAreNotCustom() throws ClassNotFoundException, IntrospectionException {

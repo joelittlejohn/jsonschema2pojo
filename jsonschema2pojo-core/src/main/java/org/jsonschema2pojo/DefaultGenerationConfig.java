@@ -205,6 +205,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    @Override
+    public boolean isExcludeTimezoneFromDateTimeFormat() {
+        return false;
+    }
+
     /**
      * @return false
      */

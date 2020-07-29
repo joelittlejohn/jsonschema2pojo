@@ -409,6 +409,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String outputEncoding = "UTF-8";
 
     /**
+     * Whether to exclude the timezone from the date-time format annotations.
+     *
+     * @parameter property="jsonschema2pojo.excludeTimezoneFromDateTimeFormat"
+     *            default-value="false"
+     * @since 1.0.2
+     */
+    private boolean excludeTimezoneFromDateTimeFormat = false;
+
+    /**
      * Whether to use {@link org.joda.time.DateTime} instead of
      * {@link java.util.Date} when adding date type fields to generated Java
      * types.
@@ -1051,6 +1060,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isExcludeTimezoneFromDateTimeFormat() {
+        return excludeTimezoneFromDateTimeFormat;
     }
 
     @Override

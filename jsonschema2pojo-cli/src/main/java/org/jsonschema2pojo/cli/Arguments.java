@@ -149,6 +149,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-e", "--output-encoding" }, description = "The character encoding that should be used when writing the generated Java source files.")
     private String outputEncoding = "UTF-8";
 
+    @Parameter(names = { "-etz", "--exclude-time-zone-from-date-time-format" }, description = "Whether to exclude the time zone from the generated format annotations for date-time")
+    private boolean excludeTimezoneFromDateTimeFormat = false;
+
     @Parameter(names = { "-j", "--joda-dates" }, description = "Whether to use org.joda.time.DateTime instead of java" + ".util.Date when adding date-time type fields to generated Java types.")
     private boolean useJodaDates = false;
 
@@ -409,6 +412,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public String getOutputEncoding() {
         return outputEncoding;
+    }
+
+    @Override
+    public boolean isExcludeTimezoneFromDateTimeFormat() {
+        return excludeTimezoneFromDateTimeFormat;
     }
 
     @Override
