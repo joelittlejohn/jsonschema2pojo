@@ -1,0 +1,5 @@
+{
+  "exposed": 10,
+  "missingOutExposed": "someValue",
+  "missingExposed": "anyValue"
+}

@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 public class GsonIT {
 
@@ -95,6 +96,44 @@ public class GsonIT {
         Map<String, String> jsonAsMap = new Gson().fromJson(json, Map.class);
 
         assertThat(jsonAsMap.get("enum_Property"), is("4 ! 1"));
+    }
+
+    @Test
+    public void gsonSerializeAndDeserilizedAccoringToExposeAnnotation() throws ClassNotFoundException, SecurityException, IOException
+    {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/GsonSerialize.json", "com.example.gson",
+                config("annotationStyle", "gson"));
+
+        assertJsonRoundTrip(resultsClassLoader, "com.example.gson.GsonSerialize", "/json/examples/GsonExpose.json");
+    }
+
+    @Test
+    public void gsonExposeAnnotationValues() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/GsonSerialize.json", "com.example.gson",
+                config("annotationStyle", "gson"));
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.gson.GsonSerialize");
+
+        assertThat(generatedType.getDeclaredField("exposed").getAnnotation(Expose.class).serialize(), is(true));
+        assertThat(generatedType.getDeclaredField("exposed").getAnnotation(Expose.class).deserialize(), is(true));
+
+        assertThat(generatedType.getDeclaredField("noExposed").getAnnotation(Expose.class).serialize(), is(false));
+        assertThat(generatedType.getDeclaredField("noExposed").getAnnotation(Expose.class).deserialize(), is(false));
+
+        assertThat(generatedType.getDeclaredField("inExposedOnly").getAnnotation(Expose.class).serialize(), is(false));
+        assertThat(generatedType.getDeclaredField("inExposedOnly").getAnnotation(Expose.class).deserialize(), is(true));
+
+        assertThat(generatedType.getDeclaredField("outExposedOnly").getAnnotation(Expose.class).serialize(), is(true));
+        assertThat(generatedType.getDeclaredField("outExposedOnly").getAnnotation(Expose.class).deserialize(), is(false));
+
+        assertThat(generatedType.getDeclaredField("missingOutExposed").getAnnotation(Expose.class).serialize(), is(true));
+        assertThat(generatedType.getDeclaredField("missingOutExposed").getAnnotation(Expose.class).deserialize(), is(true));
+
+        assertThat(generatedType.getDeclaredField("missingInExposed").getAnnotation(Expose.class).serialize(), is(false));
+        assertThat(generatedType.getDeclaredField("missingInExposed").getAnnotation(Expose.class).deserialize(), is(true));
+
+        assertThat(generatedType.getDeclaredField("missingExposed").getAnnotation(Expose.class).serialize(), is(true));
+        assertThat(generatedType.getDeclaredField("missingExposed").getAnnotation(Expose.class).deserialize(), is(true));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

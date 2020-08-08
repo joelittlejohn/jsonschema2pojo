@@ -1,0 +1,36 @@
+{
+  "type" : "object",
+  "properties" : {
+    "exposed": {
+      "type": "integer",
+      "gsonSerialize": true,
+      "gsonDeserialize": true
+    },
+    "noExposed": {
+      "type": "string",
+      "gsonSerialize": false,
+      "gsonDeserialize": false
+    },
+    "inExposedOnly": {
+      "type": "boolean",
+      "gsonSerialize": false,
+      "gsonDeserialize": true
+    },
+    "outExposedOnly": {
+      "type": "string",
+      "gsonSerialize": true,
+      "gsonDeserialize": false
+    },
+    "missingOutExposed": {
+      "type": "string",
+      "gsonDeserialize": true
+    },
+    "missingInExposed": {
+      "type": "string",
+      "gsonSerialize": false
+    },
+    "missingExposed": {
+      "type": "string"
+    }
+  }
+}
