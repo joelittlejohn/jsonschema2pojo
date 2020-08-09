@@ -207,4 +207,21 @@ public class JsonTypesIT {
 
     }
 
+    @Test
+    public void arrayOfAnonymousEnumShouldNotConflictWithClass() throws Exception {
+
+        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/array/arrayOfEnumConflictingWithClass.json", "com.example.vincent");
+        Class<?> classWithInnerEnum = javaNameClassLoader.loadClass("com.example.MyItem");
+
+        assertThat(classWithInnerEnum.getClasses(), arrayWithSize(1));
+        Class<?> innerEnum = classWithInnerEnum.getClasses()[0];
+
+        assertThat(innerEnum.getName(), equalTo("com.example.MyItem$Kind"));
+        assertThat(innerEnum.isEnum(), equalTo(true));
+
+        Class<?> classKind = javaNameClassLoader.loadClass("com.example.Kind");
+        Object instance = classKind.newInstance();
+        assertThat(instance, hasProperty("kindCode"));
+    }
+
 }
