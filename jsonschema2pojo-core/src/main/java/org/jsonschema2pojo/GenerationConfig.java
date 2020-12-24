@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.PostGenerateClassHook;
 
 /**
  * Defines the configuration options for Java type generation, including source
@@ -625,4 +626,5 @@ public interface GenerationConfig {
     return false;
   }
 
+  PostGenerateClassHook getPostGenerateClassHook();
 }

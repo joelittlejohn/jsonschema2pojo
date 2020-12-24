@@ -22,6 +22,7 @@ import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
 import org.jsonschema2pojo.Language
 import org.jsonschema2pojo.NoopAnnotator
+import org.jsonschema2pojo.PostGenerateClassHook
 import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
 import org.jsonschema2pojo.rules.RuleFactory
@@ -96,6 +97,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
   Language targetLanguage
+  PostGenerateClassHook postGenerateClassHook
   Map<String, String> formatTypeMapping
 
   public JsonSchemaExtension() {
@@ -156,6 +158,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
+    postGenerateClassHook = null
   }
 
   @Override
@@ -285,6 +288,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
+       |postGenerateClassHook = ${postGenerateClassHook}
      """.stripMargin()
   }
   

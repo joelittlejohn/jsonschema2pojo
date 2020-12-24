@@ -486,4 +486,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return false;
     }
+
+    @Override
+    public PostGenerateClassHook getPostGenerateClassHook() {
+        return null;
+    }
 }

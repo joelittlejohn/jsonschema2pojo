@@ -41,6 +41,7 @@ import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
+
     /**
      * Reads the contents of the given source and initiates schema generation.
      *
@@ -77,6 +78,10 @@ public class Jsonschema2Pojo {
                 generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter())));
             } else {
                 mapper.generate(codeModel, getNodeName(source, config), defaultString(config.getTargetPackage()), source);
+            }
+
+            if (config.getPostGenerateClassHook() != null) {
+                config.getPostGenerateClassHook().apply(codeModel, config, ruleFactory, annotator, source);
             }
         }
 

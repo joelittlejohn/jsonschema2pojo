@@ -34,6 +34,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PostGenerateClassHook;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.cli.CommandLineLogger.LogLevel;
@@ -607,5 +608,10 @@ public class Arguments implements GenerationConfig {
         return formatTypeMapping
                 .stream()
                 .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
+    }
+
+    @Override
+    public PostGenerateClassHook getPostGenerateClassHook() {
+        return null;
     }
 }

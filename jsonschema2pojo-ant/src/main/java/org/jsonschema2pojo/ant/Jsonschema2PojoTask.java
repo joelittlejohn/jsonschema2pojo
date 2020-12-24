@@ -48,6 +48,7 @@ import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PostGenerateClassHook;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
@@ -195,6 +196,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private Language targetLanguage = Language.JAVA;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
+
+    private PostGenerateClassHook postGenerateClassHook;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -977,6 +980,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
             .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
     }
 
+    public void setPostGenerateClassHook(PostGenerateClassHook postGenerateClassHook) {
+        this.postGenerateClassHook = postGenerateClassHook;
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -1323,5 +1330,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return includeConstructorPropertiesAnnotation;
+    }
+
+    @Override
+    public PostGenerateClassHook getPostGenerateClassHook() {
+        return postGenerateClassHook;
     }
 }

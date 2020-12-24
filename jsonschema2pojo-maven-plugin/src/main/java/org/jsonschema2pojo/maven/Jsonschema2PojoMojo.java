@@ -44,6 +44,7 @@ import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.PostGenerateClassHook;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
@@ -813,6 +814,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeConstructorPropertiesAnnotation = false;
 
     /**
+     * Used to apply custom user edits over the classes. 
+     */
+    private PostGenerateClassHook postGenerateClassHook = null;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1259,5 +1265,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+
+    @Override
+    public PostGenerateClassHook getPostGenerateClassHook() {
+        return postGenerateClassHook;
     }
 }
