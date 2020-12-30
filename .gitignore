@@ -19,6 +19,9 @@ build/
 .idea
 *.iml
 
+#VSCode
+.vscode/
+
 # Scratch files
 .#*
 .*.swp
