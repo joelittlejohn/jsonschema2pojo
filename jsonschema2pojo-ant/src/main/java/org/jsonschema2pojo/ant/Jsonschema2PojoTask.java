@@ -46,7 +46,6 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
@@ -191,8 +190,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private String refFragmentPathDelimiters = "#/.";
 
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
-
-    private Language targetLanguage = Language.JAVA;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
 
@@ -955,10 +952,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.sourceSortOrder = sourceSortOrder;
     }
     
-    public void setTargetLanguage(Language targetLanguage) {
-        this.targetLanguage = targetLanguage;
-    }
-
     /**
      * Sets the 'useInnerClassBuilders' property of this class
      *
@@ -1305,11 +1298,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return sourceSortOrder;
     }
     
-    @Override
-    public Language getTargetLanguage() {
-        return targetLanguage;
-    }
-
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;

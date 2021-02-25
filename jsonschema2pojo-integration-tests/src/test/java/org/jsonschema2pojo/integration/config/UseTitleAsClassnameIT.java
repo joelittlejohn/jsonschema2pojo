@@ -25,7 +25,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
-import scala.annotation.meta.getter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

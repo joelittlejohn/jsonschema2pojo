@@ -595,19 +595,6 @@ public interface GenerationConfig {
   SourceSortOrder getSourceSortOrder();
 
   /**
-   * Gets the 'targetLanguage' configuration option.
-   *
-   * @return The type of code that will be generated.
-   *         <p>
-   *         Supported values:
-   *         <ul>
-   *         <li><code>JAVA</code> (Generate .java source files)</li>
-   *         <li><code>SCALA</code> (Generate .scala source files, using scalagen)</li>
-   *         </ul>
-   */
-  Language getTargetLanguage();
-
-  /**
    * Gets the 'formatTypeMapping' configuration option.
    *
    * @return An optional mapping from format identifier (e.g. 'uri') to

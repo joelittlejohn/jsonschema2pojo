@@ -81,15 +81,9 @@ public class Jsonschema2Pojo {
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
-            if (config.getTargetLanguage() == Language.SCALA) {
-                CodeWriter sourcesWriter = new ScalaFileCodeWriter(config.getTargetDirectory(), config.getOutputEncoding());
-                CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
-                codeModel.build(sourcesWriter, resourcesWriter);
-            } else {
-                CodeWriter sourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
-                CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
-                codeModel.build(sourcesWriter, resourcesWriter);
-            }
+            CodeWriter sourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
+            CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
+            codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }

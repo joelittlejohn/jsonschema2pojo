@@ -45,7 +45,6 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
-import scala.annotation.meta.field;
 
 /**
  * Applies the "default" schema rule.

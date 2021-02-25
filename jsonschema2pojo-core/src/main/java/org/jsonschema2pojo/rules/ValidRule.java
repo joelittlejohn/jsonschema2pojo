@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
 import com.sun.codemodel.JFieldVar;
-import scala.annotation.meta.field;
 
 public class ValidRule implements Rule<JFieldVar, JFieldVar> {
     

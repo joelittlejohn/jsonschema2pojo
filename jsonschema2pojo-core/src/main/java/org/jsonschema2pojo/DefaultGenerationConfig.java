@@ -458,14 +458,6 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
     
     /**
-     * @return {@link Language#JAVA}
-     */
-    @Override
-    public Language getTargetLanguage() {
-        return Language.JAVA;
-    }
-
-    /**
      * @return {@link Collections#emptyMap}
      */
     @Override

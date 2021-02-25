@@ -24,7 +24,6 @@
         <module>jsonschema2pojo-gradle-plugin</module>
         <module>jsonschema2pojo-integration-tests</module>
         <module>jsonschema2pojo-maven-plugin</module>
-        <module>jsonschema2pojo-scalagen</module>
     </modules>
 
     <developers>
@@ -56,7 +55,6 @@
         <moshi.version>1.5.0</moshi.version>
         <jackson2x.version>2.9.10</jackson2x.version>
         <jackson2x.databind.version>2.9.10.7</jackson2x.databind.version>
-        <scala.version>2.11.12</scala.version>
     </properties>
 
     <build>
@@ -338,16 +336,6 @@
                 <version>1.0.10</version>
             </dependency>
             <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-compiler</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.sun.codemodel</groupId>
                 <artifactId>codemodel</artifactId>
                 <version>2.6</version>
@@ -367,6 +355,11 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.11</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>

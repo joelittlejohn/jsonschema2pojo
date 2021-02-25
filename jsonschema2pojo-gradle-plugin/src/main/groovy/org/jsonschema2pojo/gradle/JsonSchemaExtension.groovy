@@ -20,7 +20,6 @@ import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
-import org.jsonschema2pojo.Language
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
@@ -95,7 +94,6 @@ public class JsonSchemaExtension implements GenerationConfig {
   String customDateTimePattern
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
-  Language targetLanguage
   Map<String, String> formatTypeMapping
 
   public JsonSchemaExtension() {
@@ -281,7 +279,6 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}
-       |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}

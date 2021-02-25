@@ -32,7 +32,6 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
-import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
@@ -235,9 +234,6 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
-
-    @Parameter(names = { "-tl", "--target-language" }, description = "The type of code that will be generated.  Available options are: JAVA or SCALA")
-    private Language targetLanguage = Language.JAVA;
 
     @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
     private List<String> formatTypeMapping = new ArrayList<>();
@@ -595,11 +591,6 @@ public class Arguments implements GenerationConfig {
     @Override
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
-    }
-
-    @Override
-    public Language getTargetLanguage() {
-        return targetLanguage;
     }
 
     @Override
