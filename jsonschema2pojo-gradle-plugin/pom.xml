@@ -22,34 +22,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-core</artifactId>
+            <groupId>dev.gradleplugins</groupId>
+            <artifactId>gradle-api</artifactId>
             <version>${gradle.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-base-services</artifactId>
-            <version>${gradle.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-base-services-groovy</artifactId>
-            <version>${gradle.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-tooling-api</artifactId>
-            <version>${gradle.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
