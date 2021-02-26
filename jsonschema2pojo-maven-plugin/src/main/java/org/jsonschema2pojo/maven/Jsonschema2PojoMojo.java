@@ -249,8 +249,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>jackson2</code> (apply annotations from the
      * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
      * 2.x</a> library)</li>
-     * <li><code>jackson1</code> (apply annotations from the
-     * <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
+     * <li><code>jackson</code> (alias for jackson2)
      * <li><code>gson</code> (apply annotations from the
      * <a href="https://code.google.com/p/google-gson/">gson</a> library)</li>
      * <li><code>moshi1</code> (apply annotations from the
@@ -274,8 +273,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useTitleAsClassname = false;
 
     /**
-     * The Level of inclusion to set in the generated Java types for Jackson1
-     * and Jackson2 serializers.
+     * The Level of inclusion to set in the generated Java types for
+     * Jackson serializers.
      * <p>
      * Supported values
      * <ul>

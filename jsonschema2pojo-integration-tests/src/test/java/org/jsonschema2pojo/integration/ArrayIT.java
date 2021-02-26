@@ -199,18 +199,6 @@ public class ArrayIT {
 
     }
 
-    @Test
-    public void uniqueArrayPreservesOrderJackson1() throws Exception {
-        new PreserveOrder("jackson1") {
-            @Override
-            protected Object roundTrip(Object original) throws Exception {
-                org.codehaus.jackson.map.ObjectMapper mapper = new org.codehaus.jackson.map.ObjectMapper();
-                return mapper.readValue(mapper.writeValueAsString(original), original.getClass());
-            }
-        }.test();
-
-    }
-
     abstract class PreserveOrder {
         String annotationStyle;
 
@@ -224,17 +212,17 @@ public class ArrayIT {
                     "com.example",
                     config("annotationStyle", annotationStyle));
 
-            Class<?> jackson1Class = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
+            Class<?> jacksonClass = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 
-            Object original = jackson1Class.newInstance();
+            Object original = jacksonClass.newInstance();
 
             @SuppressWarnings("unchecked")
-            Set<Integer> expected = (Set<Integer>) jackson1Class.getMethod("getUniqueIntegerArray").invoke(original);
+            Set<Integer> expected = (Set<Integer>) jacksonClass.getMethod("getUniqueIntegerArray").invoke(original);
             expected.addAll(java.util.Arrays.asList(1, 3, 5, 7, 9, 2, 4, 6, 8, 10));
 
             Object roundTrip = roundTrip(original);
             @SuppressWarnings("unchecked")
-            Set<Integer> actual = (Set<Integer>) jackson1Class.getMethod("getUniqueIntegerArray").invoke(roundTrip);
+            Set<Integer> actual = (Set<Integer>) jacksonClass.getMethod("getUniqueIntegerArray").invoke(roundTrip);
 
             Iterator<Integer> expectedItr = expected.iterator();
             Iterator<Integer> actualItr = actual.iterator();

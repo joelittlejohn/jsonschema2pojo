@@ -538,7 +538,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'inclusionLevel' property of this class
      *
      * @param inclusionLevel
-     *            The level of inclusion for Jackson1 and Jackson2 serializer.
+     *            The level of inclusion for Jackson serializer.
      */
     public void setInclusionLevel(InclusionLevel inclusionLevel) {
         this.inclusionLevel = inclusionLevel;

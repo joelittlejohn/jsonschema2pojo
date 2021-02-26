@@ -31,15 +31,6 @@ public class JacksonViewIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void javaJsonViewWithJackson1x() throws Exception {
-
-        org.codehaus.jackson.map.annotate.JsonView jsonViewAnnotation
-                = (org.codehaus.jackson.map.annotate.JsonView) jsonViewTest("jackson1", org.codehaus.jackson.map.annotate.JsonView.class);
-
-        assertThat(jsonViewAnnotation.value()[0].getSimpleName(), equalTo("MyJsonViewClass"));
-    }
-
-    @Test
     public void javaJsonViewWithJackson2x() throws Exception {
 
         com.fasterxml.jackson.annotation.JsonView jsonViewAnnotation

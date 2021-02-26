@@ -173,8 +173,7 @@ public interface GenerationConfig {
    *         <p>
    *         Supported values:
    *         <ul>
-   *         <li><code>jackson1</code> (apply annotations from the
-   *         <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)
+   *         <li><code>jackson</code> (alias for jackson2)
    *         </li>
    *         <li><code>jackson2</code> (apply annotations from the
    *         <a href="https://github.com/FasterXML/jackson-annotations">
@@ -196,7 +195,7 @@ public interface GenerationConfig {
   boolean isUseTitleAsClassname();
 
   /**
-   * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
+   * Gets the 'inclusionLevel' option for Jackson serializer.
    *
    * @return Level of inclusion to set in the generated Java types.
    *         <p>
