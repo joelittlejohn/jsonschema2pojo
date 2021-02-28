@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -33,7 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class TypeIT {
-    
+
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
@@ -184,6 +184,7 @@ public class TypeIT {
         assertThat(classWithManyTypes.getMethod("getStringWithJavaType").getReturnType().getName(), is("java.lang.Boolean"));
         assertThat(classWithManyTypes.getMethod("getBooleanWithJavaType").getReturnType().getName(), is("long"));
         assertThat(classWithManyTypes.getMethod("getDateWithJavaType").getReturnType().getName(), is("int"));
+        assertThat(classWithManyTypes.getMethod("getEnumWithJavaType").getReturnType().getName(), is("java.lang.Boolean"));
 
     }
 

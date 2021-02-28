@@ -16,6 +16,27 @@
 
 package org.jsonschema2pojo.rules;
 
+import static java.util.Arrays.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.RuleLogger;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.model.EnumDefinition;
+import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
+import org.jsonschema2pojo.model.EnumValueDefinition;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.ClassType;
@@ -35,32 +56,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.RuleLogger;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.model.EnumDefinition;
-import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
-import org.jsonschema2pojo.model.EnumValueDefinition;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.containsOnly;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.splitByCharacterTypeCamelCase;
-import static org.apache.commons.lang3.StringUtils.upperCase;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
 
 /**
  * Applies the "enum" schema rule.
@@ -108,6 +103,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer container, Schema schema) {
+
+        if (node.has("existingJavaType")) {
+            JType type = ruleFactory.getTypeRule().apply(nodeName, node, parent, container.getPackage(), schema);
+            schema.setJavaTypeIfEmpty(type);
+            return type;
+        }
 
         JDefinedClass _enum;
         try {

@@ -66,6 +66,11 @@
           "type" : "string",
           "existingJavaType" : "java.lang.Boolean"
         },
+        "enumWithJavaType" : {
+          "type" : "string",
+          "enum" : ["a", "b", "c"],
+          "existingJavaType" : "java.lang.Boolean"
+        },
         "booleanWithJavaType" : {
           "type" : "boolean",
           "existingJavaType" : "long"
