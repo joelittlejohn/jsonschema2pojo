@@ -578,6 +578,30 @@
     <td align="center" valign="top">No (default none)</td>
   </tr>
   <tr>
+    <td valign="top">listType</td>
+    <td valign="top">The java type to use instead of <code>java.util.List</code> when adding
+      list fields to generated Java types. Does not work with default collection initialization
+      since there is no simple way to know how to create an instance - thus custom
+      lists are always left uninitialized.
+      <ul>
+        <li><code>*anything*</code> (no compile time check)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">setType</td>
+    <td valign="top">The java type to use instead of <code>java.util.Set</code> when adding
+      set fields to generated Java types. Does not work with default collection initialization
+      since there is no simple way to know how to create an instance - thus custom
+      sets are always left uninitialized.
+      <ul>
+        <li><code>*anything*</code> (no compile time check)</li>
+      </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
     <td valign="top">refFragmentPathDelimiters</td>
     <td valign="top">A string containing any characters that should act as path delimiters when
       resolving $ref

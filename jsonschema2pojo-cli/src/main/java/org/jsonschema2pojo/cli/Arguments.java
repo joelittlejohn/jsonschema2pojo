@@ -232,6 +232,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
 
+    @Parameter(names = { "-lt", "--list-class" }, description = "Specify list class")
+    private String listType;
+
+	@Parameter(names = { "-st", "--set-class" }, description = "Specify set class")
+	private String setType;
+
     @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
@@ -572,6 +578,16 @@ public class Arguments implements GenerationConfig {
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
     }
+
+    @Override
+    public String getListType() {
+        return listType;
+    }
+
+	@Override
+	public String getSetType() {
+		return setType;
+	}
 
     @Override
     public String getCustomDatePattern() {

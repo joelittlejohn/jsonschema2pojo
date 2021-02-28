@@ -189,6 +189,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String refFragmentPathDelimiters = "#/.";
 
+    private String listType;
+
+    private String setType;
+
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
@@ -1292,6 +1296,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public String getRefFragmentPathDelimiters() {
         return refFragmentPathDelimiters;
     }
+
+    @Override
+    public String getListType() {
+        return listType;
+    }
+
+	@Override
+	public String getSetType() {
+		return setType;
+	}
 
     @Override
     public SourceSortOrder getSourceSortOrder() {

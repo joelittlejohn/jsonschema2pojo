@@ -67,6 +67,31 @@ public class ArrayRuleTest {
     }
 
     @Test
+    public void arrayWithUniqueItemsAndCustomSetTypeProducesCustomSet() {
+        JCodeModel codeModel = new JCodeModel();
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode itemsNode = mapper.createObjectNode();
+        itemsNode.put("type", "integer");
+
+        ObjectNode propertyNode = mapper.createObjectNode();
+        propertyNode.set("uniqueItems", BooleanNode.TRUE);
+        propertyNode.set("items", itemsNode);
+
+        Schema schema = mock(Schema.class);
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
+        when(config.getSetType()).thenReturn(scala.collection.immutable.Set.class.getName());
+
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
+
+        assertThat(propertyType, notNullValue());
+        assertThat(propertyType.erasure().name(), is(codeModel.ref(scala.collection.immutable.Set.class).name()));
+        assertThat(propertyType.getTypeParameters().get(0).fullName(), is(Integer.class.getName()));
+    }
+
+    @Test
     public void arrayWithNonUniqueItemsProducesList() {
         JCodeModel codeModel = new JCodeModel();
         JPackage jpackage = codeModel._package(getClass().getPackage().getName());
@@ -89,6 +114,33 @@ public class ArrayRuleTest {
 
         assertThat(propertyType, notNullValue());
         assertThat(propertyType.erasure(), is(codeModel.ref(List.class)));
+        assertThat(propertyType.getTypeParameters().get(0).fullName(), is(Double.class.getName()));
+    }
+
+    @Test
+    public void arrayWithNonUniqueItemsAndCustomListTypeProducesCustomList() {
+        JCodeModel codeModel = new JCodeModel();
+        JPackage jpackage = codeModel._package(getClass().getPackage().getName());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode itemsNode = mapper.createObjectNode();
+        itemsNode.put("type", "number");
+
+        ObjectNode propertyNode = mapper.createObjectNode();
+        propertyNode.set("uniqueItems", BooleanNode.FALSE);
+        propertyNode.set("items", itemsNode);
+
+        Schema schema = mock(Schema.class);
+        when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
+        when(schema.deriveChildSchema(any())).thenReturn(schema);
+        when(config.isUseDoubleNumbers()).thenReturn(true);
+        when(config.getListType()).thenReturn(scala.collection.immutable.List.class.getName());
+
+        JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
+
+        assertThat(propertyType, notNullValue());
+        assertThat(propertyType.erasure().name(), is(codeModel.ref(scala.collection.immutable.List.class).name()));
         assertThat(propertyType.getTypeParameters().get(0).fullName(), is(Double.class.getName()));
     }
 

@@ -93,6 +93,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   String customTimePattern
   String customDateTimePattern
   String refFragmentPathDelimiters
+  String listType
+  String setType
   SourceSortOrder sourceSortOrder
   Map<String, String> formatTypeMapping
 
@@ -152,6 +154,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatTimes = false
     formatDateTimes = false
     refFragmentPathDelimiters = "#/."
+    listType = null
+    setType = null
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
   }
@@ -278,6 +282,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customTimePattern = ${customTimePattern}
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
+       |listType = ${listType}
+       |setType = ${setType}
        |sourceSortOrder = ${sourceSortOrder}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
