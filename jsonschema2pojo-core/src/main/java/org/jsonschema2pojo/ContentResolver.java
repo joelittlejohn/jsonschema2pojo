@@ -42,14 +42,14 @@ public class ContentResolver {
     private final ObjectMapper objectMapper;
 
     public ContentResolver() {
-    	this(null);
-	}
+        this(null);
+    }
 
     public ContentResolver(JsonFactory jsonFactory) {
-    	this.objectMapper = new ObjectMapper(jsonFactory)
+        this.objectMapper = new ObjectMapper(jsonFactory)
                 .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
-	}
+    }
 
     /**
      * Resolve a given URI to read its contents and parse the result as JSON.

@@ -29,94 +29,94 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 public class IncludeTypeInfoIT
 {
-	@Rule
-	public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @Rule
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-	@Test
-	public void defaultConfig() throws ClassNotFoundException
-	{
+    @Test
+    public void defaultConfig() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example");
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example");
 
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-		assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
-	}
+        assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+    }
 
-	@Test
-	public void defaultWithSchemaProperty() throws ClassNotFoundException
-	{
+    @Test
+    public void defaultWithSchemaProperty() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example");
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example");
 
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
 
-		JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
-		assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
-		assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
-		assertThat(jsonTypeInfo.property(), is("@clazz"));
-	}
+        JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
+        assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
+        assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
+        assertThat(jsonTypeInfo.property(), is("@clazz"));
+    }
 
-	@Test
-	public void disabled() throws ClassNotFoundException
-	{
+    @Test
+    public void disabled() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-																config("includeTypeInfo", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
+                                                                config("includeTypeInfo", false));
 
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-		assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
-	}
+        assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+    }
 
-	@Test
-	public void disabledWithSchemaProperty() throws ClassNotFoundException
-	{
+    @Test
+    public void disabledWithSchemaProperty() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-																config("includeTypeInfo", false));
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
+                                                                config("includeTypeInfo", false));
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
 
-		JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
-		assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
-		assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
-		assertThat(jsonTypeInfo.property(), is("@clazz"));
-	}
+        JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
+        assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
+        assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
+        assertThat(jsonTypeInfo.property(), is("@clazz"));
+    }
 
-	@Test
-	public void enabled() throws ClassNotFoundException
-	{
+    @Test
+    public void enabled() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-																config("includeTypeInfo", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
+                                                                config("includeTypeInfo", true));
 
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
 
-		JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
-		assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
-		assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
-		assertThat(jsonTypeInfo.property(), is("@class"));
-	}
+        JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
+        assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
+        assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
+        assertThat(jsonTypeInfo.property(), is("@class"));
+    }
 
-	@Test
-	public void enabledWithSchemaProperty() throws ClassNotFoundException
-	{
+    @Test
+    public void enabledWithSchemaProperty() throws ClassNotFoundException
+    {
 
-		ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-																config("includeTypeInfo", true));
-		Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
+                                                                config("includeTypeInfo", true));
+        Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-		assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
 
-		JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
-		assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
-		assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
-		assertThat(jsonTypeInfo.property(), is("@clazz"));
-	}
+        JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
+        assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
+        assertThat(jsonTypeInfo.include(), is(JsonTypeInfo.As.PROPERTY));
+        assertThat(jsonTypeInfo.property(), is("@clazz"));
+    }
 }

@@ -54,15 +54,15 @@ public class PolymorphicIT {
         assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
     }
 
-	@Test
-	public void extendsWithPolymorphicDeserializationWithJackson2() throws ClassNotFoundException {
+    @Test
+    public void extendsWithPolymorphicDeserializationWithJackson2() throws ClassNotFoundException {
 
-		ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
-																	   config("annotationStyle", "JACKSON2"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
+                                                                       config("annotationStyle", "JACKSON2"));
 
-		Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
-		Class<?> supertype = subtype.getSuperclass();
+        Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
+        Class<?> supertype = subtype.getSuperclass();
 
-		assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
-	}
+        assertNotNull(supertype.getAnnotation(JsonTypeInfo.class));
+    }
 }

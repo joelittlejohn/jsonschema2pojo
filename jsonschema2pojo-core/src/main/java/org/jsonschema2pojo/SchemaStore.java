@@ -33,14 +33,14 @@ public class SchemaStore {
     protected final ContentResolver contentResolver;
 
     public SchemaStore() {
-		this.contentResolver = new ContentResolver();
-	}
+        this.contentResolver = new ContentResolver();
+    }
 
     public SchemaStore(ContentResolver contentResolver) {
-		this.contentResolver = contentResolver;
-	}
+        this.contentResolver = contentResolver;
+    }
 
-	/**
+    /**
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.

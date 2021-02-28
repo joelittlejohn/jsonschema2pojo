@@ -97,8 +97,8 @@ pushd $WORKING_DIR
 
     # clone wiki to update version references
     if [[ ! -z $OLD_VERSION ]]; then
-	git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
-	pushd wiki
+    git clone git@github.com:joelittlejohn/jsonschema2pojo.wiki.git wiki
+    pushd wiki
 
             # replace any references to old version with new version
             sed -i "s/$OLD_VERSION/$VERSION/g" *.md
@@ -123,19 +123,19 @@ pushd $WORKING_DIR
             git commit -m "[release] updating example code to $VERSION" || true
             git push origin master || true
 
-	popd
+    popd
     fi
 
     # clone main repo to update version references in the README.md
     if [[ ! -z $OLD_VERSION ]]; then
-	git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
-	pushd main
+    git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
+    pushd main
             sed -i "s/$OLD_VERSION/$VERSION/g" README.md
 
             git add .
             git commit -m "[release] updating README.md for $VERSION"
             git push origin master
-	popd
+    popd
     fi
 
     # upload to github

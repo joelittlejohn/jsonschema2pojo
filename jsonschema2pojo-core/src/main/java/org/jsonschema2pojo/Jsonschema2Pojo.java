@@ -90,11 +90,11 @@ public class Jsonschema2Pojo {
     }
     
     private static ContentResolver createContentResolver(GenerationConfig config) {
-    	if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
-    		return new ContentResolver(new YAMLFactory());
-    	} else {
-    		return new ContentResolver();
-    	}
+        if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
+            return new ContentResolver(new YAMLFactory());
+        } else {
+            return new ContentResolver();
+        }
     }
 
     private static SchemaGenerator createSchemaGenerator(GenerationConfig config) {

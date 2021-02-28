@@ -53,7 +53,7 @@ public class FormatRuleArraysTest {
     }
 
     public FormatRuleArraysTest(String formatValue, Class<?> expectedType) {
-    	this.formatValue = formatValue;
+        this.formatValue = formatValue;
         this.expectedType = expectedType;
 
         when(config.getFormatTypeMapping()).thenReturn(Collections.singletonMap("test", formatValue));

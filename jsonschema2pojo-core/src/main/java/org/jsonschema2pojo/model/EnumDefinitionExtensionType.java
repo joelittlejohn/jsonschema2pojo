@@ -18,24 +18,24 @@ package org.jsonschema2pojo.model;
 
 public enum EnumDefinitionExtensionType {
 
-	/**
-	 * Enum defined just by JSON Schema
-	 */
-	NONE,
+    /**
+     * Enum defined just by JSON Schema
+     */
+    NONE,
 
-	/**
-	 * Enum defined by JSON Schema and javaEnumNames jsonschema2pojo extension.
-	 */
-	JAVA_ENUM_NAMES,
+    /**
+     * Enum defined by JSON Schema and javaEnumNames jsonschema2pojo extension.
+     */
+    JAVA_ENUM_NAMES,
 
-	/**
-	 * Enum defined by JSON Schema and javaEnums jsonschema2pojo extension.
-	 */
-	JAVA_ENUMS,
+    /**
+     * Enum defined by JSON Schema and javaEnums jsonschema2pojo extension.
+     */
+    JAVA_ENUMS,
 
-	/**
-	 * Enum defined by JSON Schema and a custom jsonschema2pojo extension,
+    /**
+     * Enum defined by JSON Schema and a custom jsonschema2pojo extension,
      * defined by custom {@link org.jsonschema2pojo.rules.EnumRule} implementation provided by custom {@link org.jsonschema2pojo.rules.RuleFactory}.
-	 */
-	CUSTOM
+     */
+    CUSTOM
 }
