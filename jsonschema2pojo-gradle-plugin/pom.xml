@@ -75,7 +75,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version><!-- 3.6.2 is the minimum -->
+                <version>3.8.1</version><!-- 3.6.2 is the minimum -->
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <failOnWarning>false</failOnWarning>
@@ -84,12 +84,12 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>3.5.0-01</version>
+                        <version>3.6.0-03</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.5.8-02</version>
+                        <version>3.0.7-02</version>
                     </dependency>
                 </dependencies>
             </plugin>
