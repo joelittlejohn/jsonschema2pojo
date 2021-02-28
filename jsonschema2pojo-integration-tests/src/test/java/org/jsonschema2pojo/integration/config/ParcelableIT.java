@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.ParcelUtils.*;
 import static org.junit.Assert.*;
 
@@ -30,10 +30,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE, sdk=23)

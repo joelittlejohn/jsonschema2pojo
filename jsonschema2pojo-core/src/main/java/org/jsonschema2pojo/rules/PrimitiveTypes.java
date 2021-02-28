@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.exception.GenerationException;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;

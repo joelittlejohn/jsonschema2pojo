@@ -18,8 +18,9 @@ package org.jsonschema2pojo.rules;
 
 import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 

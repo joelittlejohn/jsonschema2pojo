@@ -24,6 +24,7 @@ import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.ReflectionHelper;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
@@ -33,8 +34,6 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import org.jsonschema2pojo.util.ReflectionHelper;
-import sun.reflect.Reflection;
 
 /**
  * Provides factory/creation methods for the code generation rules.

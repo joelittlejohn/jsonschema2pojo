@@ -16,10 +16,17 @@
 
 package org.jsonschema2pojo.integration.util;
 
+import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
@@ -29,10 +36,6 @@ import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
 import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
-
-import static org.apache.commons.io.FileUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 
 /**

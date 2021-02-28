@@ -31,15 +31,14 @@
 
 package org.jsonschema2pojo.integration;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 public class PolymorphicIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();

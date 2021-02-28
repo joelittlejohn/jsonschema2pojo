@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,8 +25,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class ContentResolverTest {
 

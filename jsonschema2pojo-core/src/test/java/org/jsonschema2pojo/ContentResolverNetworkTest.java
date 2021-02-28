@@ -16,19 +16,19 @@
 
 package org.jsonschema2pojo;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.net.URI;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 /**
   * @author {@link "https://github.com/s13o" "s13o"}
   * @since 3/17/2017

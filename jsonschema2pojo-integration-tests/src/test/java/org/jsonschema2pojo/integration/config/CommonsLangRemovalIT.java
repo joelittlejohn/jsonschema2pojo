@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.io.File;
 

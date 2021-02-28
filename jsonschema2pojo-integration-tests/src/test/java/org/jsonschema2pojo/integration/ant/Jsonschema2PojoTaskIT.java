@@ -16,11 +16,9 @@
 
 package org.jsonschema2pojo.integration.ant;
 
-import static java.util.Arrays.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -31,11 +29,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
-import org.junit.Rule;
-import org.junit.Test;
-
 import org.jsonschema2pojo.ant.Jsonschema2PojoTask;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class Jsonschema2PojoTaskIT {
     

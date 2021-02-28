@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JType;
 
 /**
  * Holds an enum types effective definition.

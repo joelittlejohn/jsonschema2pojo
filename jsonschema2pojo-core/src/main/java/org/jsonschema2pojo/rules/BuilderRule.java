@@ -16,6 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.util.Objects;
+
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.ReflectionHelper;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -30,9 +35,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
-import java.util.Objects;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.util.ReflectionHelper;
 
 public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 

@@ -16,15 +16,15 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Method;
+
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 public class SourceSortOrderIT {
 

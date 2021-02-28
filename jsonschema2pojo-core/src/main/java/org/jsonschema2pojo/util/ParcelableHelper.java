@@ -16,9 +16,17 @@
 
 package org.jsonschema2pojo.util;
 
-import com.sun.codemodel.*;
-import static org.jsonschema2pojo.util.Models.*;
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.util.Models.*;
+
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 public class ParcelableHelper {
 

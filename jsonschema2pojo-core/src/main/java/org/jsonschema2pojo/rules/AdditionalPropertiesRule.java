@@ -18,7 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;

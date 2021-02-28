@@ -16,18 +16,19 @@
 
 package org.jsonschema2pojo.cli;
 
-import com.beust.jcommander.IParameterValidator2;
-import com.beust.jcommander.ParameterDescription;
-import com.beust.jcommander.ParameterException;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.jsonschema2pojo.AbstractRuleLogger;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.jsonschema2pojo.AbstractRuleLogger;
+
+import com.beust.jcommander.IParameterValidator2;
+import com.beust.jcommander.ParameterDescription;
+import com.beust.jcommander.ParameterException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class CommandLineLogger extends AbstractRuleLogger {
 

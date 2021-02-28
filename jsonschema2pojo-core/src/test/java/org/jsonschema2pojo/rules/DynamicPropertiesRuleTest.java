@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
-import static com.sun.codemodel.JMod.PUBLIC;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static com.sun.codemodel.JMod.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
 import org.junit.Test;

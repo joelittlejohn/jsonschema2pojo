@@ -16,14 +16,8 @@
 
 package org.jsonschema2pojo.util;
 
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import static org.jsonschema2pojo.util.TypeUtil.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -32,8 +26,16 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
+
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.RuleFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
 
 public class ReflectionHelper {
 

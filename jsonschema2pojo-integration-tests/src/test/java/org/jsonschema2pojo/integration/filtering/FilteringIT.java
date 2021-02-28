@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.integration.filtering;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import java.io.File;
 import java.net.MalformedURLException;

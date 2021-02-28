@@ -16,8 +16,12 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Method;
+
 import org.joda.time.LocalDate;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -26,11 +30,8 @@ import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
-
-import static org.hamcrest.Matchers.is;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertThat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JType;
 
 public class CustomRuleFactoryIT {
 

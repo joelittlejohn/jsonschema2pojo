@@ -16,9 +16,15 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
+import static java.util.Arrays.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -27,15 +33,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Collections;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
 
 @RunWith(Parameterized.class)
 public class FormatRulePrimitivesTest {

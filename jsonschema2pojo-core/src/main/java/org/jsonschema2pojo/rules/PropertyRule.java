@@ -16,6 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
@@ -26,8 +29,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
 
 
 /**

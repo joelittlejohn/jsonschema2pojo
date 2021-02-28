@@ -16,6 +16,11 @@
 
 package org.jsonschema2pojo.integration.util;
 
+import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.Compiler.*;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -35,11 +40,6 @@ import javax.tools.JavaFileObject;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import static org.apache.commons.io.FileUtils.*;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.jsonschema2pojo.integration.util.Compiler.systemJavaCompiler;
 
 /**
  * A JUnit rule that executes JsonSchema2Pojo.
