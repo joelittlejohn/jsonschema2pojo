@@ -16,11 +16,25 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.ReflectionHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
@@ -39,21 +53,6 @@ import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.ReflectionHelper;
-import org.jsonschema2pojo.util.SerializableHelper;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -220,7 +219,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
 
                 int index = fqn.lastIndexOf(".") + 1;
-                if(index == 0){ //Actually not a fully qualified name
+                if (index == 0) { //Actually not a fully qualified name
                     fqn = _package.name() + "." + fqn;
                     index = fqn.lastIndexOf(".") + 1;
                 }
@@ -292,16 +291,16 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             superToStringInnerConditional._then().add(
                     sb.invoke("append")
-                            .arg(superString)
-                            .arg(contentStart.plus(JExpr.lit(1)))
-                            .arg(contentEnd));
+                    .arg(superString)
+                    .arg(contentStart.plus(JExpr.lit(1)))
+                    .arg(contentEnd));
 
             // Otherwise, just append super.toString()
             superToStringInnerConditional._else().add(sb.invoke("append").arg(superString));
 
             // Append a comma if needed
             body._if(sb.invoke("length").gt(baseLength))
-                    ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
+            ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
         // For each included instance field, add to the StringBuilder in the field=value format
@@ -327,10 +326,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
                                 JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
                                 JExpr.lit("<null>"),
                                 jclass.owner().ref(Arrays.class).staticInvoke("toString")
-                                        .arg(JExpr.refthis(fieldVar.name()))
-                                        .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
-                                        .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
-                                        .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
+                                .arg(JExpr.refthis(fieldVar.name()))
+                                .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
+                                .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
+                                .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
             } else {
                 body.add(sb.invoke("append")
                         .arg(JOp.cond(
@@ -345,12 +344,12 @@ public class ObjectRule implements Rule<JPackage, JType> {
         // Add the trailer
         JConditional trailerConditional = body._if(
                 sb.invoke("charAt").arg(sb.invoke("length").minus(JExpr.lit(1)))
-                        .eq(JExpr.lit(',')));
+                .eq(JExpr.lit(',')));
 
         trailerConditional._then().add(
                 sb.invoke("setCharAt")
-                        .arg(sb.invoke("length").minus(JExpr.lit(1)))
-                        .arg(JExpr.lit(']')));
+                .arg(sb.invoke("length").minus(JExpr.lit(1)))
+                .arg(JExpr.lit(']')));
 
         trailerConditional._else().add(
                 sb.invoke("append").arg(JExpr.lit(']')));
@@ -498,7 +497,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             } else {
                 fieldEquals = thisFieldRef.eq(otherFieldRef).cor(
                         thisFieldRef.ne(JExpr._null())
-                                .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
+                        .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
             }
 
             // Chain the equality of this field with the previous comparisons

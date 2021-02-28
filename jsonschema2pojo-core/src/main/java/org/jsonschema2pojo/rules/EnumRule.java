@@ -336,6 +336,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     throw new GenerationException("Primitive type '" + fqn + "' cannot be used as an enum.");
                 }
 
+                if (fqn.lastIndexOf(".") == -1) { // not a fully qualified name
+                    fqn = container.getPackage().name() + "." + fqn;
+                }
+
                 try {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));

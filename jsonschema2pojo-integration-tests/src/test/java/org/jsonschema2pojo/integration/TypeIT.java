@@ -189,6 +189,13 @@ public class TypeIT {
     }
 
     @Test
+    public void enumCanHaveUnqualifiedJavaType() throws NoSuchMethodException {
+
+        assertThat(classWithManyTypes.getMethod("getEnumWithUnqualifiedJavaType").getReturnType().getName(), is("com.example.Bar"));
+
+    }
+
+    @Test
     public void maximumGreaterThanIntegerMaxCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
         Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerWithLongMaximumAsLong.json", "com.example")
                 .loadClass("com.example.IntegerWithLongMaximumAsLong");
