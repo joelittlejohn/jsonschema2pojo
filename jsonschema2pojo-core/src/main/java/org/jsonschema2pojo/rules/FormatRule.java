@@ -96,7 +96,7 @@ public class FormatRule implements Rule<JType, JType> {
 
         Class<?> type = getType(node.asText());
         if (type != null) {
-            JType jtype = baseType.owner().ref(type);
+            JType jtype = baseType.owner()._ref(type);
             if (ruleFactory.getGenerationConfig().isUsePrimitives()) {
                 jtype = jtype.unboxify();
             }
