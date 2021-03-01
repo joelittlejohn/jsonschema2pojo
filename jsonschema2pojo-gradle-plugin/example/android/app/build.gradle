@@ -5,6 +5,7 @@ buildscript {
     repositories {
         jcenter()
         mavenLocal()
+        google()
     }
     dependencies {
         classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
@@ -12,13 +13,12 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "jsonschema2pojo.joelittlejohn.github.com.androidexample"
         minSdkVersion 17
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -36,19 +36,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
 
     // Required for @Generated annotation
-    compile 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
     // Required if generating Gson annotations
-    compile 'com.google.code.gson:gson:2.5'
+    implementation 'com.google.code.gson:gson:2.5'
     // Required if generating Moshi 1.x annotations
-    compile 'com.squareup.moshi:moshi:1.5.0'
+    implementation 'com.squareup.moshi:moshi:1.5.0'
     // Required if generating JSR-303 annotations
-    compile 'javax.validation:validation-api:1.1.0.CR2'
+    implementation 'javax.validation:validation-api:1.1.0.CR2'
     // Required if generating Jackson 2 annotations
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
 
 }
 

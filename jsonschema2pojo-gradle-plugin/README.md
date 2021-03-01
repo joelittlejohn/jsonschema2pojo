@@ -1,14 +1,10 @@
-# DEPRECATED
-
-The Gradle jsonschema2pojo plugin in this repo is deprecated, and is unlikely to develop further. Existing versions of this plugin will (of course) continue to function with Gradle < **7.0**.
-
-New applications can use an alternative [jsonschema2pojo Gradle plugin](https://github.com/eirnym/js2p-gradle) by **eirnym**, which is compatible with Gradle **5.6+**.
-
 # Gradle jsonschema2pojo plugin
 
 [jsonschema2pojo](http://www.jsonschema2pojo.org) generates a Java representation of your
 json schema. The [schema reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
 describes the rules and their effect on generated Java types.
+
+Another community project you may be interested in is [js2d-gradle](https://github.com/jsonschema2dataclass/js2d-gradle).
 
 ## Usage
 
@@ -202,14 +198,6 @@ jsonSchema2Pojo {
   dateTimeType = "java.time.LocalDateTime"
 }
 ```
-
-### Working with pre-existing java classes
-
-jsonschema2pojo allows to reference any pre-existing java classes. In general, if the generator finds a
-class already exists on the classpath, then it will not be generated but only referenced. To make this
-work as expected with this gradle plugin, the dependencies in question must be added to the buildscript
-classpath, the project classpath alone will not suffice. For a little example of how to do this have
-a look at the `example` directory.
 
 ## Tasks
 

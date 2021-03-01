@@ -25,7 +25,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.9.1</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
@@ -73,9 +72,6 @@
                 <reportSets>
                     <reportSet>
                         <reports>
-                            <report>index</report>
-                            <report>summary</report>
-                            <report>license</report>
                         </reports>
                     </reportSet>
                 </reportSets>

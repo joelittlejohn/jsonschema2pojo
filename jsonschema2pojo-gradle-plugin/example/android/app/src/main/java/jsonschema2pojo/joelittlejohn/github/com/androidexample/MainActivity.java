@@ -16,7 +16,7 @@
 
 package jsonschema2pojo.joelittlejohn.github.com.androidexample;
 
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ import com.oosocial.clarityn.rest.clarityn.model.Entry_schema;
 import com.oosocial.clarityn.rest.clarityn.model.Storage;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
 {
 
     Entry_schema schema;
