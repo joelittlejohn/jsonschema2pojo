@@ -36,11 +36,11 @@ repositories {
 
 dependencies {
   // Required if generating JSR-303 annotations
-  compile 'javax.validation:validation-api:1.1.0.CR2'
+  implementation 'javax.validation:validation-api:1.1.0.CR2'
   // Required if generating Jackson 2 annotations
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
   // Required if generating JodaTime data types
-  compile 'joda-time:joda-time:2.2'
+  implementation 'joda-time:joda-time:2.2'
 }
 
 // Each configuration is set to the default value
@@ -213,18 +213,15 @@ generated source files.
 It can be useful to build this project and try out changes in your existing gradle project.
 
 1. From the root, run `mvn clean install`. This will install jsonschema2pojo in your local maven repository.
-2. Include the local repo in your gradle file, and change your dependency to use the development version, (typically ending with '-SNAPSHOT' - you can find this in `pom.xml`). e.g:
+2. Include the local repo in your build.gradle, and change your dependency to use the `latest.integration` version e.g.:
 
 ```groovy
 buildscript {
     repositories {
         mavenLocal()
     }
-
     dependencies {
-        // this plugin
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.23-SNAPSHOT'
-        // add additional dependencies here if you wish to reference instead of generate them (see example directory)
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
     }
 }
 
