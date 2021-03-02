@@ -1,16 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'jsonschema2pojo'
 
-buildscript {
-    repositories {
-        jcenter()
-        mavenLocal()
-        google()
-    }
-    dependencies {
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
-    }
-}
 
 android {
     compileSdkVersion 30
