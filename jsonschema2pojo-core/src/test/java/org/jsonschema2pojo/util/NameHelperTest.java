@@ -71,9 +71,58 @@ public class NameHelperTest {
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
     }
 
+
+    @Test
+    public void testNonLatinNames() {
+        assertThat(nameHelper.getBuilderName("foo", NODE), is("withFoo"));
+        assertThat(nameHelper.getBuilderName("ƈoƅ", NODE), is("withO"));
+        assertThat(nameHelper.getBuilderName("URL", NODE), is("withUrl"));
+        assertThat(nameHelper.getBuilderName("УРЛ", NODE), is("with"));
+        assertThat(nameHelper.getBuilderName("  *   УРЛ", NODE), is("with"));
+        assertThat(nameHelper.getBuilderName("0УРЛ", NODE), is("with0"));
+
+        assertThat(nameHelper.getGetterName("foo", new JCodeModel().BOOLEAN, NODE), is("isFoo"));
+        assertThat(nameHelper.getGetterName("ƈoƅ", new JCodeModel().BOOLEAN, NODE), is("isO"));
+        assertThat(nameHelper.getGetterName("URL", new JCodeModel().INT, NODE), is("getUrl"));
+        assertThat(nameHelper.getGetterName("  *   УРЛ", new JCodeModel().INT, NODE), is("get"));
+        assertThat(nameHelper.getGetterName("0УРЛ", new JCodeModel().INT, NODE), is("get0"));
+
+        assertThat(nameHelper.getSetterName("foo", NODE), is("setFoo"));
+        assertThat(nameHelper.getSetterName("ƈoƅ", NODE), is("setO"));
+        assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
+        assertThat(nameHelper.getSetterName("  *   УРЛ", NODE), is("set"));
+        assertThat(nameHelper.getSetterName("0УРЛ", NODE), is("set0"));
+
+        // ALLOW NON-LATIN
+        NameHelper nameHelper = helper(false, true);
+
+        assertThat(nameHelper.getBuilderName("foo", NODE), is("withFoo"));
+        assertThat(nameHelper.getBuilderName("ƈoƅ", NODE), is("withƇoƅ"));
+        assertThat(nameHelper.getBuilderName("URL", NODE), is("withUrl"));
+        assertThat(nameHelper.getBuilderName("  *   УРЛ", NODE), is("with______урл"));
+        assertThat(nameHelper.getBuilderName("0УРЛ", NODE), is("with_0урл"));
+
+        assertThat(nameHelper.getGetterName("foo", new JCodeModel().BOOLEAN, NODE), is("isFoo"));
+        assertThat(nameHelper.getGetterName("ƈoƅ", new JCodeModel().BOOLEAN, NODE), is("isƇoƅ"));
+        assertThat(nameHelper.getGetterName("URL", new JCodeModel().INT, NODE), is("getUrl"));
+        assertThat(nameHelper.getGetterName("  *   УРЛ", new JCodeModel().INT, NODE), is("get______урл"));
+        assertThat(nameHelper.getGetterName("0УРЛ", new JCodeModel().INT, NODE), is("get_0урл"));
+
+        assertThat(nameHelper.getSetterName("foo", NODE), is("setFoo"));
+        assertThat(nameHelper.getSetterName("ƈoƅ", NODE), is("setƇoƅ"));
+        assertThat(nameHelper.getSetterName("URL", NODE), is("setUrl"));
+        assertThat(nameHelper.getSetterName("  *   УРЛ", NODE), is("set______урл"));
+        assertThat(nameHelper.getSetterName("0УРЛ", NODE), is("set_0урл"));
+    }
+
     private NameHelper helper(boolean useTitleAsClassname) {
+        return helper(useTitleAsClassname, false);
+    }
+
+    private NameHelper helper(boolean useTitleAsClassname, boolean allowNonLatinNames) {
         GenerationConfig config = mock(GenerationConfig.class);
         when(config.isUseTitleAsClassname()).thenReturn(useTitleAsClassname);
+        when(config.isAllowNonLatinNames()).thenReturn(allowNonLatinNames);
         return new NameHelper(config);
     }
 

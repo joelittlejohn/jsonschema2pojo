@@ -751,6 +751,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private String refFragmentPathDelimiters = "#/.";
 
+    /**
+     * Allow usage of char not in [0-9A-Za-z] of source JSON schema in target source code, default is
+     *
+     * @parameter property="jsonschema2pojo.refFragmentPathDelimiters"
+     *            default-value="false"
+     * @since 0.4.31
+     */
+    private boolean allowNonLatinNames = false;
+
     private FileFilter fileFilter = new AllFileFilter();
 
     /**
@@ -1237,5 +1246,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+
+    @Override
+    public boolean isAllowNonLatinNames() {
+        return allowNonLatinNames;
     }
 }

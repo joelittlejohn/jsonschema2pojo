@@ -1,0 +1,11 @@
+{
+  "type" : "object",
+  "properties" : {
+    "Тип" : {
+      "type" : "string"
+    },
+    "0Урл" : {
+      "type" : "string"
+    }
+  }
+}

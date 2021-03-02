@@ -611,4 +611,23 @@ public interface GenerationConfig {
     return false;
   }
 
+  /**
+   * This property defines control over allowing fields/methods/class names in target source code to contain
+   *  non [0-9A-Za-z].
+   *
+   * Defaults to 'false' meaning that if source JSON schema does contain any char other than [0-9A-Za-z] then those
+   *  characters will be omitted in target code.
+   *
+   * E.g. if source JSON schema contains a field like 'testПоле' then target code will contain field with name 'test'
+   *  and methods 'getTest'/'setTest' meaning 'Поле' part of source field will be omitted.
+   *
+   * Warning: if JSON schema contains a field which consists only of chars not in [0-9A-Za-z] and this setting is set
+   *  to 'false' then an exception can occur.
+   *
+   * @return whether to allow fields/methods/class names in target source code to contain non [0-9A-Za-z].
+   *  The default value for this is false.
+   */
+  default boolean isAllowNonLatinNames() {
+    return false;
+  }
 }

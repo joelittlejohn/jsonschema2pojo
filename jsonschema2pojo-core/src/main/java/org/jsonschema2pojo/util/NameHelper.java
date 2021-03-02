@@ -45,7 +45,28 @@ public class NameHelper {
     }
 
     public String replaceIllegalCharacters(String name) {
-        return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        if (generationConfig.isAllowNonLatinNames()) {
+            return validJavaIdentifierFrom(name);
+        } else {
+            return name.replaceAll(ILLEGAL_CHARACTER_REGEX, "_");
+        }
+    }
+
+    private String validJavaIdentifierFrom(String name) {
+        StringBuilder sb = new StringBuilder();
+        int length = name.length();
+        for (int i = 0; i < length; i++) {
+            char curChar = name.charAt(i);
+            if (Character.isJavaIdentifierPart(curChar)) {
+                sb.append(curChar);
+            } else {
+                sb.append("_");
+            }
+        }
+        if (!Character.isJavaIdentifierStart(sb.charAt(0))) {
+            return "_" + sb.toString();
+        }
+        return sb.toString();
     }
 
     public String normalizeName(String name) {
