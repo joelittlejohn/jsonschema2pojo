@@ -34,6 +34,7 @@ Useful pages:
   * [Reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
   * [Latest Javadocs](https://joelittlejohn.github.io/jsonschema2pojo/javadocs/1.0.2/)
   * [Documentation for the Maven plugin](https://joelittlejohn.github.io/jsonschema2pojo/site/1.0.2/generate-mojo.html)
+  * [Documentation for the Gradle plugin](https://github.com/joelittlejohn/jsonschema2pojo/tree/master/jsonschema2pojo-gradle-plugin#usage)
   * [Documentation for the Ant task](https://joelittlejohn.github.io/jsonschema2pojo/site/1.0.2/Jsonschema2PojoTask.html)
 
 Project resources:
