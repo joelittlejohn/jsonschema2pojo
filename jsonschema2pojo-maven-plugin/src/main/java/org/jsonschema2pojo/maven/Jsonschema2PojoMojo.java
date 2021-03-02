@@ -796,6 +796,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeConstructorPropertiesAnnotation = false;
 
     /**
+     * @parameter property="jsonschema2pojo.markGenerated"
+     *            default-value="false"
+     */
+    private boolean includeGeneratedAnnotation = true;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1237,5 +1243,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+    
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+    	return includeGeneratedAnnotation;
     }
 }

@@ -35,9 +35,11 @@ import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
+import org.jsonschema2pojo.util.AnnotationHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -125,7 +127,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
         }
-
+       
+        if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
+        	AnnotationHelper.addGeneratedAnnotation(jclass);
+        }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
         }

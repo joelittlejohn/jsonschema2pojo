@@ -36,10 +36,12 @@ import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.model.EnumDefinition;
 import org.jsonschema2pojo.model.EnumDefinitionExtensionType;
 import org.jsonschema2pojo.model.EnumValueDefinition;
+import org.jsonschema2pojo.util.AnnotationHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -144,6 +146,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     container.owner().ref(String.class);
 
         EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
+
+        if(ruleFactory.getGenerationConfig() != null && ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
+            AnnotationHelper.addGeneratedAnnotation(_enum);
+        }
 
         JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);
 

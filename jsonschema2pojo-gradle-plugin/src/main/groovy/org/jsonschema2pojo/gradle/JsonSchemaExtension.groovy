@@ -95,6 +95,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
   Map<String, String> formatTypeMapping
+  boolean includeGeneratedAnnotation
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -154,6 +155,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
+    includeGeneratedAnnotation = true
   }
 
   @Override
@@ -282,11 +284,17 @@ public class JsonSchemaExtension implements GenerationConfig {
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
+       |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
      """.stripMargin()
   }
   
   public boolean isFormatDateTimes() {
     return formatDateTimes
+  }
+
+  @Override
+  boolean isIncludeGeneratedAnnotation() {
+    return includeGeneratedAnnotation
   }
 
 }

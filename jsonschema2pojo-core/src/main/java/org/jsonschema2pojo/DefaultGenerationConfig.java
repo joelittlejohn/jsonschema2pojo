@@ -478,4 +478,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return false;
     }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+    	return true;
+    }
 }
