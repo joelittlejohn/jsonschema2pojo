@@ -35,8 +35,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // Required for @Generated annotation
     implementation 'org.glassfish:javax.annotation:10.0-b28'
