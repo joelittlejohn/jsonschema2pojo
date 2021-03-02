@@ -1,24 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jsonschema2pojo'
 
-buildscript {
-    repositories {
-        jcenter()
-        mavenLocal()
-        google()
-    }
-    dependencies {
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
-    }
-}
-
 android {
-    compileSdkVersion 26
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "jsonschema2pojo.joelittlejohn.github.com.androidexample"
         minSdkVersion 17
-        targetSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -36,19 +25,18 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // Required for @Generated annotation
     implementation 'org.glassfish:javax.annotation:10.0-b28'
     // Required if generating Gson annotations
-    implementation 'com.google.code.gson:gson:2.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     // Required if generating Moshi 1.x annotations
-    implementation 'com.squareup.moshi:moshi:1.5.0'
+    implementation 'com.squareup.moshi:moshi:1.9.2'
     // Required if generating JSR-303 annotations
     implementation 'javax.validation:validation-api:1.1.0.CR2'
     // Required if generating Jackson 2 annotations
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.5.1'
 
 }
 
