@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-  compile 'javax.validation:validation-api:1.1.0.CR2'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
+  implementation 'javax.validation:validation-api:1.1.0.CR2'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.7'
 
   // see src/main/resources/json/external_dependencies.json
-  compile 'joda-time:joda-time:2.2'
+  implementation 'joda-time:joda-time:2.2'
 }
 
 jsonSchema2Pojo {
