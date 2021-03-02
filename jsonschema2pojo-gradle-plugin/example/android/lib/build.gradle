@@ -13,11 +13,11 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
