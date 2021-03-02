@@ -17,15 +17,32 @@
 package org.jsonschema2pojo.util;
 
 import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 
 public class AnnotationHelper {
 
-    static final String GENERATOR_NAME = "jsonschema2pojo";
+    private static final String JAVA_8_GENERATED = "javax.annotation.Generated";
+    private static final String JAVA_9_GENERATED = "javax.annotation.processing.Generated";
+    private static final String GENERATOR_NAME = "jsonschema2pojo";
+
+    private static boolean tryToAnnotate(JDefinedClass jclass, String annotationClassName) {
+        try {
+            Class.forName(annotationClassName);
+            JClass annotationClass = jclass.owner().ref(annotationClassName);
+            JAnnotationUse generated = jclass.annotate(annotationClass);
+            generated.param("value", GENERATOR_NAME);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+
+    }
 
     public static void addGeneratedAnnotation(JDefinedClass jclass) {
-        JAnnotationUse generated = jclass.annotate(javax.annotation.Generated.class);
-        generated.param("value", GENERATOR_NAME);
+        if (!tryToAnnotate(jclass, JAVA_9_GENERATED)) {
+            tryToAnnotate(jclass, JAVA_8_GENERATED);
+        }
     }
 
 }

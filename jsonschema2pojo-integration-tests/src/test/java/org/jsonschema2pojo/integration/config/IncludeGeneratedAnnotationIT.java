@@ -16,56 +16,45 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import static org.hamcrest.MatcherAssert.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+
+import java.io.File;
+
 import org.hamcrest.Matchers;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import javax.annotation.Generated;
+public class IncludeGeneratedAnnotationIT {
 
-import java.io.File;
-import java.lang.annotation.Annotation;
-import java.nio.file.Files;
+    private static final String PROP_KEY = "includeGeneratedAnnotation";
+    private static final String SCHEMA_PATH = "/schema/" + PROP_KEY + "/" + PROP_KEY + ".json";
+    private static final String TEST_PACKAGE = "com.example";
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
+    @Rule
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-public class IncludeGeneratedAnnotationIT
-{
-	private static final String PROP_KEY = "includeGeneratedAnnotation";
-	private static final String SCHEMA_PATH = "/schema/" + PROP_KEY + "/" + PROP_KEY + ".json";
-	private static final String TEST_PACKAGE = "com.example";
+    @Test
+    public void defaultConfig() throws ClassNotFoundException {
+        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE);
 
-	@Rule
-	public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+        assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
+    }
 
-	@Test
-	public void defaultConfig() throws ClassNotFoundException
-	{
-		File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE);
+    @Test
+    public void disabled() throws ClassNotFoundException {
+        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, false));
 
-		assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
-	}
+        assertThat(source, Matchers.not(FileSearchMatcher.containsText("javax.annotation.Generated")));
+    }
 
-	@Test
-	public void disabled() throws ClassNotFoundException
-	{
-		File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, false));
+    @Test
+    public void enabled() throws ClassNotFoundException {
+        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, true));
 
-		assertThat(source, Matchers.not(FileSearchMatcher.containsText("javax.annotation.Generated")));
-	}
-
-	@Test
-	public void enabled() throws ClassNotFoundException
-	{
-		File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, true));
-
-		assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
-	}
+        assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
+    }
 
 }
