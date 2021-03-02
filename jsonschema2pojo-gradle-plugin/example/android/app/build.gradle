@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "jsonschema2pojo.joelittlejohn.github.com.androidexample"
-        minSdkVersion 17
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -37,7 +37,6 @@ dependencies {
     implementation 'javax.validation:validation-api:1.1.0.CR2'
     // Required if generating Jackson 2 annotations
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
-
 }
 
 // Each configuration is set to the default value
