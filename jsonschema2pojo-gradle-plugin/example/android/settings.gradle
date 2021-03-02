@@ -1,1 +1,3 @@
+rootProject.name = 'JsonSchema2pojo sample'
+
 include ':app', ':lib'
