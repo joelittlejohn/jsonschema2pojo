@@ -36,7 +36,7 @@ dependencies {
     // Required if generating JSR-303 annotations
     implementation 'javax.validation:validation-api:1.1.0.CR2'
     // Required if generating Jackson 2 annotations
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.5.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
 
 }
 
