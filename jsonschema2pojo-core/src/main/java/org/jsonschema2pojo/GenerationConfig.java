@@ -610,5 +610,11 @@ public interface GenerationConfig {
   default boolean isUseInnerClassBuilders() {
     return false;
   }
-
+  
+  /**
+   * Whether to mark generated classes with the annotation <code>javax.annotation.@Generated</code>
+   *
+   */
+  boolean isIncludeGeneratedAnnotation();
+  
 }

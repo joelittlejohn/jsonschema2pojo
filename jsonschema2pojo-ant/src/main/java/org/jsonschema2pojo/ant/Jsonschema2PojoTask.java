@@ -192,6 +192,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
+    
+    private boolean includeGeneratedAnnotation = true;
 
     /**
      * Execute this task (it's expected that all relevant setters will have been
@@ -1312,4 +1314,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return includeConstructorPropertiesAnnotation;
     }
+    
+    @Override
+    public boolean isIncludeGeneratedAnnotation() { return includeGeneratedAnnotation; }
 }
