@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0
+* Add @Generated annotation to classes and includeGeneratedAnnotation config option ([#1202](https://github.com/joelittlejohn/jsonschema2pojo/pull/1202))
+* **Remove Jackson 1.x support ([#1200](https://github.com/joelittlejohn/jsonschema2pojo/issues/1200))**
+* **Remove jsonschema2pojo-scalagen ([#1199](https://github.com/joelittlejohn/jsonschema2pojo/issues/1199))**
+* Enum generation ignores existingJavaType  ([#1182](https://github.com/joelittlejohn/jsonschema2pojo/issues/1182))
+* **Require Gradle 5.6+ when using the Gradle plugin (and update examples) ([#1131](https://github.com/joelittlejohn/jsonschema2pojo/pull/1131))**
+* formatTypeMapping fails with primitive types ([#1126](https://github.com/joelittlejohn/jsonschema2pojo/issues/1126))
+* Add private modifier to constructor-related configuration options so that they can be configured in the POM ([#1118](https://github.com/joelittlejohn/jsonschema2pojo/pull/1118))
+* Using enum + javaType (without package name) generates enum in default package as a class, then fails to compile ([#1103](https://github.com/joelittlejohn/jsonschema2pojo/issues/1103))
+* Fix raw type warnings when extending a builder ([#1101](https://github.com/joelittlejohn/jsonschema2pojo/pull/1101))
+* Recursive schemas with relative paths can generate the same class twice with "\_\_1" in the name ([#1077](https://github.com/joelittlejohn/jsonschema2pojo/pull/1077))
+* Gradle shows deprecation warnings regarding Gradle 7.0 ([#1070](https://github.com/joelittlejohn/jsonschema2pojo/issues/1070))
+* Add javax.annotation.processing.Generated for Java 9 ([#835](https://github.com/joelittlejohn/jsonschema2pojo/issues/835))
+
 ## 1.0.2
 * Restrict JSR-303 annotations to supported field types ([#1063](https://github.com/joelittlejohn/jsonschema2pojo/pull/1063))
 * **Add package when javaType is not a fully qualified name ([#1054](https://github.com/joelittlejohn/jsonschema2pojo/pull/1054))**

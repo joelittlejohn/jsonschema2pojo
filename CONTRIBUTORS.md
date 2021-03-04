@@ -104,3 +104,8 @@
 * Simon Levermann
 * Rajpaul Bagga
 * Tim Schruben
+* MCSafety
+* AlexTrotsenko
+* Gerrit Grunwald
+* Roberto Moreschini
+* Hannes Achleitner
