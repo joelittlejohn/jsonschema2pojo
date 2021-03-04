@@ -26,7 +26,6 @@ buildscript {
   dependencies {
     // this plugin
     classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2p.version}'
-    // add additional dependencies here if you wish to reference instead of generate them (see example directory)
   }
 }
 
