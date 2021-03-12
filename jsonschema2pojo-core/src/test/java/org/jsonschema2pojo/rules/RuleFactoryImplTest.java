@@ -40,6 +40,8 @@ public class RuleFactoryImplTest {
 
         assertThat(ruleFactory.getDefaultRule(), notNullValue());
 
+        assertThat(ruleFactory.getCommentRule(), notNullValue());
+
         assertThat(ruleFactory.getDescriptionRule(), notNullValue());
 
         assertThat(ruleFactory.getEnumRule(), notNullValue());

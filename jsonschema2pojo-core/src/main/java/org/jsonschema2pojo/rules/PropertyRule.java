@@ -167,6 +167,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, generatedJavaConstruct, schema);
         }
 
+        if (node.has("$comment")) {
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, generatedJavaConstruct, schema);
+        }
+
         if (node.has("required")) {
             ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), node, generatedJavaConstruct, schema);
         } else {

@@ -1,0 +1,15 @@
+{
+  "$comment": "Class-level comment",
+  "type": "object",
+  "properties": {
+    "withComment": {
+      "$comment": "JavaDoc linking to {@link #descriptionAndComment}",
+      "type": "string"
+    },
+    "descriptionAndComment": {
+      "$comment": "JavaDoc buddies!",
+      "description": "This should co-exist with the value from $comment",
+      "type": "string"
+    }
+  }
+}
