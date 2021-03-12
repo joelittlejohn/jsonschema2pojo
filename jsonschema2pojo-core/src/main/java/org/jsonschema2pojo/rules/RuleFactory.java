@@ -98,6 +98,16 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a "$comment"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "$comment" declaration.
+     */
+    public Rule<JDocCommentable, JDocComment> getCommentRule() {
+        return new CommentRule();
+    }
+
+    /**
      * Provides a rule instance that should be applied when an "enum"
      * declaration is found in the schema.
      *
