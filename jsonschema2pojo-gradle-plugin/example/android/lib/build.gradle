@@ -61,6 +61,9 @@ jsonSchema2Pojo {
     // been supplied in the schema using the 'javaType' property).
     targetPackage = 'com.oosocial.clarityn.rest.clarityn.model'
 
+    // Disable the 'Generated' annotation as it is not included with Android
+    includeGeneratedAnnotation = false
+
     // The characters that should be considered as word delimiters when creating Java Bean property
     // names from JSON property names. If blank or not set, JSON properties will be considered to
     // contain a single word when creating Java Bean property names.

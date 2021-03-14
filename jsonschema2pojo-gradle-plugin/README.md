@@ -45,19 +45,6 @@ dependencies {
 // Each configuration is set to the default value
 jsonSchema2Pojo {
 
-  // Whether to allow 'additional' properties to be supported in classes by adding a map to
-  // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
-  // controls whether the map is added. Set this to false to globabally disable additional properties.
-  includeAdditionalProperties = false
-
-  // Whether to generate builder-style methods of the form withXxx(value) (that return this),
-  // alongside the standard, void-return setters.
-  generateBuilders = false
-
-  // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
-  // when generating bean properties (has the side-effect of making those properties non-null).
-  usePrimitives = false
-
   // Location of the JSON Schema file(s). This may refer to a single file or a directory of files.
   source = files("${sourceSets.main.output.resourcesDir}/json")
 
@@ -68,6 +55,23 @@ jsonSchema2Pojo {
   // Package name used for generated Java classes (for types where a fully qualified name has not
   // been supplied in the schema using the 'javaType' property).
   targetPackage = ''
+
+  // Whether to allow 'additional' properties to be supported in classes by adding a map to
+  // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
+  // controls whether the map is added. Set this to false to globabally disable additional properties.
+  includeAdditionalProperties = false
+
+  // Whether to include a javax.annotation.Generated (Java 8 and lower) or
+  // javax.annotation.processing.Generated (Java 9+) in on generated types (default true).
+  includeGeneratedAnnotation = true
+
+  // Whether to generate builder-style methods of the form withXxx(value) (that return this),
+  // alongside the standard, void-return setters.
+  generateBuilders = false
+
+  // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
+  // when generating bean properties (has the side-effect of making those properties non-null).
+  usePrimitives = false
 
   // The characters that should be considered as word delimiters when creating Java Bean property
   // names from JSON property names. If blank or not set, JSON properties will be considered to

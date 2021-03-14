@@ -796,8 +796,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeConstructorPropertiesAnnotation = false;
 
     /**
-     * @parameter property="jsonschema2pojo.markGenerated"
-     *            default-value="false"
+     * Whether to include a javax.annotation.Generated (Java 8 and
+     * lower) or javax.annotation.processing.Generated (Java 9+) in
+     * on generated types.
+     *
+     * @parameter property="jsonschema2pojo.includeGeneratedAnnotation"
+     *            default-value="true"
      */
     private boolean includeGeneratedAnnotation = true;
 
@@ -1244,7 +1248,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
     }
-    
+
     @Override
     public boolean isIncludeGeneratedAnnotation() {
     	return includeGeneratedAnnotation;
