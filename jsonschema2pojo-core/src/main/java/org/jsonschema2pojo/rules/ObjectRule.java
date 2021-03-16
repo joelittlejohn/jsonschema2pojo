@@ -109,6 +109,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
         }
 
+        if (node.has("$comment")) {
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, jclass, schema);
+        }
+
         // Creates the class definition for the builder
         if(ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()){
             ruleFactory.getBuilderRule().apply(nodeName, node, parent, jclass, schema);
