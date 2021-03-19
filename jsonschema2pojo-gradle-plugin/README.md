@@ -69,6 +69,11 @@ jsonSchema2Pojo {
   // alongside the standard, void-return setters.
   generateBuilders = false
 
+  // If set to true, then the gang of four builder pattern will be used to generate builders on
+  // generated classes. Note: This property works in collaboration with generateBuilders. 
+  // If generateBuilders is false then this property will not do anything.
+  useInnerClassBuilders = false
+
   // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
   // when generating bean properties (has the side-effect of making those properties non-null).
   usePrimitives = false
@@ -125,6 +130,16 @@ jsonSchema2Pojo {
   // support validation of an entire document tree.
   includeJsr303Annotations = false
 
+  // Whether to include JSR-305 annotations, for schema rules like Nullable, NonNull, etc
+  includeJsr305Annotations = false
+
+  // The Level of inclusion to set in the generated Java types (for Jackson serializers)
+  inclusionLevel = InclusionLevel.NON_NULL
+ 
+  // Whether to use the 'title' property of the schema to decide the class name (if not
+  // set to true, the filename and property names are used).
+  useTitleAsClassname = false
+
   // The type of input documents that will be read. Supported values:
   //  - jsonschema (schema documents, containing formal rules that describe the structure of JSON data)
   //  - json (documents that represent an example of the kind of JSON data that the generated Java types
@@ -139,6 +154,10 @@ jsonSchema2Pojo {
   // will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target
   // directory (all files and folders)</strong> before it begins generating sources.
   removeOldOutput = false
+
+  // A class that extends org.jsonschema2pojo.rules.RuleFactory and will be used to
+  // create instances of Rules used for code generation.
+  customRuleFactory = com.MyCustomRuleFactory
 
   // The character encoding that should be used when writing the generated Java source files
   outputEncoding = 'UTF-8'
@@ -169,8 +188,27 @@ jsonSchema2Pojo {
 
   // Whether to generate constructors or not.
   includeConstructors = false
-  
-  // **EXPERIMENTAL** Whether to make the generated types Parcelable for Android
+
+  // Whether to include java.beans.ConstructorProperties on generated constructors
+  includeConstructorPropertiesAnnotation = false
+
+  // Whether to include only 'required' fields in generated constructors
+  constructorsRequiredPropertiesOnly = false
+
+  // Whether to *add* a constructor that includes only 'required' fields, alongside other constructors.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeRequiredPropertiesConstructor = false
+
+  // Whether to *add* a constructor that includes all fields, alongside other constructors.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeAllPropertiesConstructor = false
+
+  // Include a constructor with the class itself as a parameter, with the expectation that all properties
+  // from the originating class will assigned to the new class.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeCopyConstructor = false
+
+  // Whether to make the generated types Parcelable for Android
   parcelable = false
 
   // Whether to make the generated types Serializable
@@ -194,11 +232,63 @@ jsonSchema2Pojo {
   // Whether to include dynamic builders or to omit these methods.
   includeDynamicBuilders = false
 
+  // Whether to use org.joda.time.LocalTime for format: date-time. For full control see dateType
+  useJodaLocalDates = false 
+
+  // Whether to use org.joda.time.LocalDate for format: date
+  useJodaLocalTimes = false
+
   // What type to use instead of string when adding string properties of format "date" to Java types
   dateType = "java.time.LocalDate"
 
   // What type to use instead of string when adding string properties of format "date-time" to Java types
   dateTimeType = "java.time.LocalDateTime"
+
+  // What type to use instead of string when adding string properties of format "time" to Java types
+  timeType = "java.time.LocalDate"
+
+  // A custom pattern to use when formatting date fields during serialization. Requires support from
+  // your JSON binding library.
+  customDatePattern = "yyyy-MM-dd"
+
+  // A custom pattern to use when formatting date-time fields during serialization. Requires support from
+  // your JSON binding library.
+  customDateTimePattern = "yyyy-MM-dd HH:mm"
+
+  // A custom pattern to use when formatting time fields during serialization. Requires support from
+  // your JSON binding library.
+  customTimePattern = "HH:mm"
+
+  // A map offering full control over which Java type will be used for each JSON Schema 'format' value
+  formatTypeMapping = [...]
+
+  // Which characters to use as 'path fragment delimiters' when trying to resolve a ref
+  refFragmentPathDelimiters = "#/."
+
+  // Whether to include json type information; often required to support polymorphic type handling.
+  // By default the type information is stored in the @class property, this can be overridden using
+  // deserializationClassProperty in the schema
+  includeJsonTypeInfoAnnotation = false
+
+  // Whether to use java.util.Optional for getters on properties that are not required
+  useOptionalForGetters = false 
+
+  // properties to exlude from generated toString
+  toStringExcludes = ["someProperty"]
+
+  // What java source version to target with generated output (1.6, 1.8, 9, 11, etc)
+  targetVersion = "1.6"
+
+  // deprecated, since we no longer use commons-lang for equals, hashCode, toString
+  useCommonsLang3 = false
+  
+  // A customer file filter to allow input files to be filtered/ignored 
+  fileFilter = new AllFileFilter() 
+
+  // A sort order to use when reading input files, one of SourceSortOrder.OS (allow the OS to decide sort
+  // order), SourceSortOrder.FILES_FIRST or SourceSortOrder.SUBDIRS_FIRST
+  sourceSortOrder = SourceSortOrder.OS
+
 }
 ```
 

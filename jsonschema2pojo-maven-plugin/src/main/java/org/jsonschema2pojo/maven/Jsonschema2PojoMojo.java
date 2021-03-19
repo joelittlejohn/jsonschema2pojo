@@ -359,7 +359,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @parameter property="jsonschema2pojo.useOptionalForGetters"
      *            default-value="false"
      */
-     private boolean useOptionalForGetters = false;
+    private boolean useOptionalForGetters = false;
 
     /**
      * The type of input documents that will be read
@@ -477,8 +477,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useCommonsLang3 = false;
 
     /**
-     * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for
-     * Android development).
+     * Whether to make the generated types 'parcelable' (for Android development).
      *
      * @parameter property="jsonschema2pojo.parcelable"
      *            default-value="false"
@@ -1029,7 +1028,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
+    public boolean isUseOptionalForGetters() {
+        return useOptionalForGetters;
+    }
 
     @Override
     public SourceType getSourceType() {
@@ -1061,6 +1062,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return useJodaLocalTimes;
     }
 
+    @Deprecated
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }
@@ -1251,6 +1253,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     @Override
     public boolean isIncludeGeneratedAnnotation() {
-    	return includeGeneratedAnnotation;
+        return includeGeneratedAnnotation;
     }
 }
