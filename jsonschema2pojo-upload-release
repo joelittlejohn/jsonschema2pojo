@@ -5,6 +5,7 @@
 # To create a new release:
 #
 # 1. Maven release command:
+#     export GPG_TTY=$(tty)
 #     mvn clean release:clean release:prepare release:perform -DautoVersionSubmodules
 #
 # 2. Close and Release snapshots repo at oss.sonatype.org
