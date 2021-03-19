@@ -131,6 +131,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, _enum, schema);
         }
 
+        if (node.has("$comment")) {
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, _enum, schema);
+        }
+
         if (node.has("javaInterfaces")) {
             addInterfaces(_enum, node.get("javaInterfaces"));
         }
