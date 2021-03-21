@@ -465,7 +465,7 @@
             <dependency>
                <groupId>org.robolectric</groupId>
                <artifactId>robolectric</artifactId>
-               <version>3.8</version>
+               <version>4.5.1</version>
                <scope>test</scope>
             </dependency>
             <dependency>
