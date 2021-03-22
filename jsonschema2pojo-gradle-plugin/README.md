@@ -1,32 +1,45 @@
 # Gradle jsonschema2pojo plugin
 
 [jsonschema2pojo](http://www.jsonschema2pojo.org) generates a Java representation of your
-json schema. The [schema reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
+JSON schema. The [schema reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
 describes the rules and their effect on generated Java types.
 
-Another community project you may be interested in is [js2d-gradle](https://github.com/jsonschema2dataclass/js2d-gradle).
+This Gradle plugin is hosted on both Maven Central and the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/org.jsonschema2pojo).
 
 ## Usage
 
-This plugin is hosted on the Maven Central Repository. All actions are logged at the `info` level.
+With Groovy:
 
 ```groovy
-// Use the java plugin 
-apply plugin: 'java' 
-// In Android Projects use 
-apply plugin: 'com.android.application'
+plugins {
+  id "java"
+  id "org.jsonschema2pojo" version "1.1.3"
+}
 
-apply plugin: 'jsonschema2pojo'
+jsonSchema2Pojo {
+  ...
+}
+```
 
-buildscript {
-  repositories {
-    mavenCentral()
-  }
+With Kotlin:
 
-  dependencies {
-    // this plugin
-    classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2p.version}'
-  }
+```kotlin
+plugins {
+  id("java")
+  id("org.jsonschema2pojo") version "1.1.3"
+}
+
+jsonSchema2Pojo {
+  ...
+}
+```
+
+Below we have a full build.gradle example, showing all available configuration options:
+
+```groovy
+plugins {
+  id "java"
+  id "org.jsonschema2pojo" version "1.1.3"
 }
 
 repositories {
@@ -59,7 +72,7 @@ jsonSchema2Pojo {
 
   // Whether to allow 'additional' properties to be supported in classes by adding a map to
   // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
-  // controls whether the map is added. Set this to false to globabally disable additional properties.
+  // controls whether the map is added. Set this to false to globally disable additional properties.
   includeAdditionalProperties = false
 
   // Whether to include a javax.annotation.Generated (Java 8 and lower) or
@@ -71,7 +84,7 @@ jsonSchema2Pojo {
   generateBuilders = false
 
   // If set to true, then the gang of four builder pattern will be used to generate builders on
-  // generated classes. Note: This property works in collaboration with generateBuilders. 
+  // generated classes. Note: This property works in collaboration with generateBuilders.
   // If generateBuilders is false then this property will not do anything.
   useInnerClassBuilders = false
 
@@ -95,7 +108,7 @@ jsonSchema2Pojo {
   // Whether to use the java type double (or Double) instead of float (or Float) when representing
   // the JSON Schema type 'number'.
   useDoubleNumbers = true
-  
+
   // Whether to use the java type BigDecimal when representing the JSON Schema type 'number'. Note
   // that this configuration overrides useDoubleNumbers
   useBigDecimals = false
@@ -138,7 +151,7 @@ jsonSchema2Pojo {
 
   // The Level of inclusion to set in the generated Java types (for Jackson serializers)
   inclusionLevel = InclusionLevel.NON_NULL
- 
+
   // Whether to use the 'title' property of the schema to decide the class name (if not
   // set to true, the filename and property names are used).
   useTitleAsClassname = false
@@ -171,15 +184,15 @@ jsonSchema2Pojo {
 
   // Whether to add JsonFormat annotations when using Jackson 2 that cause format "date", "time", and "date-time"
   // fields to be formatted as yyyy-MM-dd, HH:mm:ss.SSS and yyyy-MM-dd'T'HH:mm:ss.SSSZ respectively. To customize these
-  // patterns, use customDatePattern, customTimePattern, and customDateTimePattern config options or add these inside a 
+  // patterns, use customDatePattern, customTimePattern, and customDateTimePattern config options or add these inside a
   // schema to affect an individual field
   formatDateTimes = true
   formatDates = true
   formatTimes = true
-  
+
   // Whether to initialize Set and List fields as empty collections, or leave them as null.
   initializeCollections = true
-  
+
   // Whether to add a prefix to generated classes.
   classNamePrefix = ""
 
@@ -236,7 +249,7 @@ jsonSchema2Pojo {
   includeDynamicBuilders = false
 
   // Whether to use org.joda.time.LocalTime for format: date-time. For full control see dateType
-  useJodaLocalDates = false 
+  useJodaLocalDates = false
 
   // Whether to use org.joda.time.LocalDate for format: date
   useJodaLocalTimes = false
@@ -274,9 +287,9 @@ jsonSchema2Pojo {
   includeJsonTypeInfoAnnotation = false
 
   // Whether to use java.util.Optional for getters on properties that are not required
-  useOptionalForGetters = false 
+  useOptionalForGetters = false
 
-  // properties to exlude from generated toString
+  // properties to exclude from generated toString
   toStringExcludes = ["someProperty"]
 
   // What java source version to target with generated output (1.6, 1.8, 9, 11, etc)
@@ -284,9 +297,9 @@ jsonSchema2Pojo {
 
   // deprecated, since we no longer use commons-lang for equals, hashCode, toString
   useCommonsLang3 = false
-  
-  // A customer file filter to allow input files to be filtered/ignored 
-  fileFilter = new AllFileFilter() 
+
+  // A customer file filter to allow input files to be filtered/ignored
+  fileFilter = new AllFileFilter()
 
   // A sort order to use when reading input files, one of SourceSortOrder.OS (allow the OS to decide sort
   // order), SourceSortOrder.FILES_FIRST or SourceSortOrder.SUBDIRS_FIRST
@@ -328,4 +341,3 @@ repositories {
     mavenLocal()
 }
 ```
-
