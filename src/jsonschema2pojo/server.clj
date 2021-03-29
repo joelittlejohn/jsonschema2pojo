@@ -9,7 +9,6 @@
             [jsonschema2pojo.bridge :as j2p]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware
-             [cookies :refer [wrap-cookies]]
              [params :refer [wrap-params]]]
             [ring.util.response :refer [resource-response]])
   (:import com.fasterxml.jackson.core.JsonProcessingException
@@ -57,7 +56,6 @@
     (let [config (j2p/params-based-config params)
           schema (parse config (size-limit 51200 (not-blank params "schema" "JSON Schema (or example JSON)")))
           classname (size-limit 128 (not-blank params "classname" "Class name"))
-          targetpackage (size-limit 256 (not-blank params "targetpackage" "Package"))
           code-bytes (generator schema classname config)]
       {:status 200
        :headers {"Content-Type" content-type}

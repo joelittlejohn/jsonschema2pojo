@@ -135,20 +135,6 @@
             </div>
 
             <div class="form-section">
-              Target language:<br>
-              <label class="radio inline">
-                <input type="radio" name="targetlanguage"
-                       id="targetLanguage1" value="java" checked>
-                Java
-              </label>
-              <label class="radio inline">
-                <input type="radio" name="targetlanguage"
-                       id="targetLanguage2" value="scala">
-                Scala
-              </label>
-            </div>
-
-            <div class="form-section">
               Source type:<br>
               <label class="radio inline">
                 <input type="radio" name="sourcetype"
@@ -440,7 +426,7 @@ annotated to allow Jackson to marshal/unmarshal unrecognised (additional) proper
         }
 
     }</pre></div>
-<p>Where the additionalProperties schema species a type <code>object</code>, map values will be restricted to instances of a newly generated Java type. If the given schema does not specify the =javaType= property, the name of the newly generated type will be derived from the parent type name and the suffix 'Property'.</p>
+<p>Where the additionalProperties schema species a type <code>object</code>, map values will be restricted to instances of a newly generated Java type. If the given schema does not specify the <code>javaType</code> property, the name of the newly generated type will be derived from the parent type name and the suffix 'Property'.</p>
 <p>So, schema file myObject.json like:</p>
 <div class="highlight highlight-source-json"><pre>    {
         <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
@@ -802,18 +788,20 @@ annotated to allow Jackson to marshal/unmarshal unrecognised (additional) proper
 <li><code>com.example.Parent</code></li>
 <li><code>com.other.package.CustomChildName</code></li>
 </ul>
-<p>The javaType property also allows <strong>existing</strong> Java types to be used in your POJOs. If the value of javaType refers to an existing class or interface on the classpath, then that class/interface will be used (a new Java type will not be generated).</p>
+<h3>existingJavaType</h3>
+<p>The existingJavaType property allows <strong>existing</strong> Java types to be used in your POJOs. The value of existingJavaType should refer to an existing class or interface, and that class/interface will not be generated.</p>
 <p>When referencing existing classes, it's also possible to supply generic type arguments, for instance:</p>
 <div class="highlight highlight-source-json"><pre>    {
         <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
         <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span> : {
             <span class="pl-s"><span class="pl-pds">"</span>myProperty<span class="pl-pds">"</span></span> : {
-                <span class="pl-s"><span class="pl-pds">"</span>javaType<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>java.util.Map&lt;String,Integer&gt;<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>existingJavaType<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>java.util.Map&lt;String,Integer&gt;<span class="pl-pds">"</span></span>,
                 <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span> : <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
             }
         }
     }</pre></div>
 <h3>javaEnumNames</h3>
+<p><strong>NOTE: You must only use one of <code>javaEnumNames</code> or <code>javaEnums</code>, the later being a more robust extension.</strong></p>
 <p>Any schema that makes use of <code>enum</code> may include <code>javaEnumNames</code>. This property allows you to take control of naming your Java enum constants and avoid relying on auto-generated names.</p>
 <p>If your schema includes <code>javaEnumNames</code> like:</p>
 <div class="highlight highlight-source-json"><pre>{
@@ -829,8 +817,79 @@ annotated to allow Jackson to marshal/unmarshal unrecognised (additional) proper
 <p>Then you'll see a generated type like:</p>
 <div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">enum</span> <span class="pl-en">Foo</span> {
     <span class="pl-c1">HIGH</span>(<span class="pl-s"><span class="pl-pds">"</span>H<span class="pl-pds">"</span></span>),
-    <span class="pl-c1">LOW</span>(<span class="pl-s"><span class="pl-pds">"</span>L<span class="pl-pds">"</span></span>)
-    ...
+    <span class="pl-c1">LOW</span>(<span class="pl-s"><span class="pl-pds">"</span>L<span class="pl-pds">"</span></span>);
+    <span class="pl-c1">...</span>
+}</pre></div>
+<h3>javaEnums</h3>
+<p><strong>NOTE: You must only use one of <code>javaEnumNames</code> or <code>javaEnums</code>, the later being a more robust extension.</strong></p>
+<p>Any schema that makes use of <code>enum</code> may include <code>javaEnums</code>. This property allows you to take control of naming your Java enum constants and avoid relying on auto-generated names and add per-enum constant documentation with <a href="Reference#wiki-title">title</a> and <a href="Reference#wiki-description">description</a>.</p>
+<p>If your schema includes <code>javaEnumNames</code> like:</p>
+<div class="highlight highlight-source-json"><pre>{
+	<span class="pl-s"><span class="pl-pds">"</span>$id<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://cubrc.org/rigors/schemas/common/com/examples/Digits.schema.json<span class="pl-pds">"</span></span>,
+	<span class="pl-s"><span class="pl-pds">"</span>$schema<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://json-schema.org/draft-07/schema#<span class="pl-pds">"</span></span>,
+	<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+	<span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span>: [<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>4<span class="pl-pds">"</span></span>],
+	<span class="pl-s"><span class="pl-pds">"</span>javaEnums<span class="pl-pds">"</span></span>: [
+		{
+			<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>ONE<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>The first number.<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>1 (one, also called unit, unity, and (multiplicative) identity) is a number, and a numerical digit used to represent that number in numerals. (https://en.wikipedia.org/wiki/1)<span class="pl-pds">"</span></span>
+		},
+		{
+			<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>TWO<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>The second number.<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2 (two) is a number, numeral, and glyph. <span class="pl-cce">\n\n</span>It is the natural number following 1 and preceding 3. (https://en.wikipedia.org/wiki/2)<span class="pl-pds">"</span></span>
+		}, {
+			<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>THREE<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>The third number.<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>3 (three) is a number, numeral, and glyph. It is the natural number following 2 and preceding 4. (https://en.wikipedia.org/wiki/3)<span class="pl-pds">"</span></span>
+		}, {
+			<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>FOUR<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>The fourth number.<span class="pl-pds">"</span></span>,
+			<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>4 (four) is a number, numeral, and glyph. It is the natural number following 3 and preceding 5. (https://en.wikipedia.org/wiki/4)<span class="pl-pds">"</span></span>
+		}
+	],
+	<span class="pl-s"><span class="pl-pds">"</span>additionalProperties<span class="pl-pds">"</span></span>: <span class="pl-c1">false</span>,
+	<span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [],
+	<span class="pl-s"><span class="pl-pds">"</span>definitions<span class="pl-pds">"</span></span>: {}
+}</pre></div>
+<p>Then you'll see a generated type like:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">enum</span> <span class="pl-en">Digits</span> {
+
+    <span class="pl-c"><span class="pl-c">/**</span></span>
+<span class="pl-c">     * The first number.</span>
+<span class="pl-c">     * &lt;<span class="pl-ent">p</span>&gt;</span>
+<span class="pl-c">     *  1 (one, also called unit, unity, and (multiplicative) identity) is a number, and a numerical digit used to represent that number in numerals. (https://en.wikipedia.org/wiki/1)</span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     <span class="pl-c">*/</span></span>
+    <span class="pl-c1">ONE</span>(<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>),
+
+    <span class="pl-c"><span class="pl-c">/**</span></span>
+<span class="pl-c">     * The second number.</span>
+<span class="pl-c">     * &lt;<span class="pl-ent">p</span>&gt;</span>
+<span class="pl-c">     *  2 (two) is a number, numeral, and glyph. </span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     * It is the natural number following 1 and preceding 3. (https://en.wikipedia.org/wiki/2)</span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     <span class="pl-c">*/</span></span>
+    <span class="pl-c1">TWO</span>(<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>),
+
+    <span class="pl-c"><span class="pl-c">/**</span></span>
+<span class="pl-c">     * The third number.</span>
+<span class="pl-c">     * &lt;<span class="pl-ent">p</span>&gt;</span>
+<span class="pl-c">     *  3 (three) is a number, numeral, and glyph. It is the natural number following 2 and preceding 4. (https://en.wikipedia.org/wiki/3)</span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     <span class="pl-c">*/</span></span>
+    <span class="pl-c1">THREE</span>(<span class="pl-s"><span class="pl-pds">"</span>3<span class="pl-pds">"</span></span>),
+
+    <span class="pl-c"><span class="pl-c">/**</span></span>
+<span class="pl-c">     * The fourth number.</span>
+<span class="pl-c">     * &lt;<span class="pl-ent">p</span>&gt;</span>
+<span class="pl-c">     *  4 (four) is a number, numeral, and glyph. It is the natural number following 3 and preceding 5. (https://en.wikipedia.org/wiki/4)</span>
+<span class="pl-c">     * </span>
+<span class="pl-c">     <span class="pl-c">*/</span></span>
+    <span class="pl-c1">FOUR</span>(<span class="pl-s"><span class="pl-pds">"</span>4<span class="pl-pds">"</span></span>);
+    <span class="pl-c1">...</span>
 }</pre></div>
 <h3>javaInterfaces</h3>
 <p>Any schema may include a <code>javaInterfaces</code> property, the value of this property is an array of strings. Each string is expected to contain the fully-qualified name of a Java interface. The Java type generated by the schema will implement all the given interfaces.</p>
