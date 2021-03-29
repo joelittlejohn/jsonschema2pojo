@@ -64,8 +64,6 @@
       (boolean (Boolean/valueOf (params "usejodadates"))))
     (isUseDoubleNumbers []
       (boolean (Boolean/valueOf (params "usedoublenumbers"))))
-    (isUseCommonsLang3 []
-      (boolean (Boolean/valueOf (params "usecommonslang3"))))
     (isIncludeAccessors []
       (boolean (Boolean/valueOf (params "includeaccessors"))))
     (isIncludeAdditionalProperties []
