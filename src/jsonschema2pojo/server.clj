@@ -9,8 +9,9 @@
             [jsonschema2pojo.bridge :as j2p]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware
-             [params :refer [wrap-params]]]
-            [ring.util.response :refer [resource-response]])
+             [params :refer [wrap-params]]
+             [ssl :refer [wrap-ssl-redirect wrap-hsts wrap-forwarded-scheme]]]
+            [ring.util.response :refer [content-type resource-response]])
   (:import com.fasterxml.jackson.core.JsonProcessingException
            com.fasterxml.jackson.databind.ObjectMapper
            com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -79,14 +80,24 @@
         (generate-response params j2p/preview "text/java"))
 
   (GET "/" {}
-       (resource-response "public/index.html"))
+       (-> (resource-response "public/index.html")
+           (content-type "text/html")))
 
   (resources "/")
 
   (not-found "Not found"))
 
-(def app (wrap-params routes))
+(def app
+  (-> routes
+      wrap-params))
+
+(def secure-app
+  (-> routes
+      wrap-params
+      wrap-ssl-redirect
+      wrap-hsts
+      wrap-forwarded-scheme))
 
 (defn -main
   [port]
-  (run-jetty app {:port (Integer. port)}))
+  (run-jetty secure-app {:port (Integer. port)}))
