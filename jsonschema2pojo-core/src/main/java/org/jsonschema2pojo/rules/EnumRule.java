@@ -41,7 +41,6 @@ import org.jsonschema2pojo.util.AnnotationHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -373,7 +372,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JType backingType = enumDefinition.getBackingType();
         JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, backingType, VALUE_FIELD_NAME);
 
-        JMethod constructor = _enum.constructor(JMod.PRIVATE);
+        JMethod constructor = _enum.constructor(JMod.NONE);
         JVar valueParam = constructor.param(backingType, VALUE_FIELD_NAME);
         JBlock body = constructor.body();
         body.assign(JExpr._this().ref(valueField), valueParam);
