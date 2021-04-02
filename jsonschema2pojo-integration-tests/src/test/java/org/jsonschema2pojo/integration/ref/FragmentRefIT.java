@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.ref;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -65,41 +65,50 @@ public class FragmentRefIT {
         assertThat(aClass.getName(), is("com.example.AdditionalPropertyValue"));
 
     }
-    
+
+    @Test
+    public void refToFragmentOfAnotherSchemaThatAlsoHasARefIsReadSuccessfully() throws NoSuchMethodException {
+
+        Class<?> aClass = fragmentRefsClass.getMethod("getFragmentWithAnotherRef").getReturnType();
+
+        assertThat(aClass.getName(), is("java.lang.String"));
+
+    }
+
     @Test
     public void selfRefWithoutParentFile() throws IOException {
         JCodeModel codeModel = new JCodeModel();
         JsonNode schema = new ObjectMapper().readTree("{\"type\":\"object\", \"properties\":{\"a\":{\"$ref\":\"#/b\"}}, \"b\":\"string\"}");
-        
+
         JPackage p = codeModel._package("com.example");
         new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
     }
-    
+
     @Test
     public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException {
         JCodeModel codeModel = new JCodeModel();
-        JsonNode schema = new ObjectMapper().readTree("{\n" + 
-              "    \"type\": \"object\",\n" + 
-              "    \"definitions\": {\n" + 
-              "        \"location\": {\n" + 
-              "            \"type\": \"object\",\n" + 
-              "            \"properties\": {\n" + 
-              "                \"cat\": {\n" + 
-              "                    \"$ref\": \"#/definitions/cat\"\n" + 
-              "                }\n" + 
-              "            }\n" + 
-              "        },\n" + 
-              "        \"cat\": {\n" + 
-              "            \"type\": \"number\"\n" + 
-              "        }\n" + 
-              "    },\n" + 
-              "    \"properties\": {\n" + 
-              "        \"location\": {\n" + 
-              "            \"$ref\": \"#/definitions/location\"\n" + 
-              "        }\n" + 
-              "    }\n" + 
-              "}");
-        
+        JsonNode schema = new ObjectMapper().readTree("{\n" +
+                "    \"type\": \"object\",\n" +
+                "    \"definitions\": {\n" +
+                "        \"location\": {\n" +
+                "            \"type\": \"object\",\n" +
+                "            \"properties\": {\n" +
+                "                \"cat\": {\n" +
+                "                    \"$ref\": \"#/definitions/cat\"\n" +
+                "                }\n" +
+                "            }\n" +
+                "        },\n" +
+                "        \"cat\": {\n" +
+                "            \"type\": \"number\"\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"properties\": {\n" +
+                "        \"location\": {\n" +
+                "            \"$ref\": \"#/definitions/location\"\n" +
+                "        }\n" +
+                "    }\n" +
+                "}");
+
         JPackage p = codeModel._package("com.example");
         new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
     }

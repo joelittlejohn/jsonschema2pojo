@@ -9,6 +9,9 @@
         },
         "fragmentOfA" : {
             "$ref" : "a.json/#/additionalProperties"
+        },
+        "fragmentWithAnotherRef" : {
+            "$ref" : "nestedSelfRefsReadAsString.json/#/definitions/Thing/properties/namespace"
         }
     },
     "additionalProperties" : false
