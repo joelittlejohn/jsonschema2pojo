@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.integration.json;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
@@ -58,9 +59,11 @@ public class JsonTypesIT {
 
         assertThat((String) generatedType.getMethod("getA").invoke(deserialisedValue), is("abc"));
         assertThat((Integer) generatedType.getMethod("getB").invoke(deserialisedValue), is(123));
+        assertThat(generatedType.getMethod("getB").getReturnType().getName(), is("java.lang.Integer"));
         assertThat((Double) generatedType.getMethod("getC").invoke(deserialisedValue), is(12999999999999999999999.99d));
         assertThat((Boolean) generatedType.getMethod("getD").invoke(deserialisedValue), is(true));
         assertThat(generatedType.getMethod("getE").invoke(deserialisedValue), is(nullValue()));
+        assertThat(generatedType.getMethod("getF").invoke(deserialisedValue), is(21474836470L));
 
     }
 

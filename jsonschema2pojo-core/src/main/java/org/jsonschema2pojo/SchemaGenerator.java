@@ -26,9 +26,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsonschema.SchemaAware;
@@ -45,13 +43,13 @@ public class SchemaGenerator {
     public SchemaGenerator() {
         this(null);
     }
-    
+
     public SchemaGenerator(JsonFactory jsonFactory) {
         this.objectMapper = new ObjectMapper(jsonFactory)
                 .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
-    
+
     public ObjectNode schemaFromExample(URL example) {
 
         try {
@@ -154,30 +152,26 @@ public class SchemaGenerator {
 
             Object valueAsJavaType = this.objectMapper.treeToValue(exampleValue, Object.class);
 
-            SchemaAware valueSerializer = getValueSerializer(valueAsJavaType);
+            SerializerProvider serializerProvider = new DefaultSerializerProvider.Impl().createInstance(this.objectMapper.getSerializationConfig(), BeanSerializerFactory.instance);
 
-            return (ObjectNode) valueSerializer.getSchema(this.objectMapper.getSerializerProvider(), null);
+            if (valueAsJavaType == null) {
+                SchemaAware valueSerializer = NullSerializer.instance;
+                return (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
+            } else if (valueAsJavaType instanceof Long) {
+                // longs are 'integers' in schema terms
+                SchemaAware valueSerializer = (SchemaAware) serializerProvider.findValueSerializer(Integer.class, null);
+                ObjectNode schema = (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
+                schema.put("minimum", Long.MAX_VALUE);
+                return schema;
+            } else {
+                Class<? extends Object> javaTypeForValue = valueAsJavaType.getClass();
+                SchemaAware valueSerializer = (SchemaAware) serializerProvider.findValueSerializer(javaTypeForValue, null);
+                return (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
+            }
         } catch (JsonProcessingException e) {
             throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
         }
 
-    }
-
-    private SchemaAware getValueSerializer(Object valueAsJavaType) throws JsonMappingException {
-
-        SerializerProvider serializerProvider = new DefaultSerializerProvider.Impl().createInstance(this.objectMapper.getSerializationConfig(), BeanSerializerFactory.instance);
-
-        if (valueAsJavaType == null) {
-            return NullSerializer.instance;
-        } else if (valueAsJavaType instanceof Long) {
-            // longs are 'integers' in schema terms
-            JsonSerializer<Object> valueSerializer = serializerProvider.findValueSerializer(Integer.class, null);
-            return (SchemaAware) valueSerializer;
-        } else {
-            Class<? extends Object> javaTypeForValue = valueAsJavaType.getClass();
-            JsonSerializer<Object> valueSerializer = serializerProvider.findValueSerializer(javaTypeForValue, null);
-            return (SchemaAware) valueSerializer;
-        }
     }
 
 }
