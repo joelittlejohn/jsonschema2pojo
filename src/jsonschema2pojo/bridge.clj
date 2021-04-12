@@ -64,7 +64,9 @@
       (boolean (Boolean/valueOf (params "usejodadates"))))
     (isUseDoubleNumbers []
       (boolean (Boolean/valueOf (params "usedoublenumbers"))))
-    (isIncludeAccessors []
+    (isIncludeGetters []
+      (boolean (Boolean/valueOf (params "includeaccessors"))))
+    (isIncludeSetters []
       (boolean (Boolean/valueOf (params "includeaccessors"))))
     (isIncludeAdditionalProperties []
       (boolean (Boolean/valueOf (params "includeadditionalproperties"))))
