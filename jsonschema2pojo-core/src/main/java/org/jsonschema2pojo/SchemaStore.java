@@ -44,7 +44,7 @@ public class SchemaStore {
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.
-     * 
+     *
      * @param id
      *            the id of the schema being created
      * @param refFragmentPathDelimiters A string containing any characters
@@ -82,7 +82,7 @@ public class SchemaStore {
      * path as a relative reference. If a schema with the given parent and
      * relative path is already known, then a reference to the original schema
      * will be returned.
-     * 
+     *
      * @param parent
      *            the schema which is the parent of the schema to be created.
      * @param path
@@ -126,8 +126,8 @@ public class SchemaStore {
         }
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
-            JsonNode parentContent = parent.getParent().getContent();
-            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getParent());
+            JsonNode parentContent = parent.getGrandParent().getContent();
+            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getGrandParent());
             schemas.put(id, schema);
             return schema;
         }

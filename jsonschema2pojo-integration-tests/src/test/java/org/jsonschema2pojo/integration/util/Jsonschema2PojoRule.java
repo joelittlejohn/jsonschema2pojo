@@ -55,12 +55,11 @@ public class Jsonschema2PojoRule implements TestRule {
     private boolean captureDiagnostics = false;
     private boolean sourceDirInitialized = false;
     private boolean classesDirInitialized = false;
-    private ClassLoader classLoader;
     private List<Diagnostic<? extends JavaFileObject>> diagnostics;
 
     public Jsonschema2PojoRule captureDiagnostics() {
-      this.captureDiagnostics = true;
-      return this;
+        this.captureDiagnostics = true;
+        return this;
     }
 
     /**
@@ -85,20 +84,9 @@ public class Jsonschema2PojoRule implements TestRule {
         return compileDir;
     }
 
-    /**
-     * Returns the class loader for compiled classes. Only defined after calling
-     * a compile method.
-     *
-     * @return The class loader for compiled classes.
-     */
-    public ClassLoader getClassLoader() {
-        checkActive();
-        return classLoader;
-    }
-
     public List<Diagnostic<? extends JavaFileObject>> getDiagnostics() {
-      checkActive();
-      return diagnostics;
+        checkActive();
+        return diagnostics;
     }
 
     @Override
@@ -119,7 +107,6 @@ public class Jsonschema2PojoRule implements TestRule {
                 } finally {
                     generateDir = null;
                     compileDir = null;
-                    classLoader = null;
                     sourceDirInitialized = false;
                     classesDirInitialized = false;
                     captureDiagnostics = captureDiagnosticsStart;
@@ -156,16 +143,12 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     public ClassLoader compile(List<File> classpath, Map<String, Object> config) {
-      return compile(systemJavaCompiler(), null, classpath, config);
+        return compile(systemJavaCompiler(), null, classpath, config);
     }
 
     public ClassLoader compile(JavaCompiler compiler, Writer out, List<File> classpath, Map<String, Object> config) {
-        if (classLoader != null) {
-            throw new IllegalStateException("cannot recompile sources");
-        }
         DiagnosticListener<JavaFileObject> diagnosticListener = captureDiagnostics ? new CapturingDiagnosticListener() : null;
-        classLoader = CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
-        return classLoader;
+        return CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
     }
 
     public ClassLoader generateAndCompile(String schema, String targetPackage, Map<String, Object> configValues) {
@@ -199,10 +182,10 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     class CapturingDiagnosticListener implements DiagnosticListener<JavaFileObject> {
-      @Override
-      public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-        diagnostics.add(diagnostic);
-      }
+        @Override
+        public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+            diagnostics.add(diagnostic);
+        }
     }
 
     private static List<File> emptyClasspath() {

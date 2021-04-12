@@ -62,7 +62,15 @@ public class Schema {
     public Schema getParent() {
         return parent;
     }
-    
+
+    public Schema getGrandParent() {
+        if (parent == this) {
+            return this;
+        } else {
+            return this.parent.getGrandParent();
+        }
+    }
+
     public boolean isGenerated() {
         return javaType != null;
     }

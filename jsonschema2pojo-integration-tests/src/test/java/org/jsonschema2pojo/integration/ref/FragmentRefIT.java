@@ -20,6 +20,8 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -40,7 +42,7 @@ public class FragmentRefIT {
     private static Class<?> fragmentRefsClass;
 
     @BeforeClass
-    public static void generateAndCompileEnum() throws ClassNotFoundException {
+    public static void generateAndCompile() throws ClassNotFoundException {
 
         ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
 
@@ -113,4 +115,73 @@ public class FragmentRefIT {
         new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
     }
 
+    @Test
+    public void refToInnerFragmentThatHasRefToAnotherFragmentWithoutParentFile() throws IOException {
+        JCodeModel codeModel = new JCodeModel();
+        JsonNode schema = new ObjectMapper().readTree("{\n"
+                + "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n"
+                + "    \"title\": \"Inbox Item Datalake DTO\",\n"
+                + "    \"definitions\": {\n"
+                + "        \"PropertyA\": {\n"
+                + "            \"type\": \"object\",\n"
+                + "            \"properties\": {\n"
+                + "                \"value\": {\n"
+                + "                    \"type\": \"string\"\n"
+                + "                }\n"
+                + "            }\n"
+                + "        },\n"
+                + "        \"PropertyB\": {\n"
+                + "            \"type\": \"object\",\n"
+                + "            \"properties\": {\n"
+                + "                \"data\": {\n"
+                + "                    \"type\": \"array\",\n"
+                + "                    \"items\": {\n"
+                + "                        \"$ref\": \"#/definitions/PropertyA\"\n"
+                + "                    },\n"
+                + "                    \"default\": []\n"
+                + "                }\n"
+                + "            }\n"
+                + "        }\n"
+                + "    },\n"
+                + "    \"properties\": {\n"
+                + "        \"FinalProperty\": {\n"
+                + "            \"type\": \"array\",\n"
+                + "            \"items\": {\n"
+                + "                \"$ref\": \"#/definitions/PropertyB\"\n"
+                + "            },\n"
+                + "            \"default\": []\n"
+                + "        }\n"
+                + "    }\n"
+                + "}");
+
+        JPackage p = codeModel._package("com.example");
+        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
+    }
+
+
+    @Test
+    public void refToInnerFragmentThatHasRefToAnotherFragment() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
+        final ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refToRefToDefinitions.json", "com.example");
+
+        final Class<?> finalPropertyClass = fragmentRefsClassLoader.loadClass("com.example.RefToRefToDefinitions");
+
+        Class<?> finalPropertyType = finalPropertyClass.getMethod("getFinalProperty").getReturnType();
+        assertThat(finalPropertyType.getName(), is("java.util.List"));
+
+        Type finalPropertyItemType = ((ParameterizedType)finalPropertyClass.getMethod("getFinalProperty").getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(finalPropertyItemType.getTypeName(), is("com.example.PropertyB"));
+
+        final Class<?> propertyBClass = fragmentRefsClassLoader.loadClass("com.example.PropertyB");
+
+        Class<?> dataType = propertyBClass.getMethod("getData").getReturnType();
+        assertThat(dataType.getName(), is("java.util.List"));
+
+        Type dataItemType = ((ParameterizedType)propertyBClass.getMethod("getData").getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(dataItemType.getTypeName(), is("com.example.PropertyA"));
+
+        final Class<?> propertyAClass = fragmentRefsClassLoader.loadClass("com.example.PropertyA");
+
+        Class<?> valueType = propertyAClass.getMethod("getValue").getReturnType();
+        assertThat(valueType.getName(), is("java.lang.String"));
+    }
 }
