@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.1
+* nested sibling references causes error `Path not present: definitions` only on  https://www.jsonschema2pojo.org/, local is fine ([#1237](https://github.com/joelittlejohn/jsonschema2pojo/issues/1237))
+* Provide a JDK9+ compatible annotations library for Android projects ([#1218](https://github.com/joelittlejohn/jsonschema2pojo/issues/1218))
+* $comment field for property can be turned into JavaDoc ([#1197](https://github.com/joelittlejohn/jsonschema2pojo/issues/1197))
+* UnnecessaryModifier PMD warning in generated code (private constructor for enums) ([#1102](https://github.com/joelittlejohn/jsonschema2pojo/issues/1102))
+* When providing example json with a value great than Integer/MAX\_VALUE, it should generate a long field in Java ([#971](https://github.com/joelittlejohn/jsonschema2pojo/issues/971))
+* IllegalArgumentException while resolving reference to reference with # ([#793](https://github.com/joelittlejohn/jsonschema2pojo/issues/793))
+
 ## 1.1.0
 * Add @Generated annotation to classes and includeGeneratedAnnotation config option ([#1202](https://github.com/joelittlejohn/jsonschema2pojo/pull/1202))
 * **Remove Jackson 1.x support ([#1200](https://github.com/joelittlejohn/jsonschema2pojo/issues/1200))**
