@@ -20,6 +20,8 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
@@ -31,7 +33,7 @@ import com.sun.codemodel.JType;
 
 /**
  * Applies a JSON schema.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
@@ -56,7 +58,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
      * as a URL (from which content will be read). Where the ref URI has been
      * encountered before, the root Java type created by that schema will be
      * re-used (generation steps won't be repeated).
-     * 
+     *
      * @param schema
      *            the schema within which this schema rule is being applied
      */
@@ -77,6 +79,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
 
         schema = schema.deriveChildSchema(schemaNode);
+        includeDefinitions(schemaNode, generatableType, schema);
 
         JType javaType;
         if (schemaNode.has("enum")) {
@@ -88,13 +91,27 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
 
         return javaType;
     }
-    
+
+    private void includeDefinitions(JsonNode schemaNode, JClassContainer generatableType, Schema schema) {
+        if (schemaNode.has("definitions")) {
+
+            Iterator<Map.Entry<String, JsonNode>> definitions = schemaNode.get("definitions").fields();
+            while(definitions.hasNext()) {
+                Map.Entry<String, JsonNode> definition = definitions.next();
+
+                schema = ruleFactory.getSchemaStore().create(schema, "#/definitions/" + definition.getKey(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+
+                apply(definition.getKey(), definition.getValue(), schemaNode, generatableType, schema);
+            }
+        }
+    }
+
     private String nameFromRef(String ref) {
-        
+
         if ("#".equals(ref)) {
             return null;
         }
-        
+
         String nameFromRef;
         if (!contains(ref, "#")) {
             nameFromRef = Jsonschema2Pojo.getNodeName(ref, ruleFactory.getGenerationConfig());
@@ -102,7 +119,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             String[] nameParts = split(ref, "/\\#");
             nameFromRef = nameParts[nameParts.length - 1];
         }
-        
+
         try {
             return URLDecoder.decode(nameFromRef, "utf-8");
         } catch (UnsupportedEncodingException e) {

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description" : "This schema was generated as part of issue 1123 to demonstrate the functionality of generating schemas inside of the definitions section of a schema",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "DefinedType": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "Type": {
+          "type": "string"
+        },
+        "Value": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "properties": {
+    "DefinedTypeInstances": {
+      "existingJavaType": "java.util.Map<String, DefinedType>",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/DefinedType" }
+    },
+    "DefinedTypeInstance": {
+      "existingJavaType": "com.example.DefinedType",
+      "type": "object"
+    }
+  }
+}
