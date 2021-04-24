@@ -16,13 +16,18 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.ParcelUtils.*;
-import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,10 +48,10 @@ public class ParcelableIT {
 
     @Test
     public void parcelableTreeIsParcelable() throws ClassNotFoundException, IOException {
-        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-schema.json", "com.example", 
+        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-schema.json", "com.example",
                 config("parcelable", true))
                 .loadClass("com.example.ParcelableSchema");
-        
+
         Parcelable instance = (Parcelable) new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-data.json"), parcelableType);
         String key = "example";
         Parcel parcel = writeToParcel(instance, key);
@@ -56,9 +61,22 @@ public class ParcelableIT {
     }
 
     @Test
+    public void parcelableTypeDoesNotHaveAnyDuplicateImports() throws ClassNotFoundException, IOException {
+        schemaRule.generate("/schema/parcelable/parcelable-schema.json", "com.example", config("parcelable", true));
+        File generated = schemaRule.generated("com/example/ParcelableSchema.java");
+        String content = FileUtils.readFileToString(generated);
+
+        Matcher m = Pattern.compile("(import [^;]+);").matcher(content);
+        while (m.find()) {
+            String importString = m.group();
+            assertThat(StringUtils.countMatches(content, importString), is(1));
+        }
+    }
+
+    @Test
     public void parcelableSuperclassIsUnparceled() throws ClassNotFoundException, IOException {
         // Explicitly set includeConstructors to false if default value changes in the future
-        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", 
+        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example",
                 config("parcelable", true, "includeConstructors", false))
                 .loadClass("com.example.ParcelableSuperclassSchema");
 
@@ -71,7 +89,7 @@ public class ParcelableIT {
 
     @Test
     public void parcelableDefaultConstructorDoesNotConflict() throws ClassNotFoundException, IOException {
-        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", 
+        Class<?> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example",
                 config("parcelable", true, "includeConstructors", true))
                 .loadClass("com.example.ParcelableSuperclassSchema");
 
