@@ -34,6 +34,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jsonschema2pojo.ContentResolver;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -41,7 +42,8 @@ import com.sun.codemodel.JPackage;
 public class ArrayRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
-    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+    private final ContentResolver contentResolver = mock(ContentResolver.class);
+    private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore(contentResolver)));
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {
@@ -58,7 +60,8 @@ public class ArrayRuleTest {
         propertyNode.set("items", itemsNode);
 
         Schema schema = mock(Schema.class);
-        when(schema.deriveChildSchema(any())).thenReturn(schema);
+        when(schema.getId()).thenReturn(URI.create("http://example/uniqueArray"));
+        when(contentResolver.resolve(URI.create("http://example/uniqueArray"))).thenReturn(propertyNode);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
@@ -85,6 +88,7 @@ public class ArrayRuleTest {
         when(schema.getId()).thenReturn(URI.create("http://example/nonUniqueArray"));
         when(schema.deriveChildSchema(any())).thenReturn(schema);
         when(config.isUseDoubleNumbers()).thenReturn(true);
+        when(contentResolver.resolve(URI.create("http://example/nonUniqueArray"))).thenReturn(propertyNode);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
@@ -112,6 +116,7 @@ public class ArrayRuleTest {
         when(schema.deriveChildSchema(any())).thenReturn(schema);
         when(config.isUsePrimitives()).thenReturn(true);
         when(config.isUseDoubleNumbers()).thenReturn(true);
+        when(contentResolver.resolve(URI.create("http://example/nonUniqueArray"))).thenReturn(propertyNode);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 
@@ -136,7 +141,6 @@ public class ArrayRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getId()).thenReturn(URI.create("http://example/defaultArray"));
-        when(schema.deriveChildSchema(any())).thenReturn(schema);
 
         JClass propertyType = rule.apply("fooBars", propertyNode, null, jpackage, schema);
 

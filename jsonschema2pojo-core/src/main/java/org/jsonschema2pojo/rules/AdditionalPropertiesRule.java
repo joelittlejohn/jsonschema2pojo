@@ -104,7 +104,13 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
         JType propertyType;
         if (node != null && node.size() != 0) {
-            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, parent, jclass, schema);
+            String pathToAdditionalProperties;
+            if (schema.getId().getFragment() == null) {
+                pathToAdditionalProperties = "#additionalProperties";
+            } else {
+                pathToAdditionalProperties = "#" + schema.getId().getFragment() + "/additionalProperties";
+            }
+            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, parent, jclass, ruleFactory.getSchemaStore().create(schema, pathToAdditionalProperties));
         } else {
             propertyType = jclass.owner().ref(Object.class);
         }
