@@ -106,11 +106,13 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         if (node != null && node.size() != 0) {
             String pathToAdditionalProperties;
             if (schema.getId().getFragment() == null) {
-                pathToAdditionalProperties = "#additionalProperties";
+                pathToAdditionalProperties = "#/additionalProperties";
             } else {
                 pathToAdditionalProperties = "#" + schema.getId().getFragment() + "/additionalProperties";
             }
-            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, parent, jclass, ruleFactory.getSchemaStore().create(schema, pathToAdditionalProperties));
+            Schema additionalPropertiesSchema = ruleFactory.getSchemaStore().create(schema, pathToAdditionalProperties, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            propertyType = ruleFactory.getSchemaRule().apply(nodeName + "Property", node, parent, jclass, additionalPropertiesSchema);
+            additionalPropertiesSchema.setJavaTypeIfEmpty(propertyType);
         } else {
             propertyType = jclass.owner().ref(Object.class);
         }
@@ -199,9 +201,9 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
 
     private JMethod addInnerBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
         Optional<JDefinedClass> builderClass = StreamSupport
-            .stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false)
-            .filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass)))
-            .findFirst();
+                .stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false)
+                .filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass)))
+                .findFirst();
 
         JMethod builder = builderClass.get().method(JMod.PUBLIC, builderClass.get(), "withAdditionalProperty");
 

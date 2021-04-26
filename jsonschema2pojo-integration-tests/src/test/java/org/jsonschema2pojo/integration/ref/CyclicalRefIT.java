@@ -84,4 +84,35 @@ public class CyclicalRefIT {
 
     }
 
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void recursiveEtcdTreeNodeExampleIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/recursiveEtcdTreeNode.json", "com.example");
+
+        Class clazz = resultsClassLoader.loadClass("com.example.RecursiveEtcdTreeNode");
+
+        Class<?> nodeType = clazz.getMethod("getNode").getReturnType();
+        assertThat(nodeType.getName(), is("com.example.Node"));
+
+        Class<?> childrenType = nodeType.getMethod("getNodes").getReturnType();
+        assertThat(childrenType.getName(), is("java.util.List"));
+
+        Type childType = ((ParameterizedType)nodeType.getMethod("getNodes").getGenericReturnType()).getActualTypeArguments()[0];
+        assertThat(childType.getTypeName(), is("com.example.Node"));
+
+    }
+
+    @Test
+    public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
+
+        JCodeModel codeModel = new JCodeModel();
+        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json"));
+        JsonNode schema = new ObjectMapper().readTree(content);
+
+        JPackage p = codeModel._package("com.example");
+        new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
+
+    }
+
 }

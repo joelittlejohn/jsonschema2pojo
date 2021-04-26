@@ -70,11 +70,14 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         String pathToProperty;
         if (schema.getId() == null || schema.getId().getFragment() == null) {
-            pathToProperty = "#properties/" + nodeName;
+            pathToProperty = "#/properties/" + nodeName;
         } else {
             pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
         }
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, ruleFactory.getSchemaStore().create(schema, pathToProperty));
+
+        Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        propertySchema.setJavaTypeIfEmpty(propertyType);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();

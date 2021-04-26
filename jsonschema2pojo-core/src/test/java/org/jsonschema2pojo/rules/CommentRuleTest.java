@@ -16,21 +16,21 @@
 
 package org.jsonschema2pojo.rules;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import org.junit.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
-import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
 
 public class CommentRuleTest {
 
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = CommentRuleTest.class.getName() + ".DummyClass";
 
     private CommentRule rule = new CommentRule();
 

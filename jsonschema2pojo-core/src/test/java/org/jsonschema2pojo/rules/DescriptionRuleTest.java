@@ -30,7 +30,7 @@ import com.sun.codemodel.JDocComment;
 
 public class DescriptionRuleTest {
 
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = DescriptionRuleTest.class.getName() + ".DummyClass";
 
     private DescriptionRule rule = new DescriptionRule();
 

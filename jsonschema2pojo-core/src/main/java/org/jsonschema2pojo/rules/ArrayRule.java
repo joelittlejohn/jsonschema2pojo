@@ -29,7 +29,7 @@ import com.sun.codemodel.JType;
 
 /**
  * Applies the "type":"array" schema rule.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.5</a>
  * @see <a
@@ -54,7 +54,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *
      * <p>If the "items" property requires newly generated types, then the type
      * name will be the singular version of the nodeName (unless overridden by
-     * the javaType property) e.g. 
+     * the javaType property) e.g.
      * <pre>
      *  "fooBars" : {"type":"array", "uniqueItems":"true", "items":{type:"object"}}
      *  ==&gt;
@@ -83,11 +83,13 @@ public class ArrayRule implements Rule<JPackage, JClass> {
         if (node.has("items")) {
             String pathToItems;
             if (schema.getId() == null || schema.getId().getFragment() == null) {
-                pathToItems = "#items";
+                pathToItems = "#/items";
             } else {
                 pathToItems = "#" + schema.getId().getFragment() + "/items";
             }
-            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), node, jpackage, ruleFactory.getSchemaStore().create(schema, pathToItems));
+            Schema itemsSchema = ruleFactory.getSchemaStore().create(schema, pathToItems, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), node, jpackage, itemsSchema);
+            itemsSchema.setJavaTypeIfEmpty(itemType);
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }
