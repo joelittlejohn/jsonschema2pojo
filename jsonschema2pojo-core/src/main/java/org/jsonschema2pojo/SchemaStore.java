@@ -127,9 +127,14 @@ public class SchemaStore {
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
             JsonNode parentContent = parent.getGrandParent().getContent();
-            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getGrandParent());
-            schemas.put(id, schema);
-            return schema;
+
+            if (schemas.containsKey(id)) {
+                return schemas.get(id);
+            } else {
+                Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getGrandParent());
+                schemas.put(id, schema);
+                return schema;
+            }
         }
 
         return create(id, refFragmentPathDelimiters);
@@ -137,7 +142,7 @@ public class SchemaStore {
     }
 
     protected boolean selfReferenceWithoutParentFile(Schema parent, String path) {
-        return parent != null && (parent.getId() == null || parent.getId().toString().startsWith("#/")) && path.startsWith("#/");
+        return parent != null && (parent.getId() == null || parent.getId().toString().startsWith("#/")) && path.startsWith("#");
     }
 
     public synchronized void clearCache() {

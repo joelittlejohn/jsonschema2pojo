@@ -1,0 +1,12 @@
+{
+    "description": "Tree node",
+    "type": "object",
+    "properties": {
+        "children": {
+            "type": "array",
+            "items": {
+                "$ref": "#"
+            }
+        }
+    }
+}
