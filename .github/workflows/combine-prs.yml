@@ -51,16 +51,15 @@ jobs:
                 statusOK = true;
                 if(${{ github.event.inputs.mustBeGreen }}) {
                   console.log('Checking green status: ' + branch);
-                  const statuses = await github.paginate('GET /repos/{owner}/{repo}/commits/{ref}/status', {
+                  const checkRuns = await github.request('GET /repos/{owner}/{repo}/commits/{ref}/check-runs', {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     ref: branch
                   });
-                  if(statuses.length > 0) {
-                    const latest_status = statuses[0]['state'];
-                    console.log('Validating status: ' + latest_status);
-                    if(latest_status != 'success') {
-                      console.log('Discarding ' + branch + ' with status ' + latest_status);
+                  for await (const cr of checkRuns.data.check_runs) {
+                    console.log('Validating check conclusion: ' + cr.conclusion);
+                    if(cr.conclusion != 'success') {
+                      console.log('Discarding ' + branch + ' with check conclusion ' + cr.conclusion);
                       statusOK = false;
                     }
                   }
@@ -91,7 +90,7 @@ jobs:
 
             core.setOutput('base-branch', base_branch);
             core.setOutput('prs-string', prs.join('\n'));
-            
+
             combined = branches.join(' ')
             console.log('Combined: ' + combined);
             return combined
@@ -109,14 +108,14 @@ jobs:
           echo "${{steps.fetch-branch-names.outputs.result}}"
           sourcebranches="${BRANCHES_TO_COMBINE%\"}"
           sourcebranches="${sourcebranches#\"}"
-          
+
           basebranch="${BASE_BRANCH%\"}"
           basebranch="${basebranch#\"}"
-          
+
           git config pull.rebase false
           git config user.name github-actions
           git config user.email github-actions@github.com
-          
+
           git branch $COMBINE_BRANCH_NAME $basebranch
           git checkout $COMBINE_BRANCH_NAME
           git pull origin $sourcebranches --no-edit
