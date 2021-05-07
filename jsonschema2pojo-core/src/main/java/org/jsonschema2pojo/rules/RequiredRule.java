@@ -16,15 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-
-import org.jsonschema2pojo.Schema;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
+import org.jsonschema2pojo.Schema;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 /**
  * Applies the "required" schema rule.
@@ -63,25 +62,40 @@ public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
     @Override
     public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
 
-        if (node.asBoolean()) {
-            generatableType.javadoc().append("\n(Required)");
-
-            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-                    && generatableType instanceof JFieldVar) {
-                ((JFieldVar) generatableType).annotate(NotNull.class);
+        if (node.isBoolean()) {
+            if (node.asBoolean()) {
+                markAsRequired(generatableType);
+            } else {
+                markAsNotRequired(generatableType);
             }
 
-            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
-                    && generatableType instanceof JFieldVar) {
-                ((JFieldVar) generatableType).annotate(Nonnull.class);
-            }
-        } else {
-            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
-                    && generatableType instanceof JFieldVar) {
-                ((JFieldVar) generatableType).annotate(Nullable.class);
-            }
         }
 
         return generatableType;
+    }
+
+    private void markAsNotRequired(JDocCommentable generatableType) {
+        if (ruleFactory.getGenerationConfig()
+                .isIncludeJsr305Annotations()
+                && generatableType instanceof JFieldVar) {
+            ((JFieldVar) generatableType).annotate(Nullable.class);
+        }
+    }
+
+    private void markAsRequired(JDocCommentable generatableType) {
+        generatableType.javadoc()
+                .append("\n(Required)");
+
+        if (ruleFactory.getGenerationConfig()
+                .isIncludeJsr303Annotations()
+                && generatableType instanceof JFieldVar) {
+            ((JFieldVar) generatableType).annotate(NotNull.class);
+        }
+
+        if (ruleFactory.getGenerationConfig()
+                .isIncludeJsr305Annotations()
+                && generatableType instanceof JFieldVar) {
+            ((JFieldVar) generatableType).annotate(Nonnull.class);
+        }
     }
 }
