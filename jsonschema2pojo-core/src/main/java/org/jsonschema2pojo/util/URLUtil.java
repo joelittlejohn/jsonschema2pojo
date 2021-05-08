@@ -17,10 +17,12 @@
 package org.jsonschema2pojo.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.URLProtocol;
@@ -45,10 +47,27 @@ public class URLUtil {
     }
 
     public static File getFileFromURL(URL url) {
+
+        File file;
         try {
-            return new File(url.toURI());
+            file = new File(url.toURI());
         } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(String.format("URL contains an invalid URI syntax: %s", url), e);
+            throw new IllegalArgumentException(
+                String.format("URL contains an invalid URI syntax: %s", url), e
+            );
         }
+
+        // If symlink, then return the resolved File instead.
+        if (Files.isSymbolicLink(file.toPath())) {
+            try {
+                file = file.toPath().toRealPath().toFile();
+            } catch (IOException e) {
+                throw new IllegalArgumentException(
+                    String.format("Failed getting file from symlink URL: %s", url), e
+                );
+            }
+        }
+
+        return file;
     }
 }
