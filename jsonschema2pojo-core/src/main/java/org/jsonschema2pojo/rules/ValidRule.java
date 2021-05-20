@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.jsonschema2pojo.Schema;
 

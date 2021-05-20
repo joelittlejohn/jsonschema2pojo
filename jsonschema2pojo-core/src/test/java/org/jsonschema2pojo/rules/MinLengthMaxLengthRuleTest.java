@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;

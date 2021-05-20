@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
@@ -53,7 +53,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsrAnnotationsAreNotIncludedByDefault() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        assertThat(outputDirectory, not(containsText("jakarta.validation")));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class IncludeJsr303AnnotationsIT {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
                 config("includeJsr303Annotations", false));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        assertThat(outputDirectory, not(containsText("jakarta.validation")));
     }
 
     @Test

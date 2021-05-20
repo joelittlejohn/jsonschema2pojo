@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;

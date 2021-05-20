@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import javax.validation.constraints.Digits;
+import jakarta.validation.constraints.Digits;
 
 import org.jsonschema2pojo.Schema;
 

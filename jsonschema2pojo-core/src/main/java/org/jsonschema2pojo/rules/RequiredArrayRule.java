@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.jsonschema2pojo.Schema;
 

@@ -20,7 +20,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.jsonschema2pojo.Schema;
 

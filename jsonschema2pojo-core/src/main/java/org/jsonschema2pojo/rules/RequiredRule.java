@@ -18,7 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.jsonschema2pojo.Schema;
 

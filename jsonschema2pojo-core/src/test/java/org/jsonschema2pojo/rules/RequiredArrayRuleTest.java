@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;

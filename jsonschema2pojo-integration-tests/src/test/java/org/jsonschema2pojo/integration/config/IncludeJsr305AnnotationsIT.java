@@ -41,7 +41,7 @@ public class IncludeJsr305AnnotationsIT {
     public void jsrAnnotationsAreNotIncludedByDefault() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        assertThat(outputDirectory, not(containsText("jakarta.validation")));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class IncludeJsr305AnnotationsIT {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
                 config("includeJsr305Annotations", false));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        assertThat(outputDirectory, not(containsText("jakarta.validation")));
     }
 
     @Test
