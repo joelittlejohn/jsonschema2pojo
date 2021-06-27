@@ -71,8 +71,9 @@ public class Inflector {
             .plural("specimen", "specimens");
 
         builder.singular("s$", "")
-            .singular("(n)ews$", "$1ews")
-            .singular("([ti])a$", "$1um")
+             .singular("(n)ews$", "$1ews")
+            .singular("ia$", "ium")
+            .singular("ata$", "atum")
             .singular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis")
             .singular("(^analy)ses$", "$1sis")
             .singular("([^f])ves$", "$1fe")
