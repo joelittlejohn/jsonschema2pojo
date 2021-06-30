@@ -65,6 +65,8 @@ public class InflectorTest {
         assertThat(Inflector.getInstance().singularize("WidgetList"), is("Widget"));
 
         assertThat(Inflector.getInstance().singularize("slaves"), is("slave"));
+        assertThat(Inflector.getInstance().singularize("data"), is("datum"));
+        assertThat(Inflector.getInstance().singularize("media"), is("medium"));
     }
 
     @Test
