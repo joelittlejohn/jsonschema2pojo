@@ -484,6 +484,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isIncludeGeneratedAnnotation() {
-    	return true;
+        return true;
+    }
+
+    /**
+     * @return {@code false}
+     */
+    @Override
+    public boolean isUseJakartaValidation() {
+        return false;
     }
 }

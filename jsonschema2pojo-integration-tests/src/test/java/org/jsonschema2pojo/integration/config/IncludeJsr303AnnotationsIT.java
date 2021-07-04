@@ -27,48 +27,69 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-
+import org.apache.bval.jsr303.ApacheValidationProvider;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 @SuppressWarnings("rawtypes")
+@RunWith(Parameterized.class)
 public class IncludeJsr303AnnotationsIT {
 
+    private final boolean useJakartaValidation;
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private static final javax.validation.Validator javaxValidator = javax.validation.Validation.byProvider(ApacheValidationProvider.class)
+            .configure()
+            .buildValidatorFactory()
+            .getValidator();
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    @Parameterized.Parameters
+    public static Collection<Object> data() {
+        return asList(true, false);
+    }
+
+    public IncludeJsr303AnnotationsIT(boolean useJakartaValidation) {
+        this.useJakartaValidation = useJakartaValidation;
+    }
 
     @Test
     public void jsrAnnotationsAreNotIncludedByDefault() {
-        File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
+        File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
+                config("useJakartaValidation", useJakartaValidation));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        final String validationPackageName = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        assertThat(outputDirectory, not(containsText(validationPackageName)));
     }
 
     @Test
     public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
-                config("includeJsr303Annotations", false));
+                config("includeJsr303Annotations", false, "useJakartaValidation", useJakartaValidation));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        final String validationPackageName = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        assertThat(outputDirectory, not(containsText(validationPackageName)));
     }
 
     @Test
     public void jsr303DecimalMinValidationIsAddedForSchemaRuleMinimum() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minimum.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Minimum");
 
@@ -87,7 +108,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303DecimalMaxValidationIsAddedForSchemaRuleMaximum() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/maximum.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Maximum");
 
@@ -106,7 +127,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303SizeValidationIsAddedForSchemaRuleMinItems() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minItems.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.MinItems");
 
@@ -125,7 +146,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303SizeValidationIsAddedForSchemaRuleMaxItems() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/maxItems.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.MaxItems");
 
@@ -143,7 +164,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303SizeValidationIsAddedForSchemaRuleMinItemsAndMaxItems() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minAndMaxItems.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.MinAndMaxItems");
 
@@ -165,7 +186,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303PatternValidationIsAddedForSchemaRulePattern() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/pattern.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Pattern");
 
@@ -183,7 +204,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303NotNullValidationIsAddedForSchemaRuleRequired() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/required.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
 
@@ -200,7 +221,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303SizeValidationIsAddedForSchemaRuleMinLength() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minLength.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.MinLength");
 
@@ -218,7 +239,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303SizeValidationIsAddedForSchemaRuleMaxLength() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/maxLength.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.MaxLength");
 
@@ -236,7 +257,7 @@ public class IncludeJsr303AnnotationsIT {
     public void jsr303DigitsValidationIsAddedForSchemaRuleDigits() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/digits.json", "com.example",
-            config("includeJsr303Annotations", true, "useBigDecimals", true));
+                config("includeJsr303Annotations", true, "useBigDecimals", true, "useJakartaValidation", useJakartaValidation));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Digits");
 
@@ -276,7 +297,7 @@ public class IncludeJsr303AnnotationsIT {
     @Test
     public void jsr303ValidAnnotationIsAddedForObject() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validObject.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class validObjectType = resultsClassLoader.loadClass("com.example.ValidObject");
         Class objectFieldType = resultsClassLoader.loadClass("com.example.Objectfield");
@@ -295,7 +316,7 @@ public class IncludeJsr303AnnotationsIT {
     @Test
     public void jsr303ValidAnnotationIsAddedForArray() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         Class objectArrayType = resultsClassLoader.loadClass("com.example.Objectarray");
@@ -318,7 +339,7 @@ public class IncludeJsr303AnnotationsIT {
     @Test
     public void jsr303ValidAnnotationIsAddedForArrayWithRef() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
-                config("includeJsr303Annotations", true));
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         Class refarrayType = resultsClassLoader.loadClass("com.example.Product");
@@ -341,7 +362,8 @@ public class IncludeJsr303AnnotationsIT {
     @SuppressWarnings("unchecked")
     @Test
     public void jar303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example", config("includeJsr303Annotations", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
         Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
         Object parent = parentType.newInstance();
@@ -359,8 +381,8 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(parent, is(1));
     }
 
-    private static void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
-        Set<ConstraintViolation<Object>> violationsForValidInstance = validator.validate(instance);
+    private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
+        final Set<?> violationsForValidInstance = useJakartaValidation ? validator.validate(instance) : javaxValidator.validate(instance);
         assertThat(violationsForValidInstance.size(), matcher);
     }
 
