@@ -96,6 +96,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   SourceSortOrder sourceSortOrder
   Map<String, String> formatTypeMapping
   boolean includeGeneratedAnnotation
+  boolean useJakartaValidation
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -156,6 +157,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
     includeGeneratedAnnotation = true
+    useJakartaValidation = false
   }
 
   @Override
@@ -285,9 +287,10 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useInnerClassBuilders = ${useInnerClassBuilders}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
        |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
+       |useJakartaValidation = ${useJakartaValidation}
      """.stripMargin()
   }
-  
+
   public boolean isFormatDateTimes() {
     return formatDateTimes
   }

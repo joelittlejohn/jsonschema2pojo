@@ -16,12 +16,14 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,25 +33,41 @@ import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class IncludeJsr305AnnotationsIT {
 
+    private final boolean useJakartaValidation;
     @Rule
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
+    @Parameterized.Parameters
+    public static Collection<Object> data() {
+        return asList(true, false);
+    }
+
+    public IncludeJsr305AnnotationsIT(boolean useJakartaValidation) {
+        this.useJakartaValidation = useJakartaValidation;
+    }
+
     @Test
     public void jsrAnnotationsAreNotIncludedByDefault() {
-        File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example");
+        File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
+                config("useJakartaValidation", useJakartaValidation));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        final String validationPackageName = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        assertThat(outputDirectory, not(containsText(validationPackageName)));
     }
 
     @Test
     public void jsrAnnotationsAreNotIncludedWhenSwitchedOff() {
         File outputDirectory = schemaRule.generate("/schema/jsr303/all.json", "com.example",
-                config("includeJsr305Annotations", false));
+                config("includeJsr305Annotations", false, "useJakartaValidation", useJakartaValidation));
 
-        assertThat(outputDirectory, not(containsText("javax.validation")));
+        final String validationPackageName = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        assertThat(outputDirectory, not(containsText(validationPackageName)));
     }
 
     @Test
@@ -57,7 +75,7 @@ public class IncludeJsr305AnnotationsIT {
     public void jsr305NonnullAnnotationIsAddedForSchemaRuleRequired() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/required.json", "com.example",
-                config("includeJsr305Annotations", true));
+                                                                       config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
 
@@ -72,7 +90,7 @@ public class IncludeJsr305AnnotationsIT {
     @SuppressWarnings("rawtypes")
     public void jsr305NullableAnnotationIsAddedByDefault() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/required.json", "com.example",
-                config("includeJsr305Annotations", true));
+                                                                       config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
 
@@ -89,7 +107,7 @@ public class IncludeJsr305AnnotationsIT {
     @SuppressWarnings("rawtypes")
     public void jsr305RequiredArrayIsTakenIntoConsideration() throws ClassNotFoundException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example",
-                config("includeJsr305Annotations", true));
+                                                                       config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.RequiredArray");
 
@@ -106,7 +124,7 @@ public class IncludeJsr305AnnotationsIT {
     @SuppressWarnings("rawtypes")
     public void jsr305AnnotationsGeneratedProperlyInNestedArray() throws ClassNotFoundException, NoSuchFieldException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredNestedInArray.json", "com.example",
-                config("includeJsr305Annotations", true));
+                                                                       config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Nested");
 
@@ -118,7 +136,7 @@ public class IncludeJsr305AnnotationsIT {
     @SuppressWarnings("rawtypes")
     public void jsr305AnnotationsGeneratedProperlyInNestedObject() throws ClassNotFoundException, NoSuchFieldException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredNestedInObject.json", "com.example",
-                config("includeJsr305Annotations", true));
+                                                                       config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Nested");
 

@@ -21,12 +21,13 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
-
-import javax.validation.constraints.Size;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
@@ -44,6 +45,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
+import jakarta.validation.constraints.Size;
+
 /**
  * Tests {@link MinLengthMaxLengthRuleTest}
  */
@@ -53,6 +56,8 @@ public class MinLengthMaxLengthRuleTest {
     private final boolean isApplicable;
     private MinLengthMaxLengthRule rule;
     private Class<?> fieldClass;
+    private final boolean useJakartaValidation;
+    private final Class<? extends Annotation> sizeClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -77,19 +82,23 @@ public class MinLengthMaxLengthRuleTest {
                 { false, Long.class },
                 { false, Float.class },
                 { false, Double.class },
-        });
+        }).stream()
+                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
+                .collect(Collectors.toList());
     }
 
-
-    public MinLengthMaxLengthRuleTest(boolean isApplicable, Class<?> fieldClass) {
+    public MinLengthMaxLengthRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
         this.isApplicable = isApplicable;
         this.fieldClass = fieldClass;
+        this.useJakartaValidation = useJakartaValidation;
+        this.sizeClass = useJakartaValidation ? Size.class : javax.validation.constraints.Size.class;
     }
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new MinLengthMaxLengthRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 
     @Test
@@ -98,14 +107,14 @@ public class MinLengthMaxLengthRuleTest {
         final int minValue = new Random().nextInt();
         when(subNode.asInt()).thenReturn(minValue);
         when(node.get("minLength")).thenReturn(subNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minLength")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, never()).param(eq("max"), anyString());
     }
@@ -116,14 +125,14 @@ public class MinLengthMaxLengthRuleTest {
         final int maxValue = new Random().nextInt();
         when(subNode.asInt()).thenReturn(maxValue);
         when(node.get("maxLength")).thenReturn(subNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("maxLength")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
         verify(annotation, never()).param(eq("min"), anyInt());
     }
@@ -138,7 +147,7 @@ public class MinLengthMaxLengthRuleTest {
         when(maxSubNode.asInt()).thenReturn(maxValue);
         when(node.get("minLength")).thenReturn(subNode);
         when(node.get("maxLength")).thenReturn(maxSubNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minLength")).thenReturn(true);
         when(node.has("maxLength")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
@@ -146,7 +155,7 @@ public class MinLengthMaxLengthRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
     }
@@ -161,7 +170,7 @@ public class MinLengthMaxLengthRuleTest {
         when(maxSubNode.asInt()).thenReturn(maxValue);
         when(node.get("minLength")).thenReturn(subNode);
         when(node.get("maxLength")).thenReturn(maxSubNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minLength")).thenReturn(true);
         when(node.has("maxLength")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName() + "<String>");
@@ -169,7 +178,7 @@ public class MinLengthMaxLengthRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
     }
@@ -184,7 +193,7 @@ public class MinLengthMaxLengthRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Size.class);
+        verify(fieldVar, never()).annotate(sizeClass);
         verify(annotation, never()).param(anyString(), anyInt());
     }
 
@@ -194,7 +203,7 @@ public class MinLengthMaxLengthRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Size.class);
+        verify(fieldVar, never()).annotate(sizeClass);
         verify(annotation, never()).param(anyString(), anyInt());
     }
 }

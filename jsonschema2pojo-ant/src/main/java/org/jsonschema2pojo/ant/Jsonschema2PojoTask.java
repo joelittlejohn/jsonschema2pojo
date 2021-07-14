@@ -195,6 +195,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     
     private boolean includeGeneratedAnnotation = true;
 
+    private boolean useJakartaValidation = false;
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -953,7 +954,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
-    
+
     /**
      * Sets the 'useInnerClassBuilders' property of this class
      *
@@ -961,6 +962,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
         this.useInnerClassBuilders = useInnerClassBuilders;
+    }
+
+    /**
+     * Sets the 'useJakartaValidation' property of this class
+     *
+     * @param useJakartaValidation Whether to use annotations from {@code jakarta.validation} package instead of {@code javax.validation} package
+     *                             when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.
+     */
+    public void setUseJakartaValidation(boolean useJakartaValidation) {
+        this.useJakartaValidation = useJakartaValidation;
     }
 
     public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
@@ -1314,7 +1325,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return includeConstructorPropertiesAnnotation;
     }
-    
+
     @Override
-    public boolean isIncludeGeneratedAnnotation() { return includeGeneratedAnnotation; }
+    public boolean isIncludeGeneratedAnnotation() {
+        return includeGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
+    }
 }

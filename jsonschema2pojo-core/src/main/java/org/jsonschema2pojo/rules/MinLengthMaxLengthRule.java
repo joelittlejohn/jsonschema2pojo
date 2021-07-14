@@ -16,17 +16,18 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
-
-import javax.validation.constraints.Size;
 
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
+
+import jakarta.validation.constraints.Size;
 
 public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
     
@@ -43,7 +44,11 @@ public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
                 && (node.has("minLength") || node.has("maxLength"))
                 && isApplicableType(field)) {
 
-            JAnnotationUse annotation = field.annotate(Size.class);
+            final Class<? extends Annotation> sizeClass
+                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
+                    ? Size.class
+                    : javax.validation.constraints.Size.class;
+            JAnnotationUse annotation = field.annotate(sizeClass);
 
             if (node.has("minLength")) {
                 annotation.param("min", node.get("minLength").asInt());

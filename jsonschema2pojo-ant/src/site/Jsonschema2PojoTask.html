@@ -290,7 +290,7 @@
     <td align="center" valign="top">No (default <code>true</code>)</td>
   </tr>
   <tr>
-    <td valign="top">includeJsr303Annotations</td>
+    <td valign="top"><a id="includeJsr303Annotations"></a>includeJsr303Annotations</td>
     <td valign="top">Whether to include <a
         href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations
       (for schema rules like minimum, maximum, etc) in generated Java types.
@@ -618,6 +618,15 @@
     <td valign="top">includeGeneratedAnnotation</td>
     <td valign="top">Include <code>@javax.annotation.Generated</code> annotation to generated types</td>
     <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+      <td valign="top">useJakartaValidation</td>
+      <td valign="top">Whether to use annotations from <code>jakarta.validation</code> package instead of <code>javax.validation</code>
+          package when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.<br/>
+          This configuration option works in collaboration with the <a href="#includeJsr303Annotations">includeJsr303Annotations</a>
+          configuration option and will have no effect if latter is set to <code>false</code>
+      </td>
+      <td align="center" valign="top">No (default <code>false</code>)</td>
   </tr>
 </table>
 <h3>Examples</h3>

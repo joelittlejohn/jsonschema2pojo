@@ -246,6 +246,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"--omit-generated-annotation"}, description = "Omit @Generated annotation on generated types")
     private boolean omitGeneratedAnnotation = false;
 
+    @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
+    private boolean useJakartaValidation = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -601,7 +604,14 @@ public class Arguments implements GenerationConfig {
                 .stream()
                 .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
     }
-    
+
     @Override
-    public boolean isIncludeGeneratedAnnotation() { return !omitGeneratedAnnotation; }
+    public boolean isIncludeGeneratedAnnotation() {
+        return !omitGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
+    }
 }

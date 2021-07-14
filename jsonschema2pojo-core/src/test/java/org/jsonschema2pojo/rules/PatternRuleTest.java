@@ -21,12 +21,13 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.validation.constraints.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
@@ -43,6 +44,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
 
+import jakarta.validation.constraints.Pattern;
+
 /**
  * Tests {@link PatternRuleTest}
  */
@@ -52,6 +55,8 @@ public class PatternRuleTest {
     private final boolean isApplicable;
     private PatternRule rule;
     private Class<?> fieldClass;
+    private final boolean useJakartaValidation;
+    private final Class<? extends Annotation> patternClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -75,19 +80,23 @@ public class PatternRuleTest {
                 { false, Long.class },
                 { false, Float.class },
                 { false, Double.class },
-        });
+        }).stream()
+                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
+                .collect(Collectors.toList());
     }
 
-
-    public PatternRuleTest(boolean isApplicable, Class<?> fieldClass) {
+    public PatternRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
         this.isApplicable = isApplicable;
         this.fieldClass = fieldClass;
+        this.useJakartaValidation = useJakartaValidation;
+        this.patternClass = useJakartaValidation ? Pattern.class : javax.validation.constraints.Pattern.class;
     }
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new PatternRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 
     @Test
@@ -96,13 +105,13 @@ public class PatternRuleTest {
         final String patternValue = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$";
 
         when(node.asText()).thenReturn(patternValue);
-        when(fieldVar.annotate(Pattern.class)).thenReturn(annotation);
+        when(fieldVar.annotate(patternClass)).thenReturn(annotation);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Pattern.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(patternClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("regexp", patternValue);
     }
 
@@ -112,7 +121,7 @@ public class PatternRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Pattern.class);
+        verify(fieldVar, never()).annotate(patternClass);
         verify(annotation, never()).param(anyString(), anyString());
     }
 

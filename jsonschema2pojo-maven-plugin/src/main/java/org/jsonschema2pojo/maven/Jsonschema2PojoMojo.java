@@ -800,9 +800,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * on generated types.
      *
      * @parameter property="jsonschema2pojo.includeGeneratedAnnotation"
-     *            default-value="true"
+     * default-value="true"
      */
     private boolean includeGeneratedAnnotation = true;
+
+    /**
+     * Whether to use annotations from {@code jakarta.validation} package instead of {@code javax.validation} package
+     * when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.
+     * This property works in collaboration with the {@link #isIncludeJsr303Annotations()} configuration option.
+     * If the {@link #isIncludeJsr303Annotations()} returns {@code false}, then this configuration option will not affect anything.
+     *
+     * @parameter property="jsonschema2pojo.useJakartaValidation"
+     * default-value="false"
+     */
+    private boolean useJakartaValidation = false;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -1254,5 +1265,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeGeneratedAnnotation() {
         return includeGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
     }
 }

@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 
 import org.jsonschema2pojo.Schema;
 
@@ -32,6 +32,8 @@ import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JType;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Applies the "required" JSON schema rule.
@@ -103,7 +105,11 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private void addNotNullAnnotation(JFieldVar field) {
-        field.annotate(NotNull.class);
+        final Class<? extends Annotation> notNullClass
+                = ruleFactory.getGenerationConfig().isUseJakartaValidation()
+                ? NotNull.class
+                : javax.validation.constraints.NotNull.class;
+        field.annotate(notNullClass);
     }
 
     private void addNonnullAnnotation(JFieldVar field) {

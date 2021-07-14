@@ -16,14 +16,16 @@
 
 package org.jsonschema2pojo.rules;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+import java.lang.annotation.Annotation;
 
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
+
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
 
@@ -39,12 +41,20 @@ public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && isApplicableType(field)) {
 
             if (node.has("minimum")) {
-                JAnnotationUse annotation = field.annotate(DecimalMin.class);
+                final Class<? extends Annotation> decimalMinClass
+                        = ruleFactory.getGenerationConfig().isUseJakartaValidation()
+                        ? DecimalMin.class
+                        : javax.validation.constraints.DecimalMin.class;
+                JAnnotationUse annotation = field.annotate(decimalMinClass);
                 annotation.param("value", node.get("minimum").asText());
             }
 
             if (node.has("maximum")) {
-                JAnnotationUse annotation = field.annotate(DecimalMax.class);
+                final Class<? extends Annotation> decimalMaxClass
+                        = ruleFactory.getGenerationConfig().isUseJakartaValidation()
+                        ? DecimalMax.class
+                        : javax.validation.constraints.DecimalMax.class;
+                JAnnotationUse annotation = field.annotate(decimalMaxClass);
                 annotation.param("value", node.get("maximum").asText());
             }
 
