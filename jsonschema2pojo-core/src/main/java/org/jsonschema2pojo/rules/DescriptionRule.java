@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 

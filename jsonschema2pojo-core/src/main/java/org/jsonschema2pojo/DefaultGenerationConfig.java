@@ -463,14 +463,6 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
     
     /**
-     * @return {@link Language#JAVA}
-     */
-    @Override
-    public Language getTargetLanguage() {
-        return Language.JAVA;
-    }
-
-    /**
      * @return {@link Collections#emptyMap}
      */
     @Override
@@ -489,6 +481,22 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public boolean isIncludeConstructorPropertiesAnnotation() {
+        return false;
+    }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+        return true;
+    }
+
+    /**
+     * @return {@code false}
+     */
+    @Override
+    public boolean isUseJakartaValidation() {
         return false;
     }
 }

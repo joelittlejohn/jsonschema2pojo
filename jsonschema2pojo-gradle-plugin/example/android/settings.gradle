@@ -1,1 +1,5 @@
-include ':app', ':lib'
+rootProject.name = 'JsonSchema2pojo sample'
+
+include ':app'
+include ':lib'
+include ':libMoshi'

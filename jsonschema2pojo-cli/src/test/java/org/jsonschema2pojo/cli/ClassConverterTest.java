@@ -19,10 +19,10 @@ package org.jsonschema2pojo.cli;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import org.jsonschema2pojo.Annotator;
 import org.junit.Test;
 
 import com.beust.jcommander.ParameterException;
-import org.jsonschema2pojo.Annotator;
 
 public class ClassConverterTest {
 

@@ -26,10 +26,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.junit.Test;
+
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
-import org.mockito.internal.matchers.Same;
 
 public class SchemaStoreTest {
 

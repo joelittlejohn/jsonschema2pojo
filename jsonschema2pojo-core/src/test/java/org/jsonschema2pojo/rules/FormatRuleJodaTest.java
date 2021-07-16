@@ -23,6 +23,12 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SchemaStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,14 +36,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SchemaStore;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 @RunWith(Parameterized.class)
 public class FormatRuleJodaTest {

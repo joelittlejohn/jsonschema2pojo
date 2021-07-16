@@ -16,18 +16,19 @@
 
 package org.jsonschema2pojo.integration;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
+import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
 
 /*
   Enums are treated differently to schemas of type object and we want to ensure that a title

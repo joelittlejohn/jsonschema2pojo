@@ -16,6 +16,11 @@
 
 package org.jsonschema2pojo.util;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.util.LanguageFeaturesTest.VersionEnum.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -24,10 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import static org.jsonschema2pojo.util.LanguageFeaturesTest.VersionEnum.*;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
 @RunWith(Parameterized.class)
 public class LanguageFeaturesTest {

@@ -16,6 +16,10 @@
 
 package org.jsonschema2pojo.maven;
 
+import static java.lang.String.*;
+import static java.util.Arrays.*;
+import static java.util.regex.Pattern.*;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -24,10 +28,6 @@ import java.util.List;
 
 import org.apache.maven.shared.utils.io.DirectoryScanner;
 import org.apache.maven.shared.utils.io.MatchPatterns;
-
-import static java.util.Arrays.*;
-import static java.lang.String.format;
-import static java.util.regex.Pattern.quote;
 
 /**
  * <p>A file filter that supports include and exclude patterns.</p>

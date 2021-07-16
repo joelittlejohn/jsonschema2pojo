@@ -1,0 +1,17 @@
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "gradle" # See documentation for possible values
+    directory: "jsonschema2pojo-gradle-plugin/example/android"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"

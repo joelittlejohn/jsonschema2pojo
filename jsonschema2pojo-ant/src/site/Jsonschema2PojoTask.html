@@ -39,9 +39,7 @@
         <li><code>JACKSON2</code> (apply annotations from the <a
             href="https://github.com/FasterXML/jackson-annotations">Jackson 2.x</a> library)
         </li>
-        <li><code>JACKSON1</code> (apply annotations from the <a
-            href="http://jackson.codehaus.org/">Jackson
-          1.x</a> library)
+        <li><code>JACKSON</code> (alias for JACKSON2)
         </li>
         <li><code>GSON</code> (apply annotations from the <a
             href="https://code.google.com/p/google-gson//">Gson</a> library)
@@ -63,38 +61,30 @@
   <tr>
     <td valign="top">inclusionLevel</td>
     <td valign="top">The level of inclusion to be set for generated java types (to control level of
-      inclusion in
-      case of Jackson1 or Jackson2 serializator). Each level will have its own set of mapping
+      inclusion in case of Jackson serializer). Each level will have its own set of mapping
       annotations.
       Supported values:
       <ul>
         <li><code>ALWAYS</code> Value that indicates that property is to be always included,
-          independent of
-          value of the property. Valid for both versions of Jackson.
+          independent of value of the property.
         </li>
         <li><code>NON_ABSENT</code> Value that indicates that properties are included unless their
           value is:
           null "absent" value of a referential type (like Java 8 `Optional`, or {link
           java.utl.concurrent.atomic.AtomicReference}); that is, something that would not deference
-          to a
-          non-null value. Valid only for jackson2, for Jackson1 NON_NUL is used.
+          to a non-null value.
         </li>
         <li><code>NON_DEFAULT</code> Meaning of this setting depends on context: whether annotation
-          is specified
-          for POJO type (class), or not Valid for both versions of Jackson.
+          is specified for POJO type (class), or not.
         </li>
         <li><code>NON_EMPTY</code> Value that indicates that only properties with null value, or
-          what is
-          considered empty, are not to be included. Valid for both versions of Jackson.
+          what is considered empty, are not to be included.
         </li>
         <li><code>NON_NULL</code> Value that indicates that only properties with non-null values are
-          to be
-          included. Valid for both versions of Jackson.
+          to be included.
         </li>
         <li><code>USE_DEFAULTS</code> Pseudo-value used to indicate that the higher-level defaults
-          make sense,
-          to avoid overriding inclusion value. Valid only for jackson2, for Jackson1 NON_NUL is
-          used.
+          make sense, to avoid overriding inclusion value.
         </li>
       </ul>
     </td>
@@ -307,7 +297,7 @@
     <td align="center" valign="top">No (default <code>true</code>)</td>
   </tr>
   <tr>
-    <td valign="top">includeJsr303Annotations</td>
+    <td valign="top"><a id="includeJsr303Annotations"></a>includeJsr303Annotations</td>
     <td valign="top">Whether to include <a
         href="http://jcp.org/en/jsr/detail?id=303">JSR-303/349</a> annotations
       (for schema rules like minimum, maximum, etc) in generated Java types.
@@ -439,18 +429,6 @@
       </ul>
     </td>
     <td align="center" valign="top">No (default <code>JSONSCHEMA</code>)</td>
-  </tr>
-  <tr>
-    <td valign="top">targetLanguage</td>
-    <td valign="top">The type of code that will be generated.
-      <p>
-        Supported values:
-      <ul>
-        <li><code>JAVA</code></li>
-        <li><code>SCALA</code></li>
-      </ul>
-    </td>
-    <td align="center" valign="top">No</td>
   </tr>
   <tr>
     <td valign="top">targetPackage</td>
@@ -643,9 +621,21 @@
     </td>
     <td align="center" valign="top">None (default <code>''</code> (none))</td>
   </tr>
-
+  <tr>
+    <td valign="top">includeGeneratedAnnotation</td>
+    <td valign="top">Include <code>@javax.annotation.Generated</code> annotation to generated types</td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
+      <td valign="top">useJakartaValidation</td>
+      <td valign="top">Whether to use annotations from <code>jakarta.validation</code> package instead of <code>javax.validation</code>
+          package when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.<br/>
+          This configuration option works in collaboration with the <a href="#includeJsr303Annotations">includeJsr303Annotations</a>
+          configuration option and will have no effect if latter is set to <code>false</code>
+      </td>
+      <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
 </table>
-
 <h3>Examples</h3>
 <pre>
 &lt;taskdef name="jsonschema2pojo" classname="org.jsonschema2pojo.ant.Jsonschema2PojoTask">

@@ -16,6 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
@@ -26,8 +29,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
 
 
 /**
@@ -65,7 +66,16 @@ public class PropertyRule extends AbstractRuleFactoryRule<JDefinedClass, JDefine
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
         String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
 
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, schema);
+        String pathToProperty;
+        if (schema.getId() == null || schema.getId().getFragment() == null) {
+            pathToProperty = "#/properties/" + nodeName;
+        } else {
+            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
+        }
+
+        Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        propertySchema.setJavaTypeIfEmpty(propertyType);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
@@ -164,6 +174,10 @@ public class PropertyRule extends AbstractRuleFactoryRule<JDefinedClass, JDefine
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, generatedJavaConstruct, schema);
         }
 
+        if (node.has("$comment")) {
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, generatedJavaConstruct, schema);
+        }
+
         if (node.has("required")) {
             ruleFactory.getRequiredRule().apply(nodeName, node.get("required"), node, generatedJavaConstruct, schema);
         } else {
@@ -186,7 +200,7 @@ public class PropertyRule extends AbstractRuleFactoryRule<JDefinedClass, JDefine
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
             JsonNode refNode = refSchema.getContent();
-            return resolveRefs(refNode, parent);
+            return resolveRefs(refNode, refSchema);
         } else {
             return node;
         }
@@ -238,54 +252,50 @@ public class PropertyRule extends AbstractRuleFactoryRule<JDefinedClass, JDefine
         return setter;
     }
 
-  private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-    JMethod result = null;
-    if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
-      result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
-    } else {
-      result = addLegacyBuilder(c, field, jsonPropertyName, node);
+    private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+        JMethod result = null;
+        if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+            result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
+        } else {
+            result = addLegacyBuilder(c, field, jsonPropertyName, node);
+        }
+        return result;
     }
-    return result;
-  }
 
-  private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-    JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
+    private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
-    JVar param = builder.param(field.type(), field.name());
-    JBlock body = builder.body();
-    body.assign(JExpr._this().ref(field), param);
-    body._return(JExpr._this());
+        JVar param = builder.param(field.type(), field.name());
+        JBlock body = builder.body();
+        body.assign(JExpr._this().ref(field), param);
+        body._return(JExpr._this());
 
-    return builder;
-  }
+        return builder;
+    }
 
-  private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
-    JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
+    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+        JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
-    JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
+        JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
 
-    JVar param = builderMethod.param(field.type(), field.name());
-    JBlock body = builderMethod.body();
-    body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
-    body._return(JExpr._this());
+        JVar param = builderMethod.param(field.type(), field.name());
+        JBlock body = builderMethod.body();
+        body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
+        body._return(JExpr._this());
 
-    return builderMethod;
-  }
+        return builderMethod;
+    }
 
-  private String getBuilderClassName(JDefinedClass c) {
-    return ruleFactory.getNameHelper().getBuilderClassName(c);
-  }
+    private String getBuilderName(String propertyName, JsonNode node) {
+        return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
+    }
 
-  private String getBuilderName(String propertyName, JsonNode node) {
-      return ruleFactory.getNameHelper().getBuilderName(propertyName, node);
-  }
+    private String getSetterName(String propertyName, JsonNode node) {
+        return ruleFactory.getNameHelper().getSetterName(propertyName, node);
+    }
 
-  private String getSetterName(String propertyName, JsonNode node) {
-      return ruleFactory.getNameHelper().getSetterName(propertyName, node);
-  }
-
-  private String getGetterName(String propertyName, JType type, JsonNode node) {
-      return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
-  }
+    private String getGetterName(String propertyName, JType type, JsonNode node) {
+        return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
+    }
 
 }

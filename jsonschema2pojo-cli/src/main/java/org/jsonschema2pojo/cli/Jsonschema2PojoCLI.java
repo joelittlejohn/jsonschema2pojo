@@ -18,6 +18,7 @@ package org.jsonschema2pojo.cli;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import org.jsonschema2pojo.Jsonschema2Pojo;
 
 /**

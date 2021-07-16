@@ -1,0 +1,35 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Inbox Item Datalake DTO",
+    "definitions": {
+        "PropertyA": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "PropertyB": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PropertyA"
+                    },
+                    "default": []
+                }
+            }
+        }
+    },
+    "properties": {
+        "FinalProperty": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/PropertyB"
+            },
+            "default": []
+        }
+    }
+}

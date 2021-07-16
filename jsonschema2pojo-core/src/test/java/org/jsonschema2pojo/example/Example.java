@@ -16,13 +16,19 @@
 
 package org.jsonschema2pojo.example;
 
-import com.sun.codemodel.JCodeModel;
-import org.jsonschema2pojo.*;
-import org.jsonschema2pojo.rules.RuleFactory;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.RuleFactory;
+
+import com.sun.codemodel.JCodeModel;
 
 public class Example {
 

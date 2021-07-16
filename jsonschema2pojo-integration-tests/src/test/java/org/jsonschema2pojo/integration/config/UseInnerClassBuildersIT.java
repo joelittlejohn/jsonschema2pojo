@@ -16,19 +16,16 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.not;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;

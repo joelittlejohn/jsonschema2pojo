@@ -16,19 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JVar;
-
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +32,19 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JVar;
 
 public class ConstructorRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 

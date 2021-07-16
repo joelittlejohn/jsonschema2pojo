@@ -4,6 +4,8 @@
 json schema. The [schema reference](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Reference)
 describes the rules and their effect on generated Java types.
 
+Another community project you may be interested in is [js2d-gradle](https://github.com/jsonschema2dataclass/js2d-gradle).
+
 ## Usage
 
 This plugin is hosted on the Maven Central Repository. All actions are logged at the `info` level.
@@ -24,7 +26,6 @@ buildscript {
   dependencies {
     // this plugin
     classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:${js2p.version}'
-    // add additional dependencies here if you wish to reference instead of generate them (see example directory)
   }
 }
 
@@ -34,28 +35,16 @@ repositories {
 
 dependencies {
   // Required if generating JSR-303 annotations
-  compile 'javax.validation:validation-api:1.1.0.CR2'
+  implementation 'javax.validation:validation-api:1.1.0.CR2'
+  implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
   // Required if generating Jackson 2 annotations
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
   // Required if generating JodaTime data types
-  compile 'joda-time:joda-time:2.2'
+  implementation 'joda-time:joda-time:2.2'
 }
 
 // Each configuration is set to the default value
 jsonSchema2Pojo {
-
-  // Whether to allow 'additional' properties to be supported in classes by adding a map to
-  // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
-  // controls whether the map is added. Set this to false to globabally disable additional properties.
-  includeAdditionalProperties = false
-
-  // Whether to generate builder-style methods of the form withXxx(value) (that return this),
-  // alongside the standard, void-return setters.
-  generateBuilders = false
-
-  // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
-  // when generating bean properties (has the side-effect of making those properties non-null).
-  usePrimitives = false
 
   // Location of the JSON Schema file(s). This may refer to a single file or a directory of files.
   source = files("${sourceSets.main.output.resourcesDir}/json")
@@ -67,6 +56,28 @@ jsonSchema2Pojo {
   // Package name used for generated Java classes (for types where a fully qualified name has not
   // been supplied in the schema using the 'javaType' property).
   targetPackage = ''
+
+  // Whether to allow 'additional' properties to be supported in classes by adding a map to
+  // hold these. This is true by default, meaning that the schema rule 'additionalProperties'
+  // controls whether the map is added. Set this to false to globabally disable additional properties.
+  includeAdditionalProperties = false
+
+  // Whether to include a javax.annotation.Generated (Java 8 and lower) or
+  // javax.annotation.processing.Generated (Java 9+) in on generated types (default true).
+  includeGeneratedAnnotation = true
+
+  // Whether to generate builder-style methods of the form withXxx(value) (that return this),
+  // alongside the standard, void-return setters.
+  generateBuilders = false
+
+  // If set to true, then the gang of four builder pattern will be used to generate builders on
+  // generated classes. Note: This property works in collaboration with generateBuilders. 
+  // If generateBuilders is false then this property will not do anything.
+  useInnerClassBuilders = false
+
+  // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
+  // when generating bean properties (has the side-effect of making those properties non-null).
+  usePrimitives = false
 
   // The characters that should be considered as word delimiters when creating Java Bean property
   // names from JSON property names. If blank or not set, JSON properties will be considered to
@@ -98,7 +109,6 @@ jsonSchema2Pojo {
   // The style of annotations to use in the generated Java types. Supported values:
   //  - jackson (alias of jackson2)
   //  - jackson2 (apply annotations from the Jackson 2.x library)
-  //  - jackson1 (apply annotations from the Jackson 1.x library)
   //  - gson (apply annotations from the Gson library)
   //  - moshi1 (apply annotations from the Moshi 1.x library)
   //  - none (apply no annotations at all)
@@ -121,6 +131,16 @@ jsonSchema2Pojo {
   // support validation of an entire document tree.
   includeJsr303Annotations = false
 
+  // Whether to include JSR-305 annotations, for schema rules like Nullable, NonNull, etc
+  includeJsr305Annotations = false
+
+  // The Level of inclusion to set in the generated Java types (for Jackson serializers)
+  inclusionLevel = InclusionLevel.NON_NULL
+ 
+  // Whether to use the 'title' property of the schema to decide the class name (if not
+  // set to true, the filename and property names are used).
+  useTitleAsClassname = false
+
   // The type of input documents that will be read. Supported values:
   //  - jsonschema (schema documents, containing formal rules that describe the structure of JSON data)
   //  - json (documents that represent an example of the kind of JSON data that the generated Java types
@@ -135,6 +155,10 @@ jsonSchema2Pojo {
   // will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target
   // directory (all files and folders)</strong> before it begins generating sources.
   removeOldOutput = false
+
+  // A class that extends org.jsonschema2pojo.rules.RuleFactory and will be used to
+  // create instances of Rules used for code generation.
+  customRuleFactory = com.MyCustomRuleFactory
 
   // The character encoding that should be used when writing the generated Java source files
   outputEncoding = 'UTF-8'
@@ -165,8 +189,27 @@ jsonSchema2Pojo {
 
   // Whether to generate constructors or not.
   includeConstructors = false
-  
-  // **EXPERIMENTAL** Whether to make the generated types Parcelable for Android
+
+  // Whether to include java.beans.ConstructorProperties on generated constructors
+  includeConstructorPropertiesAnnotation = false
+
+  // Whether to include only 'required' fields in generated constructors
+  constructorsRequiredPropertiesOnly = false
+
+  // Whether to *add* a constructor that includes only 'required' fields, alongside other constructors.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeRequiredPropertiesConstructor = false
+
+  // Whether to *add* a constructor that includes all fields, alongside other constructors.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeAllPropertiesConstructor = false
+
+  // Include a constructor with the class itself as a parameter, with the expectation that all properties
+  // from the originating class will assigned to the new class.
+  // This property is irrelevant if constructorsRequiredPropertiesOnly = true
+  includeCopyConstructor = false
+
+  // Whether to make the generated types Parcelable for Android
   parcelable = false
 
   // Whether to make the generated types Serializable
@@ -190,21 +233,68 @@ jsonSchema2Pojo {
   // Whether to include dynamic builders or to omit these methods.
   includeDynamicBuilders = false
 
+  // Whether to use org.joda.time.LocalTime for format: date-time. For full control see dateType
+  useJodaLocalDates = false 
+
+  // Whether to use org.joda.time.LocalDate for format: date
+  useJodaLocalTimes = false
+
   // What type to use instead of string when adding string properties of format "date" to Java types
   dateType = "java.time.LocalDate"
 
   // What type to use instead of string when adding string properties of format "date-time" to Java types
   dateTimeType = "java.time.LocalDateTime"
+
+  // What type to use instead of string when adding string properties of format "time" to Java types
+  timeType = "java.time.LocalDate"
+
+  // A custom pattern to use when formatting date fields during serialization. Requires support from
+  // your JSON binding library.
+  customDatePattern = "yyyy-MM-dd"
+
+  // A custom pattern to use when formatting date-time fields during serialization. Requires support from
+  // your JSON binding library.
+  customDateTimePattern = "yyyy-MM-dd HH:mm"
+
+  // A custom pattern to use when formatting time fields during serialization. Requires support from
+  // your JSON binding library.
+  customTimePattern = "HH:mm"
+
+  // A map offering full control over which Java type will be used for each JSON Schema 'format' value
+  formatTypeMapping = [...]
+
+  // Which characters to use as 'path fragment delimiters' when trying to resolve a ref
+  refFragmentPathDelimiters = "#/."
+
+  // Whether to include json type information; often required to support polymorphic type handling.
+  // By default the type information is stored in the @class property, this can be overridden using
+  // deserializationClassProperty in the schema
+  includeJsonTypeInfoAnnotation = false
+
+  // Whether to use java.util.Optional for getters on properties that are not required
+  useOptionalForGetters = false 
+
+  // properties to exlude from generated toString
+  toStringExcludes = ["someProperty"]
+
+  // What java source version to target with generated output (1.6, 1.8, 9, 11, etc)
+  targetVersion = "1.6"
+
+  // deprecated, since we no longer use commons-lang for equals, hashCode, toString
+  useCommonsLang3 = false
+  
+  // A customer file filter to allow input files to be filtered/ignored 
+  fileFilter = new AllFileFilter() 
+
+  // A sort order to use when reading input files, one of SourceSortOrder.OS (allow the OS to decide sort
+  // order), SourceSortOrder.FILES_FIRST or SourceSortOrder.SUBDIRS_FIRST
+  sourceSortOrder = SourceSortOrder.OS
+
+  // Whether to use annotations from jakarta.validation package instead of javax.validation package
+  // when adding JSR-303 annotations to generated Java types
+  useJakartaValidation = false
 }
 ```
-
-### Working with pre-existing java classes
-
-jsonschema2pojo allows to reference any pre-existing java classes. In general, if the generator finds a
-class already exists on the classpath, then it will not be generated but only referenced. To make this
-work as expected with this gradle plugin, the dependencies in question must be added to the buildscript
-classpath, the project classpath alone will not suffice. For a little example of how to do this have
-a look at the `example` directory.
 
 ## Tasks
 
@@ -220,18 +310,15 @@ generated source files.
 It can be useful to build this project and try out changes in your existing gradle project.
 
 1. From the root, run `mvn clean install`. This will install jsonschema2pojo in your local maven repository.
-2. Include the local repo in your gradle file, and change your dependency to use the development version, (typically ending with '-SNAPSHOT' - you can find this in `pom.xml`). e.g:
+2. Include the local repo in your build.gradle, and change your dependency to use the `latest.integration` version e.g.:
 
 ```groovy
 buildscript {
     repositories {
         mavenLocal()
     }
-
     dependencies {
-        // this plugin
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.23-SNAPSHOT'
-        // add additional dependencies here if you wish to reference instead of generate them (see example directory)
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
     }
 }
 

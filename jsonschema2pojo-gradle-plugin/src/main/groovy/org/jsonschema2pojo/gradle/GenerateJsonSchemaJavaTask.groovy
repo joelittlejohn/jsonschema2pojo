@@ -20,6 +20,8 @@ import org.jsonschema2pojo.Jsonschema2Pojo
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.Input
+import org.gradle.api.model.ReplacedBy
 
 /**
  * A task that performs code generation.
@@ -27,7 +29,13 @@ import org.gradle.api.tasks.TaskAction
  * @author Ben Manes (ben.manes@gmail.com)
  */
 class GenerateJsonSchemaJavaTask extends DefaultTask {
+  @ReplacedBy("configurationString")
   GenerationConfig configuration
+
+  @Input
+  String getConfigurationString() {
+    configuration.toString();
+  }
 
   GenerateJsonSchemaJavaTask() {
     description = 'Generates Java classes from a json schema.'

@@ -42,7 +42,6 @@ import org.jsonschema2pojo.AnnotatorFactory;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
@@ -250,8 +249,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>jackson2</code> (apply annotations from the
      * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
      * 2.x</a> library)</li>
-     * <li><code>jackson1</code> (apply annotations from the
-     * <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)</li>
+     * <li><code>jackson</code> (alias for jackson2)
      * <li><code>gson</code> (apply annotations from the
      * <a href="https://code.google.com/p/google-gson/">gson</a> library)</li>
      * <li><code>moshi1</code> (apply annotations from the
@@ -275,8 +273,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useTitleAsClassname = false;
 
     /**
-     * The Level of inclusion to set in the generated Java types for Jackson1
-     * and Jackson2 serializers.
+     * The Level of inclusion to set in the generated Java types for
+     * Jackson serializers.
      * <p>
      * Supported values
      * <ul>
@@ -370,7 +368,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @parameter property="jsonschema2pojo.useOptionalForGetters"
      *            default-value="false"
      */
-     private boolean useOptionalForGetters = false;
+    private boolean useOptionalForGetters = false;
 
     /**
      * The type of input documents that will be read
@@ -488,8 +486,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useCommonsLang3 = false;
 
     /**
-     * **EXPERIMENTAL** Whether to make the generated types 'parcelable' (for
-     * Android development).
+     * Whether to make the generated types 'parcelable' (for Android development).
      *
      * @parameter property="jsonschema2pojo.parcelable"
      *            default-value="false"
@@ -588,7 +585,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="false"
      * @since 1.0.3
      */
-    boolean includeRequiredPropertiesConstructor = false;
+    private boolean includeRequiredPropertiesConstructor = false;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -600,7 +597,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="true"
      * @since 1.0.3
      */
-    boolean includeAllPropertiesConstructor = true;
+    private boolean includeAllPropertiesConstructor = true;
 
     /**
      * The 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
@@ -613,7 +610,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="false"
      * @since 1.0.3
      */
-    boolean includeCopyConstructor = false;
+    private boolean includeCopyConstructor = false;
 
     /**
      * Whether to allow 'additional properties' support in objects. Setting this
@@ -782,21 +779,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String sourceSortOrder = SourceSortOrder.OS.toString();
 
     /**
-     * The type of code that will be generated.
-     * <p>
-     * Supported values:
-     * <ul>
-     * <li><code>java</code> (Generate .java source files)</li>
-     * <li><code>scala</code> (Generate .scala source files, using scalagen)</li>
-     * </ul>
-     *
-     * @parameter property="jsonschema2pojo.targetLanguage"
-     *            default-value="java"
-     * @since 0.5.0
-     */
-    private String targetLanguage = "java";
-
-    /**
      * @parameter property="jsonschema2pojo.formatTypeMapping"
      *            default-value=""
      * @since 1.0.0
@@ -820,6 +802,27 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 1.0.2
      */
     private boolean includeConstructorPropertiesAnnotation = false;
+
+    /**
+     * Whether to include a javax.annotation.Generated (Java 8 and
+     * lower) or javax.annotation.processing.Generated (Java 9+) in
+     * on generated types.
+     *
+     * @parameter property="jsonschema2pojo.includeGeneratedAnnotation"
+     * default-value="true"
+     */
+    private boolean includeGeneratedAnnotation = true;
+
+    /**
+     * Whether to use annotations from {@code jakarta.validation} package instead of {@code javax.validation} package
+     * when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.
+     * This property works in collaboration with the {@link #isIncludeJsr303Annotations()} configuration option.
+     * If the {@link #isIncludeJsr303Annotations()} returns {@code false}, then this configuration option will not affect anything.
+     *
+     * @parameter property="jsonschema2pojo.useJakartaValidation"
+     * default-value="false"
+     */
+    private boolean useJakartaValidation = false;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -1051,7 +1054,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
+    public boolean isUseOptionalForGetters() {
+        return useOptionalForGetters;
+    }
 
     @Override
     public SourceType getSourceType() {
@@ -1083,6 +1088,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return useJodaLocalTimes;
     }
 
+    @Deprecated
     public boolean isUseCommonsLang3() {
         return useCommonsLang3;
     }
@@ -1262,11 +1268,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public Language getTargetLanguage() {
-        return Language.valueOf(targetLanguage.toUpperCase());
-    }
-
-    @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }
@@ -1274,5 +1275,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+        return includeGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
     }
 }

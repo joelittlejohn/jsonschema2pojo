@@ -32,14 +32,6 @@ public enum AnnotationStyle {
     JACKSON,
 
     /**
-     * Jackson 1.x
-     * 
-     * @see <a
-     *      href="http://jackson.codehaus.org/">http://jackson.codehaus.org/</a>
-     */
-    JACKSON1,
-
-    /**
      * Jackson 2.x
      * 
      * @see <a

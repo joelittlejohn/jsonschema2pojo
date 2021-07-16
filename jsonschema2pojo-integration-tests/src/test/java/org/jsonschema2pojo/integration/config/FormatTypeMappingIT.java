@@ -16,12 +16,9 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -29,9 +26,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.typeCompatibleWith;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertThat;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class FormatTypeMappingIT {
 

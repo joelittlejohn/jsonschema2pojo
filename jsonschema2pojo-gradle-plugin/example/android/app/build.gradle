@@ -1,24 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jsonschema2pojo'
 
-buildscript {
-    repositories {
-        jcenter()
-        mavenLocal()
-    }
-    dependencies {
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
-    }
-}
-
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "jsonschema2pojo.joelittlejohn.github.com.androidexample"
-        minSdkVersion 17
-        targetSdkVersion 23
+        minSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -36,20 +25,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
 
     // Required for @Generated annotation
-    compile 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
     // Required if generating Gson annotations
-    compile 'com.google.code.gson:gson:2.5'
+    implementation 'com.google.code.gson:gson:2.8.7'
     // Required if generating Moshi 1.x annotations
-    compile 'com.squareup.moshi:moshi:1.5.0'
+    implementation 'com.squareup.moshi:moshi:1.12.0'
     // Required if generating JSR-303 annotations
-    compile 'javax.validation:validation-api:1.1.0.CR2'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
     // Required if generating Jackson 2 annotations
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
-
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 }
 
 // Each configuration is set to the default value
@@ -74,6 +62,9 @@ jsonSchema2Pojo {
     // been supplied in the schema using the 'javaType' property).
     targetPackage = 'com.oosocial.clarityn.rest.clarityn.model'
 
+    // Disable the 'Generated' annotation as it is not included with Android
+    includeGeneratedAnnotation = false
+
     // The characters that should be considered as word delimiters when creating Java Bean property
     // names from JSON property names. If blank or not set, JSON properties will be considered to
     // contain a single word when creating Java Bean property names.
@@ -96,7 +87,6 @@ jsonSchema2Pojo {
     // The style of annotations to use in the generated Java types. Supported values:
     //  - jackson (alias of jackson2)
     //  - jackson2 (apply annotations from the Jackson 2.x library)
-    //  - jackson1 (apply annotations from the Jackson 1.x library)
     //  - gson (apply annotations from the Gson library)
     //  - moshi1 (apply annotations from the Moshi 1.x library)
     //  - none (apply no annotations at all)

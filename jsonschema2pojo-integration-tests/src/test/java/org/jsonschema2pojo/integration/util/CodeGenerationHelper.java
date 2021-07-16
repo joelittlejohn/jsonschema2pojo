@@ -18,9 +18,9 @@ package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.Compiler.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.jsonschema2pojo.integration.util.Compiler.systemJavaCompiler;
 
 import java.io.File;
 import java.io.IOException;

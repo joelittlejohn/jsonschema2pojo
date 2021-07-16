@@ -16,13 +16,13 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertEquals;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.*;
 
-import com.sun.codemodel.JMod;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -30,6 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+
+import com.sun.codemodel.JMod;
 
 @RunWith(Enclosed.class)
 public class ConstructorsIT {

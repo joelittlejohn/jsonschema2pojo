@@ -16,29 +16,10 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JOp;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +35,26 @@ import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
+import org.jsonschema2pojo.util.AnnotationHelper;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JOp;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -107,6 +108,10 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
             ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
         }
 
+        if (node.has("$comment")) {
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, jclass, schema);
+        }
+
         // Creates the class definition for the builder
         if(ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()){
             ruleFactory.getBuilderRule().apply(nodeName, node, parent, jclass, schema);
@@ -125,7 +130,10 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
         }
-
+       
+        if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
+        	AnnotationHelper.addGeneratedAnnotation(jclass);
+        }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
         }
@@ -219,7 +227,7 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
                 }
 
                 int index = fqn.lastIndexOf(".") + 1;
-                if(index == 0){ //Actually not a fully qualified name
+                if (index == 0) { //Actually not a fully qualified name
                     fqn = _package.name() + "." + fqn;
                     index = fqn.lastIndexOf(".") + 1;
                 }
@@ -291,16 +299,16 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
 
             superToStringInnerConditional._then().add(
                     sb.invoke("append")
-                            .arg(superString)
-                            .arg(contentStart.plus(JExpr.lit(1)))
-                            .arg(contentEnd));
+                    .arg(superString)
+                    .arg(contentStart.plus(JExpr.lit(1)))
+                    .arg(contentEnd));
 
             // Otherwise, just append super.toString()
             superToStringInnerConditional._else().add(sb.invoke("append").arg(superString));
 
             // Append a comma if needed
             body._if(sb.invoke("length").gt(baseLength))
-                    ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
+            ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
         // For each included instance field, add to the StringBuilder in the field=value format
@@ -326,10 +334,10 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
                                 JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
                                 JExpr.lit("<null>"),
                                 jclass.owner().ref(Arrays.class).staticInvoke("toString")
-                                        .arg(JExpr.refthis(fieldVar.name()))
-                                        .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
-                                        .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
-                                        .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
+                                .arg(JExpr.refthis(fieldVar.name()))
+                                .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
+                                .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
+                                .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
             } else {
                 body.add(sb.invoke("append")
                         .arg(JOp.cond(
@@ -344,12 +352,12 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
         // Add the trailer
         JConditional trailerConditional = body._if(
                 sb.invoke("charAt").arg(sb.invoke("length").minus(JExpr.lit(1)))
-                        .eq(JExpr.lit(',')));
+                .eq(JExpr.lit(',')));
 
         trailerConditional._then().add(
                 sb.invoke("setCharAt")
-                        .arg(sb.invoke("length").minus(JExpr.lit(1)))
-                        .arg(JExpr.lit(']')));
+                .arg(sb.invoke("length").minus(JExpr.lit(1)))
+                .arg(JExpr.lit(']')));
 
         trailerConditional._else().add(
                 sb.invoke("append").arg(JExpr.lit(']')));
@@ -497,7 +505,7 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
             } else {
                 fieldEquals = thisFieldRef.eq(otherFieldRef).cor(
                         thisFieldRef.ne(JExpr._null())
-                                .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
+                        .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
             }
 
             // Chain the equality of this field with the previous comparisons
@@ -520,7 +528,6 @@ public class ObjectRule extends AbstractRuleFactoryRule<JPackage, JType> {
         AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
 
         if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON1
                 || annotationStyle == AnnotationStyle.JACKSON2) {
             return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }

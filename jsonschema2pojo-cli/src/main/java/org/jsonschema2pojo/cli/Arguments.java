@@ -32,11 +32,9 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
-import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.cli.CommandLineLogger.LogLevel;
 import org.jsonschema2pojo.cli.CommandLineLogger.LogLevelValidator;
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -239,9 +237,6 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
-    @Parameter(names = { "-tl", "--target-language" }, description = "The type of code that will be generated.  Available options are: JAVA or SCALA")
-    private Language targetLanguage = Language.JAVA;
-
     @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
     private List<String> formatTypeMapping = new ArrayList<>();
 
@@ -250,6 +245,12 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = {"--print-log-levels"}, description = "Prints available log levels and exit.")
     private boolean printLogLevels = false;
+
+    @Parameter(names = {"--omit-generated-annotation"}, description = "Omit @Generated annotation on generated types")
+    private boolean omitGeneratedAnnotation = false;
+
+    @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
+    private boolean useJakartaValidation = false;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -608,14 +609,19 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public Language getTargetLanguage() {
-        return targetLanguage;
-    }
-
-    @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping
                 .stream()
                 .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
+    }
+
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+        return !omitGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
     }
 }

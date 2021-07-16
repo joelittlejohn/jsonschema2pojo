@@ -16,9 +16,17 @@
 
 package org.jsonschema2pojo.util;
 
-import com.sun.codemodel.*;
-import static org.jsonschema2pojo.util.Models.*;
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.util.Models.*;
+
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 public class ParcelableHelper {
 
@@ -42,19 +50,19 @@ public class ParcelableHelper {
             }
         }
     }
-    
+
     public void addDescribeContents(JDefinedClass jclass) {
         JMethod method = jclass.method(JMod.PUBLIC, int.class, "describeContents");
         method.body()._return(JExpr.lit(0));
     }
-    
+
     public void addCreator(JDefinedClass jclass) {
-        JClass creatorType = jclass.owner().directClass("android.os.Parcelable.Creator").narrow(jclass);
+        JClass creatorType = jclass.owner().directClass("Creator").narrow(jclass);
         JDefinedClass creatorClass = jclass.owner().anonymousClass(creatorType);
-        
+
         addCreateFromParcel(jclass, creatorClass);
         addNewArray(jclass, creatorClass);
-        
+
         JFieldVar creatorField = jclass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, creatorType, "CREATOR");
         creatorField.init(JExpr._new(creatorClass));
     }
@@ -62,6 +70,8 @@ public class ParcelableHelper {
     public void addConstructorFromParcel(JDefinedClass jclass) {
         JMethod ctorFromParcel = jclass.constructor(JMod.PROTECTED);
         JVar in = ctorFromParcel.param(jclass.owner().directClass("android.os.Parcel"), "in");
+
+        suppressWarnings(ctorFromParcel, "unchecked");
 
         if (extendsParcelable(jclass)) {
             ctorFromParcel.body().directStatement("super(in);");
@@ -72,17 +82,17 @@ public class ParcelableHelper {
             }
             if (f.type().erasure().name().equals("List")) {
                 ctorFromParcel.body()
-                        .invoke(in, "readList")
-                        .arg(JExpr._this().ref(f))
-                        .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
-             } else {
+                .invoke(in, "readList")
+                .arg(JExpr._this().ref(f))
+                .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
+            } else {
                 ctorFromParcel.body().assign(
                         JExpr._this().ref(f),
                         JExpr.cast(
                                 f.type(),
                                 in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))
-                        )
-                );
+                                )
+                        );
             }
 
         }
@@ -98,7 +108,6 @@ public class ParcelableHelper {
     private void addCreateFromParcel(JDefinedClass jclass, JDefinedClass creatorClass) {
         JMethod createFromParcel = creatorClass.method(JMod.PUBLIC, jclass, "createFromParcel");
         JVar in = createFromParcel.param(jclass.owner().directClass("android.os.Parcel"), "in");
-        suppressWarnings(createFromParcel, "unchecked");
         createFromParcel.body()._return(JExpr._new(jclass).arg(in));
     }
 

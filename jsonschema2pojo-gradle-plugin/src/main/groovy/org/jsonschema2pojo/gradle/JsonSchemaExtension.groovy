@@ -20,7 +20,6 @@ import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
-import org.jsonschema2pojo.Language
 import org.jsonschema2pojo.NoopAnnotator
 import org.jsonschema2pojo.SourceSortOrder
 import org.jsonschema2pojo.SourceType
@@ -96,8 +95,9 @@ public class JsonSchemaExtension implements GenerationConfig {
   String customDateTimePattern
   String refFragmentPathDelimiters
   SourceSortOrder sourceSortOrder
-  Language targetLanguage
   Map<String, String> formatTypeMapping
+  boolean includeGeneratedAnnotation
+  boolean useJakartaValidation
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -158,6 +158,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     refFragmentPathDelimiters = "#/."
     sourceSortOrder = SourceSortOrder.OS
     formatTypeMapping = Collections.emptyMap()
+    includeGeneratedAnnotation = true
+    useJakartaValidation = false
   }
 
   @Override
@@ -288,15 +290,21 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customDateTimePattern = ${customDateTimePattern}
        |refFragmentPathDelimiters = ${refFragmentPathDelimiters}
        |sourceSortOrder = ${sourceSortOrder}
-       |targetLanguage = ${targetLanguage}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
+       |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
+       |useJakartaValidation = ${useJakartaValidation}
      """.stripMargin()
   }
-  
+
   public boolean isFormatDateTimes() {
     return formatDateTimes
+  }
+
+  @Override
+  boolean isIncludeGeneratedAnnotation() {
+    return includeGeneratedAnnotation
   }
 
 }

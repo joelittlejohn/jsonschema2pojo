@@ -18,27 +18,27 @@ package org.jsonschema2pojo;
 
 public interface RuleLogger
 {
-	void debug(String msg);
+    void debug(String msg);
 
-	void error(String msg);
+    void error(String msg);
 
-	void error(String s, Throwable e);
+    void error(String s, Throwable e);
 
-	void info(String msg);
+    void info(String msg);
 
-	boolean isDebugEnabled();
+    boolean isDebugEnabled();
 
-	boolean isErrorEnabled();
+    boolean isErrorEnabled();
 
-	boolean isInfoEnabled();
+    boolean isInfoEnabled();
 
-	boolean isTraceEnabled();
+    boolean isTraceEnabled();
 
-	boolean isWarnEnabled();
+    boolean isWarnEnabled();
 
-	void trace(String msg);
+    void trace(String msg);
 
-	void warn(String s, Throwable e);
+    void warn(String s, Throwable e);
 
-	void warn(String msg);
+    void warn(String msg);
 }

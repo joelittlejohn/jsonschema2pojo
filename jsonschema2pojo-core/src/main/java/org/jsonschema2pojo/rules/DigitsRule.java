@@ -16,12 +16,15 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.lang.annotation.Annotation;
+
+import org.jsonschema2pojo.Schema;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JFieldVar;
-import org.jsonschema2pojo.Schema;
 
-import javax.validation.constraints.Digits;
+import jakarta.validation.constraints.Digits;
 
 public class DigitsRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
@@ -36,7 +39,11 @@ public class DigitsRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
             && node.has("integerDigits") && node.has("fractionalDigits")
             && isApplicableType(field)) {
 
-            JAnnotationUse annotation = field.annotate(Digits.class);
+            final Class<? extends Annotation> digitsClass
+                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
+                    ? Digits.class
+                    : javax.validation.constraints.Digits.class;
+            JAnnotationUse annotation = field.annotate(digitsClass);
 
             annotation.param("integer", node.get("integerDigits").asInt());
             annotation.param("fraction", node.get("fractionalDigits").asInt());

@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -123,108 +122,4 @@ public class InclusionLevelIT {
         assertThat(((JsonInclude) generatedType.getAnnotation(JsonInclude.class)).value(), is(JsonInclude.Include.NON_NULL));
     }
 
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelAlways() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "ALWAYS"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.ALWAYS));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelNonAbsent() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "NON_ABSENT"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_NULL));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelNonDefault() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "NON_DEFAULT"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_DEFAULT));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelNonEmpty() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "NON_EMPTY"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_EMPTY));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelNonNull() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "NON_NULL"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_NULL));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelUseDefault() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1", "inclusionLevel", "USE_DEFAULTS"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_NULL));
-    }
-
-    @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void Jackson1InclusionLevelNotSet() throws ClassNotFoundException, SecurityException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson1"));
-
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        JsonSerialize jsonSerialize = (JsonSerialize) generatedType.getAnnotation(JsonSerialize.class);
-
-        assertThat(jsonSerialize, is(notNullValue()));
-        assertThat(jsonSerialize.include(), is(JsonSerialize.Inclusion.NON_NULL));
-    }
 }

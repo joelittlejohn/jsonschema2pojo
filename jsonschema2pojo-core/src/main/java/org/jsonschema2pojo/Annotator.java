@@ -210,5 +210,5 @@ public interface Annotator {
 
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 
-	boolean isPolymorphicDeserializationSupported(JsonNode node);
+    boolean isPolymorphicDeserializationSupported(JsonNode node);
 }

@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.lang.annotation.Annotation;
@@ -29,15 +29,6 @@ import org.junit.Test;
 
 public class JacksonViewIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
-    @Test
-    public void javaJsonViewWithJackson1x() throws Exception {
-
-        org.codehaus.jackson.map.annotate.JsonView jsonViewAnnotation
-                = (org.codehaus.jackson.map.annotate.JsonView) jsonViewTest("jackson1", org.codehaus.jackson.map.annotate.JsonView.class);
-
-        assertThat(jsonViewAnnotation.value()[0].getSimpleName(), equalTo("MyJsonViewClass"));
-    }
 
     @Test
     public void javaJsonViewWithJackson2x() throws Exception {

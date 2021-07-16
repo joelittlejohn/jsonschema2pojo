@@ -46,7 +46,6 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.Language;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
@@ -194,10 +193,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
-    private Language targetLanguage = Language.JAVA;
-
     private Map<String, String> formatTypeMapping = new HashMap<>();
+    
+    private boolean includeGeneratedAnnotation = true;
 
+    private boolean useJakartaValidation = false;
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -543,7 +543,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'inclusionLevel' property of this class
      *
      * @param inclusionLevel
-     *            The level of inclusion for Jackson1 and Jackson2 serializer.
+     *            The level of inclusion for Jackson serializer.
      */
     public void setInclusionLevel(InclusionLevel inclusionLevel) {
         this.inclusionLevel = inclusionLevel;
@@ -960,10 +960,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setSourceSortOrder(SourceSortOrder sourceSortOrder) {
         this.sourceSortOrder = sourceSortOrder;
     }
-    
-    public void setTargetLanguage(Language targetLanguage) {
-        this.targetLanguage = targetLanguage;
-    }
 
     /**
      * Sets the 'useInnerClassBuilders' property of this class
@@ -972,6 +968,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setUseInnerClassBuilders(boolean useInnerClassBuilders) {
         this.useInnerClassBuilders = useInnerClassBuilders;
+    }
+
+    /**
+     * Sets the 'useJakartaValidation' property of this class
+     *
+     * @param useJakartaValidation Whether to use annotations from {@code jakarta.validation} package instead of {@code javax.validation} package
+     *                             when adding <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations to generated Java types.
+     */
+    public void setUseJakartaValidation(boolean useJakartaValidation) {
+        this.useJakartaValidation = useJakartaValidation;
     }
 
     public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
@@ -1317,11 +1323,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
     
     @Override
-    public Language getTargetLanguage() {
-        return targetLanguage;
-    }
-
-    @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
     }
@@ -1334,5 +1335,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return includeConstructorPropertiesAnnotation;
+    }
+
+    @Override
+    public boolean isIncludeGeneratedAnnotation() {
+        return includeGeneratedAnnotation;
+    }
+
+    @Override
+    public boolean isUseJakartaValidation() {
+        return useJakartaValidation;
     }
 }

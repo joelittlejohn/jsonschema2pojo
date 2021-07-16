@@ -16,13 +16,14 @@
 
 package org.jsonschema2pojo.cli;
 
-import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.converters.BaseConverter;
-import org.jsonschema2pojo.util.URLUtil;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.net.URL;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.jsonschema2pojo.util.URLUtil;
+
+import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.converters.BaseConverter;
 
 
 /**

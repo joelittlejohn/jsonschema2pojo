@@ -30,7 +30,7 @@ import com.sun.codemodel.JDocComment;
 
 public class TitleRuleTest {
 
-    private static final String TARGET_CLASS_NAME = ArrayRuleTest.class.getName() + ".DummyClass";
+    private static final String TARGET_CLASS_NAME = TitleRuleTest.class.getName() + ".DummyClass";
 
     private TitleRule rule = new TitleRule();
 

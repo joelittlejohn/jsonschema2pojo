@@ -33,18 +33,18 @@ public class SchemaStore {
     protected final ContentResolver contentResolver;
 
     public SchemaStore() {
-		this.contentResolver = new ContentResolver();
-	}
+        this.contentResolver = new ContentResolver();
+    }
 
     public SchemaStore(ContentResolver contentResolver) {
-		this.contentResolver = contentResolver;
-	}
+        this.contentResolver = contentResolver;
+    }
 
-	/**
+    /**
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.
-     * 
+     *
      * @param id
      *            the id of the schema being created
      * @param refFragmentPathDelimiters A string containing any characters
@@ -82,7 +82,7 @@ public class SchemaStore {
      * path as a relative reference. If a schema with the given parent and
      * relative path is already known, then a reference to the original schema
      * will be returned.
-     * 
+     *
      * @param parent
      *            the schema which is the parent of the schema to be created.
      * @param path
@@ -126,10 +126,15 @@ public class SchemaStore {
         }
 
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
-            JsonNode parentContent = parent.getParent().getContent();
-            Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getParent());
-            schemas.put(id, schema);
-            return schema;
+            JsonNode parentContent = parent.getGrandParent().getContent();
+
+            if (schemas.containsKey(id)) {
+                return schemas.get(id);
+            } else {
+                Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getGrandParent());
+                schemas.put(id, schema);
+                return schema;
+            }
         }
 
         return create(id, refFragmentPathDelimiters);
@@ -137,7 +142,7 @@ public class SchemaStore {
     }
 
     protected boolean selfReferenceWithoutParentFile(Schema parent, String path) {
-        return parent != null && (parent.getId() == null || parent.getId().toString().startsWith("#/")) && path.startsWith("#/");
+        return parent != null && (parent.getId() == null || parent.getId().toString().startsWith("#/")) && path.startsWith("#");
     }
 
     public synchronized void clearCache() {

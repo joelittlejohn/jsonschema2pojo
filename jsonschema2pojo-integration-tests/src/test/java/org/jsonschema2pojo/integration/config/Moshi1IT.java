@@ -16,28 +16,29 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.google.gson.Gson;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
+import static org.jsonschema2pojo.integration.util.JsonAssert.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
-import static org.jsonschema2pojo.integration.util.JsonAssert.assertEqualsJson;
-import static org.junit.Assert.assertThat;
+import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.Gson;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 public class Moshi1IT {
 

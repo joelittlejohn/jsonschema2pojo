@@ -52,7 +52,7 @@ public interface GenerationConfig {
    */
   boolean isIncludeTypeInfo();
 
-	/**
+    /**
      * Gets the 'includeConstructorPropertiesAnnotation' configuration option.
      *
      * @return whether to include JDK Constructor Properties. Used by serialization libraries to get parameter names of constructors at runtime. (Not Available on Android)
@@ -173,8 +173,7 @@ public interface GenerationConfig {
    *         <p>
    *         Supported values:
    *         <ul>
-   *         <li><code>jackson1</code> (apply annotations from the
-   *         <a href="http://jackson.codehaus.org/">Jackson 1.x</a> library)
+   *         <li><code>jackson</code> (alias for jackson2)
    *         </li>
    *         <li><code>jackson2</code> (apply annotations from the
    *         <a href="https://github.com/FasterXML/jackson-annotations">
@@ -196,7 +195,7 @@ public interface GenerationConfig {
   boolean isUseTitleAsClassname();
 
   /**
-   * Gets the 'inclusionLevel' option for Jackson1 and Jackson2 serializers.
+   * Gets the 'inclusionLevel' option for Jackson serializer.
    *
    * @return Level of inclusion to set in the generated Java types.
    *         <p>
@@ -601,19 +600,6 @@ public interface GenerationConfig {
   SourceSortOrder getSourceSortOrder();
 
   /**
-   * Gets the 'targetLanguage' configuration option.
-   *
-   * @return The type of code that will be generated.
-   *         <p>
-   *         Supported values:
-   *         <ul>
-   *         <li><code>JAVA</code> (Generate .java source files)</li>
-   *         <li><code>SCALA</code> (Generate .scala source files, using scalagen)</li>
-   *         </ul>
-   */
-  Language getTargetLanguage();
-
-  /**
    * Gets the 'formatTypeMapping' configuration option.
    *
    * @return An optional mapping from format identifier (e.g. 'uri') to
@@ -630,5 +616,20 @@ public interface GenerationConfig {
   default boolean isUseInnerClassBuilders() {
     return false;
   }
+
+  /**
+   * Whether to mark generated classes with the annotation <code>javax.annotation.@Generated</code>
+   *
+   */
+  boolean isIncludeGeneratedAnnotation();
+
+  /**
+   * Gets the 'useJakartaValidation' configuration option.
+   * This property works in collaboration with the {@link #isIncludeJsr303Annotations()} configuration option.
+   * If the {@link #isIncludeJsr303Annotations()} returns {@code false}, then this configuration option will not affect anything.
+   *
+   * @return Whether to use <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations from {@code jakarta.validation} package instead of {@code javax.validation} package when adding JSR-303 annotations to generated Java types
+   */
+  boolean isUseJakartaValidation();
 
 }

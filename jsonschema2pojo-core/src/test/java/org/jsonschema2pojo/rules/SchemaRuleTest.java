@@ -18,6 +18,8 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
@@ -88,7 +90,6 @@ public class SchemaRuleTest {
 
         Schema schema = mock(Schema.class);
         when(schema.getContent()).thenReturn(schemaContent);
-        when(schema.deriveChildSchema(any())).thenReturn(schema);
         schema.setJavaTypeIfEmpty(jclass);
 
         EnumRule enumRule = mock(EnumRule.class);

@@ -31,7 +31,7 @@ import com.sun.codemodel.JType;
 
 /**
  * Applies a JSON schema.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
@@ -54,7 +54,7 @@ public class SchemaRule extends AbstractRuleFactoryRule<JClassContainer, JType> 
      * as a URL (from which content will be read). Where the ref URI has been
      * encountered before, the root Java type created by that schema will be
      * re-used (generation steps won't be repeated).
-     * 
+     *
      * @param schema
      *            the schema within which this schema rule is being applied
      */
@@ -74,8 +74,6 @@ public class SchemaRule extends AbstractRuleFactoryRule<JClassContainer, JType> 
             return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
         }
 
-        schema = schema.deriveChildSchema(schemaNode);
-
         JType javaType;
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
@@ -86,13 +84,13 @@ public class SchemaRule extends AbstractRuleFactoryRule<JClassContainer, JType> 
 
         return javaType;
     }
-    
+
     private String nameFromRef(String ref) {
-        
+
         if ("#".equals(ref)) {
             return null;
         }
-        
+
         String nameFromRef;
         if (!contains(ref, "#")) {
             nameFromRef = Jsonschema2Pojo.getNodeName(ref, ruleFactory.getGenerationConfig());
@@ -100,7 +98,7 @@ public class SchemaRule extends AbstractRuleFactoryRule<JClassContainer, JType> 
             String[] nameParts = split(ref, "/\\#");
             nameFromRef = nameParts[nameParts.length - 1];
         }
-        
+
         try {
             return URLDecoder.decode(nameFromRef, "utf-8");
         } catch (UnsupportedEncodingException e) {

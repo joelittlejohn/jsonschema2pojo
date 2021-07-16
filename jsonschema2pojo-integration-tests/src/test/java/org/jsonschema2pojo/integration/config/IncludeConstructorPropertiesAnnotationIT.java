@@ -16,21 +16,20 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static junit.framework.TestCase.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.beans.ConstructorProperties;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.StringJoiner;
 
-import static junit.framework.TestCase.fail;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class IncludeConstructorPropertiesAnnotationIT {
   @Rule
@@ -52,30 +51,9 @@ public class IncludeConstructorPropertiesAnnotationIT {
   }
 
   @Test
-  public void defaultJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1"));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
   public void defaultWithConstructors() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void defaultWithConstructorsJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", true,
-                                                                   "annotationStyle", "JACKSON1"));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
@@ -93,33 +71,9 @@ public class IncludeConstructorPropertiesAnnotationIT {
   }
 
   @Test
-  public void disabledJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1",
-                                                                   "includeConstructorPropertiesAnnotation", false));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
   public void disabledWithConstructors() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true,
-                                                                   "constructorsRequiredPropertiesOnly", true,
-                                                                   "includeConstructorPropertiesAnnotation", false));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void disabledWithConstructorsJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1",
-                                                                   "includeConstructors", true,
                                                                    "constructorsRequiredPropertiesOnly", true,
                                                                    "includeConstructorPropertiesAnnotation", false));
 
@@ -140,18 +94,6 @@ public class IncludeConstructorPropertiesAnnotationIT {
   }
 
   @Test
-  public void enabledJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1",
-                                                                   "includeConstructors", true,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateConstructor(3, expectedValueForAllValuesConstructor, testObjectClass);
-  }
-
-  @Test
   public void enabledWithRequiredPropertiesOnly() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", true,
@@ -164,34 +106,9 @@ public class IncludeConstructorPropertiesAnnotationIT {
   }
 
   @Test
-  public void enabledWithRequiredPropertiesOnlyJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1",
-                                                                   "includeConstructors", true,
-                                                                   "constructorsRequiredPropertiesOnly", true,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateConstructor(2, expectedValueForRequiredValuesConstructor, testObjectClass);
-  }
-
-  @Test
   public void enabledWithoutConstructors() throws ClassNotFoundException {
     ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
                                                             config("includeConstructors", false,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void enabledWithoutConstructorsJackson1() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("annotationStyle", "JACKSON1",
-                                                                   "includeConstructors", false,
                                                                    "includeConstructorPropertiesAnnotation", true));
 
     Class<?> testObjectClass = classLoader.loadClass(testObjectName);

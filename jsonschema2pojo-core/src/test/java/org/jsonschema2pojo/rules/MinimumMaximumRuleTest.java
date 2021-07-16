@@ -16,9 +16,19 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -31,22 +41,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Random;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JFieldVar;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertSame;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Size;
 
 /**
  * Tests {@link MinimumMaximumRuleTest}
@@ -57,6 +58,10 @@ public class MinimumMaximumRuleTest {
     private final boolean isApplicable;
     private MinimumMaximumRule rule;
     private Class<?> fieldClass;
+    private final boolean useJakartaValidation;
+    private final Class<? extends Annotation> decimalMaxClass;
+    private final Class<? extends Annotation> decimalMinClass;
+    private final Class<? extends Annotation> sizeClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -82,19 +87,31 @@ public class MinimumMaximumRuleTest {
                 { true, Long.class },
                 { false, Float.class },
                 { false, Double.class },
-        });
+        }).stream()
+                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
+                .collect(Collectors.toList());
     }
 
-
-    public MinimumMaximumRuleTest(boolean isApplicable, Class<?> fieldClass) {
+    public MinimumMaximumRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
         this.isApplicable = isApplicable;
         this.fieldClass = fieldClass;
+        this.useJakartaValidation = useJakartaValidation;
+        if (useJakartaValidation) {
+            decimalMaxClass = DecimalMax.class;
+            decimalMinClass = DecimalMin.class;
+            sizeClass = Size.class;
+        } else {
+            decimalMaxClass = javax.validation.constraints.DecimalMax.class;
+            decimalMinClass = javax.validation.constraints.DecimalMin.class;
+            sizeClass = javax.validation.constraints.Size.class;
+        }
     }
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new MinimumMaximumRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 
     @Test
@@ -103,16 +120,16 @@ public class MinimumMaximumRuleTest {
         final String minValue = Integer.toString(new Random().nextInt());
         when(subNode.asText()).thenReturn(minValue);
         when(node.get("minimum")).thenReturn(subNode);
-        when(fieldVar.annotate(DecimalMin.class)).thenReturn(annotationMin);
+        when(fieldVar.annotate(decimalMinClass)).thenReturn(annotationMin);
         when(node.has("minimum")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(DecimalMin.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(decimalMinClass);
         verify(annotationMin, times(isApplicable ? 1 : 0)).param("value", minValue);
-        verify(fieldVar, never()).annotate(DecimalMax.class);
+        verify(fieldVar, never()).annotate(decimalMaxClass);
         verify(annotationMax, never()).param(eq("value"), anyString());
     }
 
@@ -122,16 +139,16 @@ public class MinimumMaximumRuleTest {
         final String maxValue = Integer.toString(new Random().nextInt());
         when(subNode.asText()).thenReturn(maxValue);
         when(node.get("maximum")).thenReturn(subNode);
-        when(fieldVar.annotate(DecimalMax.class)).thenReturn(annotationMax);
+        when(fieldVar.annotate(decimalMaxClass)).thenReturn(annotationMax);
         when(node.has("maximum")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(DecimalMax.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(decimalMaxClass);
         verify(annotationMax, times(isApplicable ? 1 : 0)).param("value", maxValue);
-        verify(fieldVar, never()).annotate(DecimalMin.class);
+        verify(fieldVar, never()).annotate(decimalMinClass);
         verify(annotationMin, never()).param(eq("value"), anyString());
     }
 
@@ -145,8 +162,8 @@ public class MinimumMaximumRuleTest {
         when(maxSubNode.asText()).thenReturn(maxValue);
         when(node.get("minimum")).thenReturn(subNode);
         when(node.get("maximum")).thenReturn(maxSubNode);
-        when(fieldVar.annotate(DecimalMin.class)).thenReturn(annotationMin);
-        when(fieldVar.annotate(DecimalMax.class)).thenReturn(annotationMax);
+        when(fieldVar.annotate(decimalMinClass)).thenReturn(annotationMin);
+        when(fieldVar.annotate(decimalMaxClass)).thenReturn(annotationMax);
         when(node.has("minimum")).thenReturn(true);
         when(node.has("maximum")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
@@ -154,9 +171,9 @@ public class MinimumMaximumRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(DecimalMin.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(decimalMinClass);
         verify(annotationMin, times(isApplicable ? 1 : 0)).param("value", minValue);
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(DecimalMax.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(decimalMaxClass);
         verify(annotationMax, times(isApplicable ? 1 : 0)).param("value", maxValue);
     }
 
@@ -170,7 +187,7 @@ public class MinimumMaximumRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Size.class);
+        verify(fieldVar, never()).annotate(sizeClass);
         verify(annotationMin, never()).param(anyString(), anyString());
         verify(annotationMax, never()).param(anyString(), anyString());
     }
@@ -181,9 +198,9 @@ public class MinimumMaximumRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(DecimalMin.class);
+        verify(fieldVar, never()).annotate(decimalMinClass);
         verify(annotationMin, never()).param(anyString(), anyString());
-        verify(fieldVar, never()).annotate(DecimalMax.class);
+        verify(fieldVar, never()).annotate(decimalMaxClass);
         verify(annotationMax, never()).param(anyString(), anyString());
     }
 }

@@ -16,19 +16,19 @@
 
 package org.jsonschema2pojo.util;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public class MakeUniqueClassNameTest {
 
-	@Test
-	public void testClassNameStrategy() {
-		assertThat(MakeUniqueClassName.makeUnique("NodeMode"), equalTo("NodeMode__1"));
-		assertThat(MakeUniqueClassName.makeUnique("NodeMode__5"), equalTo("NodeMode__6"));
-		assertThat(MakeUniqueClassName.makeUnique("NodeMode__10"), equalTo("NodeMode__11"));
-		assertThat(MakeUniqueClassName.makeUnique("NodeMode__100"), equalTo("NodeMode__101"));
-	}
+    @Test
+    public void testClassNameStrategy() {
+        assertThat(MakeUniqueClassName.makeUnique("NodeMode"), equalTo("NodeMode__1"));
+        assertThat(MakeUniqueClassName.makeUnique("NodeMode__5"), equalTo("NodeMode__6"));
+        assertThat(MakeUniqueClassName.makeUnique("NodeMode__10"), equalTo("NodeMode__11"));
+        assertThat(MakeUniqueClassName.makeUnique("NodeMode__100"), equalTo("NodeMode__101"));
+    }
 
 }

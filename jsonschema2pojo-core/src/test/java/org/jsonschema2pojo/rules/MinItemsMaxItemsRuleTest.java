@@ -16,9 +16,19 @@
 
 package org.jsonschema2pojo.rules;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -31,21 +41,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import javax.validation.constraints.Size;
-import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Random;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JFieldVar;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertSame;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import jakarta.validation.constraints.Size;
 
 /**
  * Tests {@link MinItemsMaxItemsRuleTest}
@@ -56,6 +56,8 @@ public class MinItemsMaxItemsRuleTest {
     private final boolean isApplicable;
     private MinItemsMaxItemsRule rule;
     private Class<?> fieldClass;
+    private final boolean useJakartaValidation;
+    private final Class<? extends Annotation> sizeClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -80,19 +82,23 @@ public class MinItemsMaxItemsRuleTest {
                 { false, Long.class },
                 { false, Float.class },
                 { false, Double.class },
-        });
+        }).stream()
+                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
+                .collect(Collectors.toList());
     }
 
-
-    public MinItemsMaxItemsRuleTest(boolean isApplicable, Class<?> fieldClass) {
+    public MinItemsMaxItemsRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
         this.isApplicable = isApplicable;
         this.fieldClass = fieldClass;
+        this.useJakartaValidation = useJakartaValidation;
+        this.sizeClass = useJakartaValidation ? Size.class : javax.validation.constraints.Size.class;
     }
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new MinItemsMaxItemsRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 
     @Test
@@ -101,14 +107,14 @@ public class MinItemsMaxItemsRuleTest {
         final int minValue = new Random().nextInt();
         when(subNode.asInt()).thenReturn(minValue);
         when(node.get("minItems")).thenReturn(subNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, never()).param(eq("max"), anyString());
     }
@@ -119,14 +125,14 @@ public class MinItemsMaxItemsRuleTest {
         final int maxValue = new Random().nextInt();
         when(subNode.asInt()).thenReturn(maxValue);
         when(node.get("maxItems")).thenReturn(subNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("maxItems")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
         verify(annotation, never()).param(eq("min"), anyInt());
     }
@@ -141,7 +147,7 @@ public class MinItemsMaxItemsRuleTest {
         when(maxSubNode.asInt()).thenReturn(maxValue);
         when(node.get("minItems")).thenReturn(subNode);
         when(node.get("maxItems")).thenReturn(maxSubNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
         when(node.has("maxItems")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
@@ -149,7 +155,7 @@ public class MinItemsMaxItemsRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
     }
@@ -164,7 +170,7 @@ public class MinItemsMaxItemsRuleTest {
         when(maxSubNode.asInt()).thenReturn(maxValue);
         when(node.get("minItems")).thenReturn(subNode);
         when(node.get("maxItems")).thenReturn(maxSubNode);
-        when(fieldVar.annotate(Size.class)).thenReturn(annotation);
+        when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
         when(node.has("maxItems")).thenReturn(true);
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName() + "<String>");
@@ -172,7 +178,7 @@ public class MinItemsMaxItemsRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(Size.class);
+        verify(fieldVar, times(isApplicable ? 1 : 0)).annotate(sizeClass);
         verify(annotation, times(isApplicable ? 1 : 0)).param("min", minValue);
         verify(annotation, times(isApplicable ? 1 : 0)).param("max", maxValue);
     }
@@ -187,7 +193,7 @@ public class MinItemsMaxItemsRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Size.class);
+        verify(fieldVar, never()).annotate(sizeClass);
         verify(annotation, never()).param(anyString(), anyInt());
     }
 
@@ -197,7 +203,7 @@ public class MinItemsMaxItemsRuleTest {
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
 
-        verify(fieldVar, never()).annotate(Size.class);
+        verify(fieldVar, never()).annotate(sizeClass);
         verify(annotation, never()).param(anyString(), anyInt());
     }
 }

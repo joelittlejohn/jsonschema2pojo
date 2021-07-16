@@ -1,0 +1,36 @@
+{
+    "id": "EtcdDirectoryListing",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "The etcd Manifest used for recursive directory listings",
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string"
+        },
+        "node": {
+            "id": "EtcdNode",
+            "description": "Etcd key-value node",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "dir": {
+                    "type": "boolean"
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/properties/node"
+                    }
+                },
+                "modifiedIndex": {
+                    "type": "integer"
+                },
+                "createdIndex": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

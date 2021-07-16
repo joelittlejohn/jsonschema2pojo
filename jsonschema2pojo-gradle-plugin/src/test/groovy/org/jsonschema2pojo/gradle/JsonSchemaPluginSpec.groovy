@@ -15,12 +15,41 @@
  */
 package org.jsonschema2pojo.gradle
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.lang.reflect.Field
+
+import org.apache.commons.io.FileUtils
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
+import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import org.junit.Test
 
 class JsonSchemaPluginSpec {
+
+  @Test
+  void documentationIncludesAllProperties() {
+    String documentation = FileUtils.readFileToString(new File("README.md"));
+
+    Set<String> ignoredProperties = new HashSet<String>() {{
+        add("sourceFiles");
+        add("\$staticClassInfo");
+        add("__\$stMC");
+        add("metaClass");
+        add("\$callSiteArray");
+    }}
+
+    List<String> missingProperties = new ArrayList<String>()
+    for (Field f : JsonSchemaExtension.class.getDeclaredFields()) {
+      if (!ignoredProperties.contains(f.getName()) && !documentation.contains("  " + f.getName() + " ")) {
+        missingProperties.add(f.getName());
+      }
+    }
+
+    assertThat(missingProperties.toString(), missingProperties.isEmpty())
+  }
 
   @Test
   void java() {
@@ -29,7 +58,7 @@ class JsonSchemaPluginSpec {
 
   void build(String projectDir) {
     GradleConnector connector = GradleConnector.newConnector()
-    connector.useDistribution(new URI("https://services.gradle.org/distributions/gradle-2.3-bin.zip"))
+    connector.useGradleVersion("5.6")
     connector.forProjectDirectory(new File(projectDir))
     ProjectConnection connection = connector.connect()
     try {

@@ -5,6 +5,10 @@
             "type" : "number",
             "format" : "date-time"
         },
+        "integerAsPrimitive" : {
+            "type" : "number",
+            "format" : "int32"
+        },
         "stringAsDateTime" : {
             "type" : "string",
             "format" : "date-time"
