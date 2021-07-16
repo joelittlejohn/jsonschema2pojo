@@ -32,7 +32,7 @@ public class CommentRuleTest {
 
     private static final String TARGET_CLASS_NAME = CommentRuleTest.class.getName() + ".DummyClass";
 
-    private CommentRule rule = new CommentRule();
+    private final CommentRule rule = new CommentRule(new RuleFactory());
 
     @Test
     public void applyAddsCommentToJavadoc() throws JClassAlreadyExistsException {

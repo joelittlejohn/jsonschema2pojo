@@ -28,9 +28,10 @@ import org.jsonschema2pojo.Schema;
  * @see <a
  *      href="https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9">https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9</a>
  */
-public class CommentRule implements Rule<JDocCommentable, JDocComment> {
+public class CommentRule extends AbstractRuleFactoryRule<JDocCommentable, JDocComment> {
 
-    protected CommentRule() {
+    protected CommentRule(RuleFactory ruleFactory) {
+        super(ruleFactory);
     }
 
     /**

@@ -104,7 +104,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "$comment" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getCommentRule() {
-        return new CommentRule();
+        return new CommentRule(this);
     }
 
     /**
