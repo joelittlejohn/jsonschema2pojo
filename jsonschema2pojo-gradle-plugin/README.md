@@ -119,6 +119,9 @@ jsonSchema2Pojo {
   // by annotationStyle. If you want to use the custom annotator alone, set annotationStyle to none.
   customAnnotator = 'org.jsonschema2pojo.NoopAnnotator'
 
+  // A map of custom properties to be used in custom rule factory.
+  customRuleFactoryConfiguration = [:]
+
   // Whether to include JSR-303/349 annotations (for schema rules like minimum, maximum, etc) in
   // generated Java types. Schema rules and the annotation they produce:
   //  - maximum = @DecimalMax
