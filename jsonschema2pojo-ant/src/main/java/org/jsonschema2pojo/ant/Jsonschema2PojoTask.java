@@ -246,7 +246,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         RuleLogger ruleLogger = new AntRuleLogger(this);
 
         try {
-            Jsonschema2Pojo.generate(this, ruleLogger);
+            Jsonschema2Pojo.generate(this, getSource(), ruleLogger);
         } catch (IOException e) {
             throw new BuildException("Error generating classes from JSON Schema file(s) " + source, e);
         }
@@ -1007,6 +1007,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public File getTargetDirectory() {
         return targetDirectory;
+    }
+
+    @Override
+    public String getSourceDirectory() {
+        return null;
+    }
+
+    @Override
+    public String[] getSourcePaths() {
+        return new String[0];
     }
 
     @Override

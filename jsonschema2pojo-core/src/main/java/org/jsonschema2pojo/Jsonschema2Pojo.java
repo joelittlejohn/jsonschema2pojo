@@ -53,7 +53,7 @@ public class Jsonschema2Pojo {
      * @throws IOException
      *             if the application is unable to read data from the source
      */
-    public static void generate(GenerationConfig config, RuleLogger logger) throws IOException {
+    public static void generate(GenerationConfig config, Iterator<URL> sources, RuleLogger logger) throws IOException {
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
 
@@ -70,7 +70,7 @@ public class Jsonschema2Pojo {
             removeOldOutput(config.getTargetDirectory());
         }
 
-        for (Iterator<URL> sources = config.getSource(); sources.hasNext();) {
+        while (sources.hasNext()) {
             URL source = sources.next();
 
             if (URLUtil.parseProtocol(source.toString()) == URLProtocol.FILE && URLUtil.getFileFromURL(source).isDirectory()) {

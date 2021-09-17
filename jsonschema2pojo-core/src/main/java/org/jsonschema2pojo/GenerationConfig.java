@@ -88,6 +88,23 @@ public interface GenerationConfig {
   File getTargetDirectory();
 
   /**
+   * Gets the 'sourceDirectory' configuration option
+   *
+   * @return Location of the JSON Schema file(s). Note: this may refer to a single
+   * file or a directory of files.
+   */
+  String getSourceDirectory();
+
+  /**
+   * Gets the 'sourcePaths' configuration option
+   *
+   * @return An array of locations of the JSON Schema file(s). Note: each item may
+   * refer to a single file or a directory of files.
+   *
+   */
+  String[] getSourcePaths();
+
+  /**
    * Gets the 'targetPackage' configuration option.
    *
    * @return The java package used for generated types.

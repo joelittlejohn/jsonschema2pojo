@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.maven;
 
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -833,8 +832,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             throw new MojoExecutionException("Not a valid annotation style: " + annotationStyle);
         }
 
+        Annotator annotatorImpl;
         try {
-            new AnnotatorFactory(this).getAnnotator(getCustomAnnotator());
+            annotatorImpl = new AnnotatorFactory(this).getAnnotator(getCustomAnnotator());
         } catch (IllegalArgumentException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
@@ -843,21 +843,31 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             return;
         }
 
+        GenerationConfig config = getGenerationConfig(annotatorImpl);
+
+        // Either get the source from the mojo configuration or from the custom config
+        String localSourceDirectory = config.getSourceDirectory() == null || config.getSourceDirectory().isEmpty()
+            ? sourceDirectory
+            : config.getSourceDirectory();
+        String[] localSourcePaths = config.getSourcePaths() == null || config.getSourcePaths().length == 0
+            ? sourcePaths
+            : config.getSourcePaths();
+
         // verify source directories
-        if (sourceDirectory != null) {
-            sourceDirectory = FilenameUtils.normalize(sourceDirectory);
+        if (localSourceDirectory != null) {
+            localSourceDirectory = FilenameUtils.normalize(localSourceDirectory);
             // verify sourceDirectory
             try {
-                URLUtil.parseURL(sourceDirectory);
+                URLUtil.parseURL(localSourceDirectory);
             } catch (IllegalArgumentException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
-        } else if (!isEmpty(sourcePaths)) {
+        } else if (!isEmpty(localSourcePaths)) {
             // verify individual source paths
-            for (int i = 0; i < sourcePaths.length; i++) {
-                sourcePaths[i] = FilenameUtils.normalize(sourcePaths[i]);
+            for (int i = 0; i < localSourcePaths.length; i++) {
+                localSourcePaths[i] = FilenameUtils.normalize(localSourcePaths[i]);
                 try {
-                    URLUtil.parseURL(sourcePaths[i]);
+                    URLUtil.parseURL(localSourcePaths[i]);
                 } catch (IllegalArgumentException e) {
                     throw new MojoExecutionException(e.getMessage(), e);
                 }
@@ -866,13 +876,13 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             throw new MojoExecutionException("One of sourceDirectory or sourcePaths must be provided");
         }
 
-        if (filteringEnabled() || (sourceDirectory != null && isEmpty(sourcePaths))) {
+        if (filteringEnabled() || (localSourceDirectory != null && isEmpty(localSourcePaths))) {
 
-            if (sourceDirectory == null) {
+            if (localSourceDirectory == null) {
                 throw new MojoExecutionException("Source includes and excludes require the sourceDirectory property");
             }
 
-            if (!isEmpty(sourcePaths)) {
+            if (!isEmpty(localSourcePaths)) {
                 throw new MojoExecutionException("Source includes and excludes are incompatible with the sourcePaths property");
             }
 
@@ -890,25 +900,49 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         RuleLogger logger = new MojoRuleLogger(getLog());
 
         try {
-            Jsonschema2Pojo.generate(this, logger);
+            Iterator<URL> sources = getSources(config);
+            Jsonschema2Pojo.generate(getGenerationConfig(annotatorImpl), sources, logger);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory, e);
+            throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + localSourceDirectory, e);
         }
+    }
 
+    /**
+     * Tries to get a list of sources, if we have a custom config present, it most likely has the default implementation.
+     * We then fall back to using the one handed into the plugin which must always be present
+     * @param config the config to get the sources from
+     * @return an iterable list of sources
+     */
+    private Iterator<URL> getSources(GenerationConfig config){
+        try {
+            return config.getSource();
+        } catch (Exception ex) {
+            return getSource();
+        }
+    }
+
+    /**
+     * Checks for a custom generation config handed into a custom annotator, use the default Maven Mojo implementation if not present
+     * @return config
+     */
+    private GenerationConfig getGenerationConfig(Annotator annotatorImpl){
+        if(annotatorImpl != null){
+            try {
+                return (GenerationConfig) annotatorImpl.getClass().getMethod("getGenerationConfig").invoke(annotatorImpl);
+            } catch (Exception ignored) {
+            }
+        }
+        return this;
     }
 
     private void addProjectDependenciesToClasspath() {
-
         try {
-
             ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader newClassLoader = new ProjectClasspath().getClassLoader(project, oldClassLoader, getLog());
             Thread.currentThread().setContextClassLoader(newClassLoader);
-
         } catch (DependencyResolutionRequiredException e) {
-            getLog().info("Skipping addition of project artifacts, there appears to be a dependecy resolution problem", e);
+            getLog().info("Skipping addition of project artifacts, there appears to be a dependency resolution problem", e);
         }
-
     }
 
     @Override
@@ -931,6 +965,16 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public File getTargetDirectory() {
         return outputDirectory;
+    }
+
+    @Override
+    public String getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    @Override
+    public String[] getSourcePaths() {
+        return sourcePaths;
     }
 
     @Override

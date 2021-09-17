@@ -294,6 +294,28 @@ public class Arguments implements GenerationConfig {
         return targetDirectory;
     }
 
+    /**
+     * Gets the 'sourceDirectory' configuration option
+     *
+     * @return Location of the JSON Schema file(s). Note: this may refer to a single
+     * file or a directory of files.
+     */
+    @Override
+    public String getSourceDirectory() {
+        return null;
+    }
+
+    /**
+     * Gets the 'sourcePaths' configuration option
+     *
+     * @return An array of locations of the JSON Schema file(s). Note: each item may
+     * refer to a single file or a directory of files.
+     */
+    @Override
+    public String[] getSourcePaths() {
+        return new String[0];
+    }
+
     @Override
     public String getTargetPackage() {
         return targetPackage;

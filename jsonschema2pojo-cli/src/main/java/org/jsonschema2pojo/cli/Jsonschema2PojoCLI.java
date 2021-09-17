@@ -55,6 +55,6 @@ public final class Jsonschema2PojoCLI {
             logger.warn("--commons-lang3 is deprecated. Please remove the argument from your command-line arguments.");
         }
 
-        Jsonschema2Pojo.generate(arguments, logger);
+        Jsonschema2Pojo.generate(arguments, arguments.getSource(), logger);
     }
 }

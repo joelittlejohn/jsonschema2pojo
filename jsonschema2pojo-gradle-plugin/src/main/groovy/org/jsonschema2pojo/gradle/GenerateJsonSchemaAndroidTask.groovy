@@ -15,7 +15,6 @@
  */
 package org.jsonschema2pojo.gradle
 
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
@@ -56,6 +55,6 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
 
     logger.info 'Using this configuration:\n{}', configuration
 
-    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
+    Jsonschema2Pojo.generate(configuration, configuration.getSource(), new GradleRuleLogger(logger))
   }
 }

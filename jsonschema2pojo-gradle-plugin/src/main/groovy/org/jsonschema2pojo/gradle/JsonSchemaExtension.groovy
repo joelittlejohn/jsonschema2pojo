@@ -179,6 +179,16 @@ public class JsonSchemaExtension implements GenerationConfig {
     urlList.iterator()
   }
 
+  @Override
+  String getSourceDirectory() {
+    return sourceDirectory
+  }
+
+  @Override
+  String[] getSourcePaths() {
+    return sourcePaths
+  }
+
   public void setSource(Iterable<File> files) {
     def copy = [] as List
     files.each { copy.add(it) }
