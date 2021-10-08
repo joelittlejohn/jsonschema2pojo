@@ -470,7 +470,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         boolean found = false;
 
         for (String existingName : existingNames) {
-            if (name.equalsIgnoreCase(existingName)) {
+            if (name.equals(existingName)) {
                 found = true;
                 break;
             }

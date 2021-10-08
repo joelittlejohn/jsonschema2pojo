@@ -1,0 +1,26 @@
+{
+  "type" : "object",
+  "properties" : {
+    "enumProperty" : {
+      "type" : "string",
+      "enum" : ["WORD", "Word"]
+    },
+    "enumPropertyWithJavaEnumNames" : {
+      "type" : "string",
+      "enum" : ["WORD", "Word"],
+      "javaEnumNames" : ["WORD","Word"]
+    },
+    "enumPropertyWithJavaEnums" : {
+      "type" : "string",
+      "enum" : ["WORD", "Word"],
+      "javaEnums" : [
+        {
+          "name": "WORD"
+        },
+        {
+          "name": "Word"
+        }
+      ]
+    }
+  }
+}
