@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-18.04]
-        java: [8]
+        java: [ 8.0.192, 8 ]
       fail-fast: false
       max-parallel: 4
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java }}
-          distribution: adopt
+          distribution: zulu
       - name: Cache local Maven repository
         uses: actions/cache@v2.1.6
         with:
