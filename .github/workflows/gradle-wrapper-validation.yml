@@ -16,5 +16,5 @@ jobs:
       run:
         working-directory: jsonschema2pojo-gradle-plugin/example/android
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.4.0
       - uses: gradle/wrapper-validation-action@v1
