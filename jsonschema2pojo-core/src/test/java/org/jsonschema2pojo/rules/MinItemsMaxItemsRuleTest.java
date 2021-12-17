@@ -18,7 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
@@ -55,7 +54,7 @@ public class MinItemsMaxItemsRuleTest {
 
     private final boolean isApplicable;
     private MinItemsMaxItemsRule rule;
-    private Class<?> fieldClass;
+    private final Class<?> fieldClass;
     private final boolean useJakartaValidation;
     private final Class<? extends Annotation> sizeClass;
     @Mock

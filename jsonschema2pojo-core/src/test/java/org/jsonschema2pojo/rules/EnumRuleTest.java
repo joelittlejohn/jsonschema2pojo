@@ -18,7 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.Annotator;
@@ -27,7 +26,7 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -41,14 +40,14 @@ import com.sun.codemodel.JType;
 
 public class EnumRuleTest {
 
-    private Schema schema = mock(Schema.class);
-    private NameHelper nameHelper = mock(NameHelper.class);
-    private Annotator annotator = mock(Annotator.class);
-    private RuleFactory ruleFactory = mock(RuleFactory.class);
-    private TypeRule typeRule = mock(TypeRule.class);
-    private RuleLogger logger = mock(RuleLogger.class);
+    private final Schema schema = mock(Schema.class);
+    private final NameHelper nameHelper = mock(NameHelper.class);
+    private final Annotator annotator = mock(Annotator.class);
+    private final RuleFactory ruleFactory = mock(RuleFactory.class);
+    private final TypeRule typeRule = mock(TypeRule.class);
+    private final RuleLogger logger = mock(RuleLogger.class);
 
-    private EnumRule rule = new EnumRule(ruleFactory);
+    private final EnumRule rule = new EnumRule(ruleFactory);
 
     @Before
     public void wireUpConfig() {
@@ -62,7 +61,7 @@ public class EnumRuleTest {
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
 
         Answer<String> firstArgAnswer = new FirstArgAnswer<>();
-        when(nameHelper.getClassName(anyString(), Matchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
+        when(nameHelper.getClassName(anyString(), ArgumentMatchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
 

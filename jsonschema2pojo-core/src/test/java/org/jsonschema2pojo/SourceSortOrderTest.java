@@ -22,29 +22,28 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Comparator;
 
 import org.junit.Test;
 
 public class SourceSortOrderTest {
     @Test
-    public void testTwoFilesAreCompared_FILES_FIRST() throws IOException {
+    public void testTwoFilesAreCompared_FILES_FIRST() {
         testTwoFilesAreCompared(SourceSortOrder.FILES_FIRST.getComparator());
     }
 
     @Test
-    public void twoDirectoriesAreCompared_FILES_FIRST() throws IOException {
+    public void twoDirectoriesAreCompared_FILES_FIRST() {
         testTwoDirectoriesAreCompared(SourceSortOrder.FILES_FIRST.getComparator());
     }
 
     @Test
-    public void testTwoFilesAreCompared_SUBDIRS_FIRST() throws IOException {
+    public void testTwoFilesAreCompared_SUBDIRS_FIRST() {
         testTwoFilesAreCompared(SourceSortOrder.SUBDIRS_FIRST.getComparator());
     }
 
     @Test
-    public void twoDirectoriesAreCompared_SUBDIRS_FIRST() throws IOException {
+    public void twoDirectoriesAreCompared_SUBDIRS_FIRST() {
         testTwoDirectoriesAreCompared(SourceSortOrder.SUBDIRS_FIRST.getComparator());
     }
 
