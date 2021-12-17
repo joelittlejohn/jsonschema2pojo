@@ -18,15 +18,12 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,10 +39,10 @@ import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
 
-    private GenerationConfig config = mock(GenerationConfig.class);
-    private RuleFactory ruleFactory = mock(RuleFactory.class);
+    private final GenerationConfig config = mock(GenerationConfig.class);
+    private final RuleFactory ruleFactory = mock(RuleFactory.class);
 
-    private TypeRule rule = new TypeRule(ruleFactory);
+    private final TypeRule rule = new TypeRule(ruleFactory);
 
     @Before
     public void wireUpConfig() {
@@ -78,7 +75,7 @@ public class TypeRuleTest {
 
         JType mockDateType = mock(JType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);
-        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(JType.class), isNull(Schema.class))).thenReturn(mockDateType);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(JType.class), isNull())).thenReturn(mockDateType);
         when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
@@ -563,7 +560,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
-        assertThat(result, is((JType) mockArrayType));
+        assertThat(result, is(mockArrayType));
     }
 
     @Test
@@ -581,7 +578,7 @@ public class TypeRuleTest {
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
-        assertThat(result, is((JType) mockObjectType));
+        assertThat(result, is(mockObjectType));
     }
 
     @Test
