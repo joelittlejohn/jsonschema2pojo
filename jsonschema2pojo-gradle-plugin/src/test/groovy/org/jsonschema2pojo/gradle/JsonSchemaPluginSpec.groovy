@@ -35,6 +35,7 @@ class JsonSchemaPluginSpec {
 
     Set<String> ignoredProperties = new HashSet<String>() {{
         add("sourceFiles");
+        add("\$staticClassInfo\$");
         add("\$staticClassInfo");
         add("__\$stMC");
         add("metaClass");
@@ -63,6 +64,8 @@ class JsonSchemaPluginSpec {
     ProjectConnection connection = connector.connect()
     try {
       BuildLauncher launcher = connection.newBuild()
+      launcher.setStandardOutput(System.out);
+      launcher.setStandardError(System.err);
       launcher.forTasks("build")
       launcher.run()
     } finally {
