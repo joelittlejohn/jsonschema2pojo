@@ -21,6 +21,8 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -34,18 +36,17 @@ public class RegressionIT {
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.<String, Object> emptyMap());
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.emptyMap());
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.SpacesInPath");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SpacesInPath");
         assertThat(generatedType, is(notNullValue()));
 
     }
 
     @Test
-    public void underscoresInPropertyNamesRemainIntact() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void underscoresInPropertyNamesRemainIntact() throws ReflectiveOperationException, SecurityException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/underscores.json", "com.example", config("sourceType", "json", "propertyWordDelimiters", ""));
 
@@ -55,27 +56,41 @@ public class RegressionIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void filesWithExtensionPrefixesAreNotTruncated() throws ClassNotFoundException, SecurityException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.<String, Object> emptyMap());
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.emptyMap());
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.FooBaz");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.FooBaz");
         assertThat(generatedType, is(notNullValue()));
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void extendsChoosesCorrectSupertypeWhenTypeIsAlreadyGenerated() throws ClassNotFoundException, SecurityException, MalformedURLException {
         URL filteredSchemaUrl = new File("src/test/resources/schema/regression/extends").toURI().toURL();
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", Collections.<String, Object> emptyMap());
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", Collections.emptyMap());
 
-        Class parent = resultsClassLoader.loadClass("org.hawkular.bus.common.BasicMessage");
-        Class subClass = resultsClassLoader.loadClass("org.abc.AuthMessage");
-        Class subSubClass = resultsClassLoader.loadClass("org.abc.SimpleMessage");
+        Class<?> parent = resultsClassLoader.loadClass("org.hawkular.bus.common.BasicMessage");
+        Class<?> subClass = resultsClassLoader.loadClass("org.abc.AuthMessage");
+        Class<?> subSubClass = resultsClassLoader.loadClass("org.abc.SimpleMessage");
 
         assertThat(subClass.getSuperclass().getName(), is(parent.getName()));
         assertThat(subSubClass.getSuperclass().getName(), is(subClass.getName()));
     }
 
+    @Test
+    public void extendsIsSupportedInArrayItemType() throws ReflectiveOperationException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+                "schema/regression/extends_in_array",
+                "com.example",
+                Collections.emptyMap());
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Flowerarray");
+        Class<?> parent = resultsClassLoader.loadClass("com.example.Flower");
+        Class<?> subClass = resultsClassLoader.loadClass("com.example.Flower__1");
+
+        Type flowersArrayType = generatedType.getDeclaredField("flowers").getGenericType();
+        assertThat(flowersArrayType, is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType) flowersArrayType).getActualTypeArguments()[0].getTypeName(), is(subClass.getName()));
+        assertThat(subClass.getSuperclass().getName(), is(parent.getName()));
+    }
 }
