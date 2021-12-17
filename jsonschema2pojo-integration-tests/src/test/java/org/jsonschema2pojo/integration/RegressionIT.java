@@ -80,7 +80,7 @@ public class RegressionIT {
     @Test
     public void extendsIsSupportedInArrayItemType() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "schema/regression/extends_in_array",
+                "/schema/regression/extends_in_array",
                 "com.example",
                 Collections.emptyMap());
 
