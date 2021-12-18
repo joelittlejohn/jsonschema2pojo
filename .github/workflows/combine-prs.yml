@@ -30,7 +30,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v5
         id: fetch-branch-names
         name: Fetch branch names
         with:
@@ -121,7 +121,7 @@ jobs:
           git pull origin $sourcebranches --no-edit
           git push origin $COMBINE_BRANCH_NAME
       # Creates a PR with the new combined branch
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@v5
         name: Create Combined Pull Request
         env:
           PRS_STRING: ${{ steps.fetch-branch-names.outputs.prs-string }}
