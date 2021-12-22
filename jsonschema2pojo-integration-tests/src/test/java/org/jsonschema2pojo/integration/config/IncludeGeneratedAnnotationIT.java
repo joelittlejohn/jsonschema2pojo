@@ -18,6 +18,7 @@ package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.Compiler.getJavaVersion;
 
 import java.io.File;
 
@@ -25,7 +26,10 @@ import org.hamcrest.Matchers;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
+@DisabledForJreRange(disabledReason = "Doesn't work for JDK 9+", min = JRE.JAVA_9)
 public class IncludeGeneratedAnnotationIT extends Jsonschema2PojoTestBase {
 
     private static final String PROP_KEY = "includeGeneratedAnnotation";

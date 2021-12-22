@@ -16,24 +16,19 @@
 
 package org.jsonschema2pojo.integration.util;
 
-import static org.apache.commons.io.FileUtils.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 
+import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import javax.tools.DiagnosticListener;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
-
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
+import static org.apache.commons.io.FileUtils.listFiles;
+import static org.apache.commons.io.FileUtils.readFileToString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 
 /**
@@ -42,14 +37,14 @@ import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
  */
 public class Compiler {
 
-    public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
+    public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion) {
         // TODO: invalid test, as JavaCompiler can't be null in the next method
-      compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
+        compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
     }
 
-    public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
+    public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion) {
         Objects.requireNonNull(javaCompiler, "Java compiler must not be null");
-        targetVersion = targetVersion == null ? "1.6" : targetVersion;
+        targetVersion = targetJavaVersion(targetVersion);
 
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 
@@ -82,7 +77,7 @@ public class Compiler {
     }
 
     private Collection<File> findAllSourceFiles(File directory) {
-        Collection<File> files = listFiles(directory, new String[] { "java" }, true);
+        Collection<File> files = listFiles(directory, new String[]{"java"}, true);
 
         for (File file : files) {
             debugOutput(file);
@@ -97,7 +92,7 @@ public class Compiler {
 
         if (System.getProperty("debug") != null) {
             try {
-                System.out.println(readFileToString(file));
+                System.out.println(readFileToString(file, StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -105,10 +100,44 @@ public class Compiler {
     }
 
     public static JavaCompiler systemJavaCompiler() {
-      return ToolProvider.getSystemJavaCompiler();
+        return ToolProvider.getSystemJavaCompiler();
     }
 
     public static JavaCompiler eclipseCompiler() {
-      return new EclipseCompiler();
+        return new EclipseCompiler();
+    }
+
+    public static String targetJavaVersion(String targetVersion) {
+        final int runtimeJavaVersion = getJavaVersion();
+        final int minimalTargetVersion;
+        if (runtimeJavaVersion > 9) {
+            minimalTargetVersion = 7;
+        } else {
+            minimalTargetVersion = 6;
+        }
+        if (targetVersion == null) {
+            return "1." + minimalTargetVersion;
+        }
+        final int targetIntVersion = getJavaVersion(targetVersion);
+        if (targetIntVersion > minimalTargetVersion) {
+            return targetVersion;
+        }
+        return "1." + minimalTargetVersion;
+    }
+
+    public static int getJavaVersion() {
+        return getJavaVersion(System.getProperty("java.version"));
+    }
+
+    private static int getJavaVersion(String version) {
+        if (version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if (dot != -1) {
+                version = version.substring(0, dot);
+            }
+        }
+        return Integer.parseInt(version);
     }
 }

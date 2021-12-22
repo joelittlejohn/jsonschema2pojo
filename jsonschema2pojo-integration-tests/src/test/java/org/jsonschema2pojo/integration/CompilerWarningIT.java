@@ -42,6 +42,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 /**
  * <p>Tests looking for warning coming from generated output.</p>
  *
+ * TODO: review Eclipse Compiler Warning
  * <p>Notes: The eclipse compiler used in these tests has an open issue with the SuppressWarnings annotation.  As a result, some warnings must be
  * accepted here that would not be present in practice.
  * <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=469725">Bug 469725 - ECJ compiler: @SuppressWarnings annotation is ignored when ecj is invoked via java compiler tool API</a>
@@ -58,22 +59,21 @@ public class CompilerWarningIT extends Jsonschema2PojoTestBase {
     public static Stream<Arguments> parameters() {
         JavaCompiler systemJavaCompiler = Compiler.systemJavaCompiler();
         JavaCompiler eclipseCompiler = Compiler.eclipseCompiler();
-        return Stream.of(
-                Arguments.of(
-                        "includeAccessorsWithSystemJavaCompiler",
-                        systemJavaCompiler,
-                        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
-                        "/schema/dynamic/parentType.json",
-                        Matchers.empty()
-                ),
-                Arguments.of(
-                        "includeAccessorsWithEclipseCompiler",
-                        eclipseCompiler,
-                        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
-                        "/schema/dynamic/parentType.json",
-                        onlyCastExceptions()
-                )
+        Arguments argumentsWithSystemJavaCompiler = Arguments.of(
+                "includeAccessorsWithSystemJavaCompiler",
+                systemJavaCompiler,
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
+                "/schema/dynamic/parentType.json",
+                Matchers.empty()
         );
+        Arguments argumentsWithEclipseCompiler = Arguments.of(
+                "includeAccessorsWithEclipseCompiler",
+                eclipseCompiler,
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
+                "/schema/dynamic/parentType.json",
+                onlyCastExceptions()
+        );
+        return Stream.of(argumentsWithSystemJavaCompiler, argumentsWithEclipseCompiler);
     }
 
     @ParameterizedTest(name = "[{0}]")

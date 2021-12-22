@@ -20,6 +20,7 @@ import static java.util.Arrays.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.Compiler.getJavaVersion;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.apache.bval.jsr303.ApacheValidationProvider;
 import org.hamcrest.Matcher;
@@ -39,7 +41,11 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @SuppressWarnings("rawtypes")
@@ -111,8 +117,9 @@ public class IncludeJsr303AnnotationsIT extends Jsonschema2PojoTestBase {
 
     }
 
+    // Doesn't work correctly for JDK 9+ with useJakartaValidation = false
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @MethodSource("parameters")
     public void jsr303SizeValidationIsAddedForSchemaRuleMinItems(boolean useJakartaValidation) throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/minItems.json", "com.example",
@@ -131,8 +138,9 @@ public class IncludeJsr303AnnotationsIT extends Jsonschema2PojoTestBase {
 
     }
 
+    // Doesn't work correctly for JDK 9+ with useJakartaValidation = false
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @MethodSource("parameters")
     public void jsr303SizeValidationIsAddedForSchemaRuleMaxItems(boolean useJakartaValidation) throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/maxItems.json", "com.example",
@@ -150,8 +158,9 @@ public class IncludeJsr303AnnotationsIT extends Jsonschema2PojoTestBase {
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1), useJakartaValidation);
     }
 
+    // Doesn't work correctly for JDK 9+ with useJakartaValidation = false
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @MethodSource("parameters")
     public void jsr303SizeValidationIsAddedForSchemaRuleMinItemsAndMaxItems(boolean useJakartaValidation) throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/minAndMaxItems.json", "com.example",
@@ -248,8 +257,9 @@ public class IncludeJsr303AnnotationsIT extends Jsonschema2PojoTestBase {
         assertNumberOfConstraintViolationsOn(invalidInstance, is(1), useJakartaValidation);
     }
 
+    // Doesn't work correctly for JDK 9+ with useJakartaValidation = false
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
+    @MethodSource("parameters")
     public void jsr303DigitsValidationIsAddedForSchemaRuleDigits(boolean useJakartaValidation) throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/jsr303/digits.json", "com.example",
@@ -410,5 +420,14 @@ public class IncludeJsr303AnnotationsIT extends Jsonschema2PojoTestBase {
 
     private static Matcher<File> containsText(String searchText) {
         return new FileSearchMatcher(searchText);
+    }
+
+
+    public static Stream<Arguments> parameters() {
+        if (getJavaVersion() == 8) {
+            return Stream.of(Arguments.of(false), Arguments.of(true));
+        } else {
+            return Stream.of(Arguments.of(true));
+        }
     }
 }
