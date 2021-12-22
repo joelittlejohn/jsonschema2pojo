@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration;
 
 import static java.lang.String.format;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
@@ -32,10 +32,10 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.AbstractAnnotator;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,15 +53,14 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
-public class MediaIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+public class MediaIT extends Jsonschema2PojoTestBase {
     private static Class<?> classWithMediaProperties;
     private static Class<byte[]> BYTE_ARRAY = byte[].class;
 
-    @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
 
         classWithMediaProperties = resultsClassLoader.loadClass("com.example.MediaProperties");
     }

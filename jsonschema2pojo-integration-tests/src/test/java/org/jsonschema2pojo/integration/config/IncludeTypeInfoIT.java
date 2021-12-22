@@ -19,24 +19,20 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class IncludeTypeInfoIT
-{
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class IncludeTypeInfoIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void defaultConfig() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example");
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example");
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -47,7 +43,7 @@ public class IncludeTypeInfoIT
     public void defaultWithSchemaProperty() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example");
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example");
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
@@ -63,7 +59,7 @@ public class IncludeTypeInfoIT
     public void disabled() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
                                                                 config("includeTypeInfo", false));
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
@@ -75,7 +71,7 @@ public class IncludeTypeInfoIT
     public void disabledWithSchemaProperty() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
                                                                 config("includeTypeInfo", false));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
@@ -91,7 +87,7 @@ public class IncludeTypeInfoIT
     public void enabled() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
                                                                 config("includeTypeInfo", true));
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
@@ -108,7 +104,7 @@ public class IncludeTypeInfoIT
     public void enabledWithSchemaProperty() throws ClassNotFoundException
     {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
+        ClassLoader classLoader = generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
                                                                 config("includeTypeInfo", true));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 

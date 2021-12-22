@@ -16,64 +16,55 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.net.URI;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
-import java.util.regex.Pattern;
-
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.net.URI;
+import java.util.Date;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.mock;
+
 public class FormatRuleTest {
 
-    private GenerationConfig config = mock(GenerationConfig.class);
-    private FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+    private final GenerationConfig config = mock(GenerationConfig.class);
+    private final FormatRule rule = new FormatRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
 
-    private final String formatValue;
-    private final Class<?> expectedType;
-
-    @Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { "date-time", Date.class },
-                { "date", String.class },
-                { "time", String.class },
-                { "utc-millisec", Long.class },
-                { "regex", Pattern.class },
-                { "color", String.class },
-                { "style", String.class },
-                { "phone", String.class },
-                { "uri", URI.class },
-                { "email", String.class },
-                { "ip-address", String.class },
-                { "ipv6", String.class },
-                { "host-name", String.class },
-                { "uuid", UUID.class }});
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of("date-time", Date.class),
+                Arguments.of("date", String.class),
+                Arguments.of("time", String.class),
+                Arguments.of("utc-millisec", Long.class),
+                Arguments.of("regex", Pattern.class),
+                Arguments.of("color", String.class),
+                Arguments.of("style", String.class),
+                Arguments.of("phone", String.class),
+                Arguments.of("uri", URI.class),
+                Arguments.of("email", String.class),
+                Arguments.of("ip-address", String.class),
+                Arguments.of("ipv6", String.class),
+                Arguments.of("host-name", String.class),
+                Arguments.of("uuid", UUID.class)
+        );
     }
 
-    public FormatRuleTest(String formatValue, Class<?> expectedType) {
-        this.formatValue = formatValue;
-        this.expectedType = expectedType;
-    }
 
-    @Test
-    public void applyGeneratesTypeFromFormatValue() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void applyGeneratesTypeFromFormatValue(String formatValue, Class<?> expectedType) {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
         JType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);

@@ -16,9 +16,11 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -26,22 +28,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.typeCompatibleWith;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-public class FormatTypeMappingIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class FormatTypeMappingIT extends Jsonschema2PojoTestBase {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void canOverrideDateRelatedTypes() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("formatTypeMapping", mapping("date", LocalDate.class, "time", LocalTime.class, "date-time", DateTime.class)));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FormattedProperties");
@@ -58,7 +55,7 @@ public class FormatTypeMappingIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void canOverrideTypes() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("formatTypeMapping", mapping("uri", URL.class)));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FormattedProperties");
@@ -69,7 +66,7 @@ public class FormatTypeMappingIT {
 
     @Test
     public void canOverrideNonStandardTypes() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/nonStandard.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/nonStandard.json", "com.example",
                 config("formatTypeMapping", mapping("non-standard", URL.class)));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.NonStandard");
@@ -80,7 +77,7 @@ public class FormatTypeMappingIT {
 
     @Test
     public void canOverrideArrayTypes() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/arrayFormat.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/arrayFormat.json", "com.example",
                 config("formatTypeMapping", mapping("base64", byte[].class)));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.ArrayFormat");

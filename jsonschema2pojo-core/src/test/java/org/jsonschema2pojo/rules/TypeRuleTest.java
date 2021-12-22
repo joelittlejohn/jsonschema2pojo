@@ -16,26 +16,22 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.sun.codemodel.*;
+import org.jsonschema2pojo.GenerationConfig;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.jsonschema2pojo.GenerationConfig;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 public class TypeRuleTest {
 
@@ -44,7 +40,7 @@ public class TypeRuleTest {
 
     private final TypeRule rule = new TypeRule(ruleFactory);
 
-    @Before
+    @BeforeEach
     public void wireUpConfig() {
         when(ruleFactory.getGenerationConfig()).thenReturn(config);
     }
@@ -555,6 +551,7 @@ public class TypeRuleTest {
 
         JClass mockArrayType = mock(JClass.class);
         ArrayRule mockArrayRule = mock(ArrayRule.class);
+        //TODO: (test cleanup) null can be a parameter for schema per implementation
         when(mockArrayRule.apply("fooBar", objectNode, null, jpackage, null)).thenReturn(mockArrayType);
         when(ruleFactory.getArrayRule()).thenReturn(mockArrayRule);
 

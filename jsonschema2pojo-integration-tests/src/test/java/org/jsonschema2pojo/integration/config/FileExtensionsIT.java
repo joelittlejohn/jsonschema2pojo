@@ -16,17 +16,14 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-public class FileExtensionsIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class FileExtensionsIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void extensionsCanBeRemovedFromNames() throws ClassNotFoundException {
@@ -34,10 +31,10 @@ public class FileExtensionsIT {
         URL schema1 = getClass().getResource("/schema/fileExtensions/nameWithExtension.schema.json");
         URL schema2 = getClass().getResource("/schema/fileExtensions/nameWithNoExtension");
 
-        schemaRule.generate(schema1, "com.example", config("fileExtensions", new String[] {".schema.json"}));
-        schemaRule.generate(schema2, "com.example", config("fileExtensions", new String[] {".schema.json"}));
+        generate(schema1, "com.example", config("fileExtensions", new String[]{".schema.json"}));
+        generate(schema2, "com.example", config("fileExtensions", new String[]{".schema.json"}));
 
-        ClassLoader loader = schemaRule.compile();
+        ClassLoader loader = compile();
         loader.loadClass("com.example.NameWithExtension");
         loader.loadClass("com.example.NameWithNoExtension");
     }
@@ -48,10 +45,10 @@ public class FileExtensionsIT {
         URL schema1 = getClass().getResource("/schema/fileExtensions/nameWithExtension.schema.json");
         URL schema2 = getClass().getResource("/schema/fileExtensions/nameWithNoExtension");
 
-        schemaRule.generate(schema1, "com.example", config());
-        schemaRule.generate(schema2, "com.example", config());
+        generate(schema1, "com.example", config());
+        generate(schema2, "com.example", config());
 
-        ClassLoader loader = schemaRule.compile();
+        ClassLoader loader = compile();
         loader.loadClass("com.example.NameWithExtensionSchema");
         loader.loadClass("com.example.NameWithNoExtension");
     }

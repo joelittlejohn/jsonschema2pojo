@@ -16,35 +16,33 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IncludeToStringExcludesIT {
+public class IncludeToStringExcludesIT extends Jsonschema2PojoTestBase {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void testConfig(Map<String,Object> config, String expectedResultTemplate) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void testConfig(Map<String, Object> config, String expectedResultTemplate) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
         // throws NoSuchMethodException if method is not found
         Method toString = generatedType.getDeclaredMethod("toString");
-        try {
-            Object primitiveProperties = generatedType.newInstance();
-            Object result = toString.invoke(primitiveProperties);
-            assertEquals(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))), result);
-        } catch (Exception e) {
-            fail("Unable to invoke toString method: "+ e.getMessage());
-        }
+        assertDoesNotThrow(
+                () -> {
+                    Object primitiveProperties = generatedType.newInstance();
+                    Object result = toString.invoke(primitiveProperties);
+                    assertEquals(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))), result);
+                },
+                "Unable to invoke toString method");
     }
 
     @Test
@@ -55,7 +53,7 @@ public class IncludeToStringExcludesIT {
 
     @Test
     public void beansOmitToStringProperties() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        testConfig(config("toStringExcludes", new String[] {"b","c"}),
+        testConfig(config("toStringExcludes", new String[]{"b", "c"}),
                 "com.example.PrimitiveProperties@%s[a=<null>,additionalProperties={}]");
     }
 

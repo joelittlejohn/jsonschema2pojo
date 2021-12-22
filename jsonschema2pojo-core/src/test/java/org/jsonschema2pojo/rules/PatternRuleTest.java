@@ -16,46 +16,37 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JFieldVar;
+import jakarta.validation.constraints.Pattern;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Answers;
+import org.mockito.Mock;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SchemaStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
-
-import jakarta.validation.constraints.Pattern;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link PatternRuleTest}
  */
-@RunWith(Parameterized.class)
-public class PatternRuleTest {
+public class PatternRuleTest extends AnnotationTestBase{
 
-    private final boolean isApplicable;
     private PatternRule rule;
-    private final Class<?> fieldClass;
-    private final boolean useJakartaValidation;
-    private final Class<? extends Annotation> patternClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -65,41 +56,44 @@ public class PatternRuleTest {
     @Mock
     private JAnnotationUse annotation;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { true, String.class },
-                { false, UUID.class },
-                { false, Collection.class },
-                { false, Map.class },
-                { false, Array.class },
-                { false, Byte.class },
-                { false, Short.class },
-                { false, Integer.class },
-                { false, Long.class },
-                { false, Float.class },
-                { false, Double.class },
-        }).stream()
-                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
-                .collect(Collectors.toList());
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of(true, String.class, true),
+                Arguments.of(true, String.class, false),
+                Arguments.of(false, UUID.class, true),
+                Arguments.of(false, UUID.class, false),
+                Arguments.of(false, Collection.class, true),
+                Arguments.of(false, Collection.class, false),
+                Arguments.of(false, Map.class, true),
+                Arguments.of(false, Map.class, false),
+                Arguments.of(false, Array.class, true),
+                Arguments.of(false, Array.class, false),
+                Arguments.of(false, Byte.class, true),
+                Arguments.of(false, Byte.class, false),
+                Arguments.of(false, Short.class, true),
+                Arguments.of(false, Short.class, false),
+                Arguments.of(false, Integer.class, true),
+                Arguments.of(false, Integer.class, false),
+                Arguments.of(false, Long.class, true),
+                Arguments.of(false, Long.class, false),
+                Arguments.of(false, Float.class, true),
+                Arguments.of(false, Float.class, false),
+                Arguments.of(false, Double.class, true),
+                Arguments.of(false, Double.class, false)
+        );
     }
 
-    public PatternRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
-        this.isApplicable = isApplicable;
-        this.fieldClass = fieldClass;
-        this.useJakartaValidation = useJakartaValidation;
-        this.patternClass = useJakartaValidation ? Pattern.class : javax.validation.constraints.Pattern.class;
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         rule = new PatternRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
-        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 
-    @Test
-    public void testRegex() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRegex(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+        Class<? extends Annotation> patternClass = getPatterClass(useJakartaValidation);
+
         when(config.isIncludeJsr303Annotations()).thenReturn(true);
         final String patternValue = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$";
 
@@ -114,8 +108,12 @@ public class PatternRuleTest {
         verify(annotation, times(isApplicable ? 1 : 0)).param("regexp", patternValue);
     }
 
-    @Test
-    public void jsrDisable() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void jsrDisable(boolean useJakartaValidation) {
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+        Class<? extends Annotation> patternClass = getPatterClass(useJakartaValidation);
+
         when(config.isIncludeJsr303Annotations()).thenReturn(false);
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);
@@ -123,5 +121,4 @@ public class PatternRuleTest {
         verify(fieldVar, never()).annotate(patternClass);
         verify(annotation, never()).param(anyString(), anyString());
     }
-
 }

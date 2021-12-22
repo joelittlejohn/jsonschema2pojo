@@ -16,23 +16,23 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 
 public class CommentRuleTest {
 
     private static final String TARGET_CLASS_NAME = CommentRuleTest.class.getName() + ".DummyClass";
 
-    private CommentRule rule = new CommentRule();
+    private final CommentRule rule = new CommentRule();
 
     @Test
     public void applyAddsCommentToJavadoc() throws JClassAlreadyExistsException {
@@ -45,8 +45,8 @@ public class CommentRuleTest {
         JDocComment result = rule.apply("fooBar", commentNode, null, jclass, null);
 
         assertThat(result, sameInstance(jclass.javadoc()));
-        assertThat(result.size(), is(1));
-        assertThat((String) result.get(0), is("some comment"));
+        assertThat(result.size(), equalTo(1));
+        assertThat((String) result.get(0), equalTo("some comment"));
 
     }
 }

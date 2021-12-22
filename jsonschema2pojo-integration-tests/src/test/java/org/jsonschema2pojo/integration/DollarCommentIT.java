@@ -21,28 +21,25 @@ import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
 import com.thoughtworks.qdox.model.Type;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
-public class DollarCommentIT {
+public class DollarCommentIT extends Jsonschema2PojoTestBase {
 
-    @ClassRule public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    private JavaClass classWithDescription;
 
-    private static JavaClass classWithDescription;
+    @BeforeEach
+    public void generateClasses() throws IOException {
 
-    @BeforeClass
-    public static void generateClasses() throws IOException {
-
-        schemaRule.generateAndCompile("/schema/dollar_comment/dollar_comment.json", "com.example");
-        File generatedJavaFile = schemaRule.generated("com/example/DollarComment.java");
+        generateAndCompile("/schema/dollar_comment/dollar_comment.json", "com.example");
+        File generatedJavaFile = generated("com/example/DollarComment.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
@@ -72,7 +69,7 @@ public class DollarCommentIT {
     @Test
     public void dollarCommentAppearsInGetterJavadoc() {
 
-        JavaMethod javaMethod = classWithDescription.getMethodBySignature("getWithComment", new Type[] {});
+        JavaMethod javaMethod = classWithDescription.getMethodBySignature("getWithComment", new Type[]{});
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("JavaDoc linking to {@link #descriptionAndComment}"));
@@ -82,7 +79,7 @@ public class DollarCommentIT {
     @Test
     public void dollarCommentAppearsInSetterJavadoc() {
 
-        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setWithComment", new Type[] { new Type("java.lang.String") });
+        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setWithComment", new Type[]{new Type("java.lang.String")});
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("JavaDoc linking to {@link #descriptionAndComment}"));

@@ -22,28 +22,27 @@ import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
-public class CyclicalRefIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class CyclicalRefIT extends Jsonschema2PojoTestBase {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void cyclicalRefsAreReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/subdirectory1/refToSubdirectory2.json", "com.example");
 
         Class class1 = resultsClassLoader.loadClass("com.example.RefToSubdirectory2");
         Class class2 = resultsClassLoader.loadClass("com.example.RefToSubdirectory1");
@@ -60,7 +59,7 @@ public class CyclicalRefIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void recursiveTreeNodeExampleIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/recursiveTreeNode.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/recursiveTreeNode.json", "com.example");
 
         Class clazz = resultsClassLoader.loadClass("com.example.RecursiveTreeNode");
 
@@ -76,7 +75,9 @@ public class CyclicalRefIT {
     public void recursiveTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
 
         JCodeModel codeModel = new JCodeModel();
-        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveTreeNode.json"));
+        String content = IOUtils.toString(
+                Objects.requireNonNull(getClass().getResourceAsStream("/schema/ref/recursiveTreeNode.json")),
+                StandardCharsets.UTF_8);
         JsonNode schema = new ObjectMapper().readTree(content);
 
         JPackage p = codeModel._package("com.example");
@@ -88,7 +89,7 @@ public class CyclicalRefIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void recursiveEtcdTreeNodeExampleIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/recursiveEtcdTreeNode.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/ref/recursiveEtcdTreeNode.json", "com.example");
 
         Class clazz = resultsClassLoader.loadClass("com.example.RecursiveEtcdTreeNode");
 
@@ -107,7 +108,9 @@ public class CyclicalRefIT {
     public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
 
         JCodeModel codeModel = new JCodeModel();
-        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json"));
+        String content = IOUtils.toString(
+                Objects.requireNonNull(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json")),
+                StandardCharsets.UTF_8);
         JsonNode schema = new ObjectMapper().readTree(content);
 
         JPackage p = codeModel._package("com.example");

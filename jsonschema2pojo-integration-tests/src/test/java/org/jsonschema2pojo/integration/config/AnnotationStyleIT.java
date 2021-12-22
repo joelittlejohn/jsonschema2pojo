@@ -16,34 +16,31 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.Assert.*;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class AnnotationStyleIT {
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class AnnotationStyleIT extends Jsonschema2PojoTestBase {
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void defaultAnnotationStyeIsJackson2() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -55,10 +52,10 @@ public class AnnotationStyleIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void annotationStyleJacksonProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "jackson"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -71,15 +68,15 @@ public class AnnotationStyleIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void annotationStyleJackson2ProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        Class generatedType = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "jackson2"))
                 .loadClass("com.example.PrimitiveProperties");
 
-        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
-        assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
+        assertThat(getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(getGenerateDir(), containsText("com.fasterxml.jackson"));
 
         Method getter = generatedType.getMethod("getA");
 
@@ -90,17 +87,17 @@ public class AnnotationStyleIT {
 
     @Test
     public void annotationStyleJackson2ProducesJsonPropertyDescription() throws Exception {
-        Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
+        Class<?> generatedType = generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
 
         Field field = generatedType.getDeclaredField("description");
         assertThat(field.getAnnotation(JsonPropertyDescription.class).value(), is("A description for this property"));
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void annotationStyleNoneProducesNoAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "none"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -116,14 +113,11 @@ public class AnnotationStyleIT {
     @Test
     public void invalidAnnotationStyleCausesMojoException() {
 
-        try {
-            schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle"));
-            fail();
-        } catch (RuntimeException e) {
-            assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));
-            assertThat(e.getCause().getMessage(), is(containsString("invalidstyle")));
-        }
 
+        RuntimeException e = assertThrows(RuntimeException.class, () ->
+                generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle")));
+        assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));
+        assertThat(e.getCause().getMessage(), is(containsString("invalidstyle")));
     }
 
 }

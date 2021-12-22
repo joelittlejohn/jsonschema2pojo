@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.ref;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,19 +25,16 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class AbsoluteRefIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
+public class AbsoluteRefIT extends Jsonschema2PojoTestBase {
     @Test
     public void absoluteRefIsReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException, IOException {
 
         File schemaWithAbsoluteRef = createSchemaWithAbsoluteRef();
 
-        Class<?> absoluteRefClass = schemaRule.generateAndCompile(schemaWithAbsoluteRef.toURI().toURL(), "com.example")
+        Class<?> absoluteRefClass = generateAndCompile(schemaWithAbsoluteRef.toURI().toURL(), "com.example")
                 .loadClass("com.example.AbsoluteRef");
 
         Class<?> addressClass = absoluteRefClass.getMethod("getAddress").getReturnType();

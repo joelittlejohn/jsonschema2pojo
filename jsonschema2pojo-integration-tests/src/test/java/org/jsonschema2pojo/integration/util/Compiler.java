@@ -17,16 +17,14 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
@@ -45,10 +43,12 @@ import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 public class Compiler {
 
     public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
+        // TODO: invalid test, as JavaCompiler can't be null in the next method
       compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
     }
 
     public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
+        Objects.requireNonNull(javaCompiler, "Java compiler must not be null");
         targetVersion = targetVersion == null ? "1.6" : targetVersion;
 
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);

@@ -16,18 +16,12 @@
 
 package org.jsonschema2pojo.rules;
 
-import static com.sun.codemodel.JMod.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import com.sun.codemodel.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JMethod;
+import static com.sun.codemodel.JMod.PUBLIC;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DynamicPropertiesRuleTest {
 
@@ -41,7 +35,7 @@ public class DynamicPropertiesRuleTest {
 
     JDefinedClass type2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws JClassAlreadyExistsException {
         type = codeModel._class("org.jsonschema2pojo.rules.ExampleClass");
         numberGetter = type.method(PUBLIC, codeModel._ref(Integer.class), "getNumber");
@@ -58,7 +52,6 @@ public class DynamicPropertiesRuleTest {
     @Test
     public void shouldAddNotFoundField() {
         JFieldRef var = rule.getOrAddNotFoundVar(type);
-        assertThat(var, notNullValue());
+        assertNotNull(var);
     }
-
 }

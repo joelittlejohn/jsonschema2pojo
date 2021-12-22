@@ -16,11 +16,11 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.jsonschema2pojo.integration.util.JsonAssert.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -28,10 +28,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,14 +39,11 @@ import com.google.gson.Gson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-public class Moshi1IT {
-
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class Moshi1IT extends Jsonschema2PojoTestBase {
 
     private Moshi moshi;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         moshi = new Moshi.Builder().build();
     }
@@ -56,18 +52,18 @@ public class Moshi1IT {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void annotationStyleMoshi1ProducesMoshi1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
+        Class generatedType = generateAndCompile("/json/examples/torrent.json", "com.example",
                 config("annotationStyle", "moshi1",
                         "propertyWordDelimiters", "_",
                         "sourceType", "json"))
                 .loadClass("com.example.Torrent");
 
-        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("com.google.gson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("@SerializedName")));
-        assertThat(schemaRule.getGenerateDir(), containsText("com.squareup.moshi"));
-        assertThat(schemaRule.getGenerateDir(), containsText("@com.squareup.moshi.Json"));
+        assertThat(getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(getGenerateDir(), not(containsText("com.fasterxml.jackson")));
+        assertThat(getGenerateDir(), not(containsText("com.google.gson")));
+        assertThat(getGenerateDir(), not(containsText("@SerializedName")));
+        assertThat(getGenerateDir(), containsText("com.squareup.moshi"));
+        assertThat(getGenerateDir(), containsText("@com.squareup.moshi.Json"));
 
         Method getter = generatedType.getMethod("getBuild");
 
@@ -79,7 +75,7 @@ public class Moshi1IT {
     @Test
     public void annotationStyleMoshi1MakesTypesThatWorkWithMoshi1() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/examples/", "com.example",
                 config("annotationStyle", "moshi1",
                         "propertyWordDelimiters", "_",
                         "sourceType", "json",
@@ -93,7 +89,7 @@ public class Moshi1IT {
     @Test
     public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "moshi1",
                         "propertyWordDelimiters", "_"));
 

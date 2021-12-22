@@ -16,33 +16,28 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.tools.Diagnostic;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-
 import org.apache.commons.io.output.NullWriter;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.jsonschema2pojo.integration.util.Compiler;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
 /**
  * <p>Tests looking for warning coming from generated output.</p>
@@ -53,76 +48,62 @@ import org.junit.runners.Parameterized.Parameters;
  * </p>
  *
  * @author Christian Trimble
- *
  */
-@RunWith(Parameterized.class)
-public class CompilerWarningIT {
-  @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule().captureDiagnostics();
-  
-  @Parameters(name="{0}")
-  public static Collection<Object[]> parameters() {
-    JavaCompiler systemJavaCompiler = Compiler.systemJavaCompiler();
-    JavaCompiler eclipseCompiler = Compiler.eclipseCompiler();
-    return Arrays.asList(new Object[][] {
-      {
-        "includeAccessorsWithSystemJavaCompiler",
-        systemJavaCompiler,
-        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
-        "/schema/dynamic/parentType.json",
-        Matchers.empty()
-      },
-      {
-        "includeAccessorsWithEclipseCompiler",
-        eclipseCompiler,
-        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
-        "/schema/dynamic/parentType.json",
-        onlyCastExceptions()
-      }
-    });
-  }
-
-  private JavaCompiler compiler;
-  private Map<String, Object> config;
-  private String schema;
-  private Matcher<List<Diagnostic<? extends JavaFileObject>>> matcher;
-
-  public CompilerWarningIT(String label, JavaCompiler compiler, Map<String, Object> config, String schema, Matcher<List<Diagnostic<? extends JavaFileObject>>> matcher) {
-    this.compiler = compiler;
-    this.config = config;
-    this.schema = schema;
-    this.matcher = matcher;
-  }
-
-  @Test
-  public void checkWarnings() {
-    schemaRule.generate(schema, "com.example", config);
-    schemaRule.compile(compiler, new NullWriter(), new ArrayList<>(), config);
-    
-    List<Diagnostic<? extends JavaFileObject>> warnings = warnings(schemaRule.getDiagnostics());
-    
-    assertThat(warnings, matcher);
-  }
-
-  public static List<Diagnostic<? extends JavaFileObject>> warnings(List<Diagnostic<? extends JavaFileObject>> all) {
-    List<Diagnostic<? extends JavaFileObject>> warnings = new ArrayList<>();
-    for( Diagnostic<? extends JavaFileObject> entry : all ) {
-      if( entry.getKind() == Kind.WARNING ) {
-        warnings.add(entry);
-      }
+public class CompilerWarningIT extends Jsonschema2PojoTestBase {
+    @BeforeAll
+    public static void enableCapture() {
+        captureDiagnostics = true;
     }
-    return warnings;
-  }
 
-  public static Matcher<Iterable<Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
-    return Matchers.everyItem(hasMessage(containsString("Type safety: Unchecked cast from")));
-  }
+    public static Stream<Arguments> parameters() {
+        JavaCompiler systemJavaCompiler = Compiler.systemJavaCompiler();
+        JavaCompiler eclipseCompiler = Compiler.eclipseCompiler();
+        return Stream.of(
+                Arguments.of(
+                        "includeAccessorsWithSystemJavaCompiler",
+                        systemJavaCompiler,
+                        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
+                        "/schema/dynamic/parentType.json",
+                        Matchers.empty()
+                ),
+                Arguments.of(
+                        "includeAccessorsWithEclipseCompiler",
+                        eclipseCompiler,
+                        config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
+                        "/schema/dynamic/parentType.json",
+                        onlyCastExceptions()
+                )
+        );
+    }
 
-  public static Matcher<Diagnostic<? extends JavaFileObject>> hasMessage( Matcher<String> messageMatcher ) {
-    return new FeatureMatcher<Diagnostic<? extends JavaFileObject>, String>(messageMatcher, "message", "message") {
-      @Override
-      protected String featureValueOf(Diagnostic<? extends JavaFileObject> actual) {
-        return actual.getMessage(Locale.ENGLISH);
-      }
-    };
-  }
+    @ParameterizedTest(name = "[{0}]")
+    @MethodSource("parameters")
+    public void checkWarnings(String label, JavaCompiler compiler, Map<String, Object> config, String schema, Matcher<List<Diagnostic<? extends JavaFileObject>>> matcher) {
+        generate(schema, "com.example", config);
+        compile(compiler, new NullWriter(), new ArrayList<>(), config);
+
+        List<Diagnostic<? extends JavaFileObject>> warnings = warnings(getDiagnostics());
+
+        assertThat(warnings, matcher);
+    }
+
+    /**
+     * Filter only warnings
+     */
+    public static List<Diagnostic<? extends JavaFileObject>> warnings(Collection<Diagnostic<? extends JavaFileObject>> all) {
+        return all.stream().filter(entry -> entry.getKind() == Kind.WARNING).collect(Collectors.toList());
+    }
+
+    public static Matcher<Iterable<Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
+        return Matchers.everyItem(hasMessage(containsString("Type safety: Unchecked cast from")));
+    }
+
+    public static Matcher<Diagnostic<? extends JavaFileObject>> hasMessage(Matcher<String> messageMatcher) {
+        return new FeatureMatcher<Diagnostic<? extends JavaFileObject>, String>(messageMatcher, "message", "message") {
+            @Override
+            protected String featureValueOf(Diagnostic<? extends JavaFileObject> actual) {
+                return actual.getMessage(Locale.ENGLISH);
+            }
+        };
+    }
 }

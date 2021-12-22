@@ -17,27 +17,25 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URL;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class RemoveOldOutputIT {
+public class RemoveOldOutputIT extends Jsonschema2PojoTestBase {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
-    @Test(expected = ClassNotFoundException.class)
-    public void removeOldOutputCausesOldTypesToBeDeleted() throws ClassNotFoundException {
+    @Test
+    public void removeOldOutputCausesOldTypesToBeDeleted(){
 
         URL schema1 = getClass().getResource("/schema/properties/primitiveProperties.json");
         URL schema2 = getClass().getResource("/schema/properties/orderedProperties.json");
 
-        schemaRule.generate(schema1, "com.example", config("removeOldOutput", true));
-        schemaRule.generate(schema2, "com.example", config("removeOldOutput", true));
+        generate(schema1, "com.example", config("removeOldOutput", true));
+        generate(schema2, "com.example", config("removeOldOutput", true));
 
-        schemaRule.compile().loadClass("com.example.PrimitiveProperties");
+        assertThrows(ClassNotFoundException.class, () -> compile().loadClass("com.example.PrimitiveProperties"));
 
     }
 
@@ -47,10 +45,10 @@ public class RemoveOldOutputIT {
         URL schema1 = getClass().getResource("/schema/properties/primitiveProperties.json");
         URL schema2 = getClass().getResource("/schema/properties/orderedProperties.json");
 
-        schemaRule.generate(schema1, "com.example", config());
-        schemaRule.generate(schema2, "com.example", config());
+        generate(schema1, "com.example", config());
+        generate(schema2, "com.example", config());
 
-        schemaRule.compile().loadClass("com.example.PrimitiveProperties");
+        compile().loadClass("com.example.PrimitiveProperties");
 
     }
 

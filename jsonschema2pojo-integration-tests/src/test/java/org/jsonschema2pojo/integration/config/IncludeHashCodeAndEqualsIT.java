@@ -16,35 +16,28 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class IncludeHashCodeAndEqualsIT {
-
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class IncludeHashCodeAndEqualsIT extends Jsonschema2PojoTestBase {
 
     private static ClassLoader resultsClassLoader;
 
-    @BeforeClass
-    public static void generateAndCompileClass() {
-        resultsClassLoader = classSchemaRule.generateAndCompile("/schema/hashCodeAndEquals/types.json", "com.example", config("includeAdditionalProperties", false));
+    @BeforeEach
+    public void generateAndCompileClass() {
+        resultsClassLoader = generateAndCompile("/schema/hashCodeAndEquals/types.json", "com.example", config("includeAdditionalProperties", false));
     }
 
     @Test
     public void beansIncludeHashCodeAndEqualsByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -56,21 +49,16 @@ public class IncludeHashCodeAndEqualsIT {
 
     @Test
     public void beansOmitHashCodeAndEqualsWhenConfigIsSet() throws ClassNotFoundException, SecurityException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeHashcodeAndEquals", false));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeHashcodeAndEquals", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        try {
-            generatedType.getDeclaredMethod("equals", java.lang.Object.class);
-            fail(".equals method is present, it should have been omitted");
-        } catch (NoSuchMethodException e) {
-        }
-
-        try {
-            generatedType.getDeclaredMethod("hashCode");
-            fail(".hashCode method is present, it should have been omitted");
-        } catch (NoSuchMethodException e) {
-        }
+        assertThrows(NoSuchMethodException.class, () ->
+                        generatedType.getDeclaredMethod("equals", java.lang.Object.class),
+                ".equals method is present, it should have been omitted");
+        assertThrows(NoSuchMethodException.class, () ->
+                        generatedType.getDeclaredMethod("hashCode"),
+                ".hashCode method is present, it should have been omitted");
     }
 
     @Test
@@ -80,7 +68,7 @@ public class IncludeHashCodeAndEqualsIT {
         assertEquals(genType.getDeclaredFields().length, 0);
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertEquals("Should not use super.equals()", genType.newInstance(), genType.newInstance());
+        assertEquals(genType.newInstance(), genType.newInstance(), "Should not use super.equals()");
         assertEquals(genType.newInstance().hashCode(), genType.newInstance().hashCode());
     }
 
@@ -92,7 +80,7 @@ public class IncludeHashCodeAndEqualsIT {
         assertEquals(genType.getDeclaredFields().length, 0);
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertNotEquals("Should use super.equals() because parent is not Object; parent uses Object.equals()", genType.newInstance(), genType.newInstance());
+        assertNotEquals(genType.newInstance(), genType.newInstance(), "Should use super.equals() because parent is not Object; parent uses Object.equals()");
     }
 
     @Test
@@ -103,7 +91,7 @@ public class IncludeHashCodeAndEqualsIT {
         assertEquals(genType.getDeclaredFields().length, 0);
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertEquals("Should use super.equals()", genType.newInstance(), genType.newInstance());
+        assertEquals(genType.newInstance(), genType.newInstance(), "Should use super.equals()");
         assertEquals(genType.newInstance().hashCode(), genType.newInstance().hashCode());
     }
 
@@ -114,13 +102,13 @@ public class IncludeHashCodeAndEqualsIT {
         assertEquals(genType.getSuperclass(), Object.class);
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertNotEquals("Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()", genType.newInstance(), genType.newInstance());
+        assertNotEquals( genType.newInstance(), genType.newInstance(), "Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()");
     }
 
     @Test
     public void objectExtendingEmptyParent() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/hashCodeAndEquals/extendsEmpty.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/hashCodeAndEquals/extendsEmpty.json", "com.example");
         Class gen1Type = resultsClassLoader.loadClass("com.example.ExtendsEmptyParent");
         Class gen2Type = resultsClassLoader.loadClass("com.example.ExtendsEmpty");
 

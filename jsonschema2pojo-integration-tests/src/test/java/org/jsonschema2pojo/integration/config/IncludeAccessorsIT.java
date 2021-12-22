@@ -16,28 +16,26 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class IncludeAccessorsIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class IncludeAccessorsIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void beansIncludeGettersAndSettersByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -50,21 +48,17 @@ public class IncludeAccessorsIT {
     @Test
     public void beansOmitGettersAndSettersWhenAccessorsAreDisabled() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeGetters", false, "includeSetters", false));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeGetters", false, "includeSetters", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        try {
-            generatedType.getDeclaredMethod("getA");
-            fail("Disabled accessors but getter was generated");
-        } catch (NoSuchMethodException e) {
-        }
+        assertThrows(NoSuchMethodException.class, () ->
+                        generatedType.getDeclaredMethod("getA"),
+                "Disabled accessors but getter was generated");
 
-        try {
-            generatedType.getDeclaredMethod("setA", Integer.class);
-            fail("Disabled accessors but setter was generated");
-        } catch (NoSuchMethodException e) {
-        }
+        assertThrows(NoSuchMethodException.class, () ->
+                        generatedType.getDeclaredMethod("setA", Integer.class),
+                "Disabled accessors but setter was generated");
 
         assertThat(generatedType.getDeclaredField("a").getModifiers(), is(Modifier.PUBLIC));
 
@@ -73,7 +67,7 @@ public class IncludeAccessorsIT {
     @Test
     public void beansWithoutAccessorsRoundTripJsonCorrectly() throws ClassNotFoundException, SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeGetters", false, "includeSetters", false));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeGetters", false, "includeSetters", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 

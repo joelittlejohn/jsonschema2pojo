@@ -16,23 +16,22 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class DescriptionRuleTest {
 
     private static final String TARGET_CLASS_NAME = DescriptionRuleTest.class.getName() + ".DummyClass";
 
-    private DescriptionRule rule = new DescriptionRule();
+    private final DescriptionRule rule = new DescriptionRule();
 
     @Test
     public void applyAddsDescriptionToJavadoc() throws JClassAlreadyExistsException {
@@ -44,9 +43,8 @@ public class DescriptionRuleTest {
 
         JDocComment result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
-        assertThat(result, sameInstance(jclass.javadoc()));
-        assertThat(result.size(), is(1));
-        assertThat((String) result.get(0), is("some description"));
-
+        assertSame(jclass.javadoc(), result);
+        assertEquals(1, result.size());
+        assertEquals("some description", result.get(0));
     }
 }

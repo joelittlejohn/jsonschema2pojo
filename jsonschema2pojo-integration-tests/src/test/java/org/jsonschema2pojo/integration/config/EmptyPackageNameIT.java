@@ -16,20 +16,17 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-public class EmptyPackageNameIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class EmptyPackageNameIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void shouldAllowEmptyPackageName() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/emptyPackageName", "",
-                config("includes", new String[] {}, "excludes", new String[] {}));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/emptyPackageName", "",
+                config("includes", new String[]{}, "excludes", new String[]{}));
 
         resultsClassLoader.loadClass("LevelZeroType");
         resultsClassLoader.loadClass("levelOne.LevelOneType");

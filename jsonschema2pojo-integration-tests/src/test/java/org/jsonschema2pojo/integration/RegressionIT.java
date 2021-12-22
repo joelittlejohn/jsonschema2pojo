@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
@@ -27,18 +27,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class RegressionIT {
-    
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class RegressionIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.emptyMap());
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/spaces in path.json", "com.example", Collections.emptyMap());
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SpacesInPath");
         assertThat(generatedType, is(notNullValue()));
@@ -48,7 +45,7 @@ public class RegressionIT {
     @Test
     public void underscoresInPropertyNamesRemainIntact() throws ReflectiveOperationException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/underscores.json", "com.example", config("sourceType", "json", "propertyWordDelimiters", ""));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/underscores.json", "com.example", config("sourceType", "json", "propertyWordDelimiters", ""));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.Underscores");
         generatedType.getMethod("getName");
@@ -57,7 +54,7 @@ public class RegressionIT {
 
     @Test
     public void filesWithExtensionPrefixesAreNotTruncated() throws ClassNotFoundException, SecurityException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.emptyMap());
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/regression/foo.baz.json", "com.example", Collections.emptyMap());
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.FooBaz");
         assertThat(generatedType, is(notNullValue()));
@@ -67,7 +64,7 @@ public class RegressionIT {
     public void extendsChoosesCorrectSupertypeWhenTypeIsAlreadyGenerated() throws ClassNotFoundException, SecurityException, MalformedURLException {
         URL filteredSchemaUrl = new File("src/test/resources/schema/regression/extends").toURI().toURL();
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", Collections.emptyMap());
+        ClassLoader resultsClassLoader = generateAndCompile(filteredSchemaUrl, "com.example", Collections.emptyMap());
 
         Class<?> parent = resultsClassLoader.loadClass("org.hawkular.bus.common.BasicMessage");
         Class<?> subClass = resultsClassLoader.loadClass("org.abc.AuthMessage");
@@ -79,7 +76,7 @@ public class RegressionIT {
 
     @Test
     public void extendsIsSupportedInArrayItemType() throws ReflectiveOperationException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+        ClassLoader resultsClassLoader = generateAndCompile(
                 "/schema/regression/extends_in_array",
                 "com.example",
                 Collections.emptyMap());

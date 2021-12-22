@@ -16,26 +16,28 @@
 
 package org.jsonschema2pojo;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.net.URL;
-
-import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.rules.SchemaRule;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.rules.SchemaRule;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.*;
 
 public class SchemaMapperTest {
 
@@ -94,7 +96,10 @@ public class SchemaMapperTest {
     @Test
     public void generateCreatesSchemaFromExampleJSONAsStringInput() throws IOException {
 
-        String jsonContent = IOUtils.toString(this.getClass().getResourceAsStream("/example-json/user.json"));
+        String jsonContent = IOUtils.toString(
+                Objects.requireNonNull(this.getClass().getResourceAsStream("/example-json/user.json")),
+                StandardCharsets.UTF_8
+        );
 
         ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
@@ -122,7 +127,10 @@ public class SchemaMapperTest {
     @Test
     public void generateCreatesSchemaFromSchemaAsStringInput() throws IOException {
 
-        String schemaContent = IOUtils.toString(this.getClass().getResourceAsStream("/schema/address.json"));
+        String schemaContent = IOUtils.toString(
+                Objects.requireNonNull(this.getClass().getResourceAsStream("/schema/address.json")),
+                StandardCharsets.UTF_8
+        );
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 

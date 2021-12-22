@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,25 +28,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class ArrayIT {
-
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class ArrayIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> classWithArrayProperties;
 
-    @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
 
         classWithArrayProperties = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 
@@ -166,8 +160,8 @@ public class ArrayIT {
 
     /**
      * @see <a
-     *      href="http://code.google.com/p/jsonschema2pojo/issues/detail?id=76">issue
-     *      76</a>
+     * href="http://code.google.com/p/jsonschema2pojo/issues/detail?id=76">issue
+     * 76</a>
      */
     @Test
     public void propertiesThatReferenceAnArraySchemaAlwaysHaveCorrectCollectionType() throws NoSuchMethodException {
@@ -205,7 +199,7 @@ public class ArrayIT {
         }
 
         public void test() throws Exception {
-            ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+            ClassLoader resultsClassLoader = generateAndCompile(
                     "/schema/array/typeWithArrayProperties.json",
                     "com.example",
                     config("annotationStyle", annotationStyle));

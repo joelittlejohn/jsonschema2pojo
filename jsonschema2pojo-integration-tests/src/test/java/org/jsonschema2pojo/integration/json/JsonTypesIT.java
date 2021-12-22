@@ -16,11 +16,10 @@
 
 package org.jsonschema2pojo.integration.json;
 
-import static java.util.Arrays.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -29,28 +28,20 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
-public class JsonTypesIT {
-
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+public class JsonTypesIT extends Jsonschema2PojoTestBase {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
     public void simpleTypesInExampleAreMappedToCorrectJavaTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
@@ -70,7 +61,7 @@ public class JsonTypesIT {
     @Test
     public void integerIsMappedToBigInteger() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigIntegers", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigIntegers", true));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
 
@@ -82,7 +73,7 @@ public class JsonTypesIT {
     @Test
     public void numberIsMappedToBigDecimal() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigDecimals", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypes.json", "com.example", config("sourceType", "json", "useBigDecimals", true));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.SimpleTypes");
 
@@ -91,13 +82,13 @@ public class JsonTypesIT {
         assertThat((BigDecimal) generatedType.getMethod("getC").invoke(deserialisedValue), is(new BigDecimal("12999999999999999999999.99")));
     }
 
-    @Test(expected = ClassNotFoundException.class)
+    @Test
     public void simpleTypeAtRootProducesNoJavaTypes() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simpleTypeAsRoot.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simpleTypeAsRoot.json", "com.example",
                 config("sourceType", "json"));
 
-        resultsClassLoader.loadClass("com.example.SimpleTypeAsRoot");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.SimpleTypeAsRoot"));
 
     }
 
@@ -105,7 +96,7 @@ public class JsonTypesIT {
     @SuppressWarnings("unchecked")
     public void complexTypesProduceObjects() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/complexObject.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/complexObject.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> complexObjectClass = resultsClassLoader.loadClass("com.example.ComplexObject");
@@ -130,7 +121,7 @@ public class JsonTypesIT {
     @SuppressWarnings("rawtypes")
     public void arrayTypePropertiesProduceLists() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/array.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/array.json", "com.example",
                 config("sourceType", "json"));
 
         Class<?> arrayType = resultsClassLoader.loadClass("com.example.Array");
@@ -153,7 +144,7 @@ public class JsonTypesIT {
     @Test
     public void arrayItemsAreRecursivelyMerged() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/complexPropertiesInArrayItem.json", "com.example", config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/complexPropertiesInArrayItem.json", "com.example", config("sourceType", "json"));
         Class<?> genType = resultsClassLoader.loadClass("com.example.ComplexPropertiesInArrayItem");
         Class<?> listItemType = resultsClassLoader.loadClass("com.example.List");
         Class<?> objItemType = resultsClassLoader.loadClass("com.example.Obj");
@@ -188,25 +179,25 @@ public class JsonTypesIT {
     @Test
     public void arrayItemsAreNotRecursivelyMerged() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/simplePropertiesInArrayItem.json", "com.example", config("sourceType", "json"));
+        ClassLoader resultsClassLoader = generateAndCompile("/json/simplePropertiesInArrayItem.json", "com.example", config("sourceType", "json"));
         Class<?> genType = resultsClassLoader.loadClass("com.example.SimplePropertiesInArrayItem");
 
         // Different array items use different types for the same property;
         // we don't support union types, so we have to pick one
         assertEquals(Integer.class, genType.getMethod("getScalar").getReturnType());
 
-        thrown.expect(InvalidFormatException.class);
-        thrown.expectMessage(startsWith("Cannot deserialize value of type `int` from String \"what\": not a valid `int` value"));
-        OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/simplePropertiesInArrayItem.json"), Array.newInstance(genType, 0).getClass());
+        InvalidFormatException exception = assertThrows(InvalidFormatException.class, () ->
+                OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/simplePropertiesInArrayItem.json"), Array.newInstance(genType, 0).getClass()));
+        assertTrue(exception.getMessage().startsWith("Cannot deserialize value of type `int` from String \"what\": not a valid `int` value"));
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void arrayAtRootProducesNoJavaTypes() throws Exception {
+    @Test
+    public void arrayAtRootProducesNoJavaTypes() {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/arrayAsRoot.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/arrayAsRoot.json", "com.example",
                 config("sourceType", "json"));
 
-        resultsClassLoader.loadClass("com.example.ArrayAsRoot");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.ArrayAsRoot"));
 
     }
 

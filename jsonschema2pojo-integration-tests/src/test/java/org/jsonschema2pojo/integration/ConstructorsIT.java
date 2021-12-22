@@ -16,327 +16,303 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.sun.codemodel.JMod;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.sun.codemodel.JMod;
+public class ConstructorsIT extends Jsonschema2PojoTestBase {
 
-@RunWith(Enclosed.class)
-public class ConstructorsIT {
-
-  public static void assertHasModifier(int modifier, int modifiers, String modifierName) {
-    assertEquals("Expected the bit " + modifierName + " (" + modifier + ")" + " to be set but got: " + modifiers, modifier, modifier & modifiers);
-  }
-
-  public static void assertHasOnlyDefaultConstructor(Class<?> cls) {
-    Constructor<?>[] constructors = cls.getConstructors();
-
-    assertEquals(constructors.length, 1);
-
-    assertEquals("Expected " + cls + " to only have the default, no-args constructor", 0, constructors[0].getParameterTypes().length);
-  }
-
-  public static Constructor<?> getAllPropertiesConstructor(Class<?> clazz) throws NoSuchMethodException {
-    return clazz.getConstructor(String.class, Integer.class, Boolean.class, String.class, String.class);
-  }
-
-  public static Constructor<?> getRequiredPropertiesConstructor(Class<?> clazz) throws NoSuchMethodException {
-    return clazz.getConstructor(String.class, Integer.class, Boolean.class);
-  }
-
-  public static Object getInstance(Class<?> clazz, Object... args)
-      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-    Class<?>[] parameterTypes = new Class[args.length];
-    for (int i = 0; i < args.length; i++) {
-      parameterTypes[i] = args[i].getClass();
+    public static void assertHasModifier(int modifier, int modifiers, String modifierName) {
+        assertEquals(modifier, modifier & modifiers, "Expected the bit " + modifierName + " (" + modifier + ")" + " to be set but got: " + modifiers);
     }
 
-    Constructor<?> constructor = clazz.getConstructor(parameterTypes);
-    return constructor.newInstance(args);
-  }
+    public static void assertHasOnlyDefaultConstructor(Class<?> cls) {
+        Constructor<?>[] constructors = cls.getConstructors();
 
-  public static Object getValue(Object instance, String methodName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-    return instance.getClass()
-        .getMethod(methodName)
-        .invoke(instance);
-  }
+        assertEquals(constructors.length, 1);
 
-
-  @Ignore
-  public static class ConstructorTestClasses {
-
-    protected Class<?> typeWithoutProperties;
-    protected Class<?> typeWithoutRequiredProperties;
-    protected Class<?> typeWithRequiredArray;
-    protected Class<?> typeWithRequired;
-
-
-    public ConstructorTestClasses(Jsonschema2PojoRule classSchemaRule, Map<String, Object> config) throws ClassNotFoundException {
-      classSchemaRule.generate("/schema/constructors/noPropertiesConstructor.json", "com.example", config);
-
-      classSchemaRule.generate("/schema/constructors/noRequiredPropertiesConstructor.json", "com.example", config);
-
-      classSchemaRule.generate("/schema/constructors/requiredArrayPropertyConstructors.json", "com.example", config);
-
-      classSchemaRule.generate("/schema/constructors/requiredPropertyConstructors.json", "com.example", config);
-
-      ClassLoader loader = classSchemaRule.compile();
-      typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
-      typeWithoutRequiredProperties = loader.loadClass("com.example.NoRequiredPropertiesConstructor");
-      typeWithRequiredArray = loader.loadClass("com.example.RequiredArrayPropertyConstructors");
-      typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
-
-    }
-  }
-
-  /**
-   * Tests what happens when includeConstructors is set to true
-   */
-  public static class DefaultInlcudeConstructorsIT {
-
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule, config(
-          "propertyWordDelimiters", "_",
-          "includeConstructors", true));
-      // @formatter:on
+        assertEquals(0, constructors[0].getParameterTypes().length, "Expected " + cls + " to only have the default, no-args constructor");
     }
 
-    @Test
-    public void testGeneratesConstructorWithAllProperties() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
+    public static Constructor<?> getAllPropertiesConstructor(Class<?> clazz) throws NoSuchMethodException {
+        return clazz.getConstructor(String.class, Integer.class, Boolean.class, String.class, String.class);
     }
 
-    @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
+    public static Constructor<?> getRequiredPropertiesConstructor(Class<?> clazz) throws NoSuchMethodException {
+        return clazz.getConstructor(String.class, Integer.class, Boolean.class);
     }
 
-    @Test
-    public void testNoConstructorWithoutProperties() {
-      assertHasOnlyDefaultConstructor(testClasses.typeWithoutProperties);
-    }
-  }
+    public static Object getInstance(Class<?> clazz, Object... args)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Class<?>[] parameterTypes = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            parameterTypes[i] = args[i].getClass();
+        }
 
-  /**
-   * Tests with constructorsRequiredPropertiesOnly set to true
-   */
-  public static class RequiredOnlyIT {
-
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config(
-              "propertyWordDelimiters", "_",
-              "includeConstructors", true,
-              "constructorsRequiredPropertiesOnly", true));
-      // @formatter:on
+        Constructor<?> constructor = clazz.getConstructor(parameterTypes);
+        return constructor.newInstance(args);
     }
 
-    @Test
-    public void testCreatesPublicNoArgsConstructor() throws Exception {
-      Constructor<?> constructor = testClasses.typeWithRequired.getConstructor();
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    public static Object getValue(Object instance, String methodName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        return instance.getClass()
+                .getMethod(methodName)
+                .invoke(instance);
     }
 
-    @Test
-    public void testCreatesConstructorWithRequiredParams() throws Exception {
-      Constructor<?> constructor = getRequiredPropertiesConstructor(testClasses.typeWithRequired);
 
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    public static class ConstructorTestClasses extends Jsonschema2PojoTestBase {
+        protected Class<?> typeWithoutProperties;
+        protected Class<?> typeWithoutRequiredProperties;
+        protected Class<?> typeWithRequiredArray;
+        protected Class<?> typeWithRequired;
+
+        protected void generateClasses(Map<String, Object> config) throws ClassNotFoundException {
+            generate("/schema/constructors/noPropertiesConstructor.json", "com.example", config);
+
+            generate("/schema/constructors/noRequiredPropertiesConstructor.json", "com.example", config);
+
+            generate("/schema/constructors/requiredArrayPropertyConstructors.json", "com.example", config);
+
+            generate("/schema/constructors/requiredPropertyConstructors.json", "com.example", config);
+
+            ClassLoader loader = compile();
+            typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
+            typeWithoutRequiredProperties = loader.loadClass("com.example.NoRequiredPropertiesConstructor");
+            typeWithRequiredArray = loader.loadClass("com.example.RequiredArrayPropertyConstructors");
+            typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
+
+        }
     }
 
-    @Test
-    public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
-      Constructor<?> constructor = getRequiredPropertiesConstructor(testClasses.typeWithRequiredArray);
+    /**
+     * Tests what happens when includeConstructors is set to true
+     */
+    @Nested
+    public static class DefaultInlcudeConstructorsIT extends ConstructorTestClasses {
 
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        @BeforeEach
+        public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+            // @formatter:off
+            generateClasses(config(
+                    "propertyWordDelimiters", "_",
+                    "includeConstructors", true));
+            // @formatter:on
+        }
+
+        @Test
+        public void testGeneratesConstructorWithAllProperties() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequired).getModifiers(), "public");
+        }
+
+        @Test
+        public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequiredArray).getModifiers(), "public");
+        }
+
+        @Test
+        public void testNoConstructorWithoutProperties() {
+            assertHasOnlyDefaultConstructor(typeWithoutProperties);
+        }
     }
 
-    @Test
-    public void testConstructorAssignsFields() throws Exception {
-      Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true);
+    /**
+     * Tests with constructorsRequiredPropertiesOnly set to true
+     */
+    @Nested
+    public static class RequiredOnlyIT extends ConstructorTestClasses {
 
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
+        @BeforeEach
+        public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+            // @formatter:off
+            generateClasses(
+                    config(
+                            "propertyWordDelimiters", "_",
+                            "includeConstructors", true,
+                            "constructorsRequiredPropertiesOnly", true));
+            // @formatter:on
+        }
+
+        @Test
+        public void testCreatesPublicNoArgsConstructor() throws Exception {
+            Constructor<?> constructor = typeWithRequired.getConstructor();
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesConstructorWithRequiredParams() throws Exception {
+            Constructor<?> constructor = getRequiredPropertiesConstructor(typeWithRequired);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
+            Constructor<?> constructor = getRequiredPropertiesConstructor(typeWithRequiredArray);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testConstructorAssignsFields() throws Exception {
+            Object instance = getInstance(typeWithRequired, "type", 5, true);
+
+            assertEquals("type", getValue(instance, "getType"));
+            assertEquals(5, getValue(instance, "getId"));
+            assertEquals(true, getValue(instance, "getHasTickets"));
+        }
+
+        @Test
+        public void testNoConstructorWithoutRequiredParams() {
+            assertHasOnlyDefaultConstructor(typeWithoutRequiredProperties);
+        }
+
+        @Test
+        public void testDoesntGenerateConstructorsWithoutConfig() throws Exception {
+            assertHasOnlyDefaultConstructor(typeWithoutProperties);
+        }
     }
 
-    @Test
-    public void testNoConstructorWithoutRequiredParams() {
-      assertHasOnlyDefaultConstructor(testClasses.typeWithoutRequiredProperties);
+    /**
+     * Tests what happens when includeConstructors is set to true
+     */
+    @Nested
+    public static class IncludeRequiredConstructorsIT extends ConstructorTestClasses {
+
+        @BeforeEach
+        public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+            // @formatter:off
+            generateClasses(
+                    config(
+                            "propertyWordDelimiters", "_",
+                            "includeConstructors", true,
+                            "includeRequiredPropertiesConstructor", true));
+            // @formatter:on
+        }
+
+        @Test
+        public void testGeneratesConstructorWithAllProperties() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequired).getModifiers(), "public");
+        }
+
+        @Test
+        public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequiredArray).getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesPublicNoArgsConstructor() throws Exception {
+            Constructor<?> constructor = typeWithRequired.getConstructor();
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesConstructorWithRequiredParams() throws Exception {
+            Constructor<?> constructor = getAllPropertiesConstructor(typeWithRequired);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
+            Constructor<?> constructor = getAllPropertiesConstructor(typeWithRequiredArray);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testRequiredFieldsConstructorAssignsFields() throws Exception {
+            Object instance = getInstance(typeWithRequired, "type", 5, true);
+
+            assertEquals("type", getValue(instance, "getType"));
+            assertEquals(5, getValue(instance, "getId"));
+            assertEquals(true, getValue(instance, "getHasTickets"));
+        }
+
+        @Test
+        public void testAllFieldsConstructorAssignsFields() throws Exception {
+            Object instance = getInstance(typeWithRequired, "type", 5, true, "provider", "startTime");
+
+            assertEquals("type", getValue(instance, "getType"));
+            assertEquals(5, getValue(instance, "getId"));
+            assertEquals(true, getValue(instance, "getHasTickets"));
+            assertEquals("provider", getValue(instance, "getProvider"));
+            assertEquals("startTime", getValue(instance, "getStarttime"));
+        }
     }
 
-    @Test
-    public void testDoesntGenerateConstructorsWithoutConfig() throws Exception {
-      assertHasOnlyDefaultConstructor(testClasses.typeWithoutProperties);
+    /**
+     * Tests what happens when includeConstructors is set to true
+     */
+    @Nested
+    public static class IncludeCopyConstructorsIT extends ConstructorTestClasses {
+
+        @BeforeEach
+        public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+            // @formatter:off
+            generateClasses(
+                    config("propertyWordDelimiters", "_",
+                            "includeConstructors", true,
+                            "includeCopyConstructor", true));
+            // @formatter:on
+        }
+
+        @Test
+        public void testGeneratesConstructorWithAllProperties() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequired).getModifiers(), "public");
+        }
+
+        @Test
+        public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+            assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(typeWithRequiredArray).getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesPublicNoArgsConstructor() throws Exception {
+            Constructor<?> constructor = typeWithRequired.getConstructor();
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCreatesConstructorWithCopyParams() throws Exception {
+            Constructor<?> constructor = typeWithRequired.getConstructor(typeWithRequired);
+
+            assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+        }
+
+        @Test
+        public void testCopyConstructorAssignsFields() throws Exception {
+            Object instance = getInstance(typeWithRequired, "type", 5, true, "provider", "startTime");
+            Object copyInstance = getInstance(typeWithRequired, instance);
+
+            assertEquals("type", getValue(copyInstance, "getType"));
+            assertEquals(5, getValue(copyInstance, "getId"));
+            assertEquals(true, getValue(copyInstance, "getHasTickets"));
+            assertEquals("provider", getValue(copyInstance, "getProvider"));
+            assertEquals("startTime", getValue(copyInstance, "getStarttime"));
+        }
+
+        @Test
+        public void testAllFieldsConstructorAssignsFields() throws Exception {
+            Object instance = getInstance(typeWithRequired, "type", 5, true, "provider", "startTime");
+
+            assertEquals("type", getValue(instance, "getType"));
+            assertEquals(5, getValue(instance, "getId"));
+            assertEquals(true, getValue(instance, "getHasTickets"));
+            assertEquals("provider", getValue(instance, "getProvider"));
+            assertEquals("startTime", getValue(instance, "getStarttime"));
+        }
     }
-  }
-
-  /**
-   * Tests what happens when includeConstructors is set to true
-   */
-  public static class IncludeRequiredConstructorsIT {
-
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config(
-              "propertyWordDelimiters", "_",
-              "includeConstructors", true,
-              "includeRequiredPropertiesConstructor", true));
-      // @formatter:on
-    }
-
-    @Test
-    public void testGeneratesConstructorWithAllProperties() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
-    }
-
-    @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
-    }
-
-    @Test
-    public void testCreatesPublicNoArgsConstructor() throws Exception {
-      Constructor<?> constructor = testClasses.typeWithRequired.getConstructor();
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
-    }
-
-    @Test
-    public void testCreatesConstructorWithRequiredParams() throws Exception {
-      Constructor<?> constructor = getAllPropertiesConstructor(testClasses.typeWithRequired);
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
-    }
-
-    @Test
-    public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
-      Constructor<?> constructor = getAllPropertiesConstructor(testClasses.typeWithRequiredArray);
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
-    }
-
-    @Test
-    public void testRequiredFieldsConstructorAssignsFields() throws Exception {
-      Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true);
-
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
-    }
-
-    @Test
-    public void testAllFieldsConstructorAssignsFields() throws Exception {
-      Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
-
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
-      assertEquals("provider", getValue(instance, "getProvider"));
-      assertEquals("startTime", getValue(instance, "getStarttime"));
-    }
-  }
-
-  /**
-   * Tests what happens when includeConstructors is set to true
-   */
-  public static class IncludeCopyConstructorsIT {
-
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config("propertyWordDelimiters", "_",
-              "includeConstructors", true,
-              "includeCopyConstructor", true));
-      // @formatter:on
-    }
-
-    @Test
-    public void testGeneratesConstructorWithAllProperties() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
-    }
-
-    @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
-      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
-    }
-
-    @Test
-    public void testCreatesPublicNoArgsConstructor() throws Exception {
-      Constructor<?> constructor = testClasses.typeWithRequired.getConstructor();
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
-    }
-
-    @Test
-    public void testCreatesConstructorWithCopyParams() throws Exception {
-      Constructor<?> constructor = testClasses.typeWithRequired.getConstructor(testClasses.typeWithRequired);
-
-      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
-    }
-
-    @Test
-    public void testCopyConstructorAssignsFields() throws Exception {
-      Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
-      Object copyInstance = getInstance(testClasses.typeWithRequired, instance);
-
-      assertEquals("type", getValue(copyInstance, "getType"));
-      assertEquals(5, getValue(copyInstance, "getId"));
-      assertEquals(true, getValue(copyInstance, "getHasTickets"));
-      assertEquals("provider", getValue(copyInstance, "getProvider"));
-      assertEquals("startTime", getValue(copyInstance, "getStarttime"));
-    }
-
-    @Test
-    public void testAllFieldsConstructorAssignsFields() throws Exception {
-      Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
-
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
-      assertEquals("provider", getValue(instance, "getProvider"));
-      assertEquals("startTime", getValue(instance, "getStarttime"));
-    }
-  }
 
 }

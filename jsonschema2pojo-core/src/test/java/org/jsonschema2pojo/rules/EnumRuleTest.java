@@ -16,20 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.RuleLogger;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.util.NameHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,6 +23,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.RuleLogger;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.NameHelper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
 
 public class EnumRuleTest {
 
@@ -49,7 +48,7 @@ public class EnumRuleTest {
 
     private final EnumRule rule = new EnumRule(ruleFactory);
 
-    @Before
+    @BeforeEach
     public void wireUpConfig() {
         when(ruleFactory.getNameHelper()).thenReturn(nameHelper);
         when(ruleFactory.getLogger()).thenReturn(logger);
@@ -77,13 +76,13 @@ public class EnumRuleTest {
 
         // We're always a string for the purposes of this test
         when(typeRule.apply("status", enumNode, null, jpackage, schema))
-        .thenReturn(jpackage.owner()._ref(String.class));
+                .thenReturn(jpackage.owner()._ref(String.class));
 
         JType result1 = rule.apply("status", enumNode, null, jpackage, schema);
         JType result2 = rule.apply("status", enumNode, null, jpackage, schema);
 
-        assertThat(result1.fullName(), is("org.jsonschema2pojo.rules.Status"));
-        assertThat(result2.fullName(), is("org.jsonschema2pojo.rules.Status_"));
+        assertThat(result1.fullName(), equalTo("org.jsonschema2pojo.rules.Status"));
+        assertThat(result2.fullName(), equalTo("org.jsonschema2pojo.rules.Status_"));
     }
 
     private static class FirstArgAnswer<T> implements Answer<T> {

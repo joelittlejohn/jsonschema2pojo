@@ -16,47 +16,43 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.Locale;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class CustomDateTimeFormatIT {
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+public class CustomDateTimeFormatIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> classWhenFormatDatesTrue;
     private static Class<?> classWhenFormatDatesFalse;
     private static Class<?> classWithCustomPatterns;
 
-    @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateClasses() throws ClassNotFoundException {
 
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
+        generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
                 "dateType", "java.util.Date",
                 "timeType", "java.util.Date",
                 "formatDateTimes", Boolean.TRUE,
                 "formatDates", Boolean.TRUE,
                 "formatTimes", Boolean.TRUE));
 
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config(
+        generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config(
                 "dateType", "java.util.Date",
                 "timeType", "java.util.Date",
                 "formatDateTimes", Boolean.FALSE,
                 "formatDates", Boolean.FALSE,
                 "formatDates", Boolean.FALSE));
 
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config(
+        generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config(
                 "dateType", "java.util.Date",
                 "timeType", "java.util.Date",
                 "customDatePattern", "yyyy",
@@ -66,7 +62,7 @@ public class CustomDateTimeFormatIT {
                 "formatDates", Boolean.TRUE,
                 "formatTimes", Boolean.TRUE));
 
-        ClassLoader loader = classSchemaRule.compile();
+        ClassLoader loader = compile();
 
         classWhenFormatDatesTrue = loader.loadClass("com.example.config_true.CustomDateTimeFormat");
         classWhenFormatDatesFalse = loader.loadClass("com.example.config_false.CustomDateTimeFormat");
@@ -128,7 +124,7 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
-    public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
+    public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
@@ -138,7 +134,7 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
-    public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception{
+    public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception {
         final Object instance = classWhenFormatDatesFalse.newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 

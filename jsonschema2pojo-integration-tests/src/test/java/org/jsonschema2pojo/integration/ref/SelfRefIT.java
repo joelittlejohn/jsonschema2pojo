@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration.ref;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -26,25 +26,21 @@ import java.lang.reflect.Type;
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JCodeModel;
 
-public class SelfRefIT {
-
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class SelfRefIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> selfRefsClass;
 
-    @BeforeClass
-    public static void generateAndCompileEnum() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader selfRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/selfRefs.json", "com.example");
+        ClassLoader selfRefsClassLoader = generateAndCompile("/schema/ref/selfRefs.json", "com.example");
 
         selfRefsClass = selfRefsClassLoader.loadClass("com.example.SelfRefs");
 
@@ -92,7 +88,7 @@ public class SelfRefIT {
         assertThat(mapEntryClass.getName(), is("com.example.SelfRefs"));
 
     }
-    
+
     @Test
     public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
@@ -100,21 +96,21 @@ public class SelfRefIT {
         JCodeModel codeModel = new JCodeModel();
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
 
-        codeModel.build(schemaRule.getGenerateDir());
-        
-        ClassLoader classLoader = schemaRule.compile();
-        
+        codeModel.build(getGenerateDir());
+
+        ClassLoader classLoader = compile();
+
         Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsInString");
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));
-        
+
         Class<?> listEntryType = (Class<?>) ((ParameterizedType)nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(listEntryType.getName(), equalTo("com.example.Thing"));
-        
+
         Class<?> thingClass = classLoader.loadClass("com.example.Thing");
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getVersion").getReturnType().getSimpleName(), equalTo("String"));
-        
-    }    
+
+    }
 
 }

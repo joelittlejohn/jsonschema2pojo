@@ -16,19 +16,20 @@
 
 package org.jsonschema2pojo;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.AnnotationStyle.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.AnnotationStyle.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class AnnotatorFactoryTest {
 
-    private AnnotatorFactory factory = new AnnotatorFactory(new DefaultGenerationConfig());
+    private final AnnotatorFactory factory = new AnnotatorFactory(new DefaultGenerationConfig());
 
     @Test
     public void canCreateCorrectAnnotatorFromAnnotationStyle() {
@@ -66,11 +67,11 @@ public class AnnotatorFactoryTest {
      * Test uses reflection to get passed the generic type constraints and
      * invoke as if invoked through typical configuration.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void attemptToCreateAnnotatorFromIncompatibleClassCausesIllegalArgumentException() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    @Test
+    public void attemptToCreateAnnotatorFromIncompatibleClassCausesIllegalArgumentException() throws NoSuchMethodException, InvocationTargetException {
 
         Method factoryMethod = AnnotatorFactory.class.getMethod("getAnnotator", Class.class);
-        factoryMethod.invoke(String.class);
+        assertThrows(IllegalArgumentException.class, () -> factoryMethod.invoke(String.class));
 
     }
 

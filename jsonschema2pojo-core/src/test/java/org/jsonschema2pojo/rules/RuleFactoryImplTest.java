@@ -16,16 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.jsonschema2pojo.*;
+import org.junit.jupiter.api.Test;
 
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.RuleLogger;
-import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class RuleFactoryImplTest {
 
@@ -34,44 +29,24 @@ public class RuleFactoryImplTest {
 
         RuleFactory ruleFactory = new RuleFactory();
 
-        assertThat(ruleFactory.getAdditionalPropertiesRule(), notNullValue());
-
-        assertThat(ruleFactory.getArrayRule(), notNullValue());
-
-        assertThat(ruleFactory.getDefaultRule(), notNullValue());
-
-        assertThat(ruleFactory.getCommentRule(), notNullValue());
-
-        assertThat(ruleFactory.getDescriptionRule(), notNullValue());
-
-        assertThat(ruleFactory.getEnumRule(), notNullValue());
-
-        assertThat(ruleFactory.getFormatRule(), notNullValue());
-
-        assertThat(ruleFactory.getObjectRule(), notNullValue());
-
-        assertThat(ruleFactory.getPropertiesRule(), notNullValue());
-
-        assertThat(ruleFactory.getPropertyRule(), notNullValue());
-
-        assertThat(ruleFactory.getSchemaRule(), notNullValue());
-
-        assertThat(ruleFactory.getTitleRule(), notNullValue());
-
-        assertThat(ruleFactory.getTypeRule(), notNullValue());
-
-        assertThat(ruleFactory.getMinimumMaximumRule(), notNullValue());
-
-        assertThat(ruleFactory.getMinItemsMaxItemsRule(), notNullValue());
-
-        assertThat(ruleFactory.getPatternRule(), notNullValue());
-        
-        assertThat(ruleFactory.getMinLengthMaxLengthRule(), notNullValue());
-        
-        assertThat(ruleFactory.getValidRule(), notNullValue());
-
-        assertThat(ruleFactory.getDigitsRule(), notNullValue());
-
+        assertNotNull(ruleFactory.getAdditionalPropertiesRule());
+        assertNotNull(ruleFactory.getArrayRule());
+        assertNotNull(ruleFactory.getDefaultRule());
+        assertNotNull(ruleFactory.getCommentRule());
+        assertNotNull(ruleFactory.getDescriptionRule());
+        assertNotNull(ruleFactory.getEnumRule());
+        assertNotNull(ruleFactory.getFormatRule());
+        assertNotNull(ruleFactory.getObjectRule());
+        assertNotNull(ruleFactory.getPropertiesRule());
+        assertNotNull(ruleFactory.getPropertyRule());
+        assertNotNull(ruleFactory.getSchemaRule());
+        assertNotNull(ruleFactory.getTitleRule());
+        assertNotNull(ruleFactory.getTypeRule());
+        assertNotNull(ruleFactory.getMinimumMaximumRule());
+        assertNotNull(ruleFactory.getMinItemsMaxItemsRule());
+        assertNotNull(ruleFactory.getMinLengthMaxLengthRule());
+        assertNotNull(ruleFactory.getValidRule());
+        assertNotNull(ruleFactory.getDigitsRule());
     }
 
     @Test
@@ -83,8 +58,8 @@ public class RuleFactoryImplTest {
         RuleFactory ruleFactory = new RuleFactory(mockGenerationConfig, new NoopAnnotator(), new SchemaStore());
         ruleFactory.setLogger(mockRuleLogger);
 
-        assertThat(ruleFactory.getGenerationConfig(), is(sameInstance(mockGenerationConfig)));
-        assertThat(ruleFactory.getLogger(), is(sameInstance(mockRuleLogger)));
+        assertSame(mockGenerationConfig, ruleFactory.getGenerationConfig());
+        assertSame(mockRuleLogger, ruleFactory.getLogger());
     }
 
     @Test
@@ -96,16 +71,14 @@ public class RuleFactoryImplTest {
         RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), new SchemaStore());
         ruleFactory.setLogger(mockRuleLogger);
 
-        assertThat(ruleFactory.getLogger(), is(sameInstance(mockRuleLogger)));
+        assertNotSame(mockGenerationConfig, ruleFactory.getGenerationConfig());
+        assertSame(mockRuleLogger, ruleFactory.getLogger());
     }
 
     @Test
     public void schemaStoreIsReturned() {
-
         SchemaStore mockSchemaStore = mock(SchemaStore.class);
-
         RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), mockSchemaStore);
-
-        assertThat(ruleFactory.getSchemaStore(), is(sameInstance(mockSchemaStore)));
+        assertSame(mockSchemaStore, ruleFactory.getSchemaStore());
     }
 }

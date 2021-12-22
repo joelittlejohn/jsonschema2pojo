@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.integration.yaml;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -26,16 +27,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class YamlPropertiesIT {
- 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class YamlPropertiesIT extends Jsonschema2PojoTestBase {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -43,7 +41,7 @@ public class YamlPropertiesIT {
     @SuppressWarnings("rawtypes")
     public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/nullProperties.yaml", "com.example", config("sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/nullProperties.yaml", "com.example", config("sourceType", "yamlschema"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
         Object instance = generatedType.newInstance();
@@ -63,7 +61,7 @@ public class YamlPropertiesIT {
     @SuppressWarnings("rawtypes")
     public void usePrimitivesArgumentCausesPrimitiveTypes() throws ClassNotFoundException, IntrospectionException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/primitiveProperties.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/primitiveProperties.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -77,7 +75,7 @@ public class YamlPropertiesIT {
     @SuppressWarnings("rawtypes")
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example",
                 config("usePrimitives", true, "propertyWordDelimiters", "_ -", "sourceType", "yamlschema"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
@@ -98,7 +96,7 @@ public class YamlPropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesThatAreJavaKeywords.yaml", "com.example", config("sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/propertiesThatAreJavaKeywords.yaml", "com.example", config("sourceType", "yamlschema"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -116,7 +114,7 @@ public class YamlPropertiesIT {
     @Test
     public void propertyCalledClassCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertyCalledClass.yaml", "com.example", config("sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/propertyCalledClass.yaml", "com.example", config("sourceType", "yamlschema"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertyCalledClass");
 
@@ -130,7 +128,7 @@ public class YamlPropertiesIT {
 
     @Test
     public void propertyNamesAreLowerCamelCase() throws Exception {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesAreUpperCamelCase.yaml", "com.example", config("sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/yaml/properties/propertiesAreUpperCamelCase.yaml", "com.example", config("sourceType", "yamlschema"));
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.UpperCase");
 
         Object instance = generatedType.newInstance();

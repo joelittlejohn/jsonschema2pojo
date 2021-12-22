@@ -16,34 +16,33 @@
 
 package org.jsonschema2pojo.integration.ant;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectHelper;
+import org.jsonschema2pojo.ant.Jsonschema2PojoTask;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectHelper;
-import org.jsonschema2pojo.ant.Jsonschema2PojoTask;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
-public class Jsonschema2PojoTaskIT {
-    
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class Jsonschema2PojoTaskIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
 
         invokeAntBuild("/ant/build.xml");
 
-        ClassLoader resultsClassLoader = schemaRule.compile(buildCustomClasspath());
+        ClassLoader resultsClassLoader = compile(buildCustomClasspath());
 
         Class<?> generatedClass = resultsClassLoader.loadClass("com.example.WordDelimit");
 
@@ -63,22 +62,26 @@ public class Jsonschema2PojoTaskIT {
     @Test
     public void antTaskDocumentationIncludesAllProperties() throws IOException {
 
-        String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"));
+        String documentation = FileUtils.readFileToString(
+                new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"),
+                StandardCharsets.UTF_8
+        );
 
         for (Field f : Jsonschema2PojoTask.class.getDeclaredFields()) {
-            assertThat(documentation, containsString(">"+f.getName()+"<"));
+            assertThat(documentation, containsString(">" + f.getName() + "<"));
         }
 
     }
 
     private void invokeAntBuild(String pathToBuildFile) throws URISyntaxException {
-        File buildFile = new File(this.getClass().getResource(pathToBuildFile).toURI());
+        File buildFile = new File(Objects.requireNonNull(this.getClass().getResource(pathToBuildFile)).toURI());
 
         Project project = new Project();
         project.setUserProperty("ant.file", buildFile.getAbsolutePath());
-        project.setUserProperty("targetDirectory", schemaRule.getGenerateDir().getAbsolutePath());
+        project.setUserProperty("targetDirectory", getGenerateDir().getAbsolutePath());
         project.init();
-
+        new File("target/ant-libs").mkdirs();
+        new File("target/custom-libs").mkdirs();
         ProjectHelper helper = ProjectHelper.getProjectHelper();
         project.addReference("ant.projecthelper", helper);
         helper.parse(project, buildFile);

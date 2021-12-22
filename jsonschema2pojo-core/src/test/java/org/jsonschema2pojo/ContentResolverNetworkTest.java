@@ -16,54 +16,55 @@
 
 package org.jsonschema2pojo;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 /**
-  * @author {@link "https://github.com/s13o" "s13o"}
-  * @since 3/17/2017
-  */
+ * @author {@link "https://github.com/s13o" "s13o"}
+ * @since 3/17/2017
+ */
 public class ContentResolverNetworkTest {
 
     private static final String ADDRESS = "localhost";
 
-    @Rule
-    public WireMockRule server = new WireMockRule(
-            options().dynamicPort().bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock")
-    );
+    public WireMockServer server;
 
-    @Before
+    @BeforeEach
     public void before() {
+        server = new WireMockServer(options()
+                .dynamicPort()
+                .bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock"));
         server.start();
     }
 
-    @After
+    @AfterEach
     public void after() {
         server.stop();
     }
 
-    private ContentResolver resolver = new ContentResolver();
-    
-    @Test(expected=IllegalArgumentException.class)
+    private final ContentResolver resolver = new ContentResolver();
+
+    @Test
     public void brokenLinkCausesIllegalArgumentException() {
         URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.port() + "/address404.json");
-        resolver.resolve(brokenHttpUri);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(brokenHttpUri));
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test
     public void serverErrorCausesIllegalArgumentException() {
         URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.port() + "/address500.json");
-        resolver.resolve(brokenHttpUri);
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(brokenHttpUri));
     }
 
     @Test

@@ -24,27 +24,25 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
-public class FragmentRefIT {
-
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+public class FragmentRefIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> fragmentRefsClass;
 
-    @BeforeClass
-    public static void generateAndCompile() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompile() throws ClassNotFoundException {
 
-        ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
+        ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");
 
         fragmentRefsClass = fragmentRefsClassLoader.loadClass("com.example.FragmentRefs");
 
@@ -161,7 +159,7 @@ public class FragmentRefIT {
 
     @Test
     public void refToInnerFragmentThatHasRefToAnotherFragment() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
-        final ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refToRefToDefinitions.json", "com.example");
+        final ClassLoader fragmentRefsClassLoader = generateAndCompile("/schema/ref/refToRefToDefinitions.json", "com.example");
 
         final Class<?> finalPropertyClass = fragmentRefsClassLoader.loadClass("com.example.RefToRefToDefinitions");
 

@@ -17,28 +17,25 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.SourceSortOrder;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class SourceSortOrderIT {
-
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class SourceSortOrderIT extends Jsonschema2PojoTestBase {
 
     @Test
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void generatedClassesInCorrectPackageForFilesFirstSort() throws ClassNotFoundException, SecurityException,
             NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.FILES_FIRST
-                        .toString()));
+        ClassLoader resultsClassLoader = generateAndCompile(
+                "/schema/sourceSortOrder/",
+                "com.example",
+                config("sourceSortOrder", SourceSortOrder.FILES_FIRST.toString()));
 
         Class generatedTypeA = resultsClassLoader.loadClass("com.example.A");
         Class generatedTypeZ = resultsClassLoader.loadClass("com.example.Z");
@@ -49,10 +46,12 @@ public class SourceSortOrderIT {
         Method getterTypeZ = generatedTypeZ.getMethod("getRefToZ");
         final Class<?> returnTypeZ = getterTypeZ.getReturnType();
 
-        assertInPackage("com.example", generatedTypeA);
-        assertInPackage("com.example", generatedTypeZ);
-        assertInPackage("com.example", returnTypeA);
-        assertInPackage("com.example", returnTypeZ);
+        assertAll(
+                () -> assertInPackage("com.example", generatedTypeA),
+                () -> assertInPackage("com.example", generatedTypeZ),
+                () -> assertInPackage("com.example", returnTypeA),
+                () -> assertInPackage("com.example", returnTypeZ)
+        );
     }
 
     @Test
@@ -60,7 +59,7 @@ public class SourceSortOrderIT {
     public void generatedClassesInCorrectPackageForDirectoriesFirstSort() throws ClassNotFoundException,
             SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+        ClassLoader resultsClassLoader = generateAndCompile(
                 "/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.SUBDIRS_FIRST
                         .toString()));
 
@@ -73,13 +72,15 @@ public class SourceSortOrderIT {
         Method getterTypeZ = generatedTypeZ.getMethod("getRefToZ");
         final Class<?> returnTypeZ = getterTypeZ.getReturnType();
 
-        assertInPackage("com.example", generatedTypeA);
-        assertInPackage("com.example", generatedTypeZ);
-        assertInPackage("com.example.includes", returnTypeA);
-        assertInPackage("com.example.includes", returnTypeZ);
+        assertAll(
+                () -> assertInPackage("com.example", generatedTypeA),
+                () -> assertInPackage("com.example", generatedTypeZ),
+                () -> assertInPackage("com.example.includes", returnTypeA),
+                () -> assertInPackage("com.example.includes", returnTypeZ)
+        );
     }
 
     private void assertInPackage(String expectedPackage, Class<?> generatedClass) {
-        assertEquals("Unexpected package", expectedPackage, generatedClass.getPackage().getName());
+        assertEquals( expectedPackage, generatedClass.getPackage().getName(), "Unexpected package");
     }
 }

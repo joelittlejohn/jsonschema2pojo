@@ -123,7 +123,7 @@ public class Jsonschema2Pojo {
 
     private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
 
-        Collections.sort(schemaFiles, config.getSourceSortOrder().getComparator());
+        schemaFiles.sort(config.getSourceSortOrder().getComparator());
 
         for (File child : schemaFiles) {
             if (child.isFile()) {
@@ -172,8 +172,7 @@ public class Jsonschema2Pojo {
             String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
             
             boolean extensionRemoved = false;
-            for (int i = 0; i < extensions.length; i++) {
-                String extension = extensions[i];
+            for (String extension : extensions) {
                 if (extension.length() == 0) {
                     continue;
                 }

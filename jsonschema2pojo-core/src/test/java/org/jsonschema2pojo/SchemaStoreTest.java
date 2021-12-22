@@ -16,28 +16,28 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JType;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
-import org.junit.Test;
-
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JType;
+import static org.apache.commons.lang3.StringUtils.removeEnd;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
 
 public class SchemaStoreTest {
 
     @Test
     public void createWithAbsolutePath() throws URISyntaxException {
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         Schema schema = new SchemaStore().create(schemaUri, "#/.");
 
@@ -51,7 +51,7 @@ public class SchemaStoreTest {
     @Test
     public void createWithRelativePath() throws URISyntaxException {
 
-        URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI addressSchemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
         Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
@@ -69,10 +69,10 @@ public class SchemaStoreTest {
     public void createWithRelativeSegmentsInPath() throws URISyntaxException {
 
         //Get to the directory of the module jsonschema2pojo-core
-        Path basePath = Paths.get(getClass().getResource("/schema/person.json").toURI()).getParent().getParent().getParent().getParent();
+        Path basePath = Paths.get(Objects.requireNonNull(getClass().getResource("/schema/person.json")).toURI()).getParent().getParent().getParent().getParent();
 
         //Now load the resource with a relative path segment
-        File relativePath = new File(Paths.get(basePath.toString(),"target", "..", "src", "test", "resources", "schema", "person.json").toString());
+        File relativePath = new File(Paths.get(basePath.toString(), "target", "..", "src", "test", "resources", "schema", "person.json").toString());
         //Now load the resource with the same path minus the relative segment
         File nonRelativePath = new File(Paths.get(basePath.toString(), "src", "test", "resources", "schema", "person.json").toString());
 
@@ -89,7 +89,7 @@ public class SchemaStoreTest {
     @Test
     public void createWithSelfRef() throws URISyntaxException {
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
         Schema addressSchema = schemaStore.create(schemaUri, "#/.");
@@ -102,7 +102,7 @@ public class SchemaStoreTest {
     @Test
     public void createWithEmbeddedSelfRef() throws URISyntaxException {
 
-        URI schemaUri = getClass().getResource("/schema/embeddedRef.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/embeddedRef.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
         Schema topSchema = schemaStore.create(schemaUri, "#/.");
@@ -116,13 +116,13 @@ public class SchemaStoreTest {
     @Test
     public void createWithFragmentResolution() throws URISyntaxException {
 
-        URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI addressSchemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
         Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
         Schema innerSchema = schemaStore.create(addressSchema, "#/properties/post-office-box", "#/.");
 
-        String expectedUri = addressSchemaUri.toString() + "#/properties/post-office-box";
+        String expectedUri = addressSchemaUri + "#/properties/post-office-box";
 
         assertThat(innerSchema, is(notNullValue()));
         assertThat(innerSchema.getId(), is(equalTo(URI.create(expectedUri))));
@@ -134,7 +134,7 @@ public class SchemaStoreTest {
     @Test
     public void schemaAlreadyReadIsReused() throws URISyntaxException {
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
 
@@ -152,7 +152,7 @@ public class SchemaStoreTest {
         JType firstClass = mock(JDefinedClass.class);
         JType secondClass = mock(JDefinedClass.class);
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         Schema schema = new SchemaStore().create(schemaUri, "#/.");
 

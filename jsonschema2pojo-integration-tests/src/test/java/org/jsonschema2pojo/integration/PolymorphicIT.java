@@ -32,21 +32,19 @@
 package org.jsonschema2pojo.integration;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class PolymorphicIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-    
+public class PolymorphicIT extends Jsonschema2PojoTestBase {
+
     @Test
     public void extendsWithPolymorphicDeserializationWithDefaultAnnotationStyle() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example");
 
         Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
         Class<?> supertype = subtype.getSuperclass();
@@ -57,7 +55,7 @@ public class PolymorphicIT {
     @Test
     public void extendsWithPolymorphicDeserializationWithJackson2() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
                                                                        config("annotationStyle", "JACKSON2"));
 
         Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");

@@ -16,50 +16,35 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JFieldVar;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Answers;
+import org.mockito.Mock;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SchemaStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
-
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Size;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link DigitsRuleTest}
  */
-@RunWith(Parameterized.class)
-public class DigitsRuleTest {
+public class DigitsRuleTest extends AnnotationTestBase {
 
-    private final boolean isApplicable;
     private DigitsRule rule;
-    private final Class<?> fieldClass;
-    private final boolean useJakartaValidation;
-    private final Class<? extends Annotation> digitsClass;
-    private final Class<? extends Annotation> sizeClass;
-    private final Class<? extends Annotation> decimalMinClass;
     @Mock
     private GenerationConfig config;
     @Mock
@@ -73,47 +58,41 @@ public class DigitsRuleTest {
     @Mock
     private JAnnotationUse annotation;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { true, BigDecimal.class },
-                { true, BigInteger.class },
-                { true, String.class },
-                { true, Byte.class },
-                { true, Short.class },
-                { true, Integer.class },
-                { true, Long.class },
-                { false, Float.class },
-                { false, Double.class },
-        }).stream()
-                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
-                .collect(Collectors.toList());
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of(true, BigDecimal.class, true),
+                Arguments.of(true, BigDecimal.class, false),
+                Arguments.of(true, BigInteger.class, true),
+                Arguments.of(true, BigInteger.class, false),
+                Arguments.of(true, String.class, true),
+                Arguments.of(true, String.class, false),
+                Arguments.of(true, Byte.class, true),
+                Arguments.of(true, Byte.class, false),
+                Arguments.of(true, Short.class, true),
+                Arguments.of(true, Short.class, false),
+                Arguments.of(true, Integer.class, true),
+                Arguments.of(true, Integer.class, false),
+                Arguments.of(true, Long.class, true),
+                Arguments.of(true, Long.class, false),
+                Arguments.of(false, Float.class, true),
+                Arguments.of(false, Float.class, false),
+                Arguments.of(false, Double.class, true),
+                Arguments.of(false, Double.class, false)
+        );
     }
 
-    public DigitsRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
-        this.isApplicable = isApplicable;
-        this.fieldClass = fieldClass;
-        this.useJakartaValidation = useJakartaValidation;
-        if (useJakartaValidation) {
-            digitsClass = Digits.class;
-            sizeClass = Size.class;
-            decimalMinClass = DecimalMin.class;
-        } else {
-            digitsClass = javax.validation.constraints.Digits.class;
-            sizeClass = javax.validation.constraints.Size.class;
-            decimalMinClass = javax.validation.constraints.DecimalMin.class;
-        }
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         rule = new DigitsRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
-        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+
     }
 
-    @Test
-    public void testHasIntegerAndFractionalDigits() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHasIntegerAndFractionalDigits(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+        Class<? extends Annotation> digitsClass = getDigitsClass(useJakartaValidation);
+
         when(config.isIncludeJsr303Annotations()).thenReturn(true);
         final int intValue = new Random().nextInt();
         final int fractionalValue = new Random().nextInt();
@@ -135,8 +114,12 @@ public class DigitsRuleTest {
         verify(annotation, times(isApplicable ? 1 : 0)).param("fraction", fractionalValue);
     }
 
-    @Test
-    public void testNotUsed() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testNotUsed(@SuppressWarnings("unused") boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+        Class<? extends Annotation> sizeClass = getSizeClass(useJakartaValidation);
+
         when(config.isIncludeJsr303Annotations()).thenReturn(true);
         when(node.has("integerDigits")).thenReturn(false);
         when(node.has("fractionalDigits")).thenReturn(false);
@@ -149,8 +132,12 @@ public class DigitsRuleTest {
         verify(annotation, never()).param(anyString(), anyInt());
     }
 
-    @Test
-    public void jsrDisable() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void jsrDisable(boolean useJakartaValidation) {
+        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
+        Class<? extends Annotation> decimalMinClass = getDigitsClass(useJakartaValidation);
+
         when(config.isIncludeJsr303Annotations()).thenReturn(false);
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
         assertSame(fieldVar, result);

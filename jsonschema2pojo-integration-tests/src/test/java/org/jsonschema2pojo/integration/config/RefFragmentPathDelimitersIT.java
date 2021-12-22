@@ -18,18 +18,15 @@ package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class RefFragmentPathDelimitersIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class RefFragmentPathDelimitersIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void refFragmentPathDelimitersUsedInAPropertyIsReadSuccessfully() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nonStandardRef.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/nonStandardRef.json", "com.example",
                 config("refFragmentPathDelimiters", "#/"));
 
         resultsClassLoader.loadClass("com.example.NonStandardRef");

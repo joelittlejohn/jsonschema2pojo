@@ -16,56 +16,40 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.hamcrest.Matcher;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class InitializeCollectionsIT {
-    
-    @Parameters(name="{0}")
-    public static Collection<Object[]> parameters() {
+public class InitializeCollectionsIT extends Jsonschema2PojoTestBase {
+
+    public static Stream<Arguments> parameters() {
         Map<String, Object> withOptionFalse = config("initializeCollections", false);
         Map<String, Object> withOptionAbsent = config();
-        return Arrays.asList(new Object[][] {
-            {"defaultValueForCollectionsIsEmptyCollection", withOptionAbsent, "getList", notNullValue()},
-            {"defaultValueForListIsNullWithProperty", withOptionFalse, "getList", nullValue()},
-            {"defaultValueForSetIsNullWithProperty", withOptionFalse, "getSet", nullValue()},
-            {"defaultValueForListWithValuesIsNotNullWithProperty", withOptionFalse, "getListWithValues", notNullValue()},
-            {"defaultValueForSetWithValuesIsNotNullWithProperty", withOptionFalse, "getSetWithValues", notNullValue()}
-        });
+        return Stream.of(
+            Arguments.of("defaultValueForCollectionsIsEmptyCollection", withOptionAbsent, "getList", notNullValue()),
+            Arguments.of("defaultValueForListIsNullWithProperty", withOptionFalse, "getList", nullValue()),
+            Arguments.of("defaultValueForSetIsNullWithProperty", withOptionFalse, "getSet", nullValue()),
+            Arguments.of("defaultValueForListWithValuesIsNotNullWithProperty", withOptionFalse, "getListWithValues", notNullValue()),
+            Arguments.of("defaultValueForSetWithValuesIsNotNullWithProperty", withOptionFalse, "getSetWithValues", notNullValue())
+        );
     }
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @ParameterizedTest(name = "[{0}]")
+    @MethodSource("parameters")
+    public void correctResult(String label, Map<String, Object> config, String getterName, Matcher<Object> resultMatcher) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-    private Map<String, Object> config;
-    private Matcher<Object> resultMatcher;
-    private String getterName;
-    
-    public InitializeCollectionsIT(String label, Map<String, Object> config, String getterName, Matcher<Object> resultMatcher) {
-        this.config = config;
-        this.getterName = getterName;
-        this.resultMatcher = resultMatcher;
-    }
-
-    @Test
-    public void correctResult() throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example", config);
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example", config);
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.InitializeCollectionProperties");
         Object instance = generatedType.newInstance();

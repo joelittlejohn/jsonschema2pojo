@@ -16,23 +16,19 @@
 
 package org.jsonschema2pojo.integration;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class CommentsIT {
-
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class CommentsIT  extends Jsonschema2PojoTestBase {
 
     @Test
     public void jsonSchemaWithCommentsIsParsed() {
-        schemaRule.generateAndCompile("/schema/comments/comments.json", "com.example");
+        generateAndCompile("/schema/comments/comments.json", "com.example");
     }
 
     @Test
     public void jsonWithCommentsIsParsed() {
-        schemaRule.generateAndCompile("/json/comments.json", "com.example");
+        generateAndCompile("/json/comments.json", "com.example");
     }
 
 }

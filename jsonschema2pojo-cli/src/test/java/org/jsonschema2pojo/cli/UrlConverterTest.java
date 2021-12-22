@@ -16,14 +16,12 @@
 
 package org.jsonschema2pojo.cli;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import com.beust.jcommander.ParameterException;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import org.junit.Test;
-
-import com.beust.jcommander.ParameterException;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UrlConverterTest {
 
@@ -35,24 +33,26 @@ public class UrlConverterTest {
 
         // on *ux the path part of the URL is equal to the given path
         // on Windows C: is prepended, which is expected
-        assertThat(url.getPath(), endsWith("/path/to/something"));
+        assertNotNull(url);
+        assertNotNull(url.getPath());
+        assertTrue(url.getPath().endsWith("/path/to/something"));
     }
 
     @Test
     public void urlIsCreatedFromFileUrl() {
         URL url = converter.convert("file:/path/to/something");
-
-        assertThat(url.toString(), is("file:/path/to/something"));
+        assertNotNull(url);
+        assertEquals("file:/path/to/something", url.toString());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void invalidUrlThrowsParameterException() {
-        converter.convert("http:total nonsense");
+        assertThrows(ParameterException.class, () -> converter.convert("http:total nonsense"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void nullValueThrowsParameterException() {
-        converter.convert(null);
+        assertThrows(ParameterException.class, () -> converter.convert(null));
     }
 
 }

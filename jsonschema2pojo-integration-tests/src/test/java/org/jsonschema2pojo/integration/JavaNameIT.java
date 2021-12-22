@@ -16,8 +16,13 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -26,36 +31,22 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.qdox.JavaDocBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaField;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by cmb on 31.01.16.
  */
-public class JavaNameIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class JavaNameIT extends Jsonschema2PojoTestBase {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
-    @BeforeClass
-    public static void generateAndCompileClass() {
-
-
-    }
 
     @Test
     public void propertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
         Object instance = classWithJavaNames.newInstance();
 
@@ -71,7 +62,7 @@ public class JavaNameIT {
     @Test
     public void propertiesHaveCorrectTypes() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
 
         classWithJavaNames.newInstance();
@@ -86,7 +77,7 @@ public class JavaNameIT {
     @Test
     public void gettersHaveCorrectNames() throws NoSuchMethodException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
 
         classWithJavaNames.getMethod("getJavaProperty");
@@ -101,7 +92,7 @@ public class JavaNameIT {
     @Test
     public void settersHaveCorrectNamesAndArgumentTypes() throws NoSuchMethodException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
 
         classWithJavaNames.getMethod("setJavaProperty", String.class);
@@ -118,7 +109,7 @@ public class JavaNameIT {
     @Test
     public void serializedPropertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
         Object instance = classWithJavaNames.newInstance();
 
@@ -135,8 +126,8 @@ public class JavaNameIT {
     @Test
     public void originalPropertyNamesAppearInJavaDoc() throws IOException {
 
-        schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
-        File generatedJavaFile = schemaRule.generated("com/example/javaname/JavaName.java");
+        generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
+        File generatedJavaFile = generated("com/example/javaname/JavaName.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
@@ -154,25 +145,25 @@ public class JavaNameIT {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void doesNotAllowDuplicateNames() {
 
-        schemaRule.generateAndCompile("/schema/javaName/duplicateName.json", "com.example");
+        assertThrows(IllegalArgumentException.class, () -> generateAndCompile("/schema/javaName/duplicateName.json", "com.example"));
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void doesNotAllowDuplicateDefaultNames() {
 
-        schemaRule.generateAndCompile("/schema/javaName/duplicateDefaultName.json", "com.example");
+        assertThrows(IllegalArgumentException.class, () -> generateAndCompile("/schema/javaName/duplicateDefaultName.json", "com.example"));
 
     }
 
     @Test
     public void arrayRequiredAppearsInFieldJavadoc() throws IOException {
 
-        schemaRule.generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
-        File generatedJavaFileWithRequiredProperties = schemaRule.generated("com/example/required/JavaNameWithRequiredProperties.java");
+        generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
+        File generatedJavaFileWithRequiredProperties = generated("com/example/required/JavaNameWithRequiredProperties.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
         javaDocBuilder.addSource(generatedJavaFileWithRequiredProperties);
@@ -189,8 +180,8 @@ public class JavaNameIT {
     @Test
     public void inlineRequiredAppearsInFieldJavadoc() throws IOException {
 
-        schemaRule.generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
-        File generatedJavaFileWithRequiredProperties = schemaRule.generated("com/example/required/JavaNameWithRequiredProperties.java");
+        generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
+        File generatedJavaFileWithRequiredProperties = generated("com/example/required/JavaNameWithRequiredProperties.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
         javaDocBuilder.addSource(generatedJavaFileWithRequiredProperties);
@@ -207,7 +198,7 @@ public class JavaNameIT {
     @Test
     public void generateClassInTargetPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
         Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.OCSPRequestData");
 
         assertEquals("com.example.javaname.OCSPRequestData", classWithTargetPackage.getName());
@@ -216,7 +207,7 @@ public class JavaNameIT {
     @Test
     public void generateClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
         Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo");
 
         assertEquals("com.apetecan.javaname.AdditionalInfo", classWithJavaTypePackage.getName());
@@ -225,7 +216,7 @@ public class JavaNameIT {
     @Test
     public void generateClassInTargetPackageReferencingClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.AuthorizeRequestV1p02");
 
         assertEquals("com.example.javaname.AuthorizeRequestV1p02", classWithTargetPackage.getName());
@@ -238,13 +229,13 @@ public class JavaNameIT {
     @Test
     public void generateReferencedClassUsesParentClassPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
 
-        ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
+        ClassLoader javaNameClassLoader = generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken");
 
         assertEquals("com.apetecan.javaname.IdToken", classWithJavaTypePackage.getName());
 
         classWithJavaTypePackage.newInstance();
 
-        assertThat((Class<?>)((ParameterizedType)classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
+        assertThat((Class<?>) ((ParameterizedType) classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
     }
 }

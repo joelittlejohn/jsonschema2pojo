@@ -17,21 +17,18 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class IncludeToStringIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class IncludeToStringIT extends Jsonschema2PojoTestBase {
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansIncludeToStringByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -43,15 +40,13 @@ public class IncludeToStringIT {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void beansOmitToStringWhenConfigIsSet() throws ClassNotFoundException, SecurityException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeToString", false));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeToString", false));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
-
-        try {
-            generatedType.getDeclaredMethod("toString");
-            fail(".toString method is present, it should have been omitted");
-        } catch (NoSuchMethodException e) {
-        }
+        assertThrows(
+                NoSuchMethodException.class,
+                () -> generatedType.getDeclaredMethod("toString"),
+                ".toString method is present, it should have been omitted");
     }
 
 }

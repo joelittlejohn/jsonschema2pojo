@@ -16,45 +16,43 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.jsonschema2pojo.integration.util.JsonAssert.*;
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.gson.Gson;
+import org.apache.commons.io.IOUtils;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class GsonIT {
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
+import static org.jsonschema2pojo.integration.util.JsonAssert.assertEqualsJson;
+
+public class GsonIT extends Jsonschema2PojoTestBase {
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
+        Class generatedType = generateAndCompile("/json/examples/torrent.json", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_",
                         "sourceType", "json"))
                 .loadClass("com.example.Torrent");
 
-        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
-        assertThat(schemaRule.getGenerateDir(), containsText("com.google.gson"));
-        assertThat(schemaRule.getGenerateDir(), containsText("@SerializedName"));
+        assertThat(getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(getGenerateDir(), not(containsText("com.fasterxml.jackson")));
+        assertThat(getGenerateDir(), containsText("com.google.gson"));
+        assertThat(getGenerateDir(), containsText("@SerializedName"));
 
         Method getter = generatedType.getMethod("getBuild");
 
@@ -66,7 +64,7 @@ public class GsonIT {
     @Test
     public void annotationStyleGsonMakesTypesThatWorkWithGson() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/json/examples/", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_",
                         "sourceType", "json",
@@ -76,11 +74,11 @@ public class GsonIT {
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_"));
 
@@ -97,11 +95,11 @@ public class GsonIT {
         assertThat(jsonAsMap.get("enum_Property"), is("4 ! 1"));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 
-        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource));
+        String expectedJson = IOUtils.toString(Objects.requireNonNull(getClass().getResource(jsonResource)), StandardCharsets.UTF_8);
         Object javaInstance = new Gson().fromJson(expectedJson, generatedType);
         String actualJson = new Gson().toJson(javaInstance);
 

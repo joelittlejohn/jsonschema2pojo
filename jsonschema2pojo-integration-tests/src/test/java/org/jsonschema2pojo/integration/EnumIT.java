@@ -16,10 +16,15 @@
 
 package org.jsonschema2pojo.integration;
 
-import static java.lang.reflect.Modifier.*;
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.core.IsInstanceOf;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -27,33 +32,24 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.core.IsInstanceOf;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static java.lang.reflect.Modifier.isPublic;
+import static java.lang.reflect.Modifier.isStatic;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("rawtypes")
-public class EnumIT {
-
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class EnumIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> parentClass;
     private static Class<Enum<?>> enumClass;
 
-    @BeforeClass
+    @BeforeEach
     @SuppressWarnings("unchecked")
-    public static void generateAndCompileEnum() throws ClassNotFoundException {
+    public void generateAndCompileEnum() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("propertyWordDelimiters", "_"));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("propertyWordDelimiters", "_"));
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         enumClass = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
@@ -110,12 +106,7 @@ public class EnumIT {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
 
-        try {
-            fromValue.invoke(enumClass, "something invalid");
-            fail();
-        } catch (InvocationTargetException e) {
-            assertThat(e.getCause(), is(instanceOf(IllegalArgumentException.class)));
-        }
+        assertThrows(InvocationTargetException.class, () -> fromValue.invoke(enumClass, "something invalid"));
 
     }
 
@@ -123,7 +114,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void enumAtRootCreatesATopLevelType() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumAsRoot.json", "com.example");
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.EnumAsRoot");
 
@@ -131,12 +122,12 @@ public class EnumIT {
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
 
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void intEnumAtRootCreatesIntBackedEnum() throws ClassNotFoundException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example");
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumAsRoot");
 
@@ -149,7 +140,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void intEnumAtRootCreatesBigIntegerBackedEnum() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example", config("useBigIntegers", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/integerEnumAsRoot.json", "com.example", config("useBigIntegers", true));
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumAsRoot");
 
@@ -162,7 +153,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void doubleEnumAtRootCreatesDoubleBackedEnum() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example");
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.DoubleEnumAsRoot");
 
@@ -170,12 +161,12 @@ public class EnumIT {
         assertThat(rootEnumClass.getDeclaredMethod("fromValue", Double.class), is(notNullValue()));
         assertThat(isPublic(rootEnumClass.getModifiers()), is(true));
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void doubleEnumAtRootCreatesBigDecimalBackedEnum() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example", config("useBigDecimals", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/doubleEnumAsRoot.json", "com.example", config("useBigDecimals", true));
 
         Class<Enum> rootEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.DoubleEnumAsRoot");
 
@@ -188,7 +179,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void enumWithEmptyStringAsValue() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithEmptyString.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithEmptyString.json", "com.example");
 
         Class<Enum> emptyEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithEmptyString");
 
@@ -201,7 +192,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void enumWithNullValue() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithNullValue.json", "com.example");
 
         Class<Enum> nullEnumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNullValue");
 
@@ -213,7 +204,7 @@ public class EnumIT {
     @Test
     public void enumWithUppercaseProperty() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithUppercaseProperty.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithUppercaseProperty.json", "com.example");
 
         resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty");
         resultsClassLoader.loadClass("com.example.EnumWithUppercaseProperty$TimeFormat");
@@ -222,7 +213,7 @@ public class EnumIT {
     @Test
     public void enumWithExtendedCharacters() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithExtendedCharacters.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithExtendedCharacters.json", "com.example");
 
         resultsClassLoader.loadClass("com.example.EnumWithExtendedCharacters");
     }
@@ -231,7 +222,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void enumWithNoValidCharactersForIdentifier() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithNoValidCharactersForIdentifier.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithNoValidCharactersForIdentifier.json", "com.example");
 
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithNoValidCharactersForIdentifier");
 
@@ -247,7 +238,7 @@ public class EnumIT {
     @Test
     public void multipleEnumArraysWithSameName() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/multipleEnumArraysWithSameName.json", "com.example");
 
         resultsClassLoader.loadClass("com.example.MultipleEnumArraysWithSameName");
         resultsClassLoader.loadClass("com.example.Status");
@@ -255,10 +246,10 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public void enumWithCustomJavaNames() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithCustomJavaNames.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithCustomJavaNames.json", "com.example");
 
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames");
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames$EnumProperty");
@@ -283,10 +274,10 @@ public class EnumIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public void enumWithJavaEnumsExtension() throws ReflectiveOperationException, IOException {
         final String enumPropertyName = "enumProperty";
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithJavaEnumsExtension.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithJavaEnumsExtension.json", "com.example");
 
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension");
         Class<Enum<?>> enumClass = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension$EnumProperty");
@@ -328,23 +319,23 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void intEnumIsDeserializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
 
         // the schema for a valid instance
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize");
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize$TestEnum");
-        
+
         // read the instance into the type
         ObjectMapper objectMapper = new ObjectMapper();
         Object valueWithEnumProperty = objectMapper.readValue("{\"testEnum\" : 2}", typeWithEnumProperty);
-        
+
         Method getEnumMethod = typeWithEnumProperty.getDeclaredMethod("getTestEnum");
         Method getValueMethod = enumClass.getDeclaredMethod("value");
-        
+
         // call getTestEnum on the value
         assertThat(getEnumMethod, is(notNullValue()));
         Object enumObject = getEnumMethod.invoke(valueWithEnumProperty);
-        
+
         // assert that the object returned is a) a TestEnum, and b) calling .value() on it returns 2
         // as per the json snippet above
         assertThat(enumObject, IsInstanceOf.instanceOf(enumClass));
@@ -356,19 +347,19 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void intEnumIsSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, InstantiationException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/integerEnumToSerialize.json", "com.example");
 
         // the schema for a valid instance
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize");
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize$TestEnum");
-        
+
         // create an instance
         Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
         Method enumSetter = typeWithEnumProperty.getMethod("setTestEnum", enumClass);
-        
+
         // call setTestEnum(TestEnum.ONE)
         enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[0]);
-        
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         // write our instance out to json
@@ -381,7 +372,7 @@ public class EnumIT {
         assertThat(jsonTree.get("testEnum").asInt(), is(1));
     }
 
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
@@ -418,7 +409,7 @@ public class EnumIT {
     @Test
     @SuppressWarnings("unchecked")
     public void enumsWithMixedCaseConstantNames() throws ReflectiveOperationException, IOException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumsWithMixedCaseConstantNames.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumsWithMixedCaseConstantNames.json", "com.example");
         ObjectMapper objectMapper = new ObjectMapper();
 
         Class<?> typeWithEnumProperties = resultsClassLoader.loadClass("com.example.EnumsWithMixedCaseConstantNames");

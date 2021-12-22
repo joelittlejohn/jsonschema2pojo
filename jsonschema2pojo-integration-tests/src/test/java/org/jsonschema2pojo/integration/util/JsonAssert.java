@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.integration.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.skyscreamer.jsonassert.JSONCompare.*;
 
 import org.json.JSONException;

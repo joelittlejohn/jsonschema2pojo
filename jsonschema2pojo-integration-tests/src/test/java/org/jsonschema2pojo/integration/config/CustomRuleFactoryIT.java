@@ -16,31 +16,29 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
 import org.joda.time.LocalDate;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
 import org.jsonschema2pojo.rules.FormatRule;
 import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
 
-public class CustomRuleFactoryIT {
-
-    @org.junit.Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class CustomRuleFactoryIT  extends Jsonschema2PojoTestBase {
 
     @Test
     public void customAnnotatorIsAbleToAddCustomAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example",
                 config("customRuleFactory", TestRuleFactory.class.getName()));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.FormattedProperties");

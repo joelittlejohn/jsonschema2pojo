@@ -16,25 +16,22 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
-public class UseTitleAsClassnameIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class UseTitleAsClassnameIT extends Jsonschema2PojoTestBase {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void defaultUseTitleAsClassnameIsFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.ObjectPropertiesTitle");
 
@@ -45,7 +42,7 @@ public class UseTitleAsClassnameIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void useTitleAsClassnameWorksForObjects() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example",
                 config("useTitleAsClassname", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FooObject");
@@ -59,7 +56,7 @@ public class UseTitleAsClassnameIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void useTitleAsClassnameWorksForEnums() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithTitle.json", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/enum/enumWithTitle.json", "com.example",
                 config("useTitleAsClassname", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FooEnum");

@@ -16,16 +16,16 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -33,16 +33,15 @@ import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
 import com.thoughtworks.qdox.model.Type;
 
-public class RequiredIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+public class RequiredIT extends Jsonschema2PojoTestBase {
 
     private static JavaClass classWithRequired;
 
-    @BeforeClass
-    public static void generateClasses() throws IOException {
+    @BeforeEach
+    public void generateClasses() throws IOException {
 
-        classSchemaRule.generateAndCompile("/schema/required/required.json", "com.example");
-        File generatedJavaFile = classSchemaRule.generated("com/example/Required.java");
+        generateAndCompile("/schema/required/required.json", "com.example");
+        File generatedJavaFile = generated("com/example/Required.java");
 
         JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
         javaDocBuilder.addSource(generatedJavaFile);

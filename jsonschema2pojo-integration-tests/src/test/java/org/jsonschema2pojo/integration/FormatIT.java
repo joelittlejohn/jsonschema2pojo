@@ -16,10 +16,15 @@
 
 package org.jsonschema2pojo.integration;
 
-import static java.util.Arrays.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -29,88 +34,70 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-@RunWith(Parameterized.class)
-public class FormatIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+public class FormatIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> classWithFormattedProperties;
 
-    @Parameters(name="{0}")
-    public static List<Object[]> data() {
-        return asList(new Object[][] {
-            /* { propertyName, expectedType, jsonValue, javaValue } */
-            { "integerAsDateTime", Date.class, 123, new Date(123) },
-            { "stringAsDateTime", Date.class, "54321", new Date(54321L) },
-            { "stringAsTime", String.class, "12:30", "12:30" },
-            { "stringAsDate", String.class, "1950-10-10", "1950-10-10" },
-            { "numberAsUtcMillisec", Long.class, 555, 555L },
-            { "stringAsUtcMillisec", Long.class, "999", 999L },
-            { "customFormattedNumber", Double.class, "6.512", 6.512d },
-            { "stringAsRegex", Pattern.class, "^.*[0-9]+.*$", Pattern.compile("^.*[0-9]+.*$") },
-            { "stringAsHostname", String.class, "somehost", "somehost" },
-            { "stringAsIpAddress", String.class, "192.168.1.666", "192.168.1.666" },
-            { "stringAsIpv6", String.class, "2001:0db8:85a3:0000", "2001:0db8:85a3:0000" },
-            { "stringAsColor", String.class, "#fefefe", "#fefefe" },
-            { "stringAsStyle", String.class, "border: 1px solid red", "border: 1px solid red" },
-            { "stringAsPhone", String.class, "1-800-STARWARS", "1-800-STARWARS" },
-            { "stringAsUri", URI.class, "http://some/uri?q=abc", "http://some/uri?q=abc" },
-            { "stringAsUuid", UUID.class, "15a2a782-81b3-48ef-b35f-c2b9847b617e", "15a2a782-81b3-48ef-b35f-c2b9847b617e" },
-            { "stringAsEmail", String.class, "a@b.com", "a@b.com" } });
+    public static Stream<Arguments> parameters() {
+        return Stream.of(
+                /* { propertyName, expectedType, jsonValue, javaValue } */
+                Arguments.of("integerAsDateTime", Date.class, 123, new Date(123)),
+                Arguments.of("stringAsDateTime", Date.class, "54321", new Date(54321L)),
+                Arguments.of("stringAsTime", String.class, "12:30", "12:30"),
+                Arguments.of("stringAsDate", String.class, "1950-10-10", "1950-10-10"),
+                Arguments.of("numberAsUtcMillisec", Long.class, 555, 555L),
+                Arguments.of("stringAsUtcMillisec", Long.class, "999", 999L),
+                Arguments.of("customFormattedNumber", Double.class, "6.512", 6.512d),
+                Arguments.of("stringAsRegex", Pattern.class, "^.*[0-9]+.*$", Pattern.compile("^.*[0-9]+.*$")),
+                Arguments.of("stringAsHostname", String.class, "somehost", "somehost"),
+                Arguments.of("stringAsIpAddress", String.class, "192.168.1.666", "192.168.1.666"),
+                Arguments.of("stringAsIpv6", String.class, "2001:0db8:85a3:0000", "2001:0db8:85a3:0000"),
+                Arguments.of("stringAsColor", String.class, "#fefefe", "#fefefe"),
+                Arguments.of("stringAsStyle", String.class, "border: 1px solid red", "border: 1px solid red"),
+                Arguments.of("stringAsPhone", String.class, "1-800-STARWARS", "1-800-STARWARS"),
+                Arguments.of("stringAsUri", URI.class, "http://some/uri?q=abc", "http://some/uri?q=abc"),
+                Arguments.of("stringAsUuid", UUID.class, "15a2a782-81b3-48ef-b35f-c2b9847b617e", "15a2a782-81b3-48ef-b35f-c2b9847b617e"),
+                Arguments.of("stringAsEmail", String.class, "a@b.com", "a@b.com")
+        );
     }
 
-    private String propertyName;
-    private Class<?> expectedType;
-    private Object jsonValue;
-    private Object javaValue;
 
-    public FormatIT(String propertyName, Class<?> expectedType, Object jsonValue, Object javaValue) {
-        this.propertyName = propertyName;
-        this.expectedType = expectedType;
-        this.jsonValue = jsonValue;
-        this.javaValue = javaValue;
-    }
+    @BeforeEach
+    public void generateClasses() throws ClassNotFoundException {
 
-    @BeforeClass
-    public static void generateClasses() throws ClassNotFoundException {
-
-        Map<String,String> formatMapping = new HashMap<String,String>() {{
+        Map<String, String> formatMapping = new HashMap<String, String>() {{
             put("int32", "int");
         }};
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("formatTypeMapping", formatMapping));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("formatTypeMapping", formatMapping));
 
         classWithFormattedProperties = resultsClassLoader.loadClass("com.example.FormattedProperties");
 
     }
 
-    @Test
-    public void formatValueProducesExpectedType() throws IntrospectionException {
+    @ParameterizedTest(name = "[{0}]")
+    @MethodSource("parameters")
+    public void formatValueProducesExpectedType(String propertyName, Class<?> expectedType, Object jsonValue, Object javaValue) throws IntrospectionException {
 
         Method getter = new PropertyDescriptor(propertyName, classWithFormattedProperties).getReadMethod();
 
-        assertThat(getter.getReturnType().getName(), is(this.expectedType.getName()));
+        assertThat(getter.getReturnType().getName(), is(expectedType.getName()));
 
     }
 
-    @Test
-    public void valueCanBeSerializedAndDeserialized() throws IOException, IntrospectionException, IllegalAccessException, InvocationTargetException {
+    @ParameterizedTest(name = "[{0}]")
+    @MethodSource("parameters")
+    public void valueCanBeSerializedAndDeserialized(String propertyName, Class<?> expectedType, Object jsonValue, Object javaValue) throws IOException, IntrospectionException, IllegalAccessException, InvocationTargetException {
 
         ObjectMapper objectMapper = new ObjectMapper();
 

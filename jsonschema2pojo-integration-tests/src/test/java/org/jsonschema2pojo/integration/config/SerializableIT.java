@@ -16,45 +16,47 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.generateAndCompile;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SerializableIT {
 
     @Test
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({"rawtypes"})
     public void beansDoNotIncludeSerializableByDefault() throws ClassNotFoundException, SecurityException {
 
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertFalse("Beans should not implement serializable by default", Serializable.class.isAssignableFrom(generatedType));
+        assertFalse(Serializable.class.isAssignableFrom(generatedType), "Beans should not implement serializable by default");
 
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({"rawtypes"})
     public void beansIncludeSerializableWhenConfigIsSet() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("serializable", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertTrue("Beans should implement serializable when config is set", Serializable.class.isAssignableFrom(generatedType));
+        assertTrue(Serializable.class.isAssignableFrom(generatedType), "Beans should implement serializable when config is set");
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({"rawtypes"})
     public void beansCanIncludeConstructor() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("serializable", true, "includeConstructors", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertTrue("Beans should implement serializable when config is set", Serializable.class.isAssignableFrom(generatedType));
+        assertTrue(Serializable.class.isAssignableFrom(generatedType), "Beans should implement serializable when config is set");
     }
 
 }

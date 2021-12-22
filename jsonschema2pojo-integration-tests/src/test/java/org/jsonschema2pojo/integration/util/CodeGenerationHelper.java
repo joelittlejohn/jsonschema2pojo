@@ -17,9 +17,10 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.Compiler.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class CodeGenerationHelper {
     /**
      * Invokes the jsonschema2pojo plugin to generate Java types from a given
      * schema.
-     * 
+     *
      * @param schema
      *            a classpath resource to be used as the input JSON Schema
      * @param targetPackage
@@ -117,7 +118,7 @@ public class CodeGenerationHelper {
 
     /**
      * Compiles the source files in a given directory.
-     * 
+     *
      * @param sourceDirectory
      *            the directory containing Java source to be compiled.
      * @return a classloader which will provide access to any classes that were
@@ -128,7 +129,7 @@ public class CodeGenerationHelper {
         return compile(sourceDirectory, new ArrayList<>(), new HashMap<>());
 
     }
-    
+
     public static ClassLoader compile(File sourceDirectory, List<File> classpath ) {
         return compile(sourceDirectory, classpath, new HashMap<>());
     }
@@ -136,7 +137,7 @@ public class CodeGenerationHelper {
     public static ClassLoader compile(File sourceDirectory, List<File> classpath, Map<String, Object> config) {
       return compile(sourceDirectory, sourceDirectory, classpath, config);
     }
-    
+
     public static ClassLoader compile(File sourceDirectory, File outputDirectory, List<File> classpath, Map<String, Object> config) {
       return compile(systemJavaCompiler(), null, sourceDirectory, outputDirectory, classpath, config, null);
     }
@@ -159,7 +160,7 @@ public class CodeGenerationHelper {
 
     /**
      * Invokes the jsonschema2pojo plugin then compiles the resulting source.
-     * 
+     *
      * @param schema
      *            a classpath resource to be used as the input JSON Schema.
      * @param targetPackage
@@ -213,20 +214,17 @@ public class CodeGenerationHelper {
     /**
      * Deletes temporary output files on exit <em>recursively</em> (which is not
      * possible with {@link File#deleteOnExit}).
-     * 
+     *
      * @param outputDirectory
      *            the directory to be deleted.
      */
     private static void deleteOnExit(final File outputDirectory) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    deleteDirectory(outputDirectory);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                deleteDirectory(outputDirectory);
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }));
     }
@@ -246,10 +244,10 @@ public class CodeGenerationHelper {
     }
 
     private static List<File> classpathToFileArray( String classpath ) {
-        List<File> files = new ArrayList();
-        
+        List<File> files = new ArrayList<>();
+
         if (StringUtils.isEmpty(classpath)) return files;
-        
+
         String[] paths = classpath.split(Pattern.quote(File.pathSeparator));
         for ( String path : paths ) {
             if ( StringUtils.isEmpty(classpath) ) continue;

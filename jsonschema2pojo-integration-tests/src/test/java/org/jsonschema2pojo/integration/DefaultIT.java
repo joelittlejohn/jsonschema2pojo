@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,23 +30,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
-public class DefaultIT {
-    
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class DefaultIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> classWithDefaults;
 
-    @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/default/default.json", "com.example");
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example");
 
         classWithDefaults = resultsClassLoader.loadClass("com.example.Default");
 
@@ -88,7 +83,7 @@ public class DefaultIT {
     @Test
     public void integerPropertyHasCorrectDefaultBigIntegerValue() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
         Object instance = c.newInstance();
@@ -98,10 +93,10 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void integerEnumPropertyHasCorrectDefaultBigIntegerValue() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
         Object instance = c.newInstance();
@@ -128,7 +123,7 @@ public class DefaultIT {
     @Test
     public void numberPropertyHasCorrectDefaultBigDecimalValue() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
         Object instance = c.newInstance();
@@ -138,10 +133,10 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void numberEnumPropertyHasCorrectDefaultBigDecimalValue() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
+        ClassLoader resultsClassLoader = generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
         Object instance = c.newInstance();
@@ -208,7 +203,7 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void enumPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 
         Object instance = classWithDefaults.newInstance();
@@ -222,7 +217,7 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void integerEnumPropertyHasCorrectDefaultValue() throws Exception {
 
         Object instance = classWithDefaults.newInstance();
@@ -236,7 +231,7 @@ public class DefaultIT {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void numberEnumPropertyHasCorrectDefaultValue() throws Exception {
 
         Object instance = classWithDefaults.newInstance();
@@ -270,7 +265,7 @@ public class DefaultIT {
         assertThat(getter.invoke(instance), is(nullValue()));
 
     }
-    
+
     @Test
     public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 

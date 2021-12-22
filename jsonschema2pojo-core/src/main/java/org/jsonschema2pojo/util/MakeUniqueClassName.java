@@ -33,7 +33,7 @@ public class MakeUniqueClassName {
         
         if (m.matches()) {
             // get the current number
-            final Integer number = Integer.parseInt(m.group(2));
+            final int number = Integer.parseInt(m.group(2));
             // replace the current number in the string with the number +1
             return m.group(1) + (number + 1);
         } else {

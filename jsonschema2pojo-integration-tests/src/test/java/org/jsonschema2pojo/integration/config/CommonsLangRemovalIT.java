@@ -16,24 +16,21 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.Assert.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
 
-public class CommonsLangRemovalIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class CommonsLangRemovalIT extends Jsonschema2PojoTestBase {
 
     @Test
     public void hashCodeAndEqualsDontUseCommonsLang() throws SecurityException {
 
-        File generatedOutputDirectory = schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example");
+        File generatedOutputDirectory = generate("/schema/properties/primitiveProperties.json", "com.example");
 
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang3.")));
         assertThat(generatedOutputDirectory, not(containsText("org.apache.commons.lang.")));

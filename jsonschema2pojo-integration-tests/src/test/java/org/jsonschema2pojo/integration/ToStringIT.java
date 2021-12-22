@@ -16,29 +16,25 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ToStringIT {
+public class ToStringIT extends Jsonschema2PojoTestBase {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Rule
-    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
-
     @Test
     public void testScalars() throws Exception {
-        Class<?> scalarTypesClass = schemaRule.generateAndCompile("/schema/toString/scalarTypes.json", "com.example")
+        Class<?> scalarTypesClass = generateAndCompile("/schema/toString/scalarTypes.json", "com.example")
                 .loadClass("com.example.ScalarTypes");
 
         assertEquals("com.example.ScalarTypes@<ref>[stringField=<null>,numberField=<null>,integerField=<null>,booleanField=<null>,nullField=<null>,bytesField=<null>]",
@@ -58,7 +54,7 @@ public class ToStringIT {
 
     @Test
     public void testComposites() throws Exception {
-        Class<?> compositeTypesClass = schemaRule.generateAndCompile("/schema/toString/compositeTypes.json", "com.example")
+        Class<?> compositeTypesClass = generateAndCompile("/schema/toString/compositeTypes.json", "com.example")
                 .loadClass("com.example.CompositeTypes");
 
         assertEquals("com.example.CompositeTypes@<ref>[mapField=<null>,objectField=<null>,arrayField=[],uniqueArrayField=[]]",
@@ -84,7 +80,7 @@ public class ToStringIT {
 
     @Test
     public void testArrayOfArrays() throws Exception {
-        Class<?> arrayOfArraysClass = schemaRule.generateAndCompile("/schema/toString/arrayOfArrays.json", "com.example")
+        Class<?> arrayOfArraysClass = generateAndCompile("/schema/toString/arrayOfArrays.json", "com.example")
                 .loadClass("com.example.ArrayOfArrays");
 
         Map<String, ?> arrayOfNullArrays = Collections.singletonMap("grid", Arrays.asList(null, null));
@@ -103,7 +99,7 @@ public class ToStringIT {
 
     @Test
     public void testInheritance() throws Exception {
-        Class<?> squareClass = schemaRule.generateAndCompile("/schema/toString/square.json", "com.example")
+        Class<?> squareClass = generateAndCompile("/schema/toString/square.json", "com.example")
                 .loadClass("com.example.Square");
 
         Map<String, Object> square = new HashMap<>();

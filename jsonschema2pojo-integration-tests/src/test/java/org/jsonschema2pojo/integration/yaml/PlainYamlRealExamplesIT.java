@@ -16,29 +16,26 @@
 
 package org.jsonschema2pojo.integration.yaml;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-public class PlainYamlRealExamplesIT {
-
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class PlainYamlRealExamplesIT extends Jsonschema2PojoTestBase {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(new YAMLFactory());
 
     @Test
     public void getUserDataProducesValidTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/yaml/examples/GetUserData.yaml", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/yaml/examples/GetUserData.yaml", "com.example",
                 config("sourceType", "yaml",
                         "useLongIntegers", true));
 
@@ -61,7 +58,7 @@ public class PlainYamlRealExamplesIT {
     @Test
     public void torrentProducesValidTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/yaml/examples/torrent.yaml", "com.example",
+        ClassLoader resultsClassLoader = generateAndCompile("/yaml/examples/torrent.yaml", "com.example",
                 config("sourceType", "yaml",
                         "propertyWordDelimiters", "_"));
 

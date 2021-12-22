@@ -16,8 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -25,24 +26,20 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.Map;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
-public class GenericTypeIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-
+public class GenericTypeIT extends Jsonschema2PojoTestBase {
     private static Class<?> classWithGenericTypes;
 
-    @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileClass() throws ClassNotFoundException {
 
-        classWithGenericTypes = classSchemaRule.generateAndCompile("/schema/type/genericJavaType.json", "com.example").loadClass("com.example.GenericJavaType");
+        classWithGenericTypes = generateAndCompile("/schema/type/genericJavaType.json", "com.example").loadClass("com.example.GenericJavaType");
 
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void genericTypeCanBeIncludedInJavaType() throws NoSuchMethodException, SecurityException {
 
@@ -51,11 +48,11 @@ public class GenericTypeIT {
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
 
         Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
-        assertThat(typeArguments[0], is(equalTo((Type)String.class)));
-        assertThat(typeArguments[1], is(equalTo((Type)Integer.class)));
+        assertThat(typeArguments[0], is(equalTo((Type) String.class)));
+        assertThat(typeArguments[1], is(equalTo((Type) Integer.class)));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void genericTypeCanBeIncludedWhenTypeObjectIsOmitted() throws NoSuchMethodException, SecurityException {
 
@@ -78,12 +75,12 @@ public class GenericTypeIT {
 
         Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
         assertThat(typeArguments[0], is(instanceOf(ParameterizedType.class)));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments().length, is(2));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[0], is((Type)String.class));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[1], is((Type)Integer.class));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments().length, is(2));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments()[0], is((Type) String.class));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments()[1], is((Type) Integer.class));
         assertThat(typeArguments[1], is(instanceOf(ParameterizedType.class)));
-        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments().length, is(1));
-        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments()[0], is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType) typeArguments[1]).getActualTypeArguments().length, is(1));
+        assertThat(((ParameterizedType) typeArguments[1]).getActualTypeArguments()[0], is(instanceOf(ParameterizedType.class)));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -99,7 +96,7 @@ public class GenericTypeIT {
         assertThat(typeArguments[1], is(equalTo((Type) String[][].class)));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void genericTypeCanBeWildcard() throws NoSuchMethodException, SecurityException {
 
@@ -113,7 +110,7 @@ public class GenericTypeIT {
         assertThat(((WildcardType) typeArguments[1]).getLowerBounds(), emptyArray());
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
     public void genericTypeCanBeExtendsWildcard() throws NoSuchMethodException, SecurityException {
 

@@ -16,19 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,6 +23,20 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Objects;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 public class SchemaRuleTest {
 
@@ -48,7 +49,7 @@ public class SchemaRuleTest {
     @Test
     public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         ObjectNode schemaWithRef = new ObjectMapper().createObjectNode();
         schemaWithRef.put("$ref", schemaUri.toString());
@@ -70,10 +71,10 @@ public class SchemaRuleTest {
 
         verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), any(), eq(jclass.getPackage()), captureSchema.capture());
 
-        assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
-        assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));
+        assertThat(captureSchema.getValue().getId(), equalTo(schemaUri));
+        assertThat(captureSchema.getValue().getContent(), equalTo(captureJsonNode.getValue()));
 
-        assertThat(captureJsonNode.getValue().get("description").asText(), is(equalTo("An Address following the convention of http://microformats.org/wiki/hcard")));
+        assertThat(captureJsonNode.getValue().get("description").asText(), equalTo("An Address following the convention of http://microformats.org/wiki/hcard"));
     }
 
     @Test
@@ -107,7 +108,7 @@ public class SchemaRuleTest {
 
         JType previouslyGeneratedType = mock(JType.class);
 
-        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        URI schemaUri = Objects.requireNonNull(getClass().getResource("/schema/address.json")).toURI();
 
         SchemaStore schemaStore = new SchemaStore();
         Schema schema = schemaStore.create(schemaUri, "#/.");
@@ -122,9 +123,7 @@ public class SchemaRuleTest {
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
-
-        assertThat(result, is(sameInstance(previouslyGeneratedType)));
-
+        JType result = rule.apply(NODE_NAME, schemaNode, null, null, schema);
+        assertSame(previouslyGeneratedType, result);
     }
 }

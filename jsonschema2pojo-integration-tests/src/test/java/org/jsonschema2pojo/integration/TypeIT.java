@@ -26,23 +26,19 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoTestBase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TypeIT {
-
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+public class TypeIT extends Jsonschema2PojoTestBase {
 
     private static Class<?> classWithManyTypes;
 
-    @BeforeClass
-    public static void generateAndCompileClass() throws ClassNotFoundException {
+    @BeforeEach
+    public void generateAndCompileClass() throws ClassNotFoundException {
 
-        classWithManyTypes = classSchemaRule.generateAndCompile("/schema/type/types.json", "com.example")
+        classWithManyTypes = generateAndCompile("/schema/type/types.json", "com.example")
                 .loadClass("com.example.Types");
 
     }
@@ -144,7 +140,7 @@ public class TypeIT {
         Method getterMethod = classWithManyTypes.getMethod("getReusedClasspathType");
 
         assertThat(getterMethod.getReturnType().getName(), is("java.util.Locale"));
-        assertThat(classSchemaRule.generated("java/util/Locale.java").exists(), is(false));
+        assertThat(generated("java/util/Locale.java").exists(), is(false));
 
     }
 
@@ -197,7 +193,7 @@ public class TypeIT {
 
     @Test
     public void maximumGreaterThanIntegerMaxCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerWithLongMaximumAsLong.json", "com.example")
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerWithLongMaximumAsLong.json", "com.example")
                 .loadClass("com.example.IntegerWithLongMaximumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -208,7 +204,7 @@ public class TypeIT {
 
     @Test
     public void maximumGreaterThanIntegerMaxCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerWithLongMaximumAsLong.json", "com.example", config("usePrimitives", true))
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerWithLongMaximumAsLong.json", "com.example", config("usePrimitives", true))
                 .loadClass("com.example.IntegerWithLongMaximumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -219,7 +215,7 @@ public class TypeIT {
 
     @Test
     public void minimumLessThanIntegerMinCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerWithLongMinimumAsLong.json", "com.example")
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerWithLongMinimumAsLong.json", "com.example")
                 .loadClass("com.example.IntegerWithLongMinimumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -230,7 +226,7 @@ public class TypeIT {
 
     @Test
     public void minimumLessThanIntegerMinCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerWithLongMinimumAsLong.json", "com.example", config("usePrimitives", true))
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerWithLongMinimumAsLong.json", "com.example", config("usePrimitives", true))
                 .loadClass("com.example.IntegerWithLongMinimumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -241,7 +237,7 @@ public class TypeIT {
 
     @Test
     public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true))
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true))
                 .loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -252,7 +248,7 @@ public class TypeIT {
 
     @Test
     public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true, "usePrimitives", true))
+        Class<?> classWithLongProperty = generateAndCompile("/schema/type/integerAsLong.json", "com.example", config("useLongIntegers", true, "usePrimitives", true))
                 .loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
@@ -262,7 +258,7 @@ public class TypeIT {
 
     @Test
     public void useDoubleNumbersFalseCausesNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false))
+        Class<?> classWithDoubleProperty = generateAndCompile("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false))
                 .loadClass("com.example.NumberAsFloat");
 
         Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
@@ -273,7 +269,7 @@ public class TypeIT {
 
     @Test
     public void useDoubleNumbersFalseCausesPrimitiveNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false, "usePrimitives", true))
+        Class<?> classWithDoubleProperty = generateAndCompile("/schema/type/numberAsFloat.json", "com.example", config("useDoubleNumbers", false, "usePrimitives", true))
                 .loadClass("com.example.NumberAsFloat");
 
         Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
@@ -284,7 +280,7 @@ public class TypeIT {
     @Test
     public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class<?> classWithUnionProperties = schemaRule.generateAndCompile("/schema/type/unionTypes.json", "com.example").loadClass("com.example.UnionTypes");
+        Class<?> classWithUnionProperties = generateAndCompile("/schema/type/unionTypes.json", "com.example").loadClass("com.example.UnionTypes");
 
         Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
 
@@ -302,11 +298,11 @@ public class TypeIT {
     @SuppressWarnings("rawtypes")
     @Test
     public void typeNameConflictDoesNotCauseTypeReuse() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithNameConflict = schemaRule.generateAndCompile("/schema/type/typeNameConflict.json", "com.example").loadClass("com.example.TypeNameConflict");
+        Class<?> classWithNameConflict = generateAndCompile("/schema/type/typeNameConflict.json", "com.example").loadClass("com.example.TypeNameConflict");
 
         Method getterMethod = classWithNameConflict.getMethod("getTypeNameConflict");
 
-        assertThat((Class) getterMethod.getReturnType(), is(not((Class) classWithNameConflict)));
+        assertThat((Class) getterMethod.getReturnType(), is(not(classWithNameConflict)));
     }
 
     @Test
@@ -316,8 +312,8 @@ public class TypeIT {
 
         assertThat(getterMethod.getReturnType().getName(), is("com.example.TypeWithInterfaces"));
         assertThat(getterMethod.getReturnType().getInterfaces().length, is(2));
-        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Cloneable.class));
-        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) Serializable.class));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray(Cloneable.class));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray(Serializable.class));
     }
 
     @Test
@@ -327,7 +323,7 @@ public class TypeIT {
 
         assertThat(getterMethod.getReturnType().getName(), is("com.example.TypeWithGenericInterface"));
         assertThat(getterMethod.getReturnType().getInterfaces().length, is(1));
-        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray((Class) InterfaceWithGenerics.class));
+        assertThat((Class[]) getterMethod.getReturnType().getInterfaces(), hasItemInArray(InterfaceWithGenerics.class));
     }
 
     public interface InterfaceWithGenerics<T, U, V> {

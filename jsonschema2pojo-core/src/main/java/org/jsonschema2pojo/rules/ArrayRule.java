@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jsonschema2pojo.Schema;
@@ -76,6 +77,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
     @Override
     public JClass apply(String nodeName, JsonNode node, JsonNode parent, JPackage jpackage, Schema schema) {
 
+        Objects.requireNonNull(schema, "Null schema was given");
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
         boolean rootSchemaIsArray = !schema.isGenerated();
 

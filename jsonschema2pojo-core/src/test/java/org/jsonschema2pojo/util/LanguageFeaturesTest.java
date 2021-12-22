@@ -16,24 +16,22 @@
 
 package org.jsonschema2pojo.util;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.util.LanguageFeaturesTest.VersionEnum.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.jsonschema2pojo.GenerationConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.jsonschema2pojo.util.LanguageFeaturesTest.VersionEnum.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class LanguageFeaturesTest {
 
-    public static enum VersionEnum {
+    public enum VersionEnum {
 
         BEFORE_6(false, false, false),
         MAX_6(true, false, false),
@@ -52,37 +50,31 @@ public class LanguageFeaturesTest {
         }
     }
 
-    @Parameters
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][] {
-            { "1.5", BEFORE_6 },
-            { "5", BEFORE_6 },
-            { "1.6", MAX_6 },
-            { "6", MAX_6 },
-            { "1.7", MAX_7 },
-            { "7", MAX_7 },
-            { "1.8", MAX_8 },
-            { "8", MAX_8 },
-            { "1.9", AFTER_8 },
-            { "9", AFTER_8 }
-        });
+
+    public static Stream<Arguments> parameters() {
+        return Stream.of(
+                Arguments.of("1.5", BEFORE_6),
+                Arguments.of("5", BEFORE_6),
+                Arguments.of("1.6", MAX_6),
+                Arguments.of("6", MAX_6),
+                Arguments.of("1.7", MAX_7),
+                Arguments.of("7", MAX_7),
+                Arguments.of("1.8", MAX_8),
+                Arguments.of("8", MAX_8),
+                Arguments.of("1.9", AFTER_8),
+                Arguments.of("9", AFTER_8)
+        );
     }
 
-    private String version;
-    private VersionEnum versionSpec;
-
-    public LanguageFeaturesTest(String version, VersionEnum versionSpec) {
-        this.version = version;
-        this.versionSpec = versionSpec;
-    }
-
-    @Test
-    public void correctTestForJava7() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void correctTestForJava7(String version, VersionEnum versionSpec) {
         assertThat(LanguageFeatures.canUseJava7(mockConfig(version)), equalTo(versionSpec.canUse7));
     }
 
-    @Test
-    public void correctTestForJava8() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void correctTestForJava8(String version, VersionEnum versionSpec) {
         assertThat(LanguageFeatures.canUseJava8(mockConfig(version)), equalTo(versionSpec.canUse8));
     }
 

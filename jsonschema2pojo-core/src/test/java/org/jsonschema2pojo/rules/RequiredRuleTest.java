@@ -16,23 +16,25 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocCommentable;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class RequiredRuleTest {
 
     private static final String TARGET_CLASS_NAME = RequiredRuleTest.class.getName() + ".DummyClass";
 
-    private RequiredRule rule = new RequiredRule(new RuleFactory());
+    private final RequiredRule rule = new RequiredRule(new RuleFactory());
 
     @Test
     public void applyAddsTextWhenRequired() throws JClassAlreadyExistsException {
@@ -45,8 +47,8 @@ public class RequiredRuleTest {
         JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
-        assertThat(result.javadoc().size(), is(1));
-        assertThat((String) result.javadoc().get(0), is("\n(Required)"));
+        assertThat(result.javadoc().size(), equalTo(1));
+        assertThat((String) result.javadoc().get(0), equalTo("\n(Required)"));
 
     }
 
@@ -60,8 +62,8 @@ public class RequiredRuleTest {
 
         JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
-        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
-        assertThat(result.javadoc().size(), is(0));
+        assertSame(jclass.javadoc(), result.javadoc());
+        assertEquals(0, result.javadoc().size());
     }
 
 }

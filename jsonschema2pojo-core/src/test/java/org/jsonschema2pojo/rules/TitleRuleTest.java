@@ -16,23 +16,26 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class TitleRuleTest {
 
     private static final String TARGET_CLASS_NAME = TitleRuleTest.class.getName() + ".DummyClass";
 
-    private TitleRule rule = new TitleRule();
+    private final TitleRule rule = new TitleRule();
 
     @Test
     public void applyAddsDescriptionToJavadoc() throws JClassAlreadyExistsException {
@@ -45,8 +48,8 @@ public class TitleRuleTest {
         JDocComment result = rule.apply("fooBar", titleNode, null, jclass, null);
 
         assertThat(result, sameInstance(jclass.javadoc()));
-        assertThat(result.size(), is(1));
-        assertThat(result.get(0), is("some title\n<p>\n"));
+        assertThat(result.size(), equalTo(1));
+        assertThat(result.get(0), equalTo("some title\n<p>\n"));
 
     }
 }

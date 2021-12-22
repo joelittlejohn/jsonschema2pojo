@@ -16,52 +16,38 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.sun.codemodel.*;
+import jakarta.validation.constraints.NotNull;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Schema;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JMod;
-
-import jakarta.validation.constraints.NotNull;
-
-@RunWith(Parameterized.class)
 public class RequiredArrayRuleTest {
 
     private static final String TARGET_CLASS_NAME = RequiredArrayRuleTest.class.getName() + ".DummyClass";
 
     private RequiredArrayRule rule = new RequiredArrayRule(new RuleFactory());
 
-    private final boolean useJakartaValidation;
-    private final Class<? extends Annotation> notNullClass;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { false, javax.validation.constraints.NotNull.class },
-                { true, NotNull.class }
-        });
-    }
-
-    public RequiredArrayRuleTest(boolean useJakartaValidation, Class<? extends Annotation> notNullClass) {
-        this.useJakartaValidation = useJakartaValidation;
-        this.notNullClass = notNullClass;
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of(false, javax.validation.constraints.NotNull.class),
+                Arguments.of(true, NotNull.class)
+        );
     }
 
     @Test
@@ -85,9 +71,10 @@ public class RequiredArrayRuleTest {
         assertThat(fooJavaDoc.size(), is(0));
     }
 
-    @Test
-    public void shouldUpdateAnnotations() throws JClassAlreadyExistsException {
-        setupRuleFactoryToIncludeJsr303();
+    @ParameterizedTest
+    @MethodSource("data")
+    public void shouldUpdateAnnotations(boolean useJakartaValidation, Class<? extends Annotation> notNullClass) throws JClassAlreadyExistsException {
+        setupRuleFactoryToIncludeJsr303(useJakartaValidation);
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
@@ -108,9 +95,9 @@ public class RequiredArrayRuleTest {
         assertThat(fooAnnotations.size(), is(0));
     }
 
-    private void setupRuleFactoryToIncludeJsr303() {
+    private void setupRuleFactoryToIncludeJsr303(boolean useJakartaValidation) {
         GenerationConfig config = mock(GenerationConfig.class);
-        when(config.getPropertyWordDelimiters()).thenReturn(new char[] { '-', ' ', '_' });
+        when(config.getPropertyWordDelimiters()).thenReturn(new char[]{'-', ' ', '_'});
         RuleFactory ruleFactory = new RuleFactory();
         ruleFactory.setGenerationConfig(config);
         rule = new RequiredArrayRule(ruleFactory);
