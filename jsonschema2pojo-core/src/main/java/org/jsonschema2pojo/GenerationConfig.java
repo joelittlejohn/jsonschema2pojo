@@ -578,6 +578,15 @@ public interface GenerationConfig {
   String getRefFragmentPathDelimiters();
 
   /**
+   * Gets the 'useInnerClasses' configuration option.
+   * Useful for generating all subtypes as inner classes in one main class.
+   * The default is one class corresponding to one subtype.
+   *
+   * @return false by default
+   */
+  boolean isUseInnerClasses();
+
+  /**
    * Gets the 'sourceSortOrder' configuration option.
    *
    * @return

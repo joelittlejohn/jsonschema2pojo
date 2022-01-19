@@ -46,6 +46,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
+  boolean useInnerClasses
   boolean includeConstructorPropertiesAnnotation
   boolean includeGetters
   boolean includeSetters
@@ -103,6 +104,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     generateBuilders = false
     includeJsonTypeInfoAnnotation = false
     useInnerClassBuilders = false
+    useInnerClasses = false
     usePrimitives = false
     sourceFiles = []
     targetPackage = ''
@@ -224,6 +226,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeConstructorPropertiesAnnotation = enabled
   }
 
+  public void setUseInnerClasses(boolean enabled) {
+    useInnerClasses = enabled
+  }
+
   @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
@@ -285,6 +291,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |sourceSortOrder = ${sourceSortOrder}
        |formatTypeMapping = ${formatTypeMapping}
        |useInnerClassBuilders = ${useInnerClassBuilders}
+       |useInnerClasses = ${useInnerClasses}
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
        |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
        |useJakartaValidation = ${useJakartaValidation}

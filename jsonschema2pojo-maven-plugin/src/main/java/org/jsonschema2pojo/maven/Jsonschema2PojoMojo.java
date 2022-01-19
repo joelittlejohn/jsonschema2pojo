@@ -787,6 +787,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean useInnerClassBuilders = false;
 
+
+    /**
+     * @parameter property="jsonschema2pojo.useInnerClasses"
+     *            default-value="false"
+     * @since ${next.maven.release}
+     */
+    private boolean useInnerClasses = false;
+
     /**
      * @parameter property="jsonschema2pojo.includeConstructorPropertiesAnnotation"
      *            default-value="false"
@@ -1250,6 +1258,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.valueOf(sourceSortOrder.toUpperCase());
+    }
+
+    @Override
+    public boolean isUseInnerClasses() {
+        return useInnerClasses;
     }
 
     @Override

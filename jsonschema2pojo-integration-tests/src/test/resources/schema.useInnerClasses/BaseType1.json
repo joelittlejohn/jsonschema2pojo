@@ -1,0 +1,17 @@
+{
+  "type" : "object",
+  "properties" : {
+    "ambiguousType" : {
+      "type" : "object",
+      "properties" : {
+        "name" : "string"
+      }
+    },
+    "One" : {
+      "type" : "object",
+      "properties" : {
+        "pattern" : "string"
+      }
+    }
+  }
+}

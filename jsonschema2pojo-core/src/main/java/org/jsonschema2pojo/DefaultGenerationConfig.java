@@ -475,6 +475,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
+    public boolean isUseInnerClasses() { return false; }
+
+    /**
+     * @return <code>false</code>
+     */
+    @Override
     public boolean isIncludeConstructorPropertiesAnnotation() {
         return false;
     }

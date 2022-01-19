@@ -184,6 +184,15 @@
     <td align="center" valign="top">No (default <code>false</code>)</td>
   </tr>
   <tr>
+      <td valign="top">useInnerClasses</td>
+      <td valign="top">Whether to generate all subtypes as inner classes.
+        That would result in only one top level class per schema URI.
+        This avoid class name suffixes like <code>__1</code> in case of
+        name clashes.
+      </td>
+      <td align="center" valign="top">No (default <code>false</code>)</td>
+    </tr>
+  <tr>
     <td valign="top">includeConstructorPropertiesAnnotation</td>
     <td valign="top">Determines if constructors will be annotated with JDK-provided ConstructorProperties annotation. (Not Available on Android)</td>
     <td align="center" valign="top">No (default <code>false</code>)</td>

@@ -1,0 +1,17 @@
+{
+  "type" : "object",
+  "properties" : {
+    "ambiguousType" : {
+      "type" : "object",
+      "properties" : {
+        "length" : "string"
+      }
+    },
+    "Two" : {
+      "type" : "object",
+      "properties" : {
+        "forecast" : "string"
+      }
+    }
+  }
+}
