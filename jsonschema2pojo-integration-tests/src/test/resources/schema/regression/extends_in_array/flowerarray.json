@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "flowers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "extends": {
+          "$ref": "flower.json"
+        }
+      }
+    }
+  }
+}
