@@ -16,24 +16,29 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class AnnotationStyleIT {
 
@@ -91,6 +96,7 @@ public class AnnotationStyleIT {
     @Test
     public void annotationStyleJackson2ProducesJsonPropertyDescription() throws Exception {
         Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
+        assertThat(generatedType.getAnnotation(JsonClassDescription.class).value(), is("A description for this type"));
 
         Field field = generatedType.getDeclaredField("description");
         assertThat(field.getAnnotation(JsonPropertyDescription.class).value(), is("A description for this property"));

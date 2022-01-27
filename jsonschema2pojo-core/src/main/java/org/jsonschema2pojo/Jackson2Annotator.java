@@ -16,17 +16,11 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jsonschema2pojo.rules.FormatRule;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,6 +39,11 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.jsonschema2pojo.rules.FormatRule;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
@@ -82,6 +81,13 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
                 break;
         }
 
+    }
+    
+    @Override
+    public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
+        if (schema.has("description")) {
+            clazz.annotate(JsonClassDescription.class).param("value", schema.get("description").asText());
+        }
     }
 
     @Override
@@ -217,6 +223,7 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
         }
     }
 
+    @Override
     protected void addJsonTypeInfoAnnotation(JDefinedClass jclass, String propertyName) {
         JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
         jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);
