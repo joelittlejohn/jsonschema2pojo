@@ -1,0 +1,8 @@
+{
+    "type" : "object",
+    "properties" : {
+        "subschema" : {
+            "$ref" : "./inlineSubschema.json"
+        }
+    }
+}
