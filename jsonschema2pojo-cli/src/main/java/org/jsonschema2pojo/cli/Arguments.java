@@ -68,6 +68,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--include-type-info" }, description = "Include json type info; required to support polymorphic type handling. https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization")
     private boolean includeTypeInfo = false;
 
+    @Parameter(names = { "-nc", "--use-nested-classes" }, description = "Generate all inline complex subschemas as nested classes of the main schema class. The default is one top-level class corresponding to one complex subschema.")
+    private boolean useNestedClasses = false;
+
     @Parameter(names = { "--use-inner-class-builders" }, description = "Generate an inner class with builder-style methods")
     private boolean useInnerClassBuilders = false;
 
@@ -318,6 +321,11 @@ public class Arguments implements GenerationConfig {
     public boolean isIncludeTypeInfo()
     {
         return includeTypeInfo;
+    }
+
+    @Override
+    public boolean isUseNestedClasses() {
+        return useNestedClasses;
     }
 
     public String getLogLevel() {
