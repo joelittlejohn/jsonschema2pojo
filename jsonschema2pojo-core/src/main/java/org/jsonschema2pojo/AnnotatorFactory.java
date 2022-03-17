@@ -46,6 +46,10 @@ public class AnnotatorFactory {
             case JACKSON:
             case JACKSON2:
                 return new Jackson2Annotator(generationConfig);
+            case JSONB1:
+                return new Jsonb1Annotator(generationConfig);
+            case JSONB2:
+                return new Jsonb2Annotator(generationConfig);
             case GSON:
                 return new GsonAnnotator(generationConfig);
             case MOSHI1:
