@@ -26,6 +26,15 @@ public class AnnotationHelper {
     private static final String JAVA_9_GENERATED = "javax.annotation.processing.Generated";
     private static final String GENERATOR_NAME = "jsonschema2pojo";
 
+    public static void tryToAnnotateSilently(JDefinedClass jclass, String annotationClassName) {
+        try {
+            JClass annotationClass = jclass.owner().ref(annotationClassName);
+            jclass.annotate(annotationClass);
+        } catch (Exception e) {
+            // No-op
+        }
+    }
+
     private static boolean tryToAnnotate(JDefinedClass jclass, String annotationClassName) {
         try {
             Class.forName(annotationClassName);

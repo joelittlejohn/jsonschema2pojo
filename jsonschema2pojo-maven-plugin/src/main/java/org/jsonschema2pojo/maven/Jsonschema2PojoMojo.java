@@ -24,6 +24,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -316,6 +317,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * @since 0.4.5
      */
     private String customRuleFactory = RuleFactory.class.getName();
+
+    /**
+     * A list of fully qualified annotation class names to be applied to Java classes.
+     *
+     * @parameter property="jsonschema2pojo.extraClassAnnotations"
+     *            default-value=""
+     * @since 1.1.2
+     */
+    private String[] extraClassAnnotations = new String[] {};
 
     /**
      * Whether to include
@@ -1026,6 +1036,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } else {
             return RuleFactory.class;
         }
+    }
+
+    @Override
+    public List<String> getExtraClassAnnotations() {
+        return Arrays.asList(extraClassAnnotations);
     }
 
     @Override

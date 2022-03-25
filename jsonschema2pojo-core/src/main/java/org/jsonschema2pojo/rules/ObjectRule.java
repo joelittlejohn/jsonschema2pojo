@@ -157,6 +157,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             SerializableHelper.addSerializableSupport(jclass);
         }
 
+        for (String extraClassAnnotation : ruleFactory.getGenerationConfig().getExtraClassAnnotations()) {
+            AnnotationHelper.tryToAnnotateSilently(jclass, extraClassAnnotation);
+        }
+
         return jclass;
 
     }
