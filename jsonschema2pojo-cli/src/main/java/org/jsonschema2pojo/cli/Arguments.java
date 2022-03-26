@@ -388,8 +388,8 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public List<String> getExtraClassAnnotations() {
-        return extraClassAnnotations;
+    public String[] getExtraClassAnnotations() {
+        return extraClassAnnotations.toArray(new String[0]);
     }
 
     @Override

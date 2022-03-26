@@ -19,9 +19,7 @@ package org.jsonschema2pojo;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -237,9 +235,7 @@ public interface GenerationConfig {
    *
    * @return A list of fully qualified annotation class names to be applied to Java classes.
    */
-  default List<String> getExtraClassAnnotations() {
-    return Collections.emptyList();
-  }
+  String[] getExtraClassAnnotations();
 
   /**
    * Gets the 'includeJsr303Annotations' configuration option.

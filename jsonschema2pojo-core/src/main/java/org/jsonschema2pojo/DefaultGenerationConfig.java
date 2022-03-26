@@ -166,6 +166,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
+     * @return no extra class annotations
+     */
+    @Override
+    public String[] getExtraClassAnnotations() {
+        return new String[] {};
+    }
+
+    /**
      * @return <code>false</code>
      */
     @Override

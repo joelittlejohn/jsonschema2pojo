@@ -24,7 +24,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1039,8 +1038,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     }
 
     @Override
-    public List<String> getExtraClassAnnotations() {
-        return Arrays.asList(extraClassAnnotations);
+    public String[] getExtraClassAnnotations() {
+        return extraClassAnnotations;
     }
 
     @Override

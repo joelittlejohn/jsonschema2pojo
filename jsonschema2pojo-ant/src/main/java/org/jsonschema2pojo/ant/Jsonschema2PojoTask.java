@@ -1091,8 +1091,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
-    public List<String> getExtraClassAnnotations() {
-        return Arrays.asList(extraClassAnnotations);
+    public String[] getExtraClassAnnotations() {
+        return extraClassAnnotations;
     }
 
     @Override
