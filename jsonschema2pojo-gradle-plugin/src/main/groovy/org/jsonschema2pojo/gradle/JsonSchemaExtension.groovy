@@ -43,6 +43,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String[] fileExtensions
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
+  List<String> extraClassAnnotations
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
@@ -123,6 +124,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
     customRuleFactory = RuleFactory.class
+    extraClassAnnotations = []
     includeJsr303Annotations = false
     includeJsr305Annotations = false
     useOptionalForGetters = false
@@ -250,6 +252,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |inclusionLevel = ${InclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}
+       |extraClassAnnotations = ${extraClassAnnotations}
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |includeJsr305Annotations = ${includeJsr305Annotations}
        |useOptionalForGetters = ${useOptionalForGetters}

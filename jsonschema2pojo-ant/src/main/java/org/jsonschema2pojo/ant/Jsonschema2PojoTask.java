@@ -113,6 +113,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
+    private String[] extraClassAnnotations = new String[] {};
+
     private boolean includeJsr303Annotations = false;
 
     private boolean includeJsr305Annotations = false;
@@ -577,6 +579,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         } else {
             this.customRuleFactory = RuleFactory.class;
         }
+    }
+
+    /**
+     * Sets the 'extraClassAnnotations' property of this class
+     *
+     * @param extraClassAnnotations
+     *            A list of fully qualified annotation class names to be applied to Java classes.
+     */
+    public void setExtraClassAnnotations(String[] extraClassAnnotations) {
+        this.extraClassAnnotations = extraClassAnnotations;
     }
 
     /**
@@ -1076,6 +1088,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public Class<? extends RuleFactory> getCustomRuleFactory() {
         return customRuleFactory;
+    }
+
+    @Override
+    public List<String> getExtraClassAnnotations() {
+        return Arrays.asList(extraClassAnnotations);
     }
 
     @Override

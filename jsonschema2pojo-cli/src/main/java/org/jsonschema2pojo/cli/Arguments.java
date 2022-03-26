@@ -129,6 +129,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-F", "--custom-rule-factory" }, description = "The fully qualified class name of referring to a custom rule factory class that extends org.jsonschema2pojo.rules.RuleFactory " + "to create custom rules for code generation.", converter = ClassConverter.class)
     private Class<? extends RuleFactory> customRuleFactory = RuleFactory.class;
 
+    @Parameter(names = { "-eca", "--extra-class-annotations" }, description = "A list of fully qualified annotation class names to be applied to Java classes.", variableArity = true)
+    private List<String> extraClassAnnotations = new ArrayList<>();
+
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
 
@@ -382,6 +385,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public Class<? extends RuleFactory> getCustomRuleFactory() {
         return customRuleFactory;
+    }
+
+    @Override
+    public List<String> getExtraClassAnnotations() {
+        return extraClassAnnotations;
     }
 
     @Override
