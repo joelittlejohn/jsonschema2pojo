@@ -1,6 +1,4 @@
 /**
- * Copyright © 2010-2020 Nokia
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,10 +32,8 @@ import javax.json.bind.annotation.JsonbTransient;
 import java.util.Iterator;
 
 /**
- * Annotates generated Java types using the Jackson 2.x mapping annotations.
- *
- * @see <a
- *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+ * Annotates generated Java types using the JSON-B 1 mapping annotations. Implementation inspired by
+ * Jackson2Annotator.
  */
 public class Jsonb1Annotator extends AbstractAnnotator {
 
