@@ -1,6 +1,4 @@
 /**
- * Copyright © 2010-2020 Nokia
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,21 +17,36 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.containsText;
+import static org.jsonschema2pojo.integration.util.JsonAssert.assertEqualsJson;
 import static org.junit.Assert.assertThat;
 
+import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 
-public class JsonbIT {
+
+public class Jsonb1IT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    private Jsonb jsonb;
+
+    @Before
+    public void setUp() {
+        jsonb = JsonbBuilder.create();
+    }
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -66,33 +79,27 @@ public class JsonbIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleJsonb2ProducesJsonb2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jsonb2"))
-            .loadClass("com.example.PrimitiveProperties");
+    public void annotationStyleJsonb1MakesTypesThatWorkWithJsonb1() throws ClassNotFoundException, SecurityException, IOException {
 
-        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("com.google.gson")));
-        assertThat(schemaRule.getGenerateDir(), not(containsText("javax.json.bind.annotation")));
-        assertThat(schemaRule.getGenerateDir(), containsText("jakarta.json.bind.annotation"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
+            config("annotationStyle", "jsonb1",
+                "propertyWordDelimiters", "_",
+                "sourceType", "json",
+                "useLongIntegers", true));
 
-        Method getter = generatedType.getMethod("getA");
-
-        assertThat(generatedType.getAnnotation(jakarta.json.bind.annotation.JsonbPropertyOrder.class), is(notNullValue()));
-        assertThat(getter.getAnnotation(jakarta.json.bind.annotation.JsonbProperty.class), is(notNullValue()));
+        assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
+        assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @Test
-    @SuppressWarnings({ "rawtypes"})
-    public void annotationStyleJsonb2ProducesDateFormatAnnotation() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException, IOException {
+        Class generatedType = resultsClassLoader.loadClass(className);
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/format/customDateTimeFormat.json", "com.example",
-                config("annotationStyle", "jsonb2"))
-            .loadClass("com.example.CustomDateTimeFormat");
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), Charset.forName("UTF-8"));
+        Object javaInstance = jsonb.fromJson(expectedJson, generatedType);
+        String actualJson = jsonb.toJson(javaInstance);
 
-        assertThat(generatedType.getDeclaredField("defaultFormat").getAnnotation(jakarta.json.bind.annotation.JsonbDateFormat.class), is(notNullValue()));
+        assertEqualsJson(expectedJson, actualJson);
     }
 
 }
