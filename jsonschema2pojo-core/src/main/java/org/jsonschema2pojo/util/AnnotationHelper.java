@@ -20,6 +20,9 @@ import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 public class AnnotationHelper {
 
     private static final String JAVA_8_GENERATED = "javax.annotation.Generated";
@@ -28,8 +31,10 @@ public class AnnotationHelper {
 
     public static void tryToAnnotateSilently(JDefinedClass jclass, String annotationClassName) {
         try {
-            JClass annotationClass = jclass.owner().ref(annotationClassName);
-            jclass.annotate(annotationClass);
+            if (hasTypeAsTarget(annotationClassName)) {
+                JClass annotationClass = jclass.owner().ref(annotationClassName);
+                jclass.annotate(annotationClass);
+            }
         } catch (Exception e) {
             // No-op
         }
@@ -52,6 +57,31 @@ public class AnnotationHelper {
         if (!tryToAnnotate(jclass, JAVA_9_GENERATED)) {
             tryToAnnotate(jclass, JAVA_8_GENERATED);
         }
+    }
+
+    /**
+     * @return Is the annotation we are trying to use a valid one, i.e. can it be used on class level,
+     * i.e. has it TYPE within the Target values?
+     */
+    private static boolean hasTypeAsTarget(String annotationClassName) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(annotationClassName);
+        } catch (Exception e) {
+            return false;
+        }
+
+        Target annotation = clazz.getAnnotation(Target.class);
+        if (annotation == null) {
+            return false;
+        }
+
+        for (ElementType elementType : annotation.value()) {
+            if (ElementType.TYPE.equals(elementType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
