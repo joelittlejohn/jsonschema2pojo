@@ -1,26 +1,26 @@
 {
-    "type" : "object",
-    "properties" : {
-        "refarray" : {
-            "type": "array",
-            "items": {
-                "$ref": "#definitions/parent"
-            }
-        }
-    },
-    "definitions": {
-        "parent": {
-            "type" : "object",
-            "properties" : {
-                "child" : {
-                    "type" : "object",
-                    "properties" : {
-                        "external": {
-                            "$ref": "./inlineSubschema.json"
-                        }
-                    }
-                }
-            }
-        }
+  "type": "object",
+  "properties": {
+    "refarray": {
+      "type": "array",
+      "items": {
+        "$ref": "#definitions/parent"
+      }
     }
+  },
+  "definitions": {
+    "parent": {
+      "type": "object",
+      "properties": {
+        "child": {
+          "type": "object",
+          "properties": {
+            "external": {
+              "$ref": "./singleLevel.json"
+            }
+          }
+        }
+      }
+    }
+  }
 }
