@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -138,7 +138,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JClass propertiesMapType = jclass.owner().ref(Map.class);
         propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
-        JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
+        JClass propertiesMapImplType = jclass.owner().ref(LinkedHashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
