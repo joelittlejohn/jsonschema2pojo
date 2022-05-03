@@ -1,8 +1,8 @@
 {
-    "type" : "object",
-    "properties" : {
-        "subschema" : {
-            "$ref" : "./inlineSubschema.json"
-        }
+  "type": "object",
+  "properties": {
+    "subschema": {
+      "$ref": "./singleLevel.json"
     }
+  }
 }
