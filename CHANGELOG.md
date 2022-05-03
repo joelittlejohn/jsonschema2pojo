@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.2
+* Use LinkedHashMap for additional properties, so the original ordering in the JSON is preserved ([#1397](https://github.com/joelittlejohn/jsonschema2pojo/pull/1397))
+* Collection fields are unnecessarily initialized to "null" ([#1346](https://github.com/joelittlejohn/jsonschema2pojo/issues/1346))
+* Enum not getting generated correctly with CamelCase values ([#1310](https://github.com/joelittlejohn/jsonschema2pojo/issues/1310))
+* Support using JSR-303 annotations from 'jakarta.validation' package ([#1280](https://github.com/joelittlejohn/jsonschema2pojo/pull/1280))
+* Item type for array property 'listFta' is incorrectly named ListFtum ([#1275](https://github.com/joelittlejohn/jsonschema2pojo/issues/1275))
+* Android Parcelable unused import ([#1150](https://github.com/joelittlejohn/jsonschema2pojo/issues/1150))
+* jsonschema2pojo website returns HTTP 500 for using TreeNode example in the wiki ([#781](https://github.com/joelittlejohn/jsonschema2pojo/issues/781))
+* Recursive schema $ref generates an extra class ([#368](https://github.com/joelittlejohn/jsonschema2pojo/issues/368))
+
 ## 1.1.1
 * nested sibling references causes error `Path not present: definitions` only on  https://www.jsonschema2pojo.org/, local is fine ([#1237](https://github.com/joelittlejohn/jsonschema2pojo/issues/1237))
 * Provide a JDK9+ compatible annotations library for Android projects ([#1218](https://github.com/joelittlejohn/jsonschema2pojo/issues/1218))
