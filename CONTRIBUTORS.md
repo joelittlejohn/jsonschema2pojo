@@ -110,3 +110,6 @@
 * Roberto Moreschini
 * Hannes Achleitner
 * Markus Jevring
+* unkish
+* Martin Gjaldbaek
+* John Dimeo
