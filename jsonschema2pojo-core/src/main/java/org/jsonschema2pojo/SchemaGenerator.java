@@ -53,8 +53,14 @@ public class SchemaGenerator {
     public ObjectNode schemaFromExample(URL example) {
 
         try {
-            JsonNode content = this.objectMapper.readTree(example);
+            JsonNode content = null;
+            if (example.getPath().endsWith("/-")) {
+                content = this.objectMapper.readTree(System.in);
+            } else {
+                content = this.objectMapper.readTree(example);
+            }
             return schemaFromExample(content);
+
         } catch (IOException e) {
             throw new GenerationException("Could not process JSON in source file", e);
         }
