@@ -53,7 +53,7 @@ public class SchemaGenerator {
     public ObjectNode schemaFromExample(URL example) {
 
         try {
-            JsonNode content = null;
+            JsonNode content;
             if (example.getPath().endsWith("/-")) {
                 content = this.objectMapper.readTree(System.in);
             } else {
