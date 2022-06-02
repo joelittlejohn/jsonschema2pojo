@@ -109,6 +109,8 @@ jsonSchema2Pojo {
   // The style of annotations to use in the generated Java types. Supported values:
   //  - jackson (alias of jackson2)
   //  - jackson2 (apply annotations from the Jackson 2.x library)
+  //  - jsonb (apply annotations from the JSON-B 1 library)
+  //  - jsonb2 (apply annotations from the JSON-B 2 library)
   //  - gson (apply annotations from the Gson library)
   //  - moshi1 (apply annotations from the Moshi 1.x library)
   //  - none (apply no annotations at all)
