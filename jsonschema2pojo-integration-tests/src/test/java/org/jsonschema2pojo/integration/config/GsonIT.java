@@ -53,6 +53,8 @@ public class GsonIT {
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("jakarta.json.bind.annotation")));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("javax.json.bind.annotation")));
         assertThat(schemaRule.getGenerateDir(), containsText("com.google.gson"));
         assertThat(schemaRule.getGenerateDir(), containsText("@SerializedName"));
 
