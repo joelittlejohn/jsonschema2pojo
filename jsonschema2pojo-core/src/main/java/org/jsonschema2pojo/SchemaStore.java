@@ -33,7 +33,7 @@ public class SchemaStore {
     protected final ContentResolver contentResolver;
 
     public SchemaStore() {
-        this.contentResolver = new ContentResolver();
+        this.contentResolver = new ContentResolver(null);
     }
 
     public SchemaStore(ContentResolver contentResolver) {

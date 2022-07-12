@@ -52,7 +52,7 @@ public class ContentResolverNetworkTest {
         server.stop();
     }
 
-    private ContentResolver resolver = new ContentResolver();
+    private ContentResolver resolver = new ContentResolver(null);
     
     @Test(expected=IllegalArgumentException.class)
     public void brokenLinkCausesIllegalArgumentException() {

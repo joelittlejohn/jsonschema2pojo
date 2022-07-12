@@ -494,4 +494,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isUseJakartaValidation() {
         return false;
     }
+
+    @Override
+    public Class<? extends ContentResolver> getCustomContentResolver() {
+        return ContentResolver.class;
+    }
 }

@@ -37,15 +37,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ContentResolver {
 
-    private static final Set<String> CLASSPATH_SCHEMES = new HashSet<>(asList("classpath", "resource", "java"));
+    protected static final Set<String> CLASSPATH_SCHEMES = new HashSet<>(asList("classpath", "resource", "java"));
     
-    private final ObjectMapper objectMapper;
+    protected final ObjectMapper objectMapper;
 
-    public ContentResolver() {
-        this(null);
+    protected GenerationConfig config;
+
+    public ContentResolver(GenerationConfig config) {
+        this(null, config);
     }
 
-    public ContentResolver(JsonFactory jsonFactory) {
+    public ContentResolver(JsonFactory jsonFactory, GenerationConfig config) {
+        this.config = config;
         this.objectMapper = new ObjectMapper(jsonFactory)
                 .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
@@ -82,7 +85,7 @@ public class ContentResolver {
 
     }
 
-    private JsonNode resolveFromClasspath(URI uri) {
+    protected JsonNode resolveFromClasspath(URI uri) {
 
         String path = removeStart(removeStart(uri.toString(), uri.getScheme() + ":"), "/");
         InputStream contentAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);

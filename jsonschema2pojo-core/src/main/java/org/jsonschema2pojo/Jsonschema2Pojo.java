@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -36,6 +37,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.URLUtil;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
@@ -90,10 +92,32 @@ public class Jsonschema2Pojo {
     }
     
     private static ContentResolver createContentResolver(GenerationConfig config) {
-        if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
-            return new ContentResolver(new YAMLFactory());
-        } else {
-            return new ContentResolver();
+        Class<? extends ContentResolver> clazz = config.getCustomContentResolver();
+ 
+        if (!ContentResolver.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException("The class name given as a content resolver  (" + clazz.getName() + ") does not refer to a class that implements " + ContentResolver.class.getName());
+        }
+ 
+        try {
+            if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
+                try {
+                    return clazz.getDeclaredConstructor(JsonFactory.class, GenerationConfig.class).newInstance(new YAMLFactory(), config);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Failed to create a content resolver from the given class. It appears the class does not have a constructor that accepts a " + JsonFactory.class.getName() + " and " + GenerationConfig.class.getName() + " parameter.", e.getCause());
+                }
+            } else {
+                try {
+                    return clazz.getDeclaredConstructor(GenerationConfig.class).newInstance(config);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Failed to create a content resolver from the given class. It appears the class does not have a constructor that accepts a " + GenerationConfig.class.getName() + " parameter.", e.getCause());
+                }
+            }
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("Failed to create a content resolver from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("Failed to create a content resolver from the given class. It appears that we do not have access to this class - is both the class and its constructors marked public?", e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException("Failed to create a content resolver from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         }
     }
 

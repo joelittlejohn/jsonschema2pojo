@@ -43,6 +43,7 @@ import org.apache.tools.ant.types.Reference;
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
@@ -196,6 +197,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
+
+    private Class<? extends ContentResolver> customContentResolver = ContentResolver.class;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -983,6 +987,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
             .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
     }
 
+    @SuppressWarnings("unchecked")
+    public void setCustomContentResolver(String customContentResolver) {
+        if (isNotBlank(customContentResolver)) {
+            try {
+                this.customContentResolver = (Class<? extends ContentResolver>) Class.forName(customContentResolver);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            this.customContentResolver = ContentResolver.class;
+        }
+    }
+
     @Override
     public boolean isGenerateBuilders() {
         return generateBuilders;
@@ -1334,5 +1351,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public Class<? extends ContentResolver> getCustomContentResolver() {
+        return customContentResolver;
     }
 }

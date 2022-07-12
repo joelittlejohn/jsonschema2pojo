@@ -39,6 +39,7 @@ import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.AnnotatorFactory;
+import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.Jsonschema2Pojo;
@@ -820,6 +821,17 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useJakartaValidation = false;
 
     /**
+     * A fully qualified class name, referring to a class that extends
+     * <code>org.jsonschema2pojo.ContentResolver</code> and will be used to
+     * resolve schemas for code generation.
+     *
+     * @parameter property="jsonschema2pojo.customContentResolver"
+     *            default-value="org.jsonschema2pojo.ContentResolver"
+     * @since 1.1.3
+     */
+    private String customContentResolver = ContentResolver.class.getName();
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1274,5 +1286,19 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<? extends ContentResolver> getCustomContentResolver() {
+        if (isNotBlank(customContentResolver)) {
+            try {
+                return (Class<? extends ContentResolver>) Class.forName(customContentResolver);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            return ContentResolver.class;
+        }
     }
 }
