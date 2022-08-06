@@ -224,4 +224,42 @@ public class UseInnerClassBuildersIT {
     assertEquals(parentProperty, getParentProperty.invoke(childObject));
     assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
   }
+
+  /**
+   * This method confirms that if innerBuilders are used, a "builder" method is created on the class that returns an instance of the builder
+   */
+  @Test
+  public void innerBuilderCreatesBuilderMethod()
+          throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
+            config("generateBuilders", true, "useInnerClassBuilders", true));
+
+    Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
+    Method builderMethod = childClass.getMethod("builder");
+
+    Class<?> builderClass = builderMethod.getReturnType();
+
+    Method buildMethod = builderClass.getMethod("build");
+    Method withChildProperty = builderClass.getMethod("withChildProperty", Integer.class);
+    Method withParentProperty = builderClass.getMethod("withParentProperty", String.class);
+    Method withSharedProperty = builderClass.getMethod("withSharedProperty", String.class);
+
+    int childProperty = 1;
+    String parentProperty = "parentProperty";
+    String sharedProperty = "sharedProperty";
+
+    Object builder = builderMethod.invoke(childClass);
+    withChildProperty.invoke(builder, childProperty);
+    withParentProperty.invoke(builder, parentProperty);
+    withSharedProperty.invoke(builder, sharedProperty);
+    Object childObject = buildMethod.invoke(builder);
+
+    Method getChildProperty = childClass.getMethod("getChildProperty");
+    Method getParentProperty = childClass.getMethod("getParentProperty");
+    Method getSharedProperty = childClass.getMethod("getSharedProperty");
+
+    assertEquals(childProperty, getChildProperty.invoke(childObject));
+    assertEquals(parentProperty, getParentProperty.invoke(childObject));
+    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+  }
 }

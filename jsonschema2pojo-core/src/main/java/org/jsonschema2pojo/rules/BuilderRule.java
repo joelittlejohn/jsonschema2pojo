@@ -110,6 +110,10 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
       generateNoArgsBuilderConstructors(instanceClass, builderClass, concreteBuilderClass);
     }
 
+    JMethod builderMethod = instanceClass.method(JMod.PUBLIC + JMod.STATIC, builderClass, "builder");
+    JBlock builderBody = builderMethod.body();
+    builderBody._return(JExpr._new(concreteBuilderClass));
+
     return builderClass;
   }
 
