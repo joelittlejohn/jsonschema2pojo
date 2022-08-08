@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "extends": {
+        "$ref": "urn:jsonschema2pojo:it:a"
+    },
+    "properties": {
+        "parent": {
+            "type": "string"
+        }
+    }
+}

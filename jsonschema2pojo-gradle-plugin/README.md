@@ -295,6 +295,10 @@ jsonSchema2Pojo {
   // Whether to use annotations from jakarta.validation package instead of javax.validation package
   // when adding JSR-303 annotations to generated Java types
   useJakartaValidation = false
+
+  // A class that extends org.jsonschema2pojo.ContentResolver and will be used to
+  // resolve schemas for code generation.
+  customContentResolver = com.MyCustomContentResolver
 }
 ```
 

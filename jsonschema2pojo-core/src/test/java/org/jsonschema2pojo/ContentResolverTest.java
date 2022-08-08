@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ContentResolverTest {
 
-    private ContentResolver resolver = new ContentResolver();
+    private ContentResolver resolver = new ContentResolver(null);
     
     @Test(expected=IllegalArgumentException.class)
     public void wrongProtocolCausesIllegalArgumentException() {

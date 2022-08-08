@@ -18,6 +18,7 @@ package org.jsonschema2pojo.gradle
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
 import org.jsonschema2pojo.AllFileFilter
+import org.jsonschema2pojo.ContentResolver
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
 import org.jsonschema2pojo.NoopAnnotator
@@ -97,6 +98,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Map<String, String> formatTypeMapping
   boolean includeGeneratedAnnotation
   boolean useJakartaValidation
+  Class<? extends ContentResolver> customContentResolver
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -158,6 +160,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatTypeMapping = Collections.emptyMap()
     includeGeneratedAnnotation = true
     useJakartaValidation = false
+    customContentResolver = ContentResolver.class
   }
 
   @Override
@@ -224,6 +227,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeConstructorPropertiesAnnotation = enabled
   }
 
+  public void setCustomContentResolver(String clazz) {
+    customContentResolver = Class.forName(clazz, true, this.class.classLoader)
+  }
+
   @Override
   public String toString() {
     """|generateBuilders = ${generateBuilders}
@@ -288,6 +295,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
        |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
        |useJakartaValidation = ${useJakartaValidation}
+       |customContentResolver = ${customContentResolver.getName()}
      """.stripMargin()
   }
 

@@ -626,4 +626,11 @@ public interface GenerationConfig {
    */
   boolean isUseJakartaValidation();
 
+  /**
+   * Gets the 'customContentResolver' configuration option.
+   *
+   * @return A content resolver that will be used in addition to the default one
+   */
+  Class<? extends ContentResolver> getCustomContentResolver();
+
 }

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.InclusionLevel;
 import org.jsonschema2pojo.NoopAnnotator;
@@ -248,6 +249,9 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
+
+    @Parameter(names = { "-CR", "--custom-content-resolver" }, description = "The fully qualified class name referring to a custom content resolver class that extends org.jsonschema2pojo.ContentResolver to customize content resolution for code generation.", converter = ClassConverter.class)
+    private Class<? extends ContentResolver> customContentResolver = ContentResolver.class;
 
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
@@ -613,5 +617,10 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public Class<? extends ContentResolver> getCustomContentResolver() {
+        return customContentResolver;
     }
 }
