@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ public enum AnnotationStyle {
 
     /**
      * Jackson 2.x (alias of {@link #JACKSON2})
-     * 
+     *
      * @see <a
      *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
@@ -33,7 +33,7 @@ public enum AnnotationStyle {
 
     /**
      * Jackson 2.x
-     * 
+     *
      * @see <a
      *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
@@ -55,6 +55,14 @@ public enum AnnotationStyle {
      *      href="https://github.com/square/moshi">https://github.com/square/moshi</a>
      */
     MOSHI1,
+
+    /**
+     * fastjson 1.x
+     *
+     * @see <a
+     *      href="https://github.com/alibaba/fastjson">https://github.com/alibaba/fastjson</a>
+     */
+    FASTJSON,
 
     /**
      * No-op style, adds no annotations at all.
