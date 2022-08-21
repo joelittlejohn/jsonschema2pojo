@@ -54,7 +54,7 @@
         <moshi.version>1.5.0</moshi.version>
         <jackson2x.version>2.12.4</jackson2x.version>
         <jackson2x.databind.version>2.12.4</jackson2x.databind.version>
-        <fastjson.version>1.2.33</fastjson.version>
+        <fastjson.version>1.2.76</fastjson.version>
     </properties>
 
     <reporting>
