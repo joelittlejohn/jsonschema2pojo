@@ -337,6 +337,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     protected JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
 
+        final JDefinedClass newType;
+
+        Annotator annotator = ruleFactory.getAnnotator();
+
         try {
             if (node.has("javaType")) {
                 String fqn = node.get("javaType").asText();
@@ -353,11 +357,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
-                    return container.owner()._class(fqn, ClassType.ENUM);
+                    newType = container.owner()._class(fqn, ClassType.ENUM);
                 }
             } else {
                 try {
-                    return container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    newType = container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }
@@ -365,6 +369,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
+
+        annotator.typeInfo(newType, node);
+        annotator.propertyInclusion(newType, node);
+
+        return newType;
+
     }
 
     protected JFieldVar addConstructorAndFields(EnumDefinition enumDefinition, JDefinedClass _enum) {
