@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import com.sun.codemodel.JDefinedClass;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
@@ -84,6 +85,36 @@ public class EnumRuleTest {
 
         assertThat(result1.fullName(), is("org.jsonschema2pojo.rules.Status"));
         assertThat(result2.fullName(), is("org.jsonschema2pojo.rules.Status_"));
+    }
+
+    @Test
+    public void annotatorIsAppliedForEnums() {
+
+        Answer<String> firstArgAnswer = new FirstArgAnswer<>();
+        when(nameHelper.getClassName(anyString(), ArgumentMatchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
+        when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
+        when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
+
+        Annotator annotator = mock(Annotator.class);
+        when(ruleFactory.getAnnotator()).thenReturn(annotator);
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode arrayNode = objectMapper.createArrayNode();
+        arrayNode.add("open");
+        arrayNode.add("closed");
+        ObjectNode enumNode = objectMapper.createObjectNode();
+        enumNode.put("type", "string");
+        enumNode.set("enum", arrayNode);
+
+        // We're always a string for the purposes of this test
+        when(typeRule.apply("status", enumNode, null, jpackage, schema))
+                .thenReturn(jpackage.owner()._ref(String.class));
+
+        JType result = rule.apply("status", enumNode, null, jpackage, schema);
+
+        verify(annotator).typeInfo((JDefinedClass) result, enumNode);
     }
 
     private static class FirstArgAnswer<T> implements Answer<T> {
