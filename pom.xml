@@ -301,7 +301,7 @@
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>1.30</version>
+                <version>1.75</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
