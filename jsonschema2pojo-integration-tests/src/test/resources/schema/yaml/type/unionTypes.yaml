@@ -1,8 +1,7 @@
 properties:
-  booleanProperty:
+  nullProperty:
     type:
-    - boolean
-    - string
+    - 'null'
   integerProperty:
     type:
     - integer
@@ -10,4 +9,8 @@ properties:
   stringProperty:
     type:
     - string
+  booleanProperty:
+    type:
+    - 'null'
+    - boolean
 type: object

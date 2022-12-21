@@ -21,6 +21,9 @@ import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
@@ -119,17 +122,20 @@ public class TypeRule implements Rule<JClassContainer, JType> {
   }
 
   private String getTypeName(JsonNode node) {
-    if (node.has("type") && node.get("type").isArray() && node.get("type").size() > 0) {
-      for (JsonNode jsonNode : node.get("type")) {
-        String typeName = jsonNode.asText();
-        if (!typeName.equals("null")) {
-          return typeName;
-        }
-      }
-    }
+    if (node.has("type")) {
+      final JsonNode typeNode = node.get("type");
+      if (typeNode.isArray() && typeNode.size() > 0) {
+        final List<String> typeValues = StreamSupport.stream(typeNode.spliterator(), false)
+                .map(JsonNode::asText)
+                .filter(n -> !"null".equals(n))
+                .collect(Collectors.toList());
 
-    if (node.has("type") && node.get("type").isTextual()) {
-      return node.get("type").asText();
+        if (typeValues.size() == 1) {
+            return typeValues.get(0);
+        }
+      } else if (typeNode.isTextual()) {
+          return typeNode.asText();
+      }
     }
 
     return DEFAULT_TYPE_NAME;

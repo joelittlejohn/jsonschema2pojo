@@ -282,13 +282,13 @@ public class TypeIT {
     }
 
     @Test
-    public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void unionTypesChooseFirstTypePresent() throws ReflectiveOperationException {
 
         Class<?> classWithUnionProperties = schemaRule.generateAndCompile("/schema/type/unionTypes.json", "com.example").loadClass("com.example.UnionTypes");
 
-        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        Method nullTypeGetter = classWithUnionProperties.getMethod("getNullProperty");
 
-        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+        assertThat(nullTypeGetter.getReturnType().getName(), is("java.lang.Object"));
 
         Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
 
@@ -297,6 +297,20 @@ public class TypeIT {
         Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
 
         assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
+
+        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+    }
+
+    @Test
+    public void mixedUnionTypesReturnObject() throws ReflectiveOperationException {
+        Class<?> classWithMixedUnionProperties = schemaRule.generateAndCompile("/schema/type/mixedUnionTypes.json", "com.example").loadClass("com.example.MixedUnionTypes");
+
+        Method mixedTypesGetter = classWithMixedUnionProperties.getMethod("getMixedTypesProperty");
+        assertThat(mixedTypesGetter.getReturnType().getName(), is("java.lang.Object"));
+
+        Method mixedTypesWithNullGetter = classWithMixedUnionProperties.getMethod("getMixedTypesWithNullProperty");
+        assertThat(mixedTypesWithNullGetter.getReturnType().getName(), is("java.lang.Object"));
     }
 
     @SuppressWarnings("rawtypes")
