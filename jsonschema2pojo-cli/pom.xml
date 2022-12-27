@@ -22,6 +22,10 @@
                 </includes>
                 <targetPath>${project.build.directory}</targetPath>
             </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
         </resources>
         <plugins>
             <plugin>
