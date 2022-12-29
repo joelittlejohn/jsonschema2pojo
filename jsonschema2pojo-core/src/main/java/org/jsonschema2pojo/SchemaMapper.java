@@ -80,8 +80,6 @@ public class SchemaMapper {
      * @param schemaUrl
      *            location of the schema to be used as input
      * @return The top-most type generated from the given file
-     * @throws IOException
-     *             if the schema content cannot be read
      */
     public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) {
 

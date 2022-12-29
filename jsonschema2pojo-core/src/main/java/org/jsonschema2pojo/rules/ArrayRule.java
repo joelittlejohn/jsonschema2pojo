@@ -88,8 +88,12 @@ public class ArrayRule implements Rule<JPackage, JClass> {
                 pathToItems = "#" + schema.getId().getFragment() + "/items";
             }
             Schema itemsSchema = ruleFactory.getSchemaStore().create(schema, pathToItems, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-            itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), node, jpackage, itemsSchema);
-            itemsSchema.setJavaTypeIfEmpty(itemType);
+            if (itemsSchema.isGenerated()) {
+                itemType = itemsSchema.getJavaType();
+            } else {
+                itemType = ruleFactory.getSchemaRule().apply(makeSingular(nodeName), node.get("items"), node, jpackage, itemsSchema);
+                itemsSchema.setJavaTypeIfEmpty(itemType);
+            }
         } else {
             itemType = jpackage.owner().ref(Object.class);
         }
