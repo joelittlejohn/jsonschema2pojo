@@ -1,0 +1,12 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "selfReferencingArrayItems": {
+        "$ref": "#"
+      }
+    },
+    "additionalProperties": false
+  }
+}
