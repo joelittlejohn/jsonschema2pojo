@@ -32,7 +32,7 @@ dependencies {
     // Required if generating Gson annotations
     implementation 'com.google.code.gson:gson:2.8.9'
     // Required if generating Moshi 1.x annotations
-    implementation 'com.squareup.moshi:moshi:1.12.0'
+    implementation 'com.squareup.moshi:moshi:1.14.0'
     // Required if generating JSR-303 annotations
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
