@@ -22,6 +22,7 @@ import java.net.URL;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,11 +40,15 @@ import com.sun.codemodel.JType;
 public class SchemaMapper {
     private static final JsonNodeFactory NODE_FACTORY = JsonNodeFactory.instance;
 
+    private static SourceType getSourceType(RuleFactory ruleFactory) {
+        return ruleFactory.getGenerationConfig().getSourceType();
+    }
+
     private final RuleFactory ruleFactory;
-    private final SchemaGenerator schemaGenerator;
+    private final JsonFactory jsonFactory;
 
     /**
-     * Create a schema mapper with the given {@link RuleFactory}.
+     * Create a schema mapper with the given {@link RuleFactory} and {@link SchemaGenerator}.
      *
      * @param ruleFactory
      *            A factory used by this mapper to create Java type generation
@@ -53,18 +58,24 @@ public class SchemaMapper {
      *            that the input documents are plain json (not json schema)
      */
     public SchemaMapper(RuleFactory ruleFactory, SchemaGenerator schemaGenerator) {
-        this.ruleFactory = ruleFactory;
-        this.schemaGenerator = schemaGenerator;
+        this(ruleFactory, JsonFactoryProvider.ofSourceTypeAndSchemaGenerator(getSourceType(ruleFactory), schemaGenerator));
     }
 
     /**
-     * Create a schema mapper with the default {@link RuleFactory}
-     * implementation.
+     * Create a schema mapper with the default {@link RuleFactory} and {@link SchemaGenerator} implementations.
      *
      * @see RuleFactory
      */
     public SchemaMapper() {
         this(new RuleFactory(), new SchemaGenerator());
+    }
+
+    /**
+     * Create a schema mapper with the given {@link RuleFactory} and provided {@code JsonFactory}
+     */
+    public SchemaMapper(RuleFactory ruleFactory, JsonFactory jsonFactory) {
+        this.ruleFactory = ruleFactory;
+        this.jsonFactory = jsonFactory;
     }
 
     /**
@@ -85,26 +96,9 @@ public class SchemaMapper {
 
         JPackage jpackage = codeModel._package(packageName);
 
-        ObjectNode schemaNode = readSchema(schemaUrl);
+        ObjectNode schemaNode = NODE_FACTORY.objectNode().put("$ref", schemaUrl.toString());
 
         return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
-
-    }
-
-    private ObjectNode readSchema(URL schemaUrl) {
-
-        switch (ruleFactory.getGenerationConfig().getSourceType()) {
-            case JSONSCHEMA:
-            case YAMLSCHEMA:
-                ObjectNode schemaNode = NODE_FACTORY.objectNode();
-                schemaNode.put("$ref", schemaUrl.toString());
-                return schemaNode;
-            case JSON:
-            case YAML:
-                return schemaGenerator.schemaFromExample(schemaUrl);
-            default:
-                throw new IllegalArgumentException("Unrecognised source type: " + ruleFactory.getGenerationConfig().getSourceType());
-        }
 
     }
 
@@ -120,22 +114,14 @@ public class SchemaMapper {
     }
 
     public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
-
         JPackage jpackage = codeModel._package(packageName);
-
-        JsonNode schemaNode = null;
-        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON) {
-            JsonNode jsonNode = objectMapper().readTree(json);
-            schemaNode = schemaGenerator.schemaFromExample(jsonNode);
-        } else {
-            schemaNode = objectMapper().readTree(json);
-        }
+        JsonNode schemaNode = objectMapper().readTree(json);
 
         return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
     }
 
     private ObjectMapper objectMapper() {
-        return new ObjectMapper()
+        return new ObjectMapper(jsonFactory)
                 .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }

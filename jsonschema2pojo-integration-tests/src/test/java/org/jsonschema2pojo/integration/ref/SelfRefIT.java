@@ -19,20 +19,14 @@ package org.jsonschema2pojo.integration.ref;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import org.apache.commons.io.IOUtils;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
@@ -94,27 +88,19 @@ public class SelfRefIT {
     }
 
     @Test
-    public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
+    public void nestedSelfRefsInStringContentWithoutParentFile() throws ReflectiveOperationException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/ref/nestedSelfRefsReadAsString.json", "com.example");
 
-        String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"));
-        JCodeModel codeModel = new JCodeModel();
-        new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
-
-        codeModel.build(schemaRule.getGenerateDir());
-        
-        ClassLoader classLoader = schemaRule.compile();
-        
-        Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsInString");
+        Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsReadAsString");
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));
-        
+
         Class<?> listEntryType = (Class<?>) ((ParameterizedType)nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(listEntryType.getName(), equalTo("com.example.Thing"));
-        
+
         Class<?> thingClass = classLoader.loadClass("com.example.Thing");
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getVersion").getReturnType().getSimpleName(), equalTo("String"));
-
     }
 
     @Test

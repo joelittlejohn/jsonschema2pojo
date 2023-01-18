@@ -31,9 +31,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 
@@ -63,32 +60,28 @@ public class SchemaMapperTest {
     }
 
     @Test
-    public void generateCreatesSchemaFromExampleJsonWhenInJsonMode() {
+    public void generateReadsSchemaAsObjectWhenInJsonMode() {
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
-
-        ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
         when(mockGenerationConfig.getSourceType()).thenReturn(SourceType.JSON);
 
-        final SchemaGenerator mockSchemaGenerator = mock(SchemaGenerator.class);
-        when(mockSchemaGenerator.schemaFromExample(schemaContent)).thenReturn(schemaNode);
-
         final RuleFactory mockRuleFactory = mock(RuleFactory.class);
         when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
         when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
 
-        new SchemaMapper(mockRuleFactory, mockSchemaGenerator).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
+        new SchemaMapper(mockRuleFactory, new SchemaGenerator()).generate(new JCodeModel(), "Address", "com.example.package", schemaContent);
 
+        ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
 
-        verify(mockSchemaRule).apply(eq("Address"), eq(schemaNode), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("Address"), captureNode.capture(), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
-
+        assertThat(captureNode.getValue(), is(notNullValue()));
     }
 
     @Test
@@ -96,27 +89,24 @@ public class SchemaMapperTest {
 
         String jsonContent = IOUtils.toString(this.getClass().getResourceAsStream("/example-json/user.json"));
 
-        ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
-
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
         when(mockGenerationConfig.getSourceType()).thenReturn(SourceType.JSON);
 
-        final SchemaGenerator mockSchemaGenerator = mock(SchemaGenerator.class);
-        when(mockSchemaGenerator.schemaFromExample(new ObjectMapper().readTree(jsonContent))).thenReturn(schemaNode);
-
         final RuleFactory mockRuleFactory = mock(RuleFactory.class);
         when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
         when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
 
-        new SchemaMapper(mockRuleFactory, mockSchemaGenerator).generate(new JCodeModel(), "User", "com.example.package", jsonContent);
+        new SchemaMapper(mockRuleFactory, new SchemaGenerator()).generate(new JCodeModel(), "User", "com.example.package", jsonContent);
 
         ArgumentCaptor<JPackage> capturePackage = ArgumentCaptor.forClass(JPackage.class);
+        ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
 
-        verify(mockSchemaRule).apply(eq("User"), eq(schemaNode), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
+        verify(mockSchemaRule).apply(eq("User"), captureNode.capture(), eq(null), capturePackage.capture(), Mockito.isA(Schema.class));
 
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
+        assertThat(captureNode.getValue(), is(notNullValue()));
     }
 
     @Test

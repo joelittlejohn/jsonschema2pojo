@@ -36,7 +36,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.URLUtil;
 
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 
@@ -54,15 +54,16 @@ public class Jsonschema2Pojo {
      *             if the application is unable to read data from the source
      */
     public static void generate(GenerationConfig config, RuleLogger logger) throws IOException {
+        final JsonFactory jsonFactory = JsonFactoryProvider.ofSourceType(config.getSourceType());
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
 
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
         ruleFactory.setLogger(logger);
-        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config), logger));
+        ruleFactory.setSchemaStore(new SchemaStore(new ContentResolver(jsonFactory), logger));
 
-        SchemaMapper mapper = new SchemaMapper(ruleFactory, createSchemaGenerator(config));
+        SchemaMapper mapper = new SchemaMapper(ruleFactory, jsonFactory);
 
         JCodeModel codeModel = new JCodeModel();
 
@@ -86,22 +87,6 @@ public class Jsonschema2Pojo {
             codeModel.build(sourcesWriter, resourcesWriter);
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
-        }
-    }
-    
-    private static ContentResolver createContentResolver(GenerationConfig config) {
-        if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
-            return new ContentResolver(new YAMLFactory());
-        } else {
-            return new ContentResolver();
-        }
-    }
-
-    private static SchemaGenerator createSchemaGenerator(GenerationConfig config) {
-        if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
-            return new SchemaGenerator(new YAMLFactory());
-        } else {
-            return new SchemaGenerator();
         }
     }
 
