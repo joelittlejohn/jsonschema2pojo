@@ -62,6 +62,8 @@ public class Moshi1IT {
                         "sourceType", "json"))
                 .loadClass("com.example.Torrent");
 
+        assertThat(schemaRule.getGenerateDir(), not(containsText("jakarta.json.bind.annotation")));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("javax.json.bind.annotation")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.google.gson")));

@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.core.IsInstanceOf;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
@@ -41,12 +42,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("rawtypes")
 public class EnumIT {
-    
+
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private static Class parentClass;
-    private static Class<Enum> enumClass;
+    private static Class<?> parentClass;
+    private static Class<Enum<?>> enumClass;
 
     @BeforeClass
     @SuppressWarnings("unchecked")
@@ -55,7 +56,7 @@ public class EnumIT {
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("propertyWordDelimiters", "_"));
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
-        enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
+        enumClass = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
     }
 
     @Test
@@ -283,38 +284,44 @@ public class EnumIT {
 
     @Test
     @SuppressWarnings({ "unchecked" })
-    public void enumWithJavaEnumsExtension() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
-
+    public void enumWithJavaEnumsExtension() throws ReflectiveOperationException, IOException {
+        final String enumPropertyName = "enumProperty";
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithJavaEnumsExtension.json", "com.example");
 
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension");
-        Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension$EnumProperty");
+        Class<Enum<?>> enumClass = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.EnumWithJavaEnumsExtension$EnumProperty");
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
-        checkValueOfEnum(typeWithEnumProperty, enumClass, 0, "1", objectMapper);
+        checkValueOfEnum(typeWithEnumProperty, enumClass, enumPropertyName, 0, "1", objectMapper);
         assertThat(enumClass.getEnumConstants()[1].name(), is("TWO"));
-        checkValueOfEnum(typeWithEnumProperty, enumClass, 1, "2", objectMapper);
+        checkValueOfEnum(typeWithEnumProperty, enumClass, enumPropertyName, 1, "2", objectMapper);
         assertThat(enumClass.getEnumConstants()[2].name(), is("THREE"));
-        checkValueOfEnum(typeWithEnumProperty, enumClass, 2, "3", objectMapper);
+        checkValueOfEnum(typeWithEnumProperty, enumClass, enumPropertyName, 2, "3", objectMapper);
         assertThat(enumClass.getEnumConstants()[3].name(), is("FOUR"));
-        checkValueOfEnum(typeWithEnumProperty, enumClass, 3, "4", objectMapper);
+        checkValueOfEnum(typeWithEnumProperty, enumClass, enumPropertyName, 3, "4", objectMapper);
     }
 
-    private void checkValueOfEnum(Class<?> typeWithEnumProperty, Class<?> enumClass, int enumIndex, String expectedValue, ObjectMapper objectMapper)
-            throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, IOException {
+    private void checkValueOfEnum(
+            Class<?> typeWithEnumProperty,
+            Class<Enum<?>> enumClass,
+            String propertyName,
+            int enumIndex,
+            String expectedValue,
+            ObjectMapper objectMapper)
+            throws ReflectiveOperationException, IOException {
         Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
-        Method enumSetter = typeWithEnumProperty.getMethod("setEnumProperty", enumClass);
+        Method enumSetter = typeWithEnumProperty.getMethod("set" + StringUtils.capitalize(propertyName), enumClass);
         enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[enumIndex]);
 
         String jsonString = objectMapper.writeValueAsString(valueWithEnumProperty);
         JsonNode jsonTree = objectMapper.readTree(jsonString);
 
         assertThat(jsonTree.size(), is(1));
-        assertThat(jsonTree.has("enumProperty"), is(true));
-        assertThat(jsonTree.get("enumProperty").isTextual(), is(true));
-        assertThat(jsonTree.get("enumProperty").asText(), is(expectedValue));
+        assertThat(jsonTree.has(propertyName), is(true));
+        assertThat(jsonTree.get(propertyName).isTextual(), is(true));
+        assertThat(jsonTree.get(propertyName).asText(), is(expectedValue));
     }
 
     @Test
@@ -408,4 +415,34 @@ public class EnumIT {
 
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void enumsWithMixedCaseConstantNames() throws ReflectiveOperationException, IOException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumsWithMixedCaseConstantNames.json", "com.example");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Class<?> typeWithEnumProperties = resultsClassLoader.loadClass("com.example.EnumsWithMixedCaseConstantNames");
+        Class<Enum<?>> enumClass = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.EnumsWithMixedCaseConstantNames$EnumProperty");
+
+        assertThat(enumClass.getEnumConstants()[0].name(), is("WORD"));
+        checkValueOfEnum(typeWithEnumProperties, enumClass, "enumProperty", 0, "WORD", objectMapper);
+        assertThat(enumClass.getEnumConstants()[1].name(), is("WORD_"));
+        checkValueOfEnum(typeWithEnumProperties, enumClass, "enumProperty", 1, "Word", objectMapper);
+
+        Class<Enum<?>> enumWithJavaEnumNamesClass
+                = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.EnumsWithMixedCaseConstantNames$EnumPropertyWithJavaEnumNames");
+
+        assertThat(enumWithJavaEnumNamesClass.getEnumConstants()[0].name(), is("WORD"));
+        checkValueOfEnum(typeWithEnumProperties, enumWithJavaEnumNamesClass, "enumPropertyWithJavaEnumNames", 0, "WORD", objectMapper);
+        assertThat(enumWithJavaEnumNamesClass.getEnumConstants()[1].name(), is("Word"));
+        checkValueOfEnum(typeWithEnumProperties, enumWithJavaEnumNamesClass, "enumPropertyWithJavaEnumNames", 1, "Word", objectMapper);
+
+        Class<Enum<?>> enumWithJavaEnumsClass
+                = (Class<Enum<?>>) resultsClassLoader.loadClass("com.example.EnumsWithMixedCaseConstantNames$EnumPropertyWithJavaEnums");
+
+        assertThat(enumWithJavaEnumsClass.getEnumConstants()[0].name(), is("WORD"));
+        checkValueOfEnum(typeWithEnumProperties, enumWithJavaEnumsClass, "enumPropertyWithJavaEnums", 0, "WORD", objectMapper);
+        assertThat(enumWithJavaEnumsClass.getEnumConstants()[1].name(), is("Word"));
+        checkValueOfEnum(typeWithEnumProperties, enumWithJavaEnumsClass, "enumPropertyWithJavaEnums", 1, "Word", objectMapper);
+    }
 }

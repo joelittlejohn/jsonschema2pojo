@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>1.1.2-SNAPSHOT</version>
+        <version>1.1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>jsonschema2pojo-cli</artifactId>
@@ -21,6 +21,10 @@
                     <include>*</include>
                 </includes>
                 <targetPath>${project.build.directory}</targetPath>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
             </resource>
         </resources>
         <plugins>
@@ -60,7 +64,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

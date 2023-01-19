@@ -30,7 +30,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/github-script@v3
+      - uses: actions/github-script@v4
         id: fetch-branch-names
         name: Fetch branch names
         with:
@@ -95,7 +95,7 @@ jobs:
             console.log('Combined: ' + combined);
             return combined
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2.3.3
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
       # Creates a branch with other PR branches merged together
@@ -105,7 +105,7 @@ jobs:
           BRANCHES_TO_COMBINE: ${{ steps.fetch-branch-names.outputs.result }}
           COMBINE_BRANCH_NAME: ${{ github.event.inputs.combineBranchName }}
         run: |
-          echo "${{steps.fetch-branch-names.outputs.result}}"
+          echo "$BRANCHES_TO_COMBINE"
           sourcebranches="${BRANCHES_TO_COMBINE%\"}"
           sourcebranches="${sourcebranches#\"}"
 
@@ -121,12 +121,14 @@ jobs:
           git pull origin $sourcebranches --no-edit
           git push origin $COMBINE_BRANCH_NAME
       # Creates a PR with the new combined branch
-      - uses: actions/github-script@v3
+      - uses: actions/github-script@v4
         name: Create Combined Pull Request
+        env:
+          PRS_STRING: ${{ steps.fetch-branch-names.outputs.prs-string }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const prString = `${{ steps.fetch-branch-names.outputs.prs-string }}`;
+            const prString = process.env.PRS_STRING;
             const body = 'This PR was created by the Combine PRs action by combining the following PRs:\n' + prString;
             await github.pulls.create({
               owner: context.repo.owner,

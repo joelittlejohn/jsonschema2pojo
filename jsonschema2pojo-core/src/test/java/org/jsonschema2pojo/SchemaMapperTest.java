@@ -18,7 +18,6 @@ package org.jsonschema2pojo;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ import com.sun.codemodel.JPackage;
 public class SchemaMapperTest {
 
     @Test
-    public void generateReadsSchemaAsObject() throws IOException {
+    public void generateReadsSchemaAsObject() {
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 
@@ -64,7 +63,7 @@ public class SchemaMapperTest {
     }
 
     @Test
-    public void generateCreatesSchemaFromExampleJsonWhenInJsonMode() throws IOException {
+    public void generateCreatesSchemaFromExampleJsonWhenInJsonMode() {
 
         URL schemaContent = this.getClass().getResource("/schema/address.json");
 

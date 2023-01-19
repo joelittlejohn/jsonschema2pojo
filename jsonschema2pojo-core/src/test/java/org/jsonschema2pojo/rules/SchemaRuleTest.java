@@ -18,8 +18,6 @@ package org.jsonschema2pojo.rules;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
@@ -44,8 +42,8 @@ public class SchemaRuleTest {
     private static final String NODE_NAME = "nodeName";
     private static final String TARGET_CLASS_NAME = SchemaRuleTest.class.getName() + ".DummyClass";
 
-    private RuleFactory mockRuleFactory = mock(RuleFactory.class);
-    private SchemaRule rule = new SchemaRule(mockRuleFactory);
+    private final RuleFactory mockRuleFactory = mock(RuleFactory.class);
+    private final SchemaRule rule = new SchemaRule(mockRuleFactory);
 
     @Test
     public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {
