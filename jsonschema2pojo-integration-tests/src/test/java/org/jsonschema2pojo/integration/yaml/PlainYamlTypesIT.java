@@ -181,7 +181,7 @@ public class PlainYamlTypesIT {
         assertEquals(Integer.class, genType.getMethod("getScalar").getReturnType());
 
         thrown.expect(InvalidFormatException.class);
-        thrown.expectMessage(startsWith("Cannot deserialize value of type `int` from String \"what\": not a valid `int` value"));
+        thrown.expectMessage(startsWith("Cannot deserialize value of type `java.lang.Integer` from String \"what\": not a valid `java.lang.Integer` value"));
         OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/yaml/simplePropertiesInArrayItem.yaml"), Array.newInstance(genType, 0).getClass());
     }
 

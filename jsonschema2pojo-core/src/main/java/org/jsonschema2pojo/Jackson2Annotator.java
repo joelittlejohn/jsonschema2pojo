@@ -223,7 +223,7 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
         jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
 
         // When not provided it will use default provided by "use" attribute
-        if(StringUtils.isNotBlank(propertyName)) {
+        if (StringUtils.isNotBlank(propertyName)) {
             jsonTypeInfo.param("property", propertyName);
         }
     }
