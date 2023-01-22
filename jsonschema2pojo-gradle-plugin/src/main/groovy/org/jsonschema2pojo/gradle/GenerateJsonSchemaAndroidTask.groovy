@@ -15,11 +15,10 @@
  */
 package org.jsonschema2pojo.gradle
 
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.gradle.work.InputChanges
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.Jsonschema2Pojo
 
@@ -35,7 +34,7 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
   File outputDir
 
   @TaskAction
-  def generate(IncrementalTaskInputs inputs) {
+  def generate(InputChanges inputs) {
 
     // If the whole thing isn't incremental, delete the build folder (if it exists)
     if (!inputs.isIncremental() && outputDir.exists()) {
