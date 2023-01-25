@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -70,9 +70,9 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         String pathToProperty;
         if (schema.getId() == null || schema.getId().getFragment() == null) {
-            pathToProperty = "#/properties/" + nodeName;
+            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         } else {
-            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
+            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());

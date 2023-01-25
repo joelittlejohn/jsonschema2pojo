@@ -65,7 +65,7 @@ public class ReflectionHelper {
     if (node.has("extends")) {
       String path;
       if (schema.getId().getFragment() == null) {
-        path = "#extends";
+        path = "#/extends";
       } else {
         path = "#" + schema.getId().getFragment() + "/extends";
       }

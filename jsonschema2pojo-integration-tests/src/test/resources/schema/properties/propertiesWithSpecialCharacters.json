@@ -1,0 +1,17 @@
+{
+  "type" : "object",
+  "properties" : {
+    "VERSV#" : {
+      "type" : "string"
+    },
+    "foo#bar" : {
+      "type" : "string"
+    },
+    "${RFC_NUMBER}" : {
+      "type" : "string"
+    },
+    "org.hisp.dhis.common.FileTypeValueOptions" : {
+      "type" : "string"
+    }
+  }
+}
