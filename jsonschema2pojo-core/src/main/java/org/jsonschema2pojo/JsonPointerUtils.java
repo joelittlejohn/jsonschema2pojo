@@ -38,6 +38,7 @@ public class JsonPointerUtils {
         }
         return encoded;
     }
+    
     public static String decodeReferenceToken(final String s) {
         String decoded = s;
 
