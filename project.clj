@@ -4,7 +4,7 @@
                  [org.clojure/clojure "1.10.3"]
                  [org.clojure/data.codec "0.1.1"]
                  [org.clojure/tools.logging "1.1.0"]
-                 [org.jsonschema2pojo/jsonschema2pojo-core "1.1.1"]
+                 [org.jsonschema2pojo/jsonschema2pojo-core "1.1.3"]
                  [ring/ring-jetty-adapter "1.9.2"]
                  [ring/ring-ssl "0.3.0"]]
   :plugins [[lein-ring "0.12.5"]]

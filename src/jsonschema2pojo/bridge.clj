@@ -59,7 +59,9 @@
     (isIncludeToString []
       (boolean (Boolean/valueOf (params "includetostring"))))
     (isIncludeJsr303Annotations []
-      (boolean (Boolean/valueOf (params "includejsr303annotations"))))
+      (not (empty? (params "validationstyle"))))
+    (isUseJakartaValidation []
+      (= "jakarta.validation" (params "validationstyle")))
     (isUseJodaDates []
       (boolean (Boolean/valueOf (params "usejodadates"))))
     (isUseDoubleNumbers []

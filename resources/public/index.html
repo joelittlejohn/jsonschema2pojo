@@ -69,15 +69,6 @@
 
       <h1>jsonschema2pojo
         <div style="display: inline; margin-left: 16em; font-size: 0.5em;">
-          <!--
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="display: inline; margin-right: 2em;">
-	    <input type="hidden" name="cmd" value="_s-xclick">
-	    <input type="hidden" name="hosted_button_id" value="2UEVPQ8P647HC">
-	    <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
-	    <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1"> <small style="font-size: 0.7em" data-toggle="tooltip" data-placement="right" title="We use donations to pay for this domain. Just $1/£1/€1 will really help :)">Why?</small>
-          </form>
-	  -->
-
           <iframe style="display: inline;" src="https://ghbtns.com/github-btn.html?user=joelittlejohn&repo=jsonschema2pojo&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100" height="20"></iframe>
           <div style="display: inline;">
             <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.jsonschema2pojo.org" data-text="Generate Java types from JSON, online!" data-dnt="true">Tweet</a>
@@ -93,6 +84,17 @@
 
       <form id="form" method="post">
         <div class="row">
+          <div class="span10">
+              <label style="display: inline-block;">
+                Package
+                <input id="targetpackage" name="targetpackage" value="com.example">
+              </label>
+            <label style="display: inline-block; margin-left: 2em;">
+              Class name
+              <input id="classname" name="classname" value="Example">
+            </label>
+
+          </div>
           <div class="span6">
             <textarea id="schema" name="schema">
 {
@@ -120,20 +122,6 @@
 
           </div>
           <div class="span4">
-            <div class="control-group">
-            <label>
-              Package
-              <input id="targetpackage" name="targetpackage" value="com.example">
-            </label>
-            </div>
-
-            <div class="control-group">
-            <label>
-              Class name
-              <input id="classname" name="classname" value="Example">
-            </label>
-            </div>
-
             <div class="form-section">
               Source type:<br>
               <label class="radio inline">
@@ -165,19 +153,47 @@
                        id="annotationStyle1" value="jackson2" checked>
                 Jackson 2.x
               </label>
-              <label class="radio inline" style="width: 3em;">
+              <label class="radio inline" style="width: 6em;">
                 <input type="radio" name="annotationstyle"
                        id="annotationStyle2" value="gson">
                 Gson
-              </label><br>
-              <label class="radio inline" style="width: 3em;">
-                <input type="radio" name="annotationstyle"
-                       id="annotationStyle3" value="moshi1">
-                Moshi
               </label>
               <label class="radio inline">
                 <input type="radio" name="annotationstyle"
-                       id="annotationStyle4" value="none">
+                       id="annotationStyle3" value="moshi1">
+                Moshi
+              </label><br>
+              <label class="radio inline" style="width: 6em;">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle4" value="jsonb1">
+                JSON-B 1.x
+              </label>
+              <label class="radio inline" style="width: 6em;">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle5" value="jsonb2">
+                JSON-B 2.x
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="annotationstyle"
+                       id="annotationStyle6" value="none">
+                None
+              </label>
+            </div>
+            <div class="form-section">
+              Validation annotations:<br>
+              <label class="radio inline" style="width: 6em;">
+                <input type="radio" name="validationstyle"
+                       id="validationStyle1" value="javax.validation">
+                javax.validation
+              </label><br>
+              <label class="radio inline" style="width: 3em;">
+                <input type="radio" name="validationstyle"
+                       id="validationStyle2" value="jakarta.validation">
+                jakarta.validation
+              </label><br>
+              <label class="radio inline" style="width: 3em;">
+                <input type="radio" name="validationstyle"
+                       id="validationStyle3" value="" checked>
                 None
               </label>
             </div>
@@ -207,9 +223,6 @@
             </label>
             <label class="checkbox">
               <input name="includetostring" value="true" type="checkbox">Include <code>toString</code>
-            </label>
-            <label class="checkbox">
-              <input name="includejsr303annotations" value="true" type="checkbox">Include JSR-303 annotations
             </label>
             <label class="checkbox">
               <input name="includeadditionalproperties" value="true" type="checkbox" checked="checked">Allow additional properties
