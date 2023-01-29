@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.3
+* Add command line option to print version ([#1458](https://github.com/joelittlejohn/jsonschema2pojo/pull/1458))
+* Accept multiple values provided with single "-s"/"--source" argument ([#1457](https://github.com/joelittlejohn/jsonschema2pojo/pull/1457))
+* Avoid deprecation warning with Gradle plugin re Gradle 8.0 and IncrementalTaskInputs ([#1454](https://github.com/joelittlejohn/jsonschema2pojo/issues/1454))
+* java.lang.OutOfMemoryError: Java heap space ([#1423](https://github.com/joelittlejohn/jsonschema2pojo/issues/1423))
+* Properties with special character in the name (#, /, etc) cause IllegalArgumentException 'Path not present' when using 1.1.2 ([#1402](https://github.com/joelittlejohn/jsonschema2pojo/issues/1402))
+* Add `builder` method to create a new instance of the builder ([#1396](https://github.com/joelittlejohn/jsonschema2pojo/issues/1396))
+* Added support for JSON-B ([#1385](https://github.com/joelittlejohn/jsonschema2pojo/pull/1385))
+* Get Stackoverflow error if array items schema contains trees/cycle dependencies for children ([#1376](https://github.com/joelittlejohn/jsonschema2pojo/issues/1376))
+
 ## 1.1.2
 * Use LinkedHashMap for additional properties, so the original ordering in the JSON is preserved ([#1397](https://github.com/joelittlejohn/jsonschema2pojo/pull/1397))
 * Collection fields are unnecessarily initialized to "null" ([#1346](https://github.com/joelittlejohn/jsonschema2pojo/issues/1346))

@@ -113,3 +113,6 @@
 * unkish
 * Martin Gjaldbaek
 * John Dimeo
+* TheTrueDentist
+* Josejulio Martínez
+* Nils Andresen
