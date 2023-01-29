@@ -58,15 +58,15 @@ public class SchemaStore {
         if (!schemas.containsKey(normalizedId)) {
 
             URI baseId = removeFragment(id).normalize();
-            JsonNode baseContent = contentResolver.resolve(baseId);
+            if (!schemas.containsKey(baseId)) {
+                final JsonNode baseContent = contentResolver.resolve(baseId);
+                schemas.put(baseId, new Schema(baseId, baseContent, null));
+            }
 
-            Schema baseSchema = new Schema(baseId, baseContent, null);
-
+            final Schema baseSchema = schemas.get(baseId);
             if (normalizedId.toString().contains("#")) {
-                JsonNode childContent = fragmentResolver.resolve(baseContent, '#' + id.getFragment(), refFragmentPathDelimiters);
+                JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
                 schemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema));
-            } else {
-                schemas.put(normalizedId, baseSchema);
             }
         }
 
