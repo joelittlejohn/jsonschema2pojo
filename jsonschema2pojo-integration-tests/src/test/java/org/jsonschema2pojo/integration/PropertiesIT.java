@@ -122,7 +122,8 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
+                config("propertyWordDelimiters", " -"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 

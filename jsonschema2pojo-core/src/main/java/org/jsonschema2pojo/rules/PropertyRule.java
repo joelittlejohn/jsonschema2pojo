@@ -16,6 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
@@ -66,7 +67,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
-        String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        String propertyName;
+        if (StringUtils.isEmpty(nodeName)) {
+            propertyName = "__EMPTY__";
+        } else {
+            propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        }
 
         String pathToProperty;
         if (schema.getId() == null || schema.getId().getFragment() == null) {

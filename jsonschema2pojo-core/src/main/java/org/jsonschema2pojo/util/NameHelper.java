@@ -20,6 +20,7 @@ import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
@@ -60,6 +61,10 @@ public class NameHelper {
 
     public String capitalizeTrailingWords(String name) {
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
+
+        if (StringUtils.equals(name, "_")) {
+          return "__";
+        }
 
         if (containsAny(name, wordDelimiters)) {
             String capitalizedNodeName;
