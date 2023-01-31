@@ -61,6 +61,9 @@ public class NameHelper {
     public String capitalizeTrailingWords(String name) {
         char[] wordDelimiters = generationConfig.getPropertyWordDelimiters();
 
+        if(name.equals("_")){
+            name = "underscore";
+        }
         if (containsAny(name, wordDelimiters)) {
             String capitalizedNodeName;
             if (areAllWordsUpperCaseBesideDelimiters(name, wordDelimiters)) {
