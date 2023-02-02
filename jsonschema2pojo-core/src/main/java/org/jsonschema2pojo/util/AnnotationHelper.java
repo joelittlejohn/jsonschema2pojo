@@ -16,6 +16,9 @@
 
 package org.jsonschema2pojo.util;
 
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.util.LanguageFeatures;
+
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -36,13 +39,14 @@ public class AnnotationHelper {
         } catch (ClassNotFoundException e) {
             return false;
         }
-
     }
 
-    public static void addGeneratedAnnotation(JDefinedClass jclass) {
-        if (!tryToAnnotate(jclass, JAVA_9_GENERATED)) {
-            tryToAnnotate(jclass, JAVA_8_GENERATED);
+    public static void addGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
+        if (LanguageFeatures.canUseJava9(config)) {
+            if (tryToAnnotate(jclass, JAVA_9_GENERATED)) {
+                return;
+            }
         }
+        tryToAnnotate(jclass, JAVA_8_GENERATED);
     }
-
 }

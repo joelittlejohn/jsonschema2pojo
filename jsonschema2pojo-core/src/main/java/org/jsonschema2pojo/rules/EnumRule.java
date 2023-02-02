@@ -151,7 +151,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
 
         if(ruleFactory.getGenerationConfig() != null && ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-            AnnotationHelper.addGeneratedAnnotation(_enum);
+            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), _enum);
         }
 
         JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);

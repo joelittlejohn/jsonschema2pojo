@@ -24,6 +24,7 @@ import org.jsonschema2pojo.GenerationConfig;
 
 public class LanguageFeatures {
 
+    private static final Collection<String> LESS_THAN_9 = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6", "1.7", "7", "1.8", "8");
     private static final Collection<String> LESS_THAN_8 = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6", "1.7", "7");
     private static final Collection<String> LESS_THAN_7 = asList("1.1", "1.2", "1.3", "1.4", "1.5", "5", "1.6", "6");
 
@@ -33,5 +34,9 @@ public class LanguageFeatures {
 
     public static boolean canUseJava8(GenerationConfig config) {
         return !LESS_THAN_8.contains(config.getTargetVersion());
+    }
+
+    public static boolean canUseJava9(GenerationConfig config) {
+        return !LESS_THAN_9.contains(config.getTargetVersion());
     }
 }

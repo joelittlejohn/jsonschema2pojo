@@ -133,7 +133,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
        
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-        	AnnotationHelper.addGeneratedAnnotation(jclass);
+        	AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
