@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
@@ -31,6 +30,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -201,6 +201,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getAnnotator().dateField(field, clazz, node);
         } else if ("time".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().timeField(field, clazz, node);
+        } else if ("email".equalsIgnoreCase(format) && ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+            if (ruleFactory.getGenerationConfig().isUseJakartaValidation()) {
+                field.annotate(jakarta.validation.constraints.Email.class);
+            } else {
+                field.annotate(javax.validation.constraints.Email.class);
+            }
         }
     }
 
