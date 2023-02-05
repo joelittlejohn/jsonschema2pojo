@@ -60,7 +60,7 @@ import org.jsonschema2pojo.util.URLUtil;
  * style Java classes for data binding.
  * <p>
  * See <a href=
- * 'http://jsonschema2pojo.googlecode.com'>jsonschema2pojo.googlecode.com</a>.
+ * "http://jsonschema2pojo.googlecode.com">jsonschema2pojo.googlecode.com</a>.
  *
  * @see <a href="http://ant.apache.org/manual/develop.html">Writing Your Own
  *      Task</a>
@@ -291,19 +291,19 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'constructorsRequiredPropertiesOnly' property of this class. This is a legacy configuration option used to turn on the {@link
-     * #isIncludeAllPropertiesConstructor()} and off the {@link #isIncludeAllPropertiesConstructor()} configuration options. It
-     * is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
+     * Sets the 'constructorsRequiredPropertiesOnly' property of this class.
+     * This is a legacy configuration option used to turn on the {@link #isIncludeRequiredPropertiesConstructor()}
+     * and off the {@link #isIncludeAllPropertiesConstructor()} configuration options.
+     * It is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
      *
-     * @param constructorsRequiredPropertiesOnly controls whether the resulting class will have only the constructor with required properties or
-     * something else
+     * @param constructorsRequiredPropertiesOnly controls whether the resulting class will have only the constructor with required or all properties
      */
     public void setConstructorsRequiredPropertiesOnly(boolean constructorsRequiredPropertiesOnly) {
         this.constructorsRequiredPropertiesOnly = constructorsRequiredPropertiesOnly;
     }
 
     /**
-     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * Sets the 'includeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
      * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with only the required properties as parameters.
@@ -316,7 +316,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * Sets the 'includeAllPropertiesConstructor' configuration option. This property works in collaboration with the {@link
      * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor with all listed properties as parameters.
@@ -329,7 +329,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+     * Sets the 'includeCopyConstructor' configuration option. This property works in collaboration with the {@link
      * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
      * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
      * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
@@ -366,7 +366,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *            <p>
      *            Default: <code>false</code>.
      *
-     * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+     * @see <a href="https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization">Jackson Polymorphic Deserialization</a>
      */
     public void setIncludeTypeInfo(boolean includeTypeInfo) {
         this.includeTypeInfo = includeTypeInfo;
@@ -710,6 +710,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      * Sets the 'useCommonsLang3' property of this class
      *
      * @param useCommonsLang3
+     *            whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods
+     * @deprecated no longer in use, please remove it from your config
      */
     public void setUseCommonsLang3(boolean useCommonsLang3) {
         super.log("useCommonsLang3 is deprecated. Please remove it from your config.", Project.MSG_WARN);

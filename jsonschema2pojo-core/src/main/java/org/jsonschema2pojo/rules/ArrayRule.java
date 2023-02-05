@@ -60,7 +60,6 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *  ==&gt;
      *  {@code Set<FooBar> getFooBars(); }
      * </pre>
-     * </p>
      *
      * @param nodeName
      *            the name of the property which has type "array"
