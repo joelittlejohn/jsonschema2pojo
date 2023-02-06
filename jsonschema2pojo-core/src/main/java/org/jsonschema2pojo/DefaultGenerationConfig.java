@@ -69,7 +69,29 @@ public class DefaultGenerationConfig implements GenerationConfig {
      */
     @Override
     public File getTargetDirectory() {
-        return new File(".");
+        return new File(System.getProperty("${project.buildDir}") + "/generated-sources/js2p");
+    }
+
+    /**
+     * Gets the 'sourceDirectory' configuration option
+     *
+     * @return Location of the JSON Schema file(s). Note: this may refer to a single
+     * file or a directory of files.
+     */
+    @Override
+    public String getSourceDirectory() {
+        return null;
+    }
+
+    /**
+     * Gets the 'sourcePaths' configuration option
+     *
+     * @return An array of locations of the JSON Schema file(s). Note: each item may
+     * refer to a single file or a directory of files.
+     */
+    @Override
+    public String[] getSourcePaths() {
+        return new String[0];
     }
 
     /**
@@ -119,7 +141,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeToString() {
         return true;
     }
-    
+
     /**
      * @return no exclusions
      */
@@ -456,7 +478,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
-    
+
     /**
      * @return {@link Collections#emptyMap}
      */

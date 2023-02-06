@@ -77,6 +77,6 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
 
     logger.info 'Using this configuration:\n{}', configuration
 
-    Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
+    Jsonschema2Pojo.generate(configuration, configuration.getSource(), new GradleRuleLogger(logger))
   }
 }
