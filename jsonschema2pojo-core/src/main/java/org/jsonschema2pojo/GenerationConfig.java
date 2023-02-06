@@ -47,7 +47,7 @@ public interface GenerationConfig {
    *
    * @return whether to include json type information. Commonly used to support polymorphic type deserialization.
    *
-   * @see <a href="Jackson Polymorphic Deserialization">https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization</a>
+   * @see <a href="https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization">Jackson Polymorphic Deserialization</a>
    *
    */
   boolean isIncludeTypeInfo();
@@ -57,7 +57,7 @@ public interface GenerationConfig {
      *
      * @return whether to include JDK Constructor Properties. Used by serialization libraries to get parameter names of constructors at runtime. (Not Available on Android)
      *
-     * @see <a href="ConstructorProperties">https://docs.oracle.com/javase/7/docs/api/java/beans/ConstructorProperties.html</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/beans/ConstructorProperties.html">ConstructorProperties</a>
      */
     boolean isIncludeConstructorPropertiesAnnotation();
 
@@ -208,7 +208,6 @@ public interface GenerationConfig {
    *         <li><code>NON_NULL</code></li>
    *         <li><code>USE_DEFAULTS</code></li>
    *         </ul>
-   *         </p>
    *
    * @see InclusionLevel
    */
@@ -378,33 +377,39 @@ public interface GenerationConfig {
   boolean isIncludeConstructors();
 
   /**
-   * Gets the 'constructorsRequiredPropertiesOnly' configuration option. This is a legacy configuration option used to turn on the {@link
-   * #isIncludeAllPropertiesConstructor()} and off the {@link #isIncludeAllPropertiesConstructor()} configuration options.
+   * Gets the 'constructorsRequiredPropertiesOnly' configuration option.
+   * This is a legacy configuration option used to turn on the {@link #isIncludeRequiredPropertiesConstructor()}
+   * and off the {@link #isIncludeAllPropertiesConstructor()} configuration options.
    * It is specifically tied to the {@link #isIncludeConstructors()} property, and will do nothing if that property is not enabled
+   *
+   * @return whether the resulting object should have a constructor with only the required properties as parameters or all properties.
    */
   boolean isConstructorsRequiredPropertiesOnly();
 
   /**
-   * Gets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+   * Gets the 'includeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
    * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
-   * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
-   * whether the resulting object should include a constructor with only the required properties as parameters.
+   * if {@link #isIncludeConstructors()} is not set to true.
+   * .
+   * @return whether the resulting object should include a constructor with only the required properties as parameters.
    */
   boolean isIncludeRequiredPropertiesConstructor();
 
   /**
-   * Gets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+   * Gets the 'includeAllPropertiesConstructor' configuration option. This property works in collaboration with the {@link
    * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
-   * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
-   * whether the resulting object should include a constructor with all listed properties as parameters.
+   * if {@link #isIncludeConstructors()} is not set to true.
+   *
+   * @return whether the resulting object should include a constructor with all listed properties as parameters.
    */
   boolean isIncludeAllPropertiesConstructor();
 
   /**
-   * Gets the 'constructorsIncludeRequiredPropertiesConstructor' configuration option. This property works in collaboration with the {@link
+   * Gets the 'includeCopyConstructor' configuration option. This property works in collaboration with the {@link
    * #isIncludeConstructors()} configuration option and is incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect
-   * if {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
-   * whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
+   * if {@link #isIncludeConstructors()} is not set to true.
+   *
+   * @return whether the resulting object should include a constructor the class itself as a parameter, with the expectation that all properties from the
    * originating class will assigned to the new class.
    */
   boolean isIncludeCopyConstructor();

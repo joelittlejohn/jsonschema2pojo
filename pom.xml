@@ -54,6 +54,7 @@
         <moshi.version>1.12.0</moshi.version>
         <jackson2x.version>2.14.1</jackson2x.version>
         <jackson2x.databind.version>2.14.1</jackson2x.databind.version>
+        <maven.plugin.plugin.version>3.7.1</maven.plugin.plugin.version>
     </properties>
 
     <reporting>
@@ -67,6 +68,16 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.9.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>${maven.plugin.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-report-plugin</artifactId>
+                    <version>${maven.plugin.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -197,23 +208,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -366,11 +360,19 @@
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
                 <version>2.2.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven.plugin.plugin.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
                 <version>2.2.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
