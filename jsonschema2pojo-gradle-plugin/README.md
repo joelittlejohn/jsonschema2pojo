@@ -56,7 +56,6 @@ dependencies {
   implementation 'joda-time:joda-time:2.2'
 }
 
-// Each configuration is set to the default value
 jsonSchema2Pojo {
 
   // Location of the JSON Schema file(s). This may refer to a single file or a directory of files.
@@ -292,8 +291,10 @@ jsonSchema2Pojo {
   // properties to exclude from generated toString
   toStringExcludes = ["someProperty"]
 
-  // What java source version to target with generated output (1.6, 1.8, 9, 11, etc)
-  targetVersion = "1.6"
+    // What Java version to target with generated source code (1.6, 1.8, 9, 11, etc).
+    // By default, the version will be taken from the Gradle Java plugin's 'sourceCompatibility',
+    // which (if unset) itself defaults to the current JVM version
+  targetVersion = "1.8"
 
   // deprecated, since we no longer use commons-lang for equals, hashCode, toString
   useCommonsLang3 = false

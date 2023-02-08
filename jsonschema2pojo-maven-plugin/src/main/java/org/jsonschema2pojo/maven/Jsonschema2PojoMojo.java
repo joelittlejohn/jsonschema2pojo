@@ -19,26 +19,6 @@ package org.jsonschema2pojo.maven;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.*;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
@@ -51,7 +31,30 @@ import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SourceSortOrder;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.JavaVersion;
 import org.jsonschema2pojo.util.URLUtil;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.xml.Xpp3Dom;
 
 /**
  * When invoked, this goal reads one or more
@@ -599,16 +602,26 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * create public fields instead
      *
      */
-    @Parameter(property = "jsonschame2pojo.includeSetters", defaultValue = "true")
+    @Parameter(property = "jsonschema2pojo.includeSetters", defaultValue = "true")
     private boolean includeSetters = true;
 
     /**
-     * The target version for generated source files.
-     *
-     * @since 0.4.17
+     * The target version for generated source files, used whenever decisions are made
+     * about generating source code that may be incompatible with older JVMs. Acceptable values
+     * include e.g. 1.6, 1.8, 8, 9, 10, 11.
+     * <p/>
+     * If not set, the value of targetVersion is auto-detected. For auto-detection, the first
+     * value found in the following list will be used:
+     * <ol>
+     *     <li>maven.compiler.source property</li>
+     *     <li>maven.compiler.release property</li>
+     *     <li>maven-compiler-plugin 'source' configuration option</li>
+     *     <li>maven-compiler-plugin 'release' configuration option</li>
+     *     <li>the current JVM version</li>
+     * </ol>
      */
-    @Parameter(property = "jsonschema2pojo.targetJavaVersion", defaultValue = "${maven.compiler.target}")
-    private String targetVersion = "1.6";
+    @Parameter(property = "jsonschema2pojo.targetVersion")
+    private String targetVersion;
 
     /**
      * Whether to include dynamic getters, setters, and builders or to omit
@@ -778,6 +791,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public void execute() throws MojoExecutionException {
 
         addProjectDependenciesToClasspath();
+        setTargetVersion();
 
         try {
             getAnnotationStyle();
@@ -1113,6 +1127,45 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
     @Override
     public boolean isIncludeSetters() { return includeSetters; }
+
+    private void setTargetVersion() {
+        if (isNotBlank(this.targetVersion)) {
+            return;
+        }
+
+        if (project.getProperties() != null && project.getProperties().containsKey("maven.compiler.source")) {
+            this.targetVersion = project.getProperties().get("maven.compiler.source").toString();
+            getLog().debug("Using maven.compiler.source to set targetVersion for generated sources (" + this.targetVersion + ")");
+            return;
+        }
+
+        if (project.getProperties() != null && project.getProperties().containsKey("maven.compiler.release")) {
+            this.targetVersion = project.getProperties().get("maven.compiler.release").toString();
+            getLog().debug("Using maven.compiler.release to set targetVersion for generated sources (" + this.targetVersion + ")");
+            return;
+        }
+
+        for (Plugin p : (List<Plugin>) project.getBuildPlugins()) {
+            if (p.getKey().equals("org.apache.maven.plugins:maven-compiler-plugin") && p.getConfiguration() instanceof Xpp3Dom) {
+                final Xpp3Dom compilerSourceConfig = ((Xpp3Dom) p.getConfiguration()).getChild("source");
+                if (compilerSourceConfig != null) {
+                    this.targetVersion = compilerSourceConfig.getValue();
+                    getLog().debug("Using maven-compiler-plugin 'source' to set targetVersion for generated sources (" + this.targetVersion + ")");
+                    return;
+                }
+
+                final Xpp3Dom compilerReleaseConfig = ((Xpp3Dom) p.getConfiguration()).getChild("release");
+                if (compilerReleaseConfig != null) {
+                    this.targetVersion = compilerReleaseConfig.getValue();
+                    getLog().debug("Using maven-compiler-plugin 'release' to set targetVersion for generated sources (" + this.targetVersion + ")");
+                    return;
+                }
+            }
+        }
+
+        this.targetVersion = JavaVersion.parse(System.getProperty("java.version"));
+        getLog().debug("Using JVM to set targetVersion for generated sources (" + this.targetVersion + ")");
+    }
 
     @Override
     public String getTargetVersion() {

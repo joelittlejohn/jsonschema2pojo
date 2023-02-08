@@ -15,12 +15,13 @@
  */
 package org.jsonschema2pojo.gradle
 
+import org.jsonschema2pojo.GenerationConfig
+import org.jsonschema2pojo.Jsonschema2Pojo
+
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.InputChanges
-import org.jsonschema2pojo.GenerationConfig
-import org.jsonschema2pojo.Jsonschema2Pojo
 
 /**
  * Task that generates java source files for an Android project
@@ -48,6 +49,7 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
 
     GenerationConfig configuration = project.jsonSchema2Pojo
     configuration.targetDirectory = outputDir
+    setTargetVersion configuration
 
     if (Boolean.TRUE == configuration.properties.get("useCommonsLang3")) {
       logger.warn 'useCommonsLang3 is deprecated. Please remove it from your config.'
@@ -56,5 +58,13 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
     logger.info 'Using this configuration:\n{}', configuration
 
     Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
+  }
+
+  void setTargetVersion(JsonSchemaExtension configuration) {
+    if (!configuration.targetVersion) {
+      def compileJavaTask = project.getTasksByName("compileJava", false).first()
+      configuration.targetVersion = compileJavaTask.getProperties().get("sourceCompatibility")
+      logger.warn 'Using Gradle targetCompatibility as targetVersion for jsonschema2pojo: ' + configuration.targetVersion
+    }
   }
 }
