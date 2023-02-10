@@ -21,13 +21,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
@@ -69,10 +71,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     return instanceClass;
   }
 
-  private JDefinedClass handleLegacyConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
+  private void handleLegacyConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
     // Determine which properties belong to that class (or its superType/parent)
-    LinkedHashSet<String> requiredClassProperties = getConstructorProperties(node, true);
-    LinkedHashSet<String> requiredCombinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
+    Map<String, String> requiredClassProperties = getConstructorProperties(node, true);
+    Map<String, String> requiredCombinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
 
     // Only generate the constructors if there are actually properties to put in them
     if (!requiredClassProperties.isEmpty() || !requiredCombinedSuperProperties.isEmpty()) {
@@ -84,9 +86,6 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
       // Generate the actual constructor taking in only the required properties
       addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProperties);
     }
-
-    // Return the original class we modified
-    return instanceClass;
   }
 
   private void handleMultiChoiceConstructorConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
@@ -94,10 +93,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     boolean requiresConstructors = false;
 
     // Use these lists to keep track of the properties on the class, but we'll only populate them if we need to
-    LinkedHashSet<String> requiredClassProperties = null;
-    LinkedHashSet<String> classProperties = null;
-    LinkedHashSet<String> requiredCombinedSuperProperties = null;
-    LinkedHashSet<String> combinedSuperProperties = null;
+    Map<String, String> requiredClassProperties = null;
+    Map<String, String> classProperties = null;
+    Map<String, String> requiredCombinedSuperProperties = null;
+    Map<String, String> combinedSuperProperties = null;
 
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
     boolean includeCopyConstructor = generationConfig.isIncludeCopyConstructor();
@@ -139,7 +138,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
   }
 
-  private void addFieldsConstructor(JDefinedClass instanceClass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+  private void addFieldsConstructor(JDefinedClass instanceClass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
     // Generate the constructor with the properties which were located
@@ -154,7 +153,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
   }
 
-  private void addCopyConstructor(JDefinedClass instanceClass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+  private void addCopyConstructor(JDefinedClass instanceClass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
     // Generate the constructor with the properties which were located
@@ -173,13 +172,13 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
    * Retrieve the list of properties to go in the constructor from node. This is all properties listed in node["properties"] if ! onlyRequired, and
    * only required properties if onlyRequired.
    */
-  private LinkedHashSet<String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
+  private Map<String, String> getConstructorProperties(JsonNode node, boolean onlyRequired) {
 
     if (!node.has("properties")) {
-      return new LinkedHashSet<>();
+      return new LinkedHashMap<>();
     }
 
-    LinkedHashSet<String> rtn = new LinkedHashSet<>();
+    LinkedHashMap<String, String> rtn = new LinkedHashMap<>();
     Set<String> draft4RequiredProperties = new HashSet<>();
 
     // setup the set of required properties for draft4 style "required"
@@ -200,38 +199,49 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
       Map.Entry<String, JsonNode> property = properties.next();
 
       JsonNode propertyObj = property.getValue();
+      final String javadoc = getJavadocForProperty(propertyObj);
       if (onlyRequired) {
         // draft3 style
-        if (propertyObj.has("required") && propertyObj.get("required")
-            .asBoolean()) {
-          rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
+        if (propertyObj.has("required") && propertyObj.get("required").asBoolean()) {
+            rtn.put(nameHelper.getPropertyName(property.getKey(), property.getValue()), javadoc);
         }
 
         // draft4 style
         if (draft4RequiredProperties.contains(property.getKey())) {
-          rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
+          rtn.put(nameHelper.getPropertyName(property.getKey(), property.getValue()), javadoc);
         }
       } else {
-        rtn.add(nameHelper.getPropertyName(property.getKey(), property.getValue()));
+        rtn.put(nameHelper.getPropertyName(property.getKey(), property.getValue()), javadoc);
       }
     }
     return rtn;
   }
 
+    private String getJavadocForProperty(JsonNode propertyObj) {
+        final StringJoiner stringJoiner = new StringJoiner(" ");
+        if (propertyObj.has("title") && StringUtils.isNotBlank(propertyObj.get("title").textValue())) {
+            stringJoiner.add(StringUtils.appendIfMissing(propertyObj.get("title").asText(), "."));
+        }
+        if (propertyObj.has("description") && StringUtils.isNotBlank(propertyObj.get("description").textValue())) {
+            stringJoiner.add(StringUtils.appendIfMissing(propertyObj.get("description").asText(), "."));
+        }
+        return stringJoiner.toString();
+    }
+
   /**
    * Recursive, walks the schema tree and assembles a list of all properties of this schema's super schemas
    */
-  private LinkedHashSet<String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
+  private Map<String, String> getSuperTypeConstructorPropertiesRecursive(JsonNode node, Schema schema, boolean onlyRequired) {
     Schema superTypeSchema = reflectionHelper.getSuperSchema(node, schema, true);
 
     if (superTypeSchema == null) {
-      return new LinkedHashSet<>();
+      return new LinkedHashMap<>();
     }
 
     JsonNode superSchemaNode = superTypeSchema.getContent();
 
-    LinkedHashSet<String> rtn = getConstructorProperties(superSchemaNode, onlyRequired);
-    rtn.addAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
+    Map<String, String> rtn = getConstructorProperties(superSchemaNode, onlyRequired);
+    rtn.putAll(getSuperTypeConstructorPropertiesRecursive(superSchemaNode, superTypeSchema, onlyRequired));
 
     return rtn;
   }
@@ -301,14 +311,13 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
   }
 
-  private JMethod generateCopyConstructor(JDefinedClass jclass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+  private JMethod generateCopyConstructor(JDefinedClass jclass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
 
     // Create the JMethod for the copy constructor
     JMethod copyConstructorResult = jclass.constructor(JMod.PUBLIC);
 
     // Add a parameter to the copyConstructor for the actual object being copied
-    copyConstructorResult.javadoc()
-        .addParam("source");
+    copyConstructorResult.javadoc().addParam("source").append("the object being copied");
     JVar copyConstructorParam = copyConstructorResult.param(jclass, "source");
 
     // Create the method block for the copyConstructor
@@ -325,7 +334,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     // For each of the class properties being set we then need to do something like the following
     // this.property = source.property
     Map<String, JFieldVar> fields = jclass.fields();
-    for (String property : classProperties) {
+    for (String property : classProperties.keySet()) {
       JFieldVar field = fields.get(property);
 
       if (field == null) {
@@ -339,7 +348,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     return copyConstructorResult;
   }
 
-  private JMethod generateFieldsConstructor(JDefinedClass jclass, Set<String> classProperties, Set<String> combinedSuperProperties) {
+  private JMethod generateFieldsConstructor(JDefinedClass jclass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
     // add the public constructor with property parameters
     JMethod fieldsConstructor = jclass.constructor(JMod.PUBLIC);
 
@@ -359,15 +368,17 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     Map<String, JFieldVar> fields = jclass.fields();
     Map<String, JVar> classFieldParams = new HashMap<>();
 
-    for (String property : classProperties) {
+    for (Entry<String, String> entry : classProperties.entrySet()) {
+      String property = entry.getKey();
       JFieldVar field = fields.get(property);
 
       if (field == null) {
         throw new IllegalStateException("Property " + property + " hasn't been added to JDefinedClass before calling addConstructors");
       }
 
-      fieldsConstructor.javadoc()
-          .addParam(property);
+      if (StringUtils.isNotEmpty(entry.getValue())) {
+          fieldsConstructor.javadoc().addParam(property).append(entry.getValue());
+      }
       if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(field.name());
       }
@@ -380,7 +391,8 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     List<JVar> superConstructorParams = new ArrayList<>();
 
-    for (String property : combinedSuperProperties) {
+    for (Entry<String, String> entry : combinedSuperProperties.entrySet()) {
+      String property = entry.getKey();
       JFieldVar field = reflectionHelper.searchSuperClassesForField(property, jclass);
 
       if (field == null) {
@@ -393,8 +405,9 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
         param = fieldsConstructor.param(field.type(), field.name());
       }
 
-      fieldsConstructor.javadoc()
-          .addParam(property);
+      if (StringUtils.isNotEmpty(entry.getValue())) {
+          fieldsConstructor.javadoc().addParam(property).append(entry.getValue());
+      }
       if (generationConfig.isIncludeConstructorPropertiesAnnotation() && constructorPropertiesAnnotation != null) {
         constructorPropertiesAnnotation.param(param.name());
       }

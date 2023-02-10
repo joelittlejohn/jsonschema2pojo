@@ -27,7 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 
 /*
@@ -46,7 +46,7 @@ public class DescriptionEnumIT {
         schemaRule.generateAndCompile("/schema/description/descriptionEnum.json", "com.example");
         File generatedJavaFile = schemaRule.generated("com/example/DescriptionEnum.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
 
         classWithDescription = javaDocBuilder.getClassByName("com.example.DescriptionEnum");

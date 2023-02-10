@@ -21,17 +21,20 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
-import com.thoughtworks.qdox.model.Type;
+import com.thoughtworks.qdox.model.JavaType;
+import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class RequiredArrayIT extends RequiredIT {
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
@@ -44,7 +47,7 @@ public class RequiredArrayIT extends RequiredIT {
         classSchemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example");
         File generatedJavaFile = classSchemaRule.generated("com/example/RequiredArray.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
 
         classWithRequired = javaDocBuilder.getClassByName("com.example.RequiredArray");
@@ -63,7 +66,7 @@ public class RequiredArrayIT extends RequiredIT {
     @Test
     public void requiredAppearsInGetterJavadoc() {
 
-        JavaMethod javaMethod = classWithRequired.getMethodBySignature("getRequiredProperty", new Type[] {});
+        JavaMethod javaMethod = classWithRequired.getMethodBySignature("getRequiredProperty", Collections.emptyList());
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("(Required)"));
@@ -73,7 +76,8 @@ public class RequiredArrayIT extends RequiredIT {
     @Test
     public void requiredAppearsInSetterJavadoc() {
 
-        JavaMethod javaMethod = classWithRequired.getMethodBySignature("setRequiredProperty", new Type[] { new Type("java.lang.String") });
+        final List<JavaType> parameterTypes = Collections.singletonList(new DefaultJavaClass("java.lang.String"));
+        JavaMethod javaMethod = classWithRequired.getMethodBySignature("setRequiredProperty", parameterTypes);
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("(Required)"));
@@ -81,7 +85,7 @@ public class RequiredArrayIT extends RequiredIT {
     }
 
     @Test
-    public void nonRequiredFiedHasNoRequiredText() {
+    public void nonRequiredFieldHasNoRequiredText() {
 
         JavaField javaField = classWithRequired.getFieldByName("nonRequiredProperty");
         String javaDocComment = javaField.getComment();
