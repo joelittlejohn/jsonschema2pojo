@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo.util;
 
+import org.jsonschema2pojo.GenerationConfig;
+
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -39,8 +41,10 @@ public class AnnotationHelper {
 
     }
 
-    public static void addGeneratedAnnotation(JDefinedClass jclass) {
-        if (!tryToAnnotate(jclass, JAVA_9_GENERATED)) {
+    public static void addGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
+        if (JavaVersion.is9OrLater(config.getTargetVersion())) {
+            tryToAnnotate(jclass, JAVA_9_GENERATED);
+        } else {
             tryToAnnotate(jclass, JAVA_8_GENERATED);
         }
     }

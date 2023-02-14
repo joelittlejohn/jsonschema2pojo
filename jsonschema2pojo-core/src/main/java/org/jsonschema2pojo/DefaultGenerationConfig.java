@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.jsonschema2pojo.util.JavaVersion;
 
 /**
  * A generation config that returns default values for all behavioural options.
@@ -348,11 +349,11 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     /**
-     * @return <code>1.6</code>
+     * @return Current JVM version
      */
     @Override
     public String getTargetVersion() {
-        return "1.6";
+        return JavaVersion.parse(System.getProperty("java.version"));
     }
 
     /**

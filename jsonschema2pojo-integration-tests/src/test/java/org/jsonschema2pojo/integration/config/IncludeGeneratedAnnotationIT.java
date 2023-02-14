@@ -37,17 +37,25 @@ public class IncludeGeneratedAnnotationIT {
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void defaultConfig() throws ClassNotFoundException {
+    public void defaultConfigHasGeneratedAnnotationsOn() throws ClassNotFoundException {
         File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE);
+        assertThat(source, FileSearchMatcher.containsText("@Generated"));
 
-        assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
+        File sourceJava8 = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config("targetVersion", "8"));
+        assertThat(sourceJava8, FileSearchMatcher.containsText("javax.annotation.Generated"));
+
+        File sourceJava9 = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config("targetVersion", "9"));
+        assertThat(sourceJava9, FileSearchMatcher.containsText("javax.annotation.processing.Generated"));
+
+        File sourceJava11 = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config("targetVersion", "11"));
+        assertThat(sourceJava11, FileSearchMatcher.containsText("javax.annotation.processing.Generated"));
     }
 
     @Test
     public void disabled() throws ClassNotFoundException {
         File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, false));
 
-        assertThat(source, Matchers.not(FileSearchMatcher.containsText("javax.annotation.Generated")));
+        assertThat(source, Matchers.not(FileSearchMatcher.containsText("@Generated")));
     }
 
     @Test
