@@ -31,13 +31,16 @@ public class SchemaStore {
 
     protected final FragmentResolver fragmentResolver = new FragmentResolver();
     protected final ContentResolver contentResolver;
+    protected final RuleLogger logger;
 
     public SchemaStore() {
         this.contentResolver = new ContentResolver();
+        this.logger = new NoopRuleLogger();
     }
 
-    public SchemaStore(ContentResolver contentResolver) {
+    public SchemaStore(ContentResolver contentResolver, RuleLogger logger) {
         this.contentResolver = contentResolver;
+        this.logger = logger;
     }
 
     /**
@@ -59,6 +62,7 @@ public class SchemaStore {
 
             URI baseId = removeFragment(id).normalize();
             if (!schemas.containsKey(baseId)) {
+                logger.debug("Reading schema: " + baseId);
                 final JsonNode baseContent = contentResolver.resolve(baseId);
                 schemas.put(baseId, new Schema(baseId, baseContent, null));
             }
