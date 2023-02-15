@@ -210,4 +210,29 @@ public class JsonTypesIT {
 
     }
 
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void propertiesWithSameNameOnDifferentObjects() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/propertiesSameName", "com.example",
+                config("sourceType", "json"));
+
+        Class<?> aType = resultsClassLoader.loadClass("com.example.A");
+        Class<?> bType = resultsClassLoader.loadClass("com.example.B");
+        Class<?> aFieldsType = resultsClassLoader.loadClass("com.example.Fields");
+        Class<?> bFieldsType = resultsClassLoader.loadClass("com.example.Fields__1");
+
+        Object deserialisedValueA = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/propertiesSameName/a.json"), aType);
+        Object deserialisedValueB = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/propertiesSameName/b.json"), bType);
+
+        Object aFields = aType.getMethod("getFields").invoke(deserialisedValueA);
+        Object onlyOnA = aFieldsType.getMethod("getOnlyOnA").invoke(aFields);
+        assertThat(onlyOnA, is("aaa"));
+
+        Object bFields = bType.getMethod("getFields").invoke(deserialisedValueB);
+        Object onlyOnB = bFieldsType.getMethod("getOnlyOnB").invoke(bFields);
+        assertThat(onlyOnB, is("bbb"));
+
+    }
+
 }

@@ -140,4 +140,8 @@ public class SchemaMapper {
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
 
+    public RuleFactory getRuleFactory() {
+        return ruleFactory;
+    }
+
 }
