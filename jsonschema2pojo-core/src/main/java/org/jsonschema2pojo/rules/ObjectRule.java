@@ -55,6 +55,13 @@ import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -64,6 +71,9 @@ import com.sun.codemodel.JVar;
  *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
 public class ObjectRule implements Rule<JPackage, JType> {
+
+    /** The toplevel classes per schema URI. Used when generating inner classes. */
+    private static final Map<URI, JDefinedClass> topLevelClasses= new HashMap<>();
 
     private final RuleFactory ruleFactory;
     private final ReflectionHelper reflectionHelper;
@@ -92,7 +102,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JDefinedClass jclass;
         try {
-            jclass = createClass(nodeName, node, _package);
+            jclass = createClass(nodeName, node, _package, schema);
         } catch (ClassAlreadyExistsException e) {
             return e.getExistingClass();
         }
@@ -190,13 +200,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * @param _package
      *            the package which may contain a new class after this method
      *            call
+     * @param schema
+     *            the schema for which to generate the class
      * @return a reference to a newly created class
      * @throws ClassAlreadyExistsException
      *             if the given arguments cause an attempt to create a class
      *             that already exists, either on the classpath or in the
      *             current map of classes to be generated.
      */
-    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
+    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package, Schema schema) throws ClassAlreadyExistsException {
 
         JDefinedClass newType;
 
@@ -246,7 +258,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (usePolymorphicDeserialization) {
                     newType = _package._class(JMod.PUBLIC, ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package), ClassType.CLASS);
                 } else {
-                    newType = _package._class(ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package));
+                    // decide whether this class should be an inner class
+                    if (ruleFactory.getGenerationConfig().isUseInnerClasses() && this.topLevelClasses.containsKey(schema.getId())) {
+                        newType = this.topLevelClasses.get(schema.getId())._class(JMod.PUBLIC | JMod.STATIC, ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package));
+                    } else {
+                        newType = _package._class(ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package));
+                        this.topLevelClasses.put(schema.getId(), newType);
+                    }
                 }
             }
         } catch (JClassAlreadyExistsException e) {

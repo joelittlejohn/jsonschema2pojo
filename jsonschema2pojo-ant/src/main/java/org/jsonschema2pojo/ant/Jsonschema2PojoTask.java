@@ -73,6 +73,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean useInnerClassBuilders = false;
 
+    private boolean useInnerClasses = false;
+
     private boolean includeConstructorPropertiesAnnotation = false;
 
     private boolean includeConstructors = false;
@@ -192,7 +194,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
-    
+
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
@@ -1312,7 +1314,12 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
+    @Override
+    public boolean isUseInnerClasses() {
+        return useInnerClasses;
+    }
+
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;

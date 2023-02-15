@@ -71,6 +71,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--use-inner-class-builders" }, description = "Generate an inner class with builder-style methods")
     private boolean useInnerClassBuilders = false;
 
+    @Parameter(names = { "--use-inner-classes" }, description = "Generate all subtypes of the same schema URI as inner classes in one main class. The default is one class corresponding to one subtype regardless of the defining schema.")
+    private boolean useInnerClasses = false;
+
     @Parameter(names = { "--include-constructor-properties-annotation" }, description = "Generate ConstructorProperties annotation with parameter names of constructors. (Not Available on Android)")
     private boolean includeConstructorPropertiesAnnotation = false;
 
@@ -327,6 +330,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseInnerClassBuilders() {
         return useInnerClassBuilders;
+    }
+
+    @Override
+    public boolean isUseInnerClasses() {
+        return useInnerClasses;
     }
 
     @Override

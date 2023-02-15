@@ -87,6 +87,11 @@ jsonSchema2Pojo {
   // If generateBuilders is false then this property will not do anything.
   useInnerClassBuilders = false
 
+  // Whether to generate all subtypes as inner classes.
+  // That would result in only one top level class per schema URI.
+  // This avoid class name suffixes like <code>__1</code> in case of name clashes.
+  useInnerClasses = false
+
   // Whether to use primitives (long, double, boolean) instead of wrapper types where possible
   // when generating bean properties (has the side-effect of making those properties non-null).
   usePrimitives = false
