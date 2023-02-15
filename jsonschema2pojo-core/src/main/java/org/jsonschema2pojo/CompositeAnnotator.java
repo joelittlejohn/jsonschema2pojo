@@ -42,6 +42,13 @@ public class CompositeAnnotator implements Annotator {
     public CompositeAnnotator(Annotator... annotators) {
         this.annotators = annotators;
     }
+    
+    @Override
+    public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
+        for (Annotator annotator : annotators) {
+            annotator.typeDocumentation(clazz, schema);
+        }
+    }
 
     @Override
     public void typeInfo(JDefinedClass clazz, JsonNode node) {

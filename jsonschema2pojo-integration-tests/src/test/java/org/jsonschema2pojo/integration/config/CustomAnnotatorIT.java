@@ -16,17 +16,13 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
-
-import java.lang.reflect.Method;
-
-import org.apache.maven.plugin.MojoExecutionException;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,6 +32,12 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
+import java.lang.reflect.Method;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class CustomAnnotatorIT {
 
@@ -110,7 +112,11 @@ public class CustomAnnotatorIT {
      * Example custom annotator that deprecates <em>everything</em>.
      */
     public static class DeprecatingAnnotator implements Annotator {
+        @Override
+        public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
 
+        }
+        
         @Override
         public void typeInfo(JDefinedClass clazz, JsonNode schema) {
 
