@@ -271,13 +271,13 @@ public class YamlTypeIT {
     }
 
     @Test
-    public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void unionTypesChooseFirstTypePresent() throws ReflectiveOperationException {
 
         Class<?> classWithUnionProperties = schemaRule.generateAndCompile("/schema/yaml/type/unionTypes.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.UnionTypes");
 
-        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        Method nullTypeGetter = classWithUnionProperties.getMethod("getNullProperty");
 
-        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+        assertThat(nullTypeGetter.getReturnType().getName(), is("java.lang.Object"));
 
         Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
 
@@ -286,6 +286,20 @@ public class YamlTypeIT {
         Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
 
         assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
+
+        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+    }
+
+    @Test
+    public void mixedUnionTypesReturnObject() throws ReflectiveOperationException {
+        Class<?> classWithMixedUnionProperties = schemaRule.generateAndCompile("/schema/yaml/type/mixedUnionTypes.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.MixedUnionTypes");
+
+        Method mixedTypesGetter = classWithMixedUnionProperties.getMethod("getMixedTypesProperty");
+        assertThat(mixedTypesGetter.getReturnType().getName(), is("java.lang.Object"));
+
+        Method mixedTypesWithNullGetter = classWithMixedUnionProperties.getMethod("getMixedTypesWithNullProperty");
+        assertThat(mixedTypesWithNullGetter.getReturnType().getName(), is("java.lang.Object"));
     }
 
     @SuppressWarnings("rawtypes")
