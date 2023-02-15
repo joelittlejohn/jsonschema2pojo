@@ -618,7 +618,7 @@ public interface GenerationConfig {
 
   /**
    * Whether to mark generated classes with the annotation <code>javax.annotation.@Generated</code>
-   *
+   * (or <code>javax.annotation.processing.Generated</code> for Java 9 and later).
    */
   boolean isIncludeGeneratedAnnotation();
 

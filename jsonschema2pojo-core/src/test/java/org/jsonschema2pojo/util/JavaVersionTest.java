@@ -33,6 +33,8 @@ public class JavaVersionTest {
 
     @Test
     public void testIs9OrLater() {
+        assertThat(JavaVersion.is9OrLater(null), is(false));
+        assertThat(JavaVersion.is9OrLater(""), is(false));
         assertThat(JavaVersion.is9OrLater("1.1"), is(false));
         assertThat(JavaVersion.is9OrLater("1.2"), is(false));
         assertThat(JavaVersion.is9OrLater("1.3"), is(false));

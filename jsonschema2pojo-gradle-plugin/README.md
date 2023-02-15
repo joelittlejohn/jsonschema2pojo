@@ -76,6 +76,7 @@ jsonSchema2Pojo {
 
   // Whether to include a javax.annotation.Generated (Java 8 and lower) or
   // javax.annotation.processing.Generated (Java 9+) in on generated types (default true).
+  // See also: targetVersion.
   includeGeneratedAnnotation = true
 
   // Whether to generate builder-style methods of the form withXxx(value) (that return this),

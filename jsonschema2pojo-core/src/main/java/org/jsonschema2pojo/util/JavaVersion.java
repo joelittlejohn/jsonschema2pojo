@@ -39,8 +39,12 @@ public class JavaVersion {
     }
 
     public static boolean is9OrLater(final String targetVersion) {
-        final Double v = Double.valueOf(targetVersion);
-        return (v >= 9) || (v < 2 && v >= 1.9);
+        if (isNotBlank(targetVersion)) {
+            final Double v = Double.valueOf(targetVersion);
+            return (v >= 9) || (v < 2 && v >= 1.9);
+        } else {
+            return false;
+        }
     }
 
 }
