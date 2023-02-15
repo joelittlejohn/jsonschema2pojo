@@ -246,7 +246,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         if (!javaEnumNames.isMissingNode())
         {
-            logger.error("javaEnumNames is deprecated; please migrate to javaEnums.");
+            logger.warn("javaEnumNames is deprecated; please migrate to javaEnums.");
         }
 
         EnumDefinition enumDefinition;
@@ -353,11 +353,15 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
-                    return container.owner()._class(fqn, ClassType.ENUM);
+                    JDefinedClass enumClass = container.owner()._class(fqn, ClassType.ENUM);
+                    ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
+                    return enumClass;
                 }
             } else {
                 try {
-                    return container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    JDefinedClass enumClass = container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
+                    return enumClass;
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }

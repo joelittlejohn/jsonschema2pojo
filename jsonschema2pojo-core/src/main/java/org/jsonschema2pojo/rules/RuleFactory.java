@@ -20,6 +20,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.NoopRuleLogger;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.util.NameHelper;
@@ -66,6 +67,7 @@ public class RuleFactory {
         this.schemaStore = schemaStore;
         this.nameHelper = new NameHelper(generationConfig);
         this.reflectionHelper = new ReflectionHelper(this);
+        this.logger = new NoopRuleLogger();
     }
 
     /**

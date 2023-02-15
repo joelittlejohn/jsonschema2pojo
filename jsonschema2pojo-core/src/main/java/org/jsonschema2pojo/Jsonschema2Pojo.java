@@ -60,7 +60,7 @@ public class Jsonschema2Pojo {
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
         ruleFactory.setLogger(logger);
-        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config)));
+        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config), logger));
 
         SchemaMapper mapper = new SchemaMapper(ruleFactory, createSchemaGenerator(config));
 
