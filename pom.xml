@@ -410,9 +410,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>qdox</groupId>
+                <groupId>com.thoughtworks.qdox</groupId>
                 <artifactId>qdox</artifactId>
-                <version>1.6.1</version>
+                <version>2.0.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
