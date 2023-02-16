@@ -124,7 +124,8 @@ public class SchemaMapper {
         JPackage jpackage = codeModel._package(packageName);
 
         JsonNode schemaNode = null;
-        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON) {
+        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON
+                || ruleFactory.getGenerationConfig().getSourceType() == SourceType.YAML) {
             JsonNode jsonNode = objectMapper().readTree(json);
             schemaNode = schemaGenerator.schemaFromExample(jsonNode);
         } else {

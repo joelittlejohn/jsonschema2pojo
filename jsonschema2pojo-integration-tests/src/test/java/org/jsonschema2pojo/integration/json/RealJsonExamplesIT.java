@@ -20,30 +20,54 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+@RunWith(Parameterized.class)
 public class RealJsonExamplesIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @Parameterized.Parameters(name="{0}")
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { "json", new ObjectMapper()},
+                { "yaml", new ObjectMapper(new YAMLFactory()) }
+        });
+    }
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    @Rule 
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    private final String format;
+    private final ObjectMapper objectMapper;
+
+    public RealJsonExamplesIT(final String format, final ObjectMapper objectMapper) {
+        this.format = format;
+        this.objectMapper = objectMapper;
+    }
+
+    private String filePath(String baseName) {
+        return "/" + format + "/" + baseName + "." + format;
+    }
 
     @Test
     public void getUserDataProducesValidTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/GetUserData.json", "com.example",
-                config("sourceType", "json",
-                        "useLongIntegers", true));
+        final String filePath = filePath("examples/GetUserData");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example",
+                config("sourceType", format, "useLongIntegers", true));
 
         Class<?> userDataType = resultsClassLoader.loadClass("com.example.GetUserData");
 
-        Object userData = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/examples/GetUserData.json"), userDataType);
+        Object userData = objectMapper.readValue(this.getClass().getResourceAsStream(filePath), userDataType);
         Object result = userDataType.getMethod("getResult").invoke(userData);
         Object data = result.getClass().getMethod("getData").invoke(result);
         Object userUIPref = data.getClass().getMethod("getUserUIPref").invoke(data);
@@ -60,13 +84,14 @@ public class RealJsonExamplesIT {
     @Test
     public void torrentProducesValidTypes() throws Exception {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
-                config("sourceType", "json",
+        final String filePath = filePath("examples/torrent");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example",
+                config("sourceType", format,
                         "propertyWordDelimiters", "_"));
 
         Class<?> torrentType = resultsClassLoader.loadClass("com.example.Torrent");
 
-        Object torrent = OBJECT_MAPPER.readValue(this.getClass().getResourceAsStream("/json/examples/torrent.json"), torrentType);
+        Object torrent = objectMapper.readValue(this.getClass().getResourceAsStream(filePath), torrentType);
 
         Object props = torrentType.getMethod("getProps").invoke(torrent);
         Object prop0 = ((List<?>) props).get(0);
