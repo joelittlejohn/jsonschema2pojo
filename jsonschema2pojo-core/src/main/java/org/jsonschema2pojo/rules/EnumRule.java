@@ -239,26 +239,21 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         RuleLogger logger = ruleFactory.getLogger();
 
-        if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode())
-        {
-            logger.error("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+        if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode()) {
+            logger.warn("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
         }
 
-        if (!javaEnumNames.isMissingNode())
-        {
+        if (!javaEnumNames.isMissingNode()) {
             logger.warn("javaEnumNames is deprecated; please migrate to javaEnums.");
         }
 
         EnumDefinition enumDefinition;
 
-        if (!javaEnums.isMissingNode())
-        {
+        if (!javaEnums.isMissingNode()) {
             enumDefinition = buildEnumDefinitionWithJavaEnumsExtension(nodeName, node, enums, javaEnums, backingType);
-        } else if (!javaEnumNames.isMissingNode())
-        {
+        } else if (!javaEnumNames.isMissingNode()) {
             enumDefinition = buildEnumDefinitionWithJavaEnumNamesExtension(nodeName, node, enums, javaEnumNames, backingType);
-        } else
-        {
+        } else {
             enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, enums, backingType);
         }
 
@@ -471,19 +466,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     protected String makeUnique(final String name, Collection<String> existingNames) {
-        boolean found = false;
 
-        for (String existingName : existingNames) {
-            if (name.equals(existingName)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (found) {
-            String newName = makeUnique(name + "_", existingNames);
-            System.err.println("Enum name " + name + " already used; trying to replace it with " + newName);
-            return newName;
+        if (existingNames.contains(name)) {
+            String newName = name + "_";
+            ruleFactory.getLogger().warn("Enum name " + name + " already used; trying to replace it with " + newName);
+            return makeUnique(newName, existingNames);
         }
 
         return name;
