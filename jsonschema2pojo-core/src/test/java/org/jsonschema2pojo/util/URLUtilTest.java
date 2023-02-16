@@ -55,7 +55,7 @@ public class URLUtilTest {
 
     @Test
     public void testGetFileFromUrlCorrect() throws MalformedURLException {
-        File file = new File("/testResource");
+        File file = new File(File.pathSeparatorChar + "testResource");
         URI uri = file.toURI();
         URL url = uri.toURL();
         Assert.assertNotEquals(file, URLUtil.getFileFromURL(url));
