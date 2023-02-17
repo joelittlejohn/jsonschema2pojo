@@ -26,6 +26,27 @@ A very simple Maven example:
 </plugin>
 ```
 
+A very simple Gradle example:
+
+```groovy
+plugins {
+  id "java"
+  id "org.jsonschema2pojo" version "1.2.0"
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+}
+
+jsonSchema2Pojo {
+  targetPackage = 'com.example'
+}
+```
+
 Useful pages:
   * **[Getting started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started)**
   * **[How to contribute](https://github.com/joelittlejohn/jsonschema2pojo/blob/master/CONTRIBUTING.md)**
