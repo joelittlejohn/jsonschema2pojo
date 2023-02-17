@@ -136,6 +136,12 @@ pushd $WORKING_DIR
             git add .
             git commit -m "[release] updating README.md for $VERSION"
             git push origin master
+
+	    # publish gradle plugin to plugins.gradle.org
+	    pushd jsonschema2pojo-gradle-plugin
+	            git checkout jsonschema2pojo-$VERSION
+	            ./gradlew -Pversion=$VERSION publishPlugins
+	    popd
     popd
     fi
 
@@ -154,6 +160,9 @@ pushd $WORKING_DIR
 
     RELEASE_PAGE=$(echo $RELEASE | jq -r .html_url)
 popd
+
+pushd
+    
 
 rm -rf $WORKING_DIR
 
