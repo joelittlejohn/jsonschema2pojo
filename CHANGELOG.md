@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.0
+* Avoid output to System.err when finding unique Enum name ([#1485](https://github.com/joelittlejohn/jsonschema2pojo/pull/1485))
+* Add useful debug logging when reading schemas and creating classes ([#1483](https://github.com/joelittlejohn/jsonschema2pojo/pull/1483))
+* Use targetVersion to decide which Generated annotation to add ([#1482](https://github.com/joelittlejohn/jsonschema2pojo/pull/1482))
+* Add Javadoc to constructors parameters for properties that have title/description/$comment ([#1481](https://github.com/joelittlejohn/jsonschema2pojo/pull/1481))
+* **Choose default targetVersion using Gradle/Maven configuration ([#1478](https://github.com/joelittlejohn/jsonschema2pojo/pull/1478))**
+* Use Mojo Annotations instead of Javadoc tags in the Maven Plugin ([#1476](https://github.com/joelittlejohn/jsonschema2pojo/pull/1476))
+* **Add Email bean validation annotation for "format":"email" ([#1475](https://github.com/joelittlejohn/jsonschema2pojo/pull/1475))**
+* Allow empty string and underscore as property name ([#1468](https://github.com/joelittlejohn/jsonschema2pojo/pull/1468))
+* **Use Object as the type in case schema property contains mixed types ([#1456](https://github.com/joelittlejohn/jsonschema2pojo/pull/1456))**
+* "Path not present" error when processing multiple JSON files having objects with the same name ([#1427](https://github.com/joelittlejohn/jsonschema2pojo/issues/1427))
+
 ## 1.1.3
 * Add command line option to print version ([#1458](https://github.com/joelittlejohn/jsonschema2pojo/pull/1458))
 * Accept multiple values provided with single "-s"/"--source" argument ([#1457](https://github.com/joelittlejohn/jsonschema2pojo/pull/1457))
@@ -9,6 +21,7 @@
 * Add `builder` method to create a new instance of the builder ([#1396](https://github.com/joelittlejohn/jsonschema2pojo/issues/1396))
 * Added support for JSON-B ([#1385](https://github.com/joelittlejohn/jsonschema2pojo/pull/1385))
 * Get Stackoverflow error if array items schema contains trees/cycle dependencies for children ([#1376](https://github.com/joelittlejohn/jsonschema2pojo/issues/1376))
+* Publish Gradle plugin to plugins.gradle.org ([#282](https://github.com/joelittlejohn/jsonschema2pojo/issues/282))
 
 ## 1.1.2
 * Use LinkedHashMap for additional properties, so the original ordering in the JSON is preserved ([#1397](https://github.com/joelittlejohn/jsonschema2pojo/pull/1397))
