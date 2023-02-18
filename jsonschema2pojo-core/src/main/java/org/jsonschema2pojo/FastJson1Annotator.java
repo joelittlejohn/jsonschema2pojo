@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
-
 package org.jsonschema2pojo;
 
 import com.alibaba.fastjson.annotation.JSONCreator;
