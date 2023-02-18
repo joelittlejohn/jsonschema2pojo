@@ -13,9 +13,6 @@ jobs:
   buildTest:
     name: Build JDK ${{ matrix.java_version }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: jsonschema2pojo-gradle-plugin/example/android
     strategy:
       matrix:
         java_version: [8]
@@ -31,5 +28,7 @@ jobs:
           distribution: temurin
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.1
-      - name: Build project
-        run: ./gradlew assembleDebug
+      - name: Install latest jsonschema2pojo SNAPSHOT
+        run: mvn -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
+      - name: Build projects
+        run: cd jsonschema2pojo-gradle-plugin/example/android && ./gradlew --info assembleDebug
