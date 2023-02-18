@@ -20,11 +20,13 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.jsonschema2pojo.AllFileFilter;
@@ -57,7 +59,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-t", "--target" }, description = "The target directory into which generated types will be written", required = true)
     private File targetDirectory;
 
-    @Parameter(names = { "-s", "--source" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, converter = UrlConverter.class)
+    @Parameter(names = { "-s", "--source" }, description = "The source file(s) or directory(ies) from which JSON Schema will be read", required = true, variableArity = true, converter = UrlConverter.class)
     private List<URL> sourcePaths;
 
     @Parameter(names = { "-b", "--generate-builders" }, description = "Generate builder-style methods as well as setters")
@@ -249,6 +251,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
 
+    @Parameter(names = { "-v", "--version"}, description = "Print version information", help = true)
+    private boolean printVersion = false;
+
     private static final int EXIT_OKAY = 0;
     private static final int EXIT_ERROR = 1;
 
@@ -274,8 +279,13 @@ public class Arguments implements GenerationConfig {
             if (this.showHelp) {
                 jCommander.usage();
                 exit(EXIT_OKAY);
+            } else if (printVersion) {
+                Properties properties = new Properties();
+                properties.load(getClass().getResourceAsStream("version.properties"));
+                jCommander.getConsole().println(jCommander.getProgramName() + " version " + properties.getProperty("version"));
+                exit(EXIT_OKAY);
             }
-        } catch (ParameterException e) {
+        } catch (IOException | ParameterException e) {
             System.err.println(e.getMessage());
             jCommander.usage();
             exit(EXIT_ERROR);

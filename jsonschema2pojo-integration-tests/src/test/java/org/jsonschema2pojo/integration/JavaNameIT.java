@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 
@@ -138,7 +138,7 @@ public class JavaNameIT {
         schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         File generatedJavaFile = schemaRule.generated("com/example/javaname/JavaName.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
 
         JavaClass classWithDescription = javaDocBuilder.getClassByName("com.example.javaname.JavaName");
@@ -174,7 +174,7 @@ public class JavaNameIT {
         schemaRule.generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
         File generatedJavaFileWithRequiredProperties = schemaRule.generated("com/example/required/JavaNameWithRequiredProperties.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFileWithRequiredProperties);
 
         JavaClass classWithRequiredProperties = javaDocBuilder.getClassByName("com.example.required.JavaNameWithRequiredProperties");
@@ -192,7 +192,7 @@ public class JavaNameIT {
         schemaRule.generateAndCompile("/schema/javaName/javaNameWithRequiredProperties.json", "com.example.required");
         File generatedJavaFileWithRequiredProperties = schemaRule.generated("com/example/required/JavaNameWithRequiredProperties.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFileWithRequiredProperties);
 
         JavaClass classWithRequiredProperties = javaDocBuilder.getClassByName("com.example.required.JavaNameWithRequiredProperties");

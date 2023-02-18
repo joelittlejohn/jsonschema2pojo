@@ -60,7 +60,7 @@ public class Jsonschema2Pojo {
         ruleFactory.setAnnotator(annotator);
         ruleFactory.setGenerationConfig(config);
         ruleFactory.setLogger(logger);
-        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config)));
+        ruleFactory.setSchemaStore(new SchemaStore(createContentResolver(config), logger));
 
         SchemaMapper mapper = new SchemaMapper(ruleFactory, createSchemaGenerator(config));
 
@@ -127,6 +127,10 @@ public class Jsonschema2Pojo {
 
         for (File child : schemaFiles) {
             if (child.isFile()) {
+                if (config.getSourceType() == SourceType.JSON || config.getSourceType() == SourceType.YAML) {
+                    // any cached schemas will have ids that are fragments, relative to the previous document (and shouldn't be reused)
+                    mapper.getRuleFactory().getSchemaStore().clearCache();
+                }
                 mapper.generate(codeModel, getNodeName(child.toURI().toURL(), config), defaultString(packageName), child.toURI().toURL());
             } else {
                 generateRecursive(config, mapper, codeModel, childQualifiedName(packageName, child.getName()), Arrays.asList(child.listFiles(config.getFileFilter())));

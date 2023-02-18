@@ -21,9 +21,10 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 import org.jsonschema2pojo.InclusionLevel;
 import org.junit.After;
@@ -127,7 +128,7 @@ public class ArgumentsTest {
     }
 
     @Test
-    public void missingArgsCausesHelp() throws IOException {
+    public void missingArgsCausesHelp() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {});
 
         assertThat(args.status, is(1));
@@ -137,11 +138,59 @@ public class ArgumentsTest {
     }
 
     @Test
-    public void requestingHelpCausesHelp() throws IOException {
+    public void requestingHelpCausesHelp() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--help" });
 
         assertThat(args.status, is(notNullValue()));
         assertThat(new String(systemOutCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("Usage: jsonschema2pojo")));
+    }
+
+    @Test
+    public void requestingVersionCausesVersion() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--version" });
+
+        assertThat(args.didExit(), is(true));
+        assertThat(new String(systemOutCapture.toByteArray(), StandardCharsets.UTF_8).matches("(?s)jsonschema2pojo version \\d.*"), is(true));
+    }
+
+    @Test
+    public void parseRecognisesSourceWithMultipleValues() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "-s", "/home/source", "/home/second_source", "-t", "/home/target"
+        });
+
+        assertThat(args.didExit(), is(false));
+        final Iterator<URL> sources = args.getSource();
+        assertThat(sources.next().getFile(), endsWith("/home/source"));
+        assertThat(sources.next().getFile(), endsWith("/home/second_source"));
+        assertThat(sources.hasNext(), is(false));
+    }
+
+    @Test
+    public void parseRecognisesMultipleSources() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "-s", "/home/source", "-s", "/home/second_source", "-t", "/home/target"
+        });
+
+        assertThat(args.didExit(), is(false));
+        final Iterator<URL> sources = args.getSource();
+        assertThat(sources.next().getFile(), endsWith("/home/source"));
+        assertThat(sources.next().getFile(), endsWith("/home/second_source"));
+        assertThat(sources.hasNext(), is(false));
+    }
+
+    @Test
+    public void parseRecognisesMultipleSourcesWithMultipleValues() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
+                "-s", "/home/source", "/home/second_source", "-s", "/home/third_source", "-t", "/home/target"
+        });
+
+        assertThat(args.didExit(), is(false));
+        final Iterator<URL> sources = args.getSource();
+        assertThat(sources.next().getFile(), endsWith("/home/source"));
+        assertThat(sources.next().getFile(), endsWith("/home/second_source"));
+        assertThat(sources.next().getFile(), endsWith("/home/third_source"));
+        assertThat(sources.hasNext(), is(false));
     }
 
     private File theFile(String path) {

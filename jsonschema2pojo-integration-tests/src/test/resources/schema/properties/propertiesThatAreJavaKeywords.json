@@ -12,6 +12,12 @@
         },
         "abstract" : {
             "type" : "string"
+        },
+        "_" : {
+            "type" : "string"
+        },
+        "" : {
+            "type" : "string"
         }
     }
 }

@@ -32,14 +32,13 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.util.AnnotationHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
-import org.jsonschema2pojo.util.AnnotationHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -133,7 +132,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
        
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-        	AnnotationHelper.addGeneratedAnnotation(jclass);
+            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
             addToString(jclass);
@@ -242,12 +241,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 } else {
                     newType = _package.owner()._class(fqn);
                 }
+                ruleFactory.getLogger().debug("Adding " + newType.fullName());
             } else {
+                final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package);
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package), ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, className, ClassType.CLASS);
                 } else {
-                    newType = _package._class(ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package));
+                    newType = _package._class(className);
                 }
+                ruleFactory.getLogger().debug("Adding " + newType.fullName());
             }
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());

@@ -21,6 +21,11 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
+import org.jsonschema2pojo.integration.util.FileSearchMatcher;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -32,18 +37,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.bval.jsr303.ApacheValidationProvider;
+import org.apache.bval.jsr.ApacheValidationProvider;
 import org.hamcrest.Matcher;
-import org.jsonschema2pojo.integration.util.FileSearchMatcher;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 
 @SuppressWarnings("rawtypes")
 @RunWith(Parameterized.class)
@@ -180,6 +179,23 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(invalidInstance2, is(1));
 
+    }
+
+    @Test
+    public void jsr303EmailValidationIsAddedForFormatEmailSchemaRule() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/email.json", "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.Email");
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "email", "user@example.com");
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        Object invalidInstance = createInstanceWithPropertyValue(generatedType, "email", "aaa");
+
+        assertNumberOfConstraintViolationsOn(invalidInstance, is(1));
     }
 
     @Test
@@ -361,7 +377,7 @@ public class IncludeJsr303AnnotationsIT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void jar303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void jsr303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
@@ -383,7 +399,8 @@ public class IncludeJsr303AnnotationsIT {
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
         final Set<?> violationsForValidInstance = useJakartaValidation ? validator.validate(instance) : javaxValidator.validate(instance);
-        assertThat(violationsForValidInstance.size(), matcher);
+        final String validatorName = useJakartaValidation ? "jakarta/hibernate validator" : "javax/bval validator";
+        assertThat("Violations (" + validatorName + "): " + violationsForValidInstance.toString(), violationsForValidInstance.size(), matcher);
     }
 
     private static Object createInstanceWithPropertyValue(Class type, String propertyName, Object propertyValue) {

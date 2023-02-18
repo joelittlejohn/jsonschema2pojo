@@ -34,7 +34,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropertiesIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @Rule
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -121,7 +122,8 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
+                config("propertyWordDelimiters", " -"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -199,5 +201,16 @@ public class PropertiesIT {
         assertThat(jsonified.has("PROPERTY_ONE_TWO"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE_four"), is(true));
+    }
+
+    @Test
+    public void propertyNamesWithSpecialCharacters() throws NoSuchMethodException, ClassNotFoundException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithSpecialCharacters.json", "com.example");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesWithSpecialCharacters");
+
+        assertNotNull(generatedType.getDeclaredMethod("getVersv"));
+        assertNotNull(generatedType.getDeclaredMethod("getFooBar"));
+        assertNotNull(generatedType.getDeclaredMethod("get$RfcNumber"));
+        assertNotNull(generatedType.getDeclaredMethod("getOrgHispDhisCommonFileTypeValueOptions"));
     }
 }

@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   validation:
@@ -16,5 +17,5 @@ jobs:
       run:
         working-directory: jsonschema2pojo-gradle-plugin/example/android
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: gradle/wrapper-validation-action@v1

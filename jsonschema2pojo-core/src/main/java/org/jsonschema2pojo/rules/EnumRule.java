@@ -151,7 +151,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
 
         if(ruleFactory.getGenerationConfig() != null && ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-            AnnotationHelper.addGeneratedAnnotation(_enum);
+            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), _enum);
         }
 
         JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);
@@ -214,7 +214,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     /**
      * Builds the effective definition of an enumeration is based on what schema elements are provided.
-     * <p/>
+     * <p>
      * This function determines which method it should delegate creating of the definition to:
      *
      * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
@@ -239,26 +239,21 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         RuleLogger logger = ruleFactory.getLogger();
 
-        if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode())
-        {
-            logger.error("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
+        if (!javaEnums.isMissingNode() && !javaEnumNames.isMissingNode()) {
+            logger.warn("Both javaEnums and javaEnumNames provided; the property javaEnumNames will be ignored when both javaEnums and javaEnumNames are provided.");
         }
 
-        if (!javaEnumNames.isMissingNode())
-        {
-            logger.error("javaEnumNames is deprecated; please migrate to javaEnums.");
+        if (!javaEnumNames.isMissingNode()) {
+            logger.warn("javaEnumNames is deprecated; please migrate to javaEnums.");
         }
 
         EnumDefinition enumDefinition;
 
-        if (!javaEnums.isMissingNode())
-        {
+        if (!javaEnums.isMissingNode()) {
             enumDefinition = buildEnumDefinitionWithJavaEnumsExtension(nodeName, node, enums, javaEnums, backingType);
-        } else if (!javaEnumNames.isMissingNode())
-        {
+        } else if (!javaEnumNames.isMissingNode()) {
             enumDefinition = buildEnumDefinitionWithJavaEnumNamesExtension(nodeName, node, enums, javaEnumNames, backingType);
-        } else
-        {
+        } else {
             enumDefinition = buildEnumDefinitionWithNoExtensions(nodeName, node, enums, backingType);
         }
 
@@ -353,11 +348,15 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
-                    return container.owner()._class(fqn, ClassType.ENUM);
+                    JDefinedClass enumClass = container.owner()._class(fqn, ClassType.ENUM);
+                    ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
+                    return enumClass;
                 }
             } else {
                 try {
-                    return container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    JDefinedClass enumClass = container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
+                    return enumClass;
                 } catch (JClassAlreadyExistsException e) {
                     throw new GenerationException(e);
                 }
@@ -467,19 +466,11 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     protected String makeUnique(final String name, Collection<String> existingNames) {
-        boolean found = false;
 
-        for (String existingName : existingNames) {
-            if (name.equals(existingName)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (found) {
-            String newName = makeUnique(name + "_", existingNames);
-            System.err.println("Enum name " + name + " already used; trying to replace it with " + newName);
-            return newName;
+        if (existingNames.contains(name)) {
+            String newName = name + "_";
+            ruleFactory.getLogger().warn("Enum name " + name + " already used; trying to replace it with " + newName);
+            return makeUnique(newName, existingNames);
         }
 
         return name;

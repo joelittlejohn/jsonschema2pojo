@@ -19,11 +19,7 @@ package org.jsonschema2pojo.rules;
 import static com.sun.codemodel.JExpr.*;
 import static com.sun.codemodel.JMod.*;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.util.LanguageFeatures;
 import org.jsonschema2pojo.util.Models;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,6 +36,8 @@ import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Adds methods for dynamically getting, setting, and building properties.
@@ -105,20 +103,11 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         boolean isGenerateBuilders = ruleFactory.getGenerationConfig().isGenerateBuilders();
 
         if (isIncludeGetters || isIncludeSetters || isGenerateBuilders) {
-            if (LanguageFeatures.canUseJava7(ruleFactory.getGenerationConfig())) {
-                if (isIncludeSetters) {
-                    addInternalSetMethodJava7(jclass, node);
-                }
-                if (isIncludeGetters) {
-                    addInternalGetMethodJava7(jclass, node);
-                }
-            } else {
-                if (isIncludeSetters) {
-                    addInternalSetMethodJava6(jclass, node);
-                }
-                if (isIncludeGetters) {
-                    addInternalGetMethodJava6(jclass, node);
-                }
+            if (isIncludeSetters) {
+                addInternalSetMethodJava6(jclass, node);
+            }
+            if (isIncludeGetters) {
+                addInternalGetMethodJava6(jclass, node);
             }
         }
 
@@ -167,38 +156,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
             notFound._return(cast(returnType, invoke(getAdditionalProperties).invoke("get").arg(nameParam)));
         } else {
             notFound._throw(illegalArgumentInvocation(jclass, nameParam));
-        }
-
-        return method;
-    }
-
-    private JMethod addInternalGetMethodJava7(JDefinedClass jclass, JsonNode propertiesNode) {
-        JMethod method = jclass.method(PROTECTED, jclass.owner()._ref(Object.class), DEFINED_GETTER_NAME);
-        JVar nameParam = method.param(String.class, "name");
-        JVar notFoundParam = method.param(jclass.owner()._ref(Object.class), "notFoundValue");
-        JBlock body = method.body();
-        JSwitch propertySwitch = body._switch(nameParam);
-        if (propertiesNode != null) {
-            for (Iterator<Map.Entry<String, JsonNode>> properties = propertiesNode.fields(); properties.hasNext();) {
-                Map.Entry<String, JsonNode> property = properties.next();
-                String propertyName = property.getKey();
-                JsonNode node = property.getValue();
-                String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);
-                JType propertyType = jclass.fields().get(fieldName).type();
-
-                addGetPropertyCase(jclass, propertySwitch, propertyName, propertyType, node);
-            }
-        }
-        JClass extendsType = jclass._extends();
-        if (extendsType != null && extendsType instanceof JDefinedClass) {
-            JDefinedClass parentClass = (JDefinedClass) extendsType;
-            JMethod parentMethod = parentClass.getMethod(DEFINED_GETTER_NAME,
-                    new JType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
-            propertySwitch._default().body()
-            ._return(_super().invoke(parentMethod).arg(nameParam).arg(notFoundParam));
-        } else {
-            propertySwitch._default().body()
-            ._return(notFoundParam);
         }
 
         return method;
@@ -302,36 +259,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         }
         body._return(_this());
 
-        return method;
-    }
-
-    private JMethod addInternalSetMethodJava7(JDefinedClass jclass, JsonNode propertiesNode) {
-        JMethod method = jclass.method(PROTECTED, jclass.owner().BOOLEAN, DEFINED_SETTER_NAME);
-        JVar nameParam = method.param(String.class, "name");
-        JVar valueParam = method.param(Object.class, "value");
-        JBlock body = method.body();
-        JSwitch propertySwitch = body._switch(nameParam);
-        if (propertiesNode != null) {
-            for (Iterator<Map.Entry<String, JsonNode>> properties = propertiesNode.fields(); properties.hasNext();) {
-                Map.Entry<String, JsonNode> property = properties.next();
-                String propertyName = property.getKey();
-                JsonNode node = property.getValue();
-                String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);
-                JType propertyType = jclass.fields().get(fieldName).type();
-
-                addSetPropertyCase(jclass, propertySwitch, propertyName, propertyType, valueParam, node);
-            }
-        }
-        JBlock defaultBlock = propertySwitch._default().body();
-        JClass extendsType = jclass._extends();
-        if (extendsType != null && extendsType instanceof JDefinedClass) {
-            JDefinedClass parentClass = (JDefinedClass) extendsType;
-            JMethod parentMethod = parentClass.getMethod(DEFINED_SETTER_NAME,
-                    new JType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
-            defaultBlock._return(_super().invoke(parentMethod).arg(nameParam).arg(valueParam));
-        } else {
-            defaultBlock._return(FALSE);
-        }
         return method;
     }
 

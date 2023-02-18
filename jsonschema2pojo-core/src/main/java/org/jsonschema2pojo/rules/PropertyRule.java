@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -66,13 +67,18 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
-        String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        String propertyName;
+        if (StringUtils.isEmpty(nodeName)) {
+            propertyName = "__EMPTY__";
+        } else {
+            propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        }
 
         String pathToProperty;
         if (schema.getId() == null || schema.getId().getFragment() == null) {
-            pathToProperty = "#/properties/" + nodeName;
+            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         } else {
-            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
+            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
@@ -195,6 +201,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getAnnotator().dateField(field, clazz, node);
         } else if ("time".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().timeField(field, clazz, node);
+        } else if ("email".equalsIgnoreCase(format) && ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+            if (ruleFactory.getGenerationConfig().isUseJakartaValidation()) {
+                field.annotate(jakarta.validation.constraints.Email.class);
+            } else {
+                field.annotate(javax.validation.constraints.Email.class);
+            }
         }
     }
 

@@ -10,7 +10,7 @@
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
@@ -50,11 +50,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <gradle.version>5.6</gradle.version>
-        <gson.version>2.8.6</gson.version>
-        <moshi.version>1.5.0</moshi.version>
-        <jackson2x.version>2.12.4</jackson2x.version>
-        <jackson2x.databind.version>2.12.4</jackson2x.databind.version>
+        <gson.version>2.10.1</gson.version>
+        <moshi.version>1.12.0</moshi.version>
+        <jackson2x.version>2.14.2</jackson2x.version>
+        <jackson2x.databind.version>2.14.2</jackson2x.databind.version>
         <fastjson.version>1.2.76</fastjson.version>
+        <maven.plugin.plugin.version>3.7.1</maven.plugin.plugin.version>
     </properties>
 
     <reporting>
@@ -67,73 +68,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
+                    <version>3.12.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.mycila</groupId>
-                                        <artifactId>license-maven-plugin</artifactId>
-                                        <versionRange>[0.0,)</versionRange>
-                                        <goals>
-                                             <goal>format</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-dependency-plugin</artifactId>
-                                        <versionRange>[0.0,)</versionRange>
-                                        <goals>
-                                            <goal>copy-dependencies</goal>
-                                            <goal>unpack</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-compiler-plugin</artifactId>
-                                        <versionRange>[3.0,)</versionRange>
-                                        <goals>
-                                            <goal>compile</goal>
-                                            <goal>testCompile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-enforcer-plugin</artifactId>
-                                        <versionRange>[0.0,)</versionRange>
-                                        <goals>
-                                            <goal>enforce</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute />
-                                    </action>
-                                </pluginExecution>
-
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>${maven.plugin.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-report-plugin</artifactId>
+                    <version>${maven.plugin.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -255,7 +200,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.4</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -264,23 +209,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -302,7 +230,7 @@
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>1.30</version>
+                <version>1.82</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -374,22 +302,22 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.11</version>
+                <version>3.12.0</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.0.0.GA</version>
+                <version>2.0.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.2</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.10.10</version>
+                <version>2.12.2</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -400,7 +328,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.7.32</version>
+                <version>1.7.36</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -426,17 +354,31 @@
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>1.10.11</version>
+                <version>1.10.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.bval</groupId>
+                <artifactId>bval-jsr</artifactId>
+                <version>2.0.6</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
                 <version>2.2.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven.plugin.plugin.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
                 <version>2.2.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
@@ -458,13 +400,13 @@
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>7.0.1.Final</version>
+                <version>7.0.5.Final</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.el</artifactId>
-                <version>4.0.1</version>
+                <version>4.0.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -474,9 +416,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>qdox</groupId>
+                <groupId>com.thoughtworks.qdox</groupId>
                 <artifactId>qdox</artifactId>
-                <version>1.6.1</version>
+                <version>2.0.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -488,7 +430,7 @@
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
-                <version>1.5.0</version>
+                <version>1.5.1</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

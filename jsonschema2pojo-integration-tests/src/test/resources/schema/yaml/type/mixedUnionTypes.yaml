@@ -1,0 +1,11 @@
+properties:
+  mixedTypesProperty:
+    type:
+      - boolean
+      - string
+  mixedTypesWithNullProperty:
+    type:
+      - 'null'
+      - string
+      - boolean
+type: object

@@ -21,17 +21,20 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
-import com.thoughtworks.qdox.model.Type;
+import com.thoughtworks.qdox.model.JavaType;
+import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class TitleIT {
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
@@ -44,7 +47,7 @@ public class TitleIT {
         classSchemaRule.generateAndCompile("/schema/title/title.json", "com.example");
         File generatedJavaFile = classSchemaRule.generated("com/example/Title.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
 
         classWithTitle = javaDocBuilder.getClassByName("com.example.Title");
@@ -72,7 +75,7 @@ public class TitleIT {
     @Test
     public void descriptionAppearsInGetterJavadoc() {
 
-        JavaMethod javaMethod = classWithTitle.getMethodBySignature("getTitle", new Type[] {});
+        JavaMethod javaMethod = classWithTitle.getMethodBySignature("getTitle", Collections.emptyList());
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A title for this property"));
@@ -82,7 +85,8 @@ public class TitleIT {
     @Test
     public void descriptionAppearsInSetterJavadoc() {
 
-        JavaMethod javaMethod = classWithTitle.getMethodBySignature("setTitle", new Type[] { new Type("java.lang.String") });
+        final List<JavaType> parameterTypes = Collections.singletonList(new DefaultJavaClass("java.lang.String"));
+        JavaMethod javaMethod = classWithTitle.getMethodBySignature("setTitle", parameterTypes);
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A title for this property"));

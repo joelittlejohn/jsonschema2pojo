@@ -92,7 +92,7 @@ public class SelfRefIT {
         assertThat(mapEntryClass.getName(), is("com.example.SelfRefs"));
 
     }
-    
+
     @Test
     public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
@@ -114,7 +114,18 @@ public class SelfRefIT {
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getVersion").getReturnType().getSimpleName(), equalTo("String"));
-        
-    }    
+
+    }
+
+    @Test
+    public void selfRefUsedInArrayItemIsReadSuccessfully() throws ReflectiveOperationException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/selfReferencingArrayItem.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SelfReferencingArrayItem");
+        Type listOfAType = generatedType.getMethod("getSelfReferencingArrayItems").getGenericReturnType();
+        Class<?> listEntryClass = (Class<?>) ((ParameterizedType) listOfAType).getActualTypeArguments()[0];
+
+        assertThat(listEntryClass.getName(), is("com.example.SelfReferencingArrayItem"));
+    }
 
 }
