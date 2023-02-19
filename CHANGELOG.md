@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1
+* Fix detection of targetVersion for Android gradle builds ([#1487](https://github.com/joelittlejohn/jsonschema2pojo/pull/1487))
+
 ## 1.2.0
 * Avoid output to System.err when finding unique Enum name ([#1485](https://github.com/joelittlejohn/jsonschema2pojo/pull/1485))
 * Add useful debug logging when reading schemas and creating classes ([#1483](https://github.com/joelittlejohn/jsonschema2pojo/pull/1483))

@@ -161,9 +161,6 @@ pushd $WORKING_DIR
     RELEASE_PAGE=$(echo $RELEASE | jq -r .html_url)
 popd
 
-pushd
-
-
 rm -rf $WORKING_DIR
 
 echo Release complete. Next steps:
