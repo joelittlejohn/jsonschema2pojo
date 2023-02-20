@@ -60,8 +60,14 @@ Project resources:
   * [Downloads](https://github.com/joelittlejohn/jsonschema2pojo/releases)
   * [Mailing list](https://groups.google.com/forum/#!forum/jsonschema2pojo-users)
 
+Special thanks:
+* unkish
+* Thach Hoang
+* Dan Cruver
+* Ben Manes
+* Sam Duke
+* Duane Zamrok
+* Christian Trimble
+* YourKit, who support this project through a free license for the [YourKit Java Profiler](https://www.yourkit.com/java/profiler).
+
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-
-<a href="https://www.yourkit.com"><img src="https://www.yourkit.com/images/yklogo.png" alt="YourKit" title="YourKit" align="right" width="185"/></a>
-
-Special thanks to YourKit, who support this project through a free license for their full-featured [YourKit Java Profiler](https://www.yourkit.com/java/profiler).
