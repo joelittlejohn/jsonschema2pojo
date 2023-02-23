@@ -26,7 +26,6 @@ import java.util.Map;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -74,8 +73,7 @@ public class ConstructorsIT {
   }
 
 
-  @Ignore
-  public static class ConstructorTestClasses {
+  private static class ConstructorTestClasses {
 
     protected Class<?> typeWithoutProperties;
     protected Class<?> typeWithoutRequiredProperties;
@@ -104,7 +102,7 @@ public class ConstructorsIT {
   /**
    * Tests what happens when includeConstructors is set to true
    */
-  public static class DefaultInlcudeConstructorsIT {
+  public static class DefaultIncludeConstructorsIT {
 
     @ClassRule
     public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
@@ -126,7 +124,7 @@ public class ConstructorsIT {
     }
 
     @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
       assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
     }
 
@@ -225,7 +223,7 @@ public class ConstructorsIT {
     }
 
     @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
       assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
     }
 
@@ -297,7 +295,7 @@ public class ConstructorsIT {
     }
 
     @Test
-    public void testGeneratesCosntructorWithAllPropertiesArrayStyle() throws Exception {
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
       assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
     }
 

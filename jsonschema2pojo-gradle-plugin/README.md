@@ -8,12 +8,14 @@ This Gradle plugin is hosted on both Maven Central and the [Gradle Plugin Portal
 
 ## Usage
 
+For Gradle 7.3 and later, you can use the plugins DSL:
+
 With Groovy:
 
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.1.3"
+  id "org.jsonschema2pojo" version "1.2.1"
 }
 
 jsonSchema2Pojo {
@@ -26,7 +28,7 @@ With Kotlin:
 ```kotlin
 plugins {
   id("java")
-  id("org.jsonschema2pojo") version "1.1.3"
+  id("org.jsonschema2pojo") version "1.2.1"
 }
 
 jsonSchema2Pojo {
@@ -34,12 +36,15 @@ jsonSchema2Pojo {
 }
 ```
 
+For Gradle 7.2.x and older, there is a [bug related to the application order of plugins](https://github.com/gradle/gradle/issues/15664) so you must use [legacy plugin application](https://plugins.gradle.org/plugin/org.jsonschema2pojo).
+
+
 Below we have a full build.gradle example, showing all available configuration options:
 
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.1.3"
+  id "org.jsonschema2pojo" version "1.2.1"
 }
 
 repositories {

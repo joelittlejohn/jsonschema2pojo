@@ -131,11 +131,17 @@ pushd $WORKING_DIR
     if [[ ! -z $OLD_VERSION ]]; then
     git clone git@github.com:joelittlejohn/jsonschema2pojo.git main
     pushd main
-            sed -i "s/$OLD_VERSION/$VERSION/g" README.md
+            sed -i "s|$OLD_VERSION|$VERSION|" README.md jsonschema2pojo-gradle-plugin/README.md
 
             git add .
             git commit -m "[release] updating README.md for $VERSION"
             git push origin master
+
+	    # publish gradle plugin to plugins.gradle.org
+	    pushd jsonschema2pojo-gradle-plugin
+	            git checkout jsonschema2pojo-$VERSION
+	            ./gradlew -Pversion=$VERSION publishPlugins
+	    popd
     popd
     fi
 
