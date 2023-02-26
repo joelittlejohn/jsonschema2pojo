@@ -25,7 +25,7 @@ public enum AnnotationStyle {
 
     /**
      * Jackson 2.x (alias of {@link #JACKSON2})
-     * 
+     *
      * @see <a
      *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
@@ -33,7 +33,7 @@ public enum AnnotationStyle {
 
     /**
      * Jackson 2.x
-     * 
+     *
      * @see <a
      *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
@@ -55,6 +55,14 @@ public enum AnnotationStyle {
      *      href="https://github.com/square/moshi">https://github.com/square/moshi</a>
      */
     MOSHI1,
+
+    /**
+     * fastjson 1.x
+     *
+     * @see <a
+     *      href="https://github.com/alibaba/fastjson">https://github.com/alibaba/fastjson</a>
+     */
+    FASTJSON,
 
     /**
      * No-op style, adds no annotations at all.

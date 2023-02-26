@@ -54,6 +54,7 @@
         <moshi.version>1.12.0</moshi.version>
         <jackson2x.version>2.14.2</jackson2x.version>
         <jackson2x.databind.version>2.14.2</jackson2x.databind.version>
+        <fastjson.version>1.2.76</fastjson.version>
         <maven.plugin.plugin.version>3.7.1</maven.plugin.plugin.version>
     </properties>
 
@@ -266,6 +267,11 @@
                 <groupId>com.squareup.moshi</groupId>
                 <artifactId>moshi</artifactId>
                 <version>${moshi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.javaparser</groupId>
