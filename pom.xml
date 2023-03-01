@@ -54,7 +54,7 @@
         <moshi.version>1.12.0</moshi.version>
         <jackson2x.version>2.14.2</jackson2x.version>
         <jackson2x.databind.version>2.14.2</jackson2x.databind.version>
-        <maven.plugin.plugin.version>3.7.1</maven.plugin.plugin.version>
+        <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
     </properties>
 
     <reporting>
