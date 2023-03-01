@@ -80,7 +80,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version><!-- 3.6.2 is the minimum -->
+                <version>3.11.0</version><!-- 3.6.2 is the minimum -->
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <failOnWarning>false</failOnWarning>
