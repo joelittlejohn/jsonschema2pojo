@@ -12,28 +12,19 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        os: [ubuntu-18.04]
-        java: [8]
-      fail-fast: false
+        java_version: [8]
       max-parallel: 4
-    name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
-
+    name: Test JDK ${{ matrix.java_version }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.7.0
         with:
-          java-version: ${{ matrix.java }}
-          distribution: temurin
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          checkout-fetch-depth: 0
+          java-version: ${{ matrix.java_version }}
+          java-distribution: temurin
+          maven-version: 3.8.7
       - name: Verify with Maven
-        run: mvn verify -B --file pom.xml
+        run: mvn verify -B
