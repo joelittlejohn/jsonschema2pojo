@@ -50,7 +50,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.12</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -80,7 +79,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version><!-- 3.6.2 is the minimum -->
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <failOnWarning>false</failOnWarning>
@@ -101,7 +99,6 @@
             <plugin>
                 <groupId>com.bluetrainsoftware.maven</groupId>
                 <artifactId>groovydoc-maven-plugin</artifactId>
-                <version>2.1</version>
                 <executions>
                     <execution>
                         <id>attach-docs</id>
@@ -113,7 +110,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
                 <configuration>
                     <useFile>false</useFile>
                     <includes>
@@ -124,7 +120,6 @@
               <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>codenarc-maven-plugin</artifactId>
-                  <version>0.22-1</version>
               </plugin>
         </plugins>
     </build>
