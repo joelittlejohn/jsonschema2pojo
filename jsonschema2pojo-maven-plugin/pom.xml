@@ -35,7 +35,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jsonschema2pojo</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
             <version>${project.version}</version>
         </dependency>
