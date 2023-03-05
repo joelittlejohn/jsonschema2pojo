@@ -190,7 +190,9 @@ public interface GenerationConfig {
   AnnotationStyle getAnnotationStyle();
 
   /**
-   * When {@code true} the title is used as class name.
+   * Gets the 'useTitleAsClassname' configuration option.
+   *
+   * @return Whether to use the 'title' property value as the class name for object schemas.
    */
   boolean isUseTitleAsClassname();
 
@@ -617,8 +619,10 @@ public interface GenerationConfig {
   }
 
   /**
-   * Whether to mark generated classes with the annotation <code>javax.annotation.@Generated</code>
-   * (or <code>javax.annotation.processing.Generated</code> for Java 9 and later).
+   * Gets the 'includeGeneratedAnnotation' configuration option.
+   *
+   * @return Whether to mark generated classes with the annotation <code>javax.annotation.@Generated</code>
+   * (<code>javax.annotation.processing.Generated</code> for Java 9 and later).
    */
   boolean isIncludeGeneratedAnnotation();
 

@@ -217,7 +217,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <compilerArgs>
-                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -366,6 +366,11 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.10.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

@@ -713,6 +713,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      *            whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods
      * @deprecated no longer in use, please remove it from your config
      */
+    @Deprecated
     public void setUseCommonsLang3(boolean useCommonsLang3) {
         super.log("useCommonsLang3 is deprecated. Please remove it from your config.", Project.MSG_WARN);
     }

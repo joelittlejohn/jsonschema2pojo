@@ -431,6 +431,8 @@ public class RuleFactory {
     /**
      * Provides a rule instance that adds methods for dynamically getting, setting, and
      * building properties.
+     *
+     * @return a schema rule that adds 'dynamic' get and set methods to classes, to get and set by string property names.
      */
     public Rule<JDefinedClass, JDefinedClass> getDynamicPropertiesRule() {
         return new DynamicPropertiesRule(this);

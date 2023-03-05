@@ -40,7 +40,7 @@ public interface Annotator {
       *      href="https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization">Jackson Docs - Polymorphic Type Handling</a>
      *
      * @param clazz
-     *            a generated pojo class, that is serialized to JSON
+     *            a generated pojo class, that needs serialization annotations
      * @param schema
      *            the object schema associated with this clazz
      */
@@ -51,7 +51,7 @@ public interface Annotator {
      * serialization
      *
      * @param clazz
-     *            a generated pojo class, that is serialized to JSON
+     *            a generated pojo class, that needs serialization annotations
      * @param propertiesNode
      *            the properties to be ordered
      */
@@ -62,7 +62,7 @@ public interface Annotator {
      * during serialization.
      *
      * @param clazz
-     *            a generated pojo class, that is serialized to JSON
+     *            a generated pojo class, that needs serialization annotations
      * @param schema
      *            the object schema associated with this clazz
      */
@@ -74,7 +74,7 @@ public interface Annotator {
      * @param field
      *            the field that contains data that will be serialized
      * @param clazz
-     *            the owner of the field (class to which the field belongs)
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyName
      *            the name of the JSON property that this field represents
      * @param propertyNode
@@ -89,6 +89,8 @@ public interface Annotator {
      * @param getter
      *            the method that will be used to get the value of the given
      *            JSON property
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyName
      *            the name of the JSON property that this getter gets
      */
@@ -101,6 +103,8 @@ public interface Annotator {
      * @param setter
      *            the method that will be used to set the value of the given
      *            JSON property
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyName
      *            the name of the JSON property that this setter sets
      */
@@ -114,6 +118,8 @@ public interface Annotator {
      * @param getter
      *            the method that will be used to get the values of additional
      *            properties
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      */
     void anyGetter(JMethod getter, JDefinedClass clazz);
 
@@ -125,6 +131,8 @@ public interface Annotator {
      * @param setter
      *            the method that will be used to set the values of additional
      *            properties
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      */
     void anySetter(JMethod setter, JDefinedClass clazz);
 
@@ -133,6 +141,8 @@ public interface Annotator {
      * creator/factory method which can choose the correct Java enum value for a
      * given JSON value during deserialization.
      *
+     * @param _enum
+     *            a generated enum class, that needs serialization annotations
      * @param creatorMethod
      *            the method that can create a Java enum value from a JSON value
      */
@@ -143,6 +153,8 @@ public interface Annotator {
      * that is used to turn a Java enum value into a JSON value during
      * serialization.
      *
+     * @param _enum
+     *            a generated enum class, that needs serialization annotations
      * @param valueMethod
      *            the enum instance method that can create a JSON value during
      *            serialization
@@ -151,7 +163,14 @@ public interface Annotator {
 
     /**
      * Add the necessary annotations to an enum constant. For instance, to force
-     * the the given value to be used when serializing.
+     * the given value to be used when serializing.
+     *
+     * @param _enum
+     *            a generated enum class, that needs serialization annotations
+     * @param constant
+     *            one of the constants within _enum
+     * @param value
+     *            the value to use when serializing this constant
      */
     void enumConstant(JDefinedClass _enum, JEnumConstant constant, String value);
 
@@ -181,6 +200,8 @@ public interface Annotator {
      *
      * @param field
      *            the field that contains data that will be serialized
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyNode
      *            the schema node defining this property
      */
@@ -192,6 +213,8 @@ public interface Annotator {
      *
      * @param field
      *            the field that contains data that will be serialized
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyNode
      *            the schema node defining this property
      */
@@ -203,12 +226,33 @@ public interface Annotator {
      *
      * @param field
      *            the field that contains data that will be serialized
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
      * @param propertyNode
      *            the schema node defining this property
      */
     void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode);
 
+    /**
+     * Add the necessary annotations to the field that will hold 'additional' properties.
+     *
+     * @param field
+     *            the field (usually a Map) that will hold properties that are not explicitly mentioned in the schema
+     * @param clazz
+     *            a generated pojo class, that needs serialization annotations
+     * @param propertyName
+     *            unused
+     */
     void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName);
 
+    /**
+     * Indicates whether type hint annotations should be added to support polymorphic deserialization.
+     *
+     * @param node
+     *            the relevant schema node
+     *
+     * @return <code>true</code> if the JSON library supports polymorphic deserialization AND the
+     *         deserializationClassProperty is present in this schema
+     */
     boolean isPolymorphicDeserializationSupported(JsonNode node);
 }

@@ -82,7 +82,7 @@ public class ReflectionHelper {
   }
 
   /**
-   * This is recursive with searchClassAndSuperClassesForField
+   * Mutually recursive with searchClassAndSuperClassesForField
    */
   public JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
     JClass superClass = jclass._extends();
@@ -128,6 +128,9 @@ public class ReflectionHelper {
     }
   }
 
+  /**
+   * Mutually recursive with searchSuperClassesForField
+   */
   public JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
     Map<String, JFieldVar> fields = jclass.fields();
     JFieldVar field = fields.get(property);

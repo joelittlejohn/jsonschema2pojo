@@ -21,7 +21,7 @@ import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -100,12 +100,13 @@ public class NameHelper {
     }
 
     /**
-     * Convert jsonFieldName into the equivalent Java fieldname by replacing
-     * illegal characters and normalizing it.
+     * Convert jsonFieldName into the equivalent Java field name by replacing illegal characters and normalizing it.
      *
      * @param jsonFieldName
+     *         the name of the JSON property
      * @param node
-     * @return
+     *         the JsonNode representing the schema for this property
+     * @return a safe, appropriate Java field name
      */
     public String getPropertyName(String jsonFieldName, JsonNode node) {
         jsonFieldName = getFieldName(jsonFieldName, node);
@@ -129,8 +130,10 @@ public class NameHelper {
      * Generate setter method name for property.
      *
      * @param propertyName
+     *         the name of the property being set
      * @param node
-     * @return
+     *         the JsonNode representing the schema for this property
+     * @return a safe, appropriate name for the Java setter method
      */
     public String getSetterName(String propertyName, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
@@ -151,6 +154,15 @@ public class NameHelper {
         return setterName;
     }
 
+    /**
+     * Generate builder method name for property (like withXxx).
+     *
+     * @param propertyName
+     *         the name of the property being added by this builder
+     * @param node
+     *         the JsonNode representing the schema for this property
+     * @return a safe, appropriate name for the Java builder method
+     */
     public String getBuilderName(String propertyName, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
 
@@ -164,11 +176,13 @@ public class NameHelper {
     }
 
     /**
-     * Get name of the field generated from property.
+     * Generate a name for the class field that will hold this property.
      *
      * @param propertyName
+     *         the name of the JSON property being added as a field
      * @param node
-     * @return
+     *         the JsonNode representing the schema for this property
+     * @return a safe, appropriate name for the Java class field
      */
     public String getFieldName(String propertyName, JsonNode node) {
 
@@ -197,9 +211,10 @@ public class NameHelper {
      * Generate getter method name for property.
      *
      * @param propertyName
-     * @param type
+     *         the name of the property this getter will return
      * @param node
-     * @return
+     *         the JsonNode representing the schema for this property
+     * @return a safe, appropriate name for the Java getter method
      */
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);

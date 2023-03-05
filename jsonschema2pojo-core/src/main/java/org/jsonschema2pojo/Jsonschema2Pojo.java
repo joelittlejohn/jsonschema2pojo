@@ -48,6 +48,8 @@ public class Jsonschema2Pojo {
      *            the configuration options (including source and target paths,
      *            and other behavioural options) that will control code
      *            generation
+     * @param logger
+     *            a logger appropriate to the current context, usually a wrapper around the build platform logger
      * @throws FileNotFoundException
      *             if the source path is not found
      * @throws IOException
