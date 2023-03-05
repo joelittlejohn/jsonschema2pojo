@@ -248,6 +248,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = {"--omit-generated-annotation"}, description = "Omit @Generated annotation on generated types")
     private boolean omitGeneratedAnnotation = false;
 
+    @Parameter(names = {"--use-generated-runtime-annotation"}, description = "Use custom runtime retention @Generated annotation on generated types")
+    private boolean useRuntimeGeneratedAnnotation = false;
+
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
 
@@ -624,4 +627,9 @@ public class Arguments implements GenerationConfig {
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
     }
+
+	@Override
+	public boolean isIncludeRuntimeGeneratedAnnotation() {
+		return useRuntimeGeneratedAnnotation;
+	}
 }

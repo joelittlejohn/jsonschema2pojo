@@ -495,4 +495,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isUseJakartaValidation() {
         return false;
     }
+
+	@Override
+	public boolean isIncludeRuntimeGeneratedAnnotation() {
+		return false;
+	}
 }

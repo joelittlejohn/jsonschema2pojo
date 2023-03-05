@@ -194,6 +194,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private Map<String, String> formatTypeMapping = new HashMap<>();
     
     private boolean includeGeneratedAnnotation = true;
+    
+    private boolean includeRuntimeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
     /**
@@ -1337,4 +1339,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
     }
+
+	@Override
+	public boolean isIncludeRuntimeGeneratedAnnotation() {
+		return includeRuntimeGeneratedAnnotation;
+	}
 }

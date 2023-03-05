@@ -621,6 +621,7 @@ public interface GenerationConfig {
    * (or <code>javax.annotation.processing.Generated</code> for Java 9 and later).
    */
   boolean isIncludeGeneratedAnnotation();
+  boolean isIncludeRuntimeGeneratedAnnotation();
 
   /**
    * Gets the 'useJakartaValidation' configuration option.

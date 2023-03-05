@@ -49,4 +49,8 @@ public class AnnotationHelper {
         }
     }
 
+    public static void addRuntimeGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
+    	tryToAnnotate(jclass, jclass.getPackage().name()+".Generated");
+    }
+
 }

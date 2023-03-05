@@ -16,7 +16,8 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.contains;
+import static org.apache.commons.lang3.StringUtils.split;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -26,8 +27,12 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+
+import net.mfjassociates.tools.JaCoCoGenerated;
 
 /**
  * Applies a JSON schema.
@@ -82,12 +87,17 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         } else {
             javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema);
         }
+        if (ruleFactory.getGenerationConfig().isIncludeRuntimeGeneratedAnnotation()) createRuntimeType(generatableType);
         schema.setJavaTypeIfEmpty(javaType);
 
         return javaType;
     }
 
-    private String nameFromRef(String ref) {
+    private JType createRuntimeType(JClassContainer generatableType) {
+		return JaCoCoGenerated.createCustomPackageRuntimeGeneratedAnnotation(generatableType.getPackage());
+	}
+
+	private String nameFromRef(String ref) {
 
         if ("#".equals(ref)) {
             return null;
