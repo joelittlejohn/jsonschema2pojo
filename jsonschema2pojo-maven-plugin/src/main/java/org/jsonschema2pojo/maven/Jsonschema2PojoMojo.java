@@ -19,6 +19,28 @@ package org.jsonschema2pojo.maven;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.xml.Xpp3Dom;
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
@@ -33,28 +55,6 @@ import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.jsonschema2pojo.util.JavaVersion;
 import org.jsonschema2pojo.util.URLUtil;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.utils.xml.Xpp3Dom;
 
 /**
  * When invoked, this goal reads one or more
@@ -1126,6 +1126,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeSetters() { return includeSetters; }
 
+    @SuppressWarnings("unchecked")
     private void setTargetVersion() {
         if (isNotBlank(this.targetVersion)) {
             return;

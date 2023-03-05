@@ -9,20 +9,16 @@
     </parent>
 
     <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-
     <packaging>maven-plugin</packaging>
-
     <name>jsonschema2pojo-maven-plugin</name>
     <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
                     <execution>
@@ -39,7 +35,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jsonschema2pojo</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -64,13 +60,10 @@
     <reporting>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-report-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.2</version>
                 <reportSets>
                     <reportSet>
                         <reports>

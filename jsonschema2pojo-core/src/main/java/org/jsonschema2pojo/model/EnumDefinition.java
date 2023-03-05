@@ -25,7 +25,7 @@ import com.sun.codemodel.JType;
 
 /**
  * Holds an enum types effective definition.
- *
+ * <p>
  * The definition of the enum can be decided by:
  *    "enum" (JSON-Schema)
  *    "enum" and "javaEnums" (JSON-Schema + jsonschema2pojo extension)
@@ -50,22 +50,10 @@ public class EnumDefinition {
     this.type = type;
   }
 
-  /**
-   * Copy constructor
-   *
-   * Used primarily for custom rule enum implementations.
-   *
-   */
   public EnumDefinition(EnumDefinition enumDefinition) {
     this(enumDefinition, enumDefinition.enumValues);
   }
 
-  /**
-   * Copy constructor with an override for enumValues.
-   *
-   * Used primarily for custom enum rule implementations.
-   *
-   */
   public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
     this(enumDefinition.nodeName,
          enumDefinition.enumNode,
