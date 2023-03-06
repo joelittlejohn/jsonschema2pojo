@@ -42,6 +42,7 @@ import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -54,6 +55,8 @@ import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import net.mfjassociates.tools.JaCoCoGenerated;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -135,6 +138,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeRuntimeGeneratedAnnotation()) {
+            if (ruleFactory.getGenerationConfig().isIncludeRuntimeGeneratedAnnotation()) createRuntimeType(jclass);
             AnnotationHelper.addRuntimeGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
@@ -162,6 +166,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         return jclass;
 
     }
+
+    private JType createRuntimeType(JClassContainer generatableType) {
+		return JaCoCoGenerated.createCustomPackageRuntimeGeneratedAnnotation(generatableType.getPackage());
+	}
 
     private void addParcelSupport(JDefinedClass jclass) {
         jclass._implements(jclass.owner().directClass("android.os.Parcelable"));
