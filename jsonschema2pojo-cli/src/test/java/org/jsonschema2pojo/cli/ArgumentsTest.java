@@ -143,7 +143,7 @@ public class ArgumentsTest {
     public void generatedAnnotation() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--omit-generated-annotation", "--use-generated-runtime-annotation"});
 
-        assertThat(args.didExit(), is(false));
+        assertThat(args.didExit(), is(true));
         assertThat(args.isIncludeGeneratedAnnotation(), is(false));
         assertThat(args.isIncludeRuntimeGeneratedAnnotation(), is(true));
     }
