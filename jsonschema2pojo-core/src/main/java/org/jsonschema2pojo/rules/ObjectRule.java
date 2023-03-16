@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.codemodel.*;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
@@ -39,6 +38,22 @@ import org.jsonschema2pojo.util.ReflectionHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JOp;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -184,7 +199,6 @@ public class ObjectRule implements Rule<JClassContainer, JType> {
         JDefinedClass newType;
 
         Annotator annotator = ruleFactory.getAnnotator();
-
 
         try {
             if (node.has("existingJavaType")) {
