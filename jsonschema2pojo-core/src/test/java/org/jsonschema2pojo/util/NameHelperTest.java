@@ -74,7 +74,7 @@ public class NameHelperTest {
     }
 
     @Test
-    public void testGetUniqueClassNamePackageNewClass() throws Exception {
+    public void testGetUniqueClassNamePackageNewClass() {
         JCodeModel codeModel = new JCodeModel();
         JPackage _package = codeModel._package("pkg");
 

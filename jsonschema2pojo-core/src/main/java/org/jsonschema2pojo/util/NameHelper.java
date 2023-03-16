@@ -16,7 +16,9 @@
 
 package org.jsonschema2pojo.util;
 
-import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
@@ -28,7 +30,6 @@ import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
@@ -289,17 +290,11 @@ public class NameHelper {
     }
 
     private String makeUnique(String className, JClassContainer container) {
-        try {
-            JDefinedClass _class = container._class(className);
-            Iterator<JDefinedClass> iter = container.classes();
-            while (iter.hasNext()) {
-                if (iter.next().equals(_class)) {
-                    iter.remove();
-                }
-            }
-            return className;
-        } catch (JClassAlreadyExistsException e) {
+        if (StreamSupport.stream(Spliterators.spliteratorUnknownSize(container.classes(), Spliterator.DISTINCT), false)
+                .anyMatch(x -> x.name().equals(className))) {
             return makeUnique(MakeUniqueClassName.makeUnique(className), container);
         }
+
+        return className;
     }
 }

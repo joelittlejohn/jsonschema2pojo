@@ -25,6 +25,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
@@ -42,6 +43,7 @@ public class ObjectRuleTest {
     protected final RuleFactory ruleFactory = mock(RuleFactory.class);
     protected final Annotator annotator = mock(Annotator.class);
     protected final NameHelper nameHelper = mock(NameHelper.class);
+    protected final RuleLogger ruleLogger = mock(RuleLogger.class);
     protected final ParcelableHelper parcelableHelper = mock(ParcelableHelper.class);
     protected final ReflectionHelper reflectionHelper = mock(ReflectionHelper.class);
     protected final AdditionalPropertiesRule additionalPropertiesRule = mock(AdditionalPropertiesRule.class);
@@ -63,6 +65,7 @@ public class ObjectRuleTest {
         lenient().when(ruleFactory.getReflectionHelper()).thenReturn(reflectionHelper);
         lenient().when(ruleFactory.getPropertiesRule()).thenReturn(propertiesRule);
         lenient().when(ruleFactory.getGenerationConfig()).thenReturn(generationConfig);
+        lenient().when(ruleFactory.getLogger()).thenReturn(ruleLogger);
     }
 
     @Test
