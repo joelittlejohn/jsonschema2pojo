@@ -105,7 +105,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JType propertyType;
         if (node != null && node.size() != 0) {
             String pathToAdditionalProperties;
-            if (schema.getId().getFragment() == null) {
+            if (schema.getId() == null || schema.getId().getFragment() == null) {
                 pathToAdditionalProperties = "#/additionalProperties";
             } else {
                 pathToAdditionalProperties = "#" + schema.getId().getFragment() + "/additionalProperties";
