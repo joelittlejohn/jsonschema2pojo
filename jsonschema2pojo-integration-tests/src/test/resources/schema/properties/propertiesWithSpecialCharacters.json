@@ -12,6 +12,9 @@
     },
     "org.hisp.dhis.common.FileTypeValueOptions" : {
       "type" : "string"
+    },
+    "good?" : {
+      "type" : "boolean"
     }
   }
 }

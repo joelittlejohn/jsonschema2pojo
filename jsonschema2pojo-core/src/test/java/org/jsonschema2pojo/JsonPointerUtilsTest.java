@@ -26,13 +26,13 @@ public class JsonPointerUtilsTest {
 
     @Test
     public void testEncodeReferenceToken() {
-        assertThat(JsonPointerUtils.encodeReferenceToken("com/vsv#..."), is("com~1vsv~2~3~3~3"));
-        assertThat(JsonPointerUtils.encodeReferenceToken("~1~2~01~3"), is("~01~02~001~03"));
+        assertThat(JsonPointerUtils.encodeReferenceToken("com/vsv#...?"), is("com~1vsv~2~3~3~3~4"));
+        assertThat(JsonPointerUtils.encodeReferenceToken("~1~2~01~3~4"), is("~01~02~001~03~04"));
     }
 
     @Test
     public void testDecodeReferenceToken() {
-        assertThat(JsonPointerUtils.decodeReferenceToken("com~1vsv~2~3~3~3"), is("com/vsv#..."));
-        assertThat(JsonPointerUtils.decodeReferenceToken("~01~02~001~03"), is("~1~2~01~3"));
+        assertThat(JsonPointerUtils.decodeReferenceToken("com~1vsv~2~3~3~3~4"), is("com/vsv#...?"));
+        assertThat(JsonPointerUtils.decodeReferenceToken("~01~02~001~03~04"), is("~1~2~01~3~4"));
     }
 }

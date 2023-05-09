@@ -212,5 +212,6 @@ public class PropertiesIT {
         assertNotNull(generatedType.getDeclaredMethod("getFooBar"));
         assertNotNull(generatedType.getDeclaredMethod("get$RfcNumber"));
         assertNotNull(generatedType.getDeclaredMethod("getOrgHispDhisCommonFileTypeValueOptions"));
+        assertNotNull(generatedType.getDeclaredMethod("getGood"));
     }
 }
