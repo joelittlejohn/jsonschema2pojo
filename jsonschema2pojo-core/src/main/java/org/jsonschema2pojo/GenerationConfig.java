@@ -638,4 +638,24 @@ public interface GenerationConfig {
    */
   boolean isUseJakartaValidation();
 
+  /**
+   * Gets the 'generateDefinitions' configuration option.
+   *
+   * @return whether to generate POJO's from subschemas path defined by {@link #getDefinitionsPath} configuration option
+   */
+  default boolean isGenerateDefinitions() {
+      return false;
+  }
+
+  /**
+   * Gets the 'definitionsPath' configuration option.
+   * This property works in collaboration with the {@link #isGenerateDefinitions()} configuration option.
+   * If the {@link #isGenerateDefinitions()} returns {@code false}, then this configuration option will not affect anything.
+   *
+   * @return path to subschemas that should be processed by jsonschema2pojo
+   */
+  default String getDefinitionsPath() {
+      return "/$defs";
+  }
+
 }

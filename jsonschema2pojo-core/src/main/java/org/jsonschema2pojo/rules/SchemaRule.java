@@ -88,7 +88,28 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
         schema.setJavaTypeIfEmpty(javaType);
 
+        processDefinitions(schemaNode, generatableType, schema);
+
         return javaType;
+    }
+
+    private void processDefinitions(JsonNode schemaNode, JClassContainer generatableType, Schema parent) {
+        final String definitionsNodePath = ruleFactory.getGenerationConfig().getDefinitionsPath();
+        if (!ruleFactory.getGenerationConfig().isGenerateDefinitions() || isBlank(definitionsNodePath)) {
+            return;
+        }
+
+        for (var definition : schemaNode.at(definitionsNodePath).properties()) {
+            final Schema schema = ruleFactory.getSchemaStore().create(
+                    parent,
+                    "#" + definitionsNodePath + "/" + definition.getKey(),
+                    ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            if (schema.isGenerated()) {
+                continue;
+            }
+
+            apply(definition.getKey(), definition.getValue(), schemaNode, generatableType, schema);
+        }
     }
 
     private String nameFromRef(String ref) {

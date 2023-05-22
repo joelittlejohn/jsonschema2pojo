@@ -315,6 +315,12 @@ jsonSchema2Pojo {
   // Whether to use annotations from jakarta.validation package instead of javax.validation package
   // when adding JSR-303 annotations to generated Java types
   useJakartaValidation = false
+
+  // Whether to generate POJO's from subschemas path defined by 'definitionsPath' configuration option
+  generateDefinitions = false
+
+  // Defines path to subschemas that should be processed by jsonschema2pojo when 'generateDefinitions' is enabled
+  definitionsPath = '/$defs'
 }
 ```
 
