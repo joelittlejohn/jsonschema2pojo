@@ -248,6 +248,12 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
 
+    @Parameter(names = { "--generateDefinitions" }, description = "Whether to generate POJO's from subschemas path defined by '--definitionsPath' configuration option")
+    private boolean generateDefinitions = false;
+
+    @Parameter(names = { "--definitionsPath" }, description = "Defines path to subschemas that should be processed by jsonschema2pojo when '--generateDefinitions' is enabled")
+    private String definitionsPath = "/$defs";
+
     @Parameter(names = { "-v", "--version"}, description = "Print version information", help = true)
     private boolean printVersion = false;
 
@@ -616,5 +622,15 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public boolean isGenerateDefinitions() {
+        return generateDefinitions;
+    }
+
+    @Override
+    public String getDefinitionsPath() {
+        return definitionsPath;
     }
 }
