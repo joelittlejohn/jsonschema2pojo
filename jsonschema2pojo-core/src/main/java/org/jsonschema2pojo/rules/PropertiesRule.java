@@ -63,18 +63,16 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
         if (node == null) {
             node = JsonNodeFactory.instance.objectNode();
         }
-
         for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
             String property = properties.next();
-
             ruleFactory.getPropertyRule().apply(property, node.get(property), node, jclass, schema);
         }
-
-        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !jclass._extends().name().equals("Object")) {
-            addOverrideBuilders(jclass, jclass.owner()._getClass(jclass._extends().fullName()));
+        JDefinedClass abstractClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !abstractClass._extends().name().equals("Object")) {
+            addOverrideBuilders(abstractClass, abstractClass.owner()._getClass(abstractClass._extends().fullName()));
         }
 
-        ruleFactory.getAnnotator().propertyOrder(jclass, node);
+        ruleFactory.getAnnotator().propertyOrder(abstractClass, node);
 
         return jclass;
     }

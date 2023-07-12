@@ -67,6 +67,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
+        JDefinedClass abstractClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
         String propertyName;
         if (StringUtils.isEmpty(nodeName)) {
             propertyName = "__EMPTY__";
@@ -82,7 +83,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, abstractClass, propertySchema);
         propertySchema.setJavaTypeIfEmpty(propertyType);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
@@ -90,24 +91,24 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         node = resolveRefs(node, schema);
 
-        int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
-        JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
+        int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PROTECTED : JMod.PUBLIC;
+        JFieldVar field = abstractClass.field(accessModifier, propertyType, propertyName);
 
         propertyAnnotations(nodeName, node, schema, field);
 
-        formatAnnotation(field, jclass, node);
+        formatAnnotation(field, abstractClass, node);
 
-        ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
+        ruleFactory.getAnnotator().propertyField(field, abstractClass, nodeName, node);
 
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
-            ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
+            JMethod getter = addGetter(abstractClass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
+            ruleFactory.getAnnotator().propertyGetter(getter, abstractClass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeSetters) {
-            JMethod setter = addSetter(jclass, field, nodeName, node);
-            ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
+            JMethod setter = addSetter(abstractClass, field, nodeName, node);
+            ruleFactory.getAnnotator().propertySetter(setter, abstractClass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
