@@ -113,7 +113,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilderMethod(jclass, field, nodeName, node);
+            JMethod parentBuilder = addBuilderMethod(abstractClass, field, nodeName, node);
+            if (abstractClass != jclass) {
+                addOverrideBuilder(jclass, parentBuilder, field);
+            }
         }
 
         if (node.has("pattern")) {
@@ -136,7 +139,23 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         return jclass;
     }
+    
+    private void addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
 
+        // Confirm that this class doesn't already have a builder method matching the same name as the parentBuilder
+        if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
+
+            JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
+            builder.annotate(Override.class);
+
+            JVar param = builder.param(parentParam.type(), parentParam.name());
+            JBlock body = builder.body();
+            body.invoke(JExpr._super(), parentBuilder).arg(param);
+            body._return(JExpr._this());
+
+        }
+    }
+    
     private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
         JsonNode array = schema.getContent().get(arrayFieldName);
         if (array != null) {
