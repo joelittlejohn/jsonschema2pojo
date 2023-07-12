@@ -91,7 +91,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         node = resolveRefs(node, schema);
 
-        int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PROTECTED : JMod.PUBLIC;
+        int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
         JFieldVar field = abstractClass.field(accessModifier, propertyType, propertyName);
 
         propertyAnnotations(nodeName, node, schema, field);
