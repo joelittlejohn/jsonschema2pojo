@@ -242,7 +242,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
                 } else {
                     int className_pos = fqn.lastIndexOf(".") + 1;
-                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.PUBLIC,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
+                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.PUBLIC + JMod.ABSTRACT,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
                 }
             } else {
                 final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package);

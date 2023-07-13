@@ -19,9 +19,7 @@ package org.jsonschema2pojo;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -92,16 +90,17 @@ public class SchemaMapper {
         ObjectNode schemaNode = readSchema(schemaUrl);
 
         JType type = ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
-        
-        Iterator<JPackage> packages = codeModel.packages();
-        while(packages.hasNext()) {
-            Iterator<JDefinedClass> classes = packages.next().classes();
-            while(classes.hasNext()) {
-                JDefinedClass jclass = classes.next();
-                if (jclass.name().startsWith("_")) {
-                    int className_pos = jclass.fullName().lastIndexOf(".") + 1;
-                    String subClassName = jclass.fullName().substring(0, className_pos) + jclass.fullName().substring(className_pos + 1, jclass.fullName().length());
-                    codeModel._getClass(subClassName).hide();
+        if (ruleFactory.getGenerationConfig().isOnlyAbstractJavaTypeClasses()) {
+            Iterator<JPackage> packages = codeModel.packages();
+            while(packages.hasNext()) {
+                Iterator<JDefinedClass> classes = packages.next().classes();
+                while(classes.hasNext()) {
+                    JDefinedClass jclass = classes.next();
+                    if (jclass.name().startsWith("_")) {
+                        int className_pos = jclass.fullName().lastIndexOf(".") + 1;
+                        String subClassName = jclass.fullName().substring(0, className_pos) + jclass.fullName().substring(className_pos + 1, jclass.fullName().length());
+                        codeModel._getClass(subClassName).hide();
+                    }
                 }
             }
         }
