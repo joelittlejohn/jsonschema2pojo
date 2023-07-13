@@ -244,7 +244,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     int className_pos = fqn.lastIndexOf(".") + 1;
                     newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.PUBLIC,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
                 }
-                ruleFactory.getLogger().info("Adding " + newType.fullName());
             } else {
                 final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package);
                 if (usePolymorphicDeserialization) {
@@ -252,8 +251,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 } else {
                     newType = _package._class(className);
                 }
-                ruleFactory.getLogger().debug("Adding " + newType.fullName());
             }
+            ruleFactory.getLogger().info("Adding " + newType.fullName() + (!newType._extends().fullName().equals("java.lang.Object") ? " extends " + newType._extends().fullName() : ""));
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
