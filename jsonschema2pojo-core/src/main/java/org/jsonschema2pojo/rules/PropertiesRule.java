@@ -67,12 +67,12 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
             String property = properties.next();
             ruleFactory.getPropertyRule().apply(property, node.get(property), node, jclass, schema);
         }
-        JDefinedClass abstractClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
-        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !abstractClass._extends().name().equals("Object")) {
-            addOverrideBuilders(abstractClass, abstractClass.owner()._getClass(abstractClass._extends().fullName()));
+        JDefinedClass parentClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !parentClass._extends().name().equals("Object")) {
+            addOverrideBuilders(parentClass, parentClass.owner()._getClass(parentClass._extends().fullName()));
         }
 
-        ruleFactory.getAnnotator().propertyOrder(abstractClass, node);
+        ruleFactory.getAnnotator().propertyOrder(parentClass, node);
 
         return jclass;
     }

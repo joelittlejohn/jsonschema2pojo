@@ -99,19 +99,19 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (jclass._extends() == null) {
             jclass._extends((JClass) superType);
         }
-        JDefinedClass abstractClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
+        JDefinedClass parentClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
         schema.setJavaTypeIfEmpty(jclass);
 
         if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, abstractClass, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, parentClass, schema);
         }
 
         if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, abstractClass, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, parentClass, schema);
         }
 
         if (node.has("$comment")) {
-            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, abstractClass, schema);
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, parentClass, schema);
         }
 
         // Creates the class definition for the builder
@@ -122,40 +122,40 @@ public class ObjectRule implements Rule<JPackage, JType> {
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
         if (node.has("javaInterfaces")) {
-            addInterfaces(abstractClass, node.get("javaInterfaces"));
+            addInterfaces(parentClass, node.get("javaInterfaces"));
         }
 
-        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, abstractClass, schema);
+        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, parentClass, schema);
 
-        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, abstractClass, schema);
+        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, parentClass, schema);
 
         if (node.has("required")) {
-            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, abstractClass, schema);
+            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, parentClass, schema);
         }
        
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), abstractClass);
+            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), parentClass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
-            addToString(abstractClass);
+            addToString(parentClass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
-            addHashCode(abstractClass, node);
-            addEquals(abstractClass, node);
+            addHashCode(parentClass, node);
+            addEquals(parentClass, node);
         }
 
         if (ruleFactory.getGenerationConfig().isParcelable()) {
-            addParcelSupport(abstractClass);
+            addParcelSupport(parentClass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            ruleFactory.getConstructorRule().apply(nodeName, node, parent, abstractClass, schema);
+            ruleFactory.getConstructorRule().apply(nodeName, node, parent, parentClass, schema);
 
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
-            SerializableHelper.addSerializableSupport(abstractClass);
+            SerializableHelper.addSerializableSupport(parentClass);
         }
 
         return jclass;
@@ -242,7 +242,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
                 } else {
                     int className_pos = fqn.lastIndexOf(".") + 1;
-                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.ABSTRACT + JMod.PUBLIC,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
+                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.PUBLIC,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
                 }
                 ruleFactory.getLogger().info("Adding " + newType.fullName());
             } else {
