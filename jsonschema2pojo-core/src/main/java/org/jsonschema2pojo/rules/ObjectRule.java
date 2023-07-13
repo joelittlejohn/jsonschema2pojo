@@ -241,7 +241,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (usePolymorphicDeserialization) {
                     newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
                 } else {
-                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.ABSTRACT + JMod.PUBLIC,  fqn + "_", ClassType.CLASS));
+                    int className_pos = fqn.lastIndexOf(".") + 1;
+                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.ABSTRACT + JMod.PUBLIC,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
                 }
                 ruleFactory.getLogger().info("Adding " + newType.fullName());
             } else {
