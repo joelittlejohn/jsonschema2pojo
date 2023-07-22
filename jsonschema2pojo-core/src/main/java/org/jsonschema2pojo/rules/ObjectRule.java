@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -125,7 +124,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             addInterfaces(parentClass, node.get("javaInterfaces"));
         }
 
-        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, parentClass, schema);
+        ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, jclass, schema);
 
         ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, parentClass, schema);
 
@@ -256,9 +255,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
-
-        annotator.typeInfo(newType, node);
-        annotator.propertyInclusion(newType, node);
+        JDefinedClass parentClass = newType._extends() instanceof JDefinedClass ? (JDefinedClass) newType._extends(): newType;
+        annotator.typeInfo(parentClass, node);
+        annotator.propertyInclusion(parentClass, node);
 
         return newType;
 
@@ -527,17 +526,4 @@ public class ObjectRule implements Rule<JPackage, JType> {
             jclass._implements(resolveType(jclass._package(), i.asText()));
         }
     }
-
-    private boolean usesPolymorphicDeserialization(JsonNode node) {
-
-        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
-
-        if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON2) {
-            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
-        }
-
-        return false;
-    }
-
 }

@@ -113,10 +113,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            JMethod parentBuilder = addBuilderMethod(parentClass, field, nodeName, node);
-            if (parentClass != jclass) {
-                addOverrideBuilder(jclass, parentBuilder, field);
-            }
+            addBuilderMethod(jclass, field, nodeName, node);
         }
 
         if (node.has("pattern")) {
@@ -138,22 +135,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         return jclass;
-    }
-    
-    private void addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
-
-        // Confirm that this class doesn't already have a builder method matching the same name as the parentBuilder
-        if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
-
-            JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
-            builder.annotate(Override.class);
-
-            JVar param = builder.param(parentParam.type(), parentParam.name());
-            JBlock body = builder.body();
-            body.invoke(JExpr._super(), parentBuilder).arg(param);
-            body._return(JExpr._this());
-
-        }
     }
     
     private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
@@ -297,12 +278,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
+        JDefinedClass parentClass = c._extends() instanceof JDefinedClass ? (JDefinedClass) c._extends(): c;
+        JMethod builder = parentClass.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
         JVar param = builder.param(field.type(), field.name());
         JBlock body = builder.body();
         body.assign(JExpr._this().ref(field), param);
-        body._return(JExpr._this());
+        body._return(JExpr.cast(c, JExpr._this()));
 
         return builder;
     }
