@@ -74,17 +74,17 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
   private void handleLegacyConfiguration(JsonNode node, JDefinedClass instanceClass, Schema currentSchema) {
     // Determine which properties belong to that class (or its superType/parent)
     Map<String, String> requiredClassProperties = getConstructorProperties(node, true);
-    Map<String, String> requiredCombinedSuperProperties = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
+    Map<String, String> requiredCombinedSuperProps = getSuperTypeConstructorPropertiesRecursive(node, currentSchema, true);
 
     // Only generate the constructors if there are actually properties to put in them
-    if (!requiredClassProperties.isEmpty() || !requiredCombinedSuperProperties.isEmpty()) {
+    if (!requiredClassProperties.isEmpty() || !requiredCombinedSuperProps.isEmpty()) {
 
       // Generate the no arguments constructor - we'll need this even if there is a property
       // constructor available, because it is used by the serialization and deserialization
       generateNoArgsConstructor(instanceClass);
 
       // Generate the actual constructor taking in only the required properties
-      addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProperties);
+      addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProps);
     }
   }
 
