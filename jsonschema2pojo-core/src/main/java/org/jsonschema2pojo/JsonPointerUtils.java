@@ -29,6 +29,7 @@ public class JsonPointerUtils {
         put("/", "~1");
         put("#", "~2");
         put(".", "~3");
+        put("?", "~4");
     }};
 
     public static String encodeReferenceToken(final String s) {
