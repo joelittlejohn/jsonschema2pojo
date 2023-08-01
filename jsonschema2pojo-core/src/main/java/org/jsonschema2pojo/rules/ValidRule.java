@@ -25,12 +25,10 @@ import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.Valid;
 
-public class ValidRule implements Rule<JFieldVar, JFieldVar> {
-    
-    private final RuleFactory ruleFactory;
-    
+public class ValidRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
+
     public ValidRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+       super(ruleFactory);
     }
 
     @Override

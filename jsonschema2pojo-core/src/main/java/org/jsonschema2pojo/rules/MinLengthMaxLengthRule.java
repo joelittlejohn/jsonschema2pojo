@@ -29,12 +29,10 @@ import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.constraints.Size;
 
-public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
-    
-    private final RuleFactory ruleFactory;
-    
+public class MinLengthMaxLengthRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
+
     protected MinLengthMaxLengthRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
     
     @Override

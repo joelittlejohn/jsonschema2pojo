@@ -22,7 +22,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JDocCommentable;
 
-public class JavaNameRule implements Rule<JDocCommentable, JDocComment> {
+public class JavaNameRule extends AbstractRuleFactoryRule<JDocCommentable, JDocComment> {
+
+    /**
+     * @deprecated Please switch to {@link JavaNameRule(RuleFactory)}
+     */
+    public JavaNameRule() {
+        super(null);
+    }
+
+    public JavaNameRule(RuleFactory ruleFactory)
+    {
+        super(ruleFactory);
+    }
 
     @Override
     public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema currentSchema) {

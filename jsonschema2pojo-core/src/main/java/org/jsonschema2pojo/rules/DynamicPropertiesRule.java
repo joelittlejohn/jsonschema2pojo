@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Christian Trimble
  *
  */
-public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
+public class DynamicPropertiesRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
     public static final String NOT_FOUND_VALUE_FIELD = "NOT_FOUND_VALUE";
     public static final String SETTER_NAME = "set";
@@ -54,10 +54,8 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
     public static final String DEFINED_SETTER_NAME = "declaredProperty";
     public static final String DEFINED_GETTER_NAME = "declaredPropertyOrNotFound";
 
-    private RuleFactory ruleFactory;
-
     public DynamicPropertiesRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+       super(ruleFactory);
     }
 
     /**

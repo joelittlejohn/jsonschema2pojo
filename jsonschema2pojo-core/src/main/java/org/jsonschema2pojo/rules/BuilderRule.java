@@ -36,13 +36,12 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
-public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
+public class BuilderRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
-  private RuleFactory ruleFactory;
   private ReflectionHelper reflectionHelper;
 
   BuilderRule(RuleFactory ruleFactory, ReflectionHelper reflectionHelper) {
-    this.ruleFactory = ruleFactory;
+    super(ruleFactory);
     this.reflectionHelper = reflectionHelper;
   }
 

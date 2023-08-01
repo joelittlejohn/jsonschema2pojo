@@ -232,6 +232,12 @@ public interface GenerationConfig {
   Class<? extends RuleFactory> getCustomRuleFactory();
 
   /**
+   * Gets the 'customRuleFactoryConfiguration' configuration option.
+   * @return A map of custom properties to be used in custom rule factory.
+   */
+  Map<String, String> getCustomRuleFactoryConfiguration();
+
+  /**
    * Gets the 'includeJsr303Annotations' configuration option.
    *
    * @return Whether to include

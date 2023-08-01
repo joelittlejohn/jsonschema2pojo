@@ -43,17 +43,16 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
  */
-public class FormatRule implements Rule<JType, JType> {
+public class FormatRule extends AbstractRuleFactoryRule<JType, JType> {
 
     public static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
     public static String ISO_8601_TIME_FORMAT = "HH:mm:ss.SSS";
     public static String ISO_8601_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
-    private final RuleFactory ruleFactory;
     private final Map<String, Class<?>> formatTypeMapping;
 
     protected FormatRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
         this.formatTypeMapping = getFormatTypeMapping(ruleFactory.getGenerationConfig());
     }
 

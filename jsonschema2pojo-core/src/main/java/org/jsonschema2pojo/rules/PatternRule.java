@@ -26,12 +26,10 @@ import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.constraints.Pattern;
 
-public class PatternRule implements Rule<JFieldVar, JFieldVar> {
-
-    private RuleFactory ruleFactory;
+public class PatternRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     public PatternRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

@@ -27,12 +27,10 @@ import com.sun.codemodel.JFieldVar;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 
-public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
-
-    private final RuleFactory ruleFactory;
+public class MinimumMaximumRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     protected MinimumMaximumRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

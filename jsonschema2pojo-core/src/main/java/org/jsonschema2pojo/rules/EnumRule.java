@@ -65,14 +65,12 @@ import com.sun.codemodel.JVar;
  *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http:
  *      //tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
-public class EnumRule implements Rule<JClassContainer, JType> {
+public class EnumRule extends AbstractRuleFactoryRule<JClassContainer, JType> {
 
     private static final String VALUE_FIELD_NAME = "value";
 
-    private final RuleFactory ruleFactory;
-
     protected EnumRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**
@@ -115,7 +113,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         try {
             _enum = createEnum(node, nodeName, container);
         } catch (ClassAlreadyExistsException e) {
-            ruleFactory.getLogger().error("Could not create enum.", e);
+            ruleFactory.getLogger().error("Could not create enum " + nodeName, e);
             return e.getExistingClass();
         }
 
@@ -346,6 +344,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
                 try {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
+                    ruleFactory.getLogger().error("Enum " + existingClass.getCanonicalName() + " already existed.");
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
                     JDefinedClass enumClass = container.owner()._class(fqn, ClassType.ENUM);

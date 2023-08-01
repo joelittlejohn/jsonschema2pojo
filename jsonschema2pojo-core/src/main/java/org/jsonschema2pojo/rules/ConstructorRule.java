@@ -48,13 +48,12 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
 
-public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
+public class ConstructorRule extends AbstractRuleFactoryRule<JDefinedClass, JDefinedClass> {
 
-  private final RuleFactory ruleFactory;
   private final ReflectionHelper reflectionHelper;
 
   ConstructorRule(RuleFactory ruleFactory, ReflectionHelper reflectionHelper) {
-    this.ruleFactory = ruleFactory;
+    super(ruleFactory);
     this.reflectionHelper = reflectionHelper;
   }
 

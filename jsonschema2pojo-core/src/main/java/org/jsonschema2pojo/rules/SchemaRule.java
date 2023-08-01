@@ -35,12 +35,10 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
-public class SchemaRule implements Rule<JClassContainer, JType> {
-
-    private final RuleFactory ruleFactory;
+public class SchemaRule extends AbstractRuleFactoryRule<JClassContainer, JType> {
 
     protected SchemaRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

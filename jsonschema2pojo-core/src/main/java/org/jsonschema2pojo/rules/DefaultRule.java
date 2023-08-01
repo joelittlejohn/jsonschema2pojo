@@ -52,12 +52,10 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
  */
-public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
-
-    private final RuleFactory ruleFactory;
+public class DefaultRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     public DefaultRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     /**

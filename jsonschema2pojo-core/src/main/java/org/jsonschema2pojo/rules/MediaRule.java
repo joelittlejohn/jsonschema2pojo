@@ -32,18 +32,30 @@ import com.sun.codemodel.JType;
  * @author Christian Trimble
  * @since 0.4.2
  */
-public class MediaRule implements Rule<JType, JType> {
+public class MediaRule extends AbstractRuleFactoryRule<JType, JType> {
 
     private static final String BINARY_ENCODING = "binaryEncoding";
 
     /**
-     * <p>
-     * Constructs a new media rule.
+     * Constructs a new media rule with a reference to rule factory.
      * </p>
      *
      * @since 0.4.2
+     * @deprecated Please switch to {@link MediaRule(RuleFactory)}
      */
-    protected MediaRule() {
+    public MediaRule() {
+        super(null);
+    }
+
+    /**
+     * <p>
+     * Constructs a new media rule with a reference to rule factory.
+     * </p>
+     *
+     * @since 1.0.3
+     */
+    protected MediaRule(RuleFactory ruleFactory) {
+        super(ruleFactory);
     }
 
     /**

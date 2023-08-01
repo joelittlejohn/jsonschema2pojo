@@ -26,12 +26,10 @@ import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.constraints.Digits;
 
-public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
-
-    private final RuleFactory ruleFactory;
+public class DigitsRule extends AbstractRuleFactoryRule<JFieldVar, JFieldVar> {
 
     protected DigitsRule(RuleFactory ruleFactory) {
-        this.ruleFactory = ruleFactory;
+        super(ruleFactory);
     }
 
     @Override

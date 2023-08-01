@@ -53,4 +53,5 @@ public interface Rule<T, R> {
      */
     R apply(String nodeName, JsonNode node, JsonNode parent, T generatableType, Schema currentSchema);
 
+    RuleFactory getRuleFactory();
 }

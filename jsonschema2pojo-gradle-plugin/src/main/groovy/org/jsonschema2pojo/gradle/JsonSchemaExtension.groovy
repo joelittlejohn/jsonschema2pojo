@@ -44,6 +44,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   String[] fileExtensions
   Class<? extends Annotator> customAnnotator
   Class<? extends RuleFactory> customRuleFactory
+  Map<String, String> customRuleFactoryConfiguration
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
   boolean useInnerClassBuilders
@@ -124,6 +125,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     inclusionLevel = InclusionLevel.NON_NULL
     customAnnotator = NoopAnnotator.class
     customRuleFactory = RuleFactory.class
+    customRuleFactoryConfiguration = Collections.emptyMap()
     includeJsr303Annotations = false
     includeJsr305Annotations = false
     useOptionalForGetters = false
@@ -208,6 +210,10 @@ public class JsonSchemaExtension implements GenerationConfig {
     customRuleFactory = clazz
   }
 
+  public void setCustomRuleFactoryConfiguration(Map<String, String> map) {
+    customRuleFactoryConfiguration = map
+  }
+
   public void setSourceType(String s) {
     sourceType = SourceType.valueOf(s.toUpperCase())
   }
@@ -216,8 +222,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     sourceSortOrder = SourceSortOrder.valueOf(sortOrder.toUpperCase())
   }
 
-  public void setTargetLangauge(String language) {
-    targetLangauge = Langauge.valueOf(language.toUpperCase())
+  public void setTargetLanguage(String language) {
+    targetLanguage = Language.valueOf(language.toUpperCase())
   }
 
   public void setTargetVersion(String targetVersion) {
@@ -254,6 +260,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |inclusionLevel = ${InclusionLevel.toString() }
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}
+       |customRuleFactoryConfiguration = ${customRuleFactoryConfiguration}
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |includeJsr305Annotations = ${includeJsr305Annotations}
        |useOptionalForGetters = ${useOptionalForGetters}

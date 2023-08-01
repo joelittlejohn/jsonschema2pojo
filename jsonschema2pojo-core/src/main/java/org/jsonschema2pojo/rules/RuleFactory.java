@@ -96,7 +96,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "description" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getDescriptionRule() {
-        return new DescriptionRule();
+        return new DescriptionRule(this);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "$comment" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getCommentRule() {
-        return new CommentRule();
+        return new CommentRule(this);
     }
 
     /**
@@ -228,7 +228,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "title" declaration.
      */
     public Rule<JDocCommentable, JDocComment> getTitleRule() {
-        return new TitleRule();
+        return new TitleRule(this);
     }
 
     /**
@@ -425,7 +425,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "media" declaration.
      */
     public Rule<JType, JType> getMediaRule() {
-        return new MediaRule();
+        return new MediaRule(this);
     }
 
     /**
@@ -443,7 +443,7 @@ public class RuleFactory {
     }
 
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
-        return new JavaNameRule();
+        return new JavaNameRule(this);
     }
 
 }
