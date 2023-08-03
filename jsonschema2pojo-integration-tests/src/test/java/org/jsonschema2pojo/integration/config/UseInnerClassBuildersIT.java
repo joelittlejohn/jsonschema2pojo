@@ -195,7 +195,7 @@ public class UseInnerClassBuildersIT {
    * with the required properties will be created
    */
   @Test
-  public void innerBuilderWithRequiredPropertyConstructor()
+  public void innerBuilderWithRequiredPropertyOnlyConstructor()
       throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true, "includeConstructors", true, "constructorsRequiredPropertiesOnly", true));
@@ -216,6 +216,47 @@ public class UseInnerClassBuildersIT {
     Object childObject = buildMethod.invoke(builder);
 
     Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
+    Method getChildProperty = childClass.getMethod("getChildProperty");
+    Method getParentProperty = childClass.getMethod("getParentProperty");
+    Method getSharedProperty = childClass.getMethod("getSharedProperty");
+
+    assertEquals(childProperty, getChildProperty.invoke(childObject));
+    assertEquals(parentProperty, getParentProperty.invoke(childObject));
+    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+  }
+
+  /**
+   * This method confirms that duplicate constructors are not generated (compile time error is not thrown) when:
+   * <ul>
+   *     <li>all properties are required</li>
+   *     <li>{@code includeAllPropertiesConstructor} configuration property is {@code true}</li>
+   *     <li>{@code includeRequiredPropertiesConstructor} configuration property is {@code true}</li>
+   */
+  @Test
+  public void innerBuilderWithRequiredPropertyConstructor() throws ReflectiveOperationException {
+    ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+            "/schema.useInnerClassBuilders/child_parent_all_required.json",
+            "com.example",
+            config("generateBuilders", true,
+                    "useInnerClassBuilders", true,
+                    "includeConstructors", true,
+                    "includeAllPropertiesConstructor", true,
+                    "includeRequiredPropertiesConstructor", true));
+
+    Class<?> builderClass = resultsClassLoader.loadClass("com.example.ChildParentAllRequired$ChildParentAllRequiredBuilder");
+    Constructor<?> constructor = builderClass.getConstructor(String.class, String.class);
+    Method buildMethod = builderClass.getMethod("build");
+    Method withChildProperty = builderClass.getMethod("withChildProperty", Integer.class);
+
+    int childProperty = 1;
+    String parentProperty = "parentProperty";
+    String sharedProperty = "sharedProperty";
+
+    Object builder = constructor.newInstance(sharedProperty, parentProperty);
+    withChildProperty.invoke(builder, childProperty);
+    Object childObject = buildMethod.invoke(builder);
+
+    Class<?> childClass = resultsClassLoader.loadClass("com.example.ChildParentAllRequired");
     Method getChildProperty = childClass.getMethod("getChildProperty");
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");

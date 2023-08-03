@@ -1,0 +1,26 @@
+{
+  "type" : "object",
+  "properties" : {
+    "type" : {
+      "type" : "string",
+      "default" : "event",
+      "required": true
+    },
+    "id" : {
+      "type" : "integer",
+      "required": true
+    },
+    "has_tickets" : {
+      "type" : "boolean",
+      "required": true
+    },
+    "provider" : {
+      "type" : "string",
+      "required": true
+    },
+    "starttime" : {
+      "type" : "string",
+      "required": true
+    }
+  }
+}
