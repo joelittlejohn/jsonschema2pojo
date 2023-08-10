@@ -28,3 +28,7 @@ jobs:
           maven-version: 3.8.7
       - name: Verify with Maven
         run: mvn verify -B
+      - name: Verify jsonschema2pojo-gradle-plugin integration tests
+        run: |
+          mvn -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip -pl jsonschema2pojo-gradle-plugin -am
+          mvn -U -B install -pl jsonschema2pojo-gradle-plugin
