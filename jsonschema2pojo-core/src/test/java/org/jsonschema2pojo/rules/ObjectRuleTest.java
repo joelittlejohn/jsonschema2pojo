@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.Annotator;
@@ -120,6 +121,7 @@ public class ObjectRuleTest {
         assertThat(codeModel.countArtifacts(), equalTo(1));
         assertThat(result.binaryName(), is("org.jsonschema2pojo.test.Parent$Child"));
         assertThat(result, instanceOf(JDefinedClass.class));
+        assertThat(((JDefinedClass) result).mods().getValue() & JMod.STATIC, equalTo(JMod.STATIC));
 
         final JDefinedClass definedClass = (JDefinedClass) result;
         assertThat(definedClass.fields().values(), empty());

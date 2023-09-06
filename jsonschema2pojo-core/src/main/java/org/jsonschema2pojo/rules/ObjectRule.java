@@ -243,10 +243,18 @@ public class ObjectRule implements Rule<JClassContainer, JType> {
                 ruleFactory.getLogger().debug("Adding " + newType.fullName());
             } else {
                 final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, container);
-                if (usePolymorphicDeserialization) {
-                    newType = container._class(JMod.PUBLIC, className, ClassType.CLASS);
+
+                final int mods;
+                if (container.isClass()) {
+                    mods = JMod.PUBLIC | JMod.STATIC;
                 } else {
-                    newType = container._class(className);
+                    mods = JMod.PUBLIC;
+                }
+
+                if (usePolymorphicDeserialization) {
+                    newType = container._class(mods, className, ClassType.CLASS);
+                } else {
+                    newType = container._class(mods, className);
                 }
                 ruleFactory.getLogger().debug("Adding " + newType.fullName());
             }
