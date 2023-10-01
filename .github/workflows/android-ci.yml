@@ -18,7 +18,7 @@ jobs:
         java_version: [8]
     steps:
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.8.0
+        uses: s4u/setup-maven-action@v1.10.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java_version }}
