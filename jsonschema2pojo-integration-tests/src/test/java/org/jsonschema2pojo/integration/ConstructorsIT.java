@@ -267,6 +267,24 @@ public class ConstructorsIT {
       assertEquals("provider", getValue(instance, "getProvider"));
       assertEquals("startTime", getValue(instance, "getStarttime"));
     }
+
+    /**
+     * Test that duplicate constructors are not generated (compile time error is not thrown) when:
+     * <ul>
+     *     <li>all properties are required</li>
+     *     <li>{@code includeAllPropertiesConstructor} configuration property is {@code true}</li>
+     *     <li>{@code includeRequiredPropertiesConstructor} configuration property is {@code true}</li>
+     */
+    @Test
+    public void testGeneratesConstructorWithAllPropertiesRequired() throws Exception {
+      classSchemaRule.generate(
+          "/schema/constructors/allPropertiesRequiredConstructor.json",
+          "com.example",
+          config("includeConstructors", true, "includeAllPropertiesConstructor", true, "includeRequiredPropertiesConstructor", true));
+      Class<?> type = classSchemaRule.compile().loadClass("com.example.AllPropertiesRequiredConstructor");
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(type).getModifiers(), "public");
+    }
+
   }
 
   /**

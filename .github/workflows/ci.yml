@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java_version: [8]
@@ -20,7 +20,7 @@ jobs:
     name: Test JDK ${{ matrix.java_version }}
     steps:
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.7.0
+        uses: s4u/setup-maven-action@v1.8.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java_version }}
