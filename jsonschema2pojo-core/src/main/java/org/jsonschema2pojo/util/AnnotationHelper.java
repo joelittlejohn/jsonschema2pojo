@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.util;
 
 import org.jsonschema2pojo.GenerationConfig;
+import static net.mfjassociates.tools.JaCoCoGenerated.JACOCO_GENERATED_CLASS_NAME;
 
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
@@ -41,12 +42,29 @@ public class AnnotationHelper {
 
     }
 
+    /**
+     * Annotate class with custom annotation.  Do not test for annotation class existence since
+     * this annotation type will be included in the JCodeModel that is generated and is not
+     * available at this time.
+     * 
+     * @param jclass - The class that needs to have the annotation added to it.
+     * @param annotationClassName - the annotation type to add
+     */
+    private static void annotateCustom(JDefinedClass jclass, String annotationClassName) {
+        JClass annotationClass = jclass.owner().ref(annotationClassName);
+        jclass.annotate(annotationClass);
+    }
+
     public static void addGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
         if (JavaVersion.is9OrLater(config.getTargetVersion())) {
             tryToAnnotate(jclass, JAVA_9_GENERATED);
         } else {
             tryToAnnotate(jclass, JAVA_8_GENERATED);
         }
+    }
+
+    public static void addRuntimeGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
+    	annotateCustom(jclass, jclass.getPackage().name()+"."+JACOCO_GENERATED_CLASS_NAME);
     }
 
 }
