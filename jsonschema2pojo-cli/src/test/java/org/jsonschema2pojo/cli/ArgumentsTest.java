@@ -55,7 +55,8 @@ public class ArgumentsTest {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
                 "--source", "/home/source", "--target", "/home/target", "--disable-getters", "--package", "mypackage",
                 "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors",
-                "--include-dynamic-getters", "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS"
+                "--include-dynamic-getters", "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS",
+                "--use-nested-classes"
         });
 
         assertThat(args.didExit(), is(false));
@@ -72,13 +73,15 @@ public class ArgumentsTest {
         assertThat(args.isIncludeDynamicGetters(), is(true));
         assertThat(args.isIncludeDynamicSetters(), is(true));
         assertThat(args.isIncludeDynamicBuilders(), is(true));
+        assertThat(args.isUseNestedClasses(), is(true));
         assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
     @Test
     public void parseRecognisesShorthandArguments() {
         ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-idg", "-ids", "-idb", "-il", "ALWAYS"
+                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-idg",
+                "-ids", "-idb", "-il", "ALWAYS", "-nc"
         });
 
         assertThat(args.didExit(), is(false));
@@ -93,6 +96,7 @@ public class ArgumentsTest {
         assertThat(args.isIncludeDynamicGetters(), is(true));
         assertThat(args.isIncludeDynamicSetters(), is(true));
         assertThat(args.isIncludeDynamicBuilders(), is(true));
+        assertThat(args.isUseNestedClasses(), is(true));
         assertThat(args.getInclusionLevel(), is(InclusionLevel.ALWAYS));
     }
 
@@ -125,6 +129,7 @@ public class ArgumentsTest {
         assertThat(args.isIncludeDynamicGetters(), is(false));
         assertThat(args.isIncludeDynamicSetters(), is(false));
         assertThat(args.isIncludeDynamicBuilders(), is(false));
+        assertThat(args.isUseNestedClasses(), is(false));
     }
 
     @Test

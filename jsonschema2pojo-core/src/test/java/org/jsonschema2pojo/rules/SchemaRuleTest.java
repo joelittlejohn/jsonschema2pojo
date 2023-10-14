@@ -68,7 +68,7 @@ public class SchemaRuleTest {
 
         rule.apply(NODE_NAME, schemaWithRef, null, jclass, null);
 
-        verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), any(), eq(jclass.getPackage()), captureSchema.capture());
+        verify(mockTypeRule).apply(eq("address"), captureJsonNode.capture(), any(), eq(jclass), captureSchema.capture());
 
         assertThat(captureSchema.getValue().getId(), is(equalTo(schemaUri)));
         assertThat(captureSchema.getValue().getContent(), is(equalTo(captureJsonNode.getValue())));

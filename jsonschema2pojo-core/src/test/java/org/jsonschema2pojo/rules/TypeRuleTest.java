@@ -22,8 +22,11 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -564,7 +567,7 @@ public class TypeRuleTest {
     }
 
     @Test
-    public void applyGeneratesCustomObject() {
+    public void applyGeneratesCustomObjectAsTopLevelClass() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -577,6 +580,83 @@ public class TypeRuleTest {
         when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
 
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+
+        assertThat(result, is(mockObjectType));
+    }
+
+    @Test
+    public void applyGeneratesCustomObjectAsTopLevelClassWithUseNestedWithRootSchema() throws Exception {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+        JDefinedClass jclass = jpackage._class("Parent");
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "object");
+
+        JDefinedClass mockObjectType = mock(JDefinedClass.class);
+        ObjectRule mockObjectRule = mock(ObjectRule.class);
+        Schema schema = mock(Schema.class);
+
+        when(schema.getParent()).thenReturn(schema);
+        when(mockObjectRule.apply("fooBar", objectNode, null, jpackage, schema)).thenReturn(mockObjectType);
+        when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
+        when(config.isUseNestedClasses()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, null, jclass, schema);
+
+        assertThat(result, is(mockObjectType));
+    }
+
+    @Test
+    public void applyGeneratesCustomObjectAsNestedClassWithUseNestedWithChildSchemaWithDefinedClassContainer() throws Exception {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+        JDefinedClass jclass = jpackage._class("Parent");
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "object");
+
+        JDefinedClass mockObjectType = mock(JDefinedClass.class);
+        ObjectRule mockObjectRule = mock(ObjectRule.class);
+        Schema schemaParent = mock(Schema.class);
+        Schema schemaChild = mock(Schema.class);
+
+        when(schemaChild.getParent()).thenReturn(schemaParent);
+        when(mockObjectRule.apply("fooBar", objectNode, null, jclass, schemaChild)).thenReturn(mockObjectType);
+        when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
+        when(config.isUseNestedClasses()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, null, jclass, schemaChild);
+
+        assertThat(result, is(mockObjectType));
+    }
+
+    @Test
+    public void applyGeneratesCustomObjectAsNestedClassWithUseNestedWithChildSchemaWithPackageContainer() throws Exception {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+        JDefinedClass jclass = jpackage._class("Parent");
+
+        ObjectNode objectNode = new ObjectMapper().createObjectNode();
+        objectNode.put("type", "object");
+
+        JDefinedClass mockObjectType = mock(JDefinedClass.class);
+        ObjectRule mockObjectRule = mock(ObjectRule.class);
+        Schema schemaParent = mock(Schema.class);
+        Schema schemaChild = mock(Schema.class);
+        Schema enclosingObjectSchema = mock(Schema.class);
+        SchemaStore schemaStore = mock(SchemaStore.class);
+
+        when(schemaParent.getId()).thenReturn(URI.create("parent-id"));
+        when(schemaChild.getParent()).thenReturn(schemaParent);
+        when(enclosingObjectSchema.getJavaType()).thenReturn(jclass);
+        when(schemaStore.create(URI.create("parent-id"), null)).thenReturn(enclosingObjectSchema);
+        when(ruleFactory.getSchemaStore()).thenReturn(schemaStore);
+        when(mockObjectRule.apply("fooBar", objectNode, null, jclass, schemaChild)).thenReturn(mockObjectType);
+        when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
+        when(config.isUseNestedClasses()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, null, jpackage, schemaChild);
 
         assertThat(result, is(mockObjectType));
     }
