@@ -140,6 +140,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      *            default-value="false"
      * @since 1.1.2
      */
+    @Parameter(property = "jsonschema2pojo.useNestedClasses", defaultValue = "false")
     private boolean useNestedClasses = false;
 
     /**
