@@ -24,8 +24,8 @@ gradlePlugin {
   }
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 dependencies {
   implementation "org.jsonschema2pojo:jsonschema2pojo-core:${project.version}"

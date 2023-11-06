@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
 }
 
 jsonSchema2Pojo {

@@ -49,17 +49,24 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <gradle.version>5.6</gradle.version>
+        <gradle.version>7.3</gradle.version>
         <gson.version>2.10.1</gson.version>
-        <moshi.version>1.12.0</moshi.version>
-        <jackson2x.version>2.15.2</jackson2x.version>
-        <jackson2x.databind.version>2.15.2</jackson2x.databind.version>
+        <moshi.version>1.15.0</moshi.version>
+        <jackson2x.version>2.15.3</jackson2x.version>
+        <jackson2x.databind.version>2.15.3</jackson2x.databind.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
     </properties>
 
     <reporting>
         <excludeDefaults>true</excludeDefaults>
     </reporting>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>groovy-plugins-release</id>
+            <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <pluginManagement>
@@ -147,7 +154,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -214,8 +221,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                     <compilerArgs>
                         <arg>-Xlint</arg>
                     </compilerArgs>
