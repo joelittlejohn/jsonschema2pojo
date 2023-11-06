@@ -24,6 +24,24 @@ gradlePlugin {
   }
 }
 
+pluginBundle {
+  website = 'http://www.jsonschema2pojo.org/'
+  vcsUrl = 'https://github.com/joelittlejohn/jsonschema2pojo'
+  description = 'Generate Java types from JSON or JSON Schema and annotate those types for data-binding with Jackson, Gson, and more.'
+  tags = ['jsonschema', 'jsonschema2pojo', 'json2pojo', 'generation', 'json', 'java', 'pojo']
+
+  mavenCoordinates {
+    groupId = 'org.jsonschema2pojo'
+    artifactId = 'jsonschema2pojo-gradle-plugin'
+  }
+
+  plugins {
+    jsonschema2pojo {
+      displayName = 'org.jsonschema2pojo'
+    }
+  }
+}
+
 sourceCompatibility = '17'
 targetCompatibility = '17'
 
