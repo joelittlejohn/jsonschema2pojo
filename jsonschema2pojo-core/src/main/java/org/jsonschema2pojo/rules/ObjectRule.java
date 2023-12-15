@@ -16,14 +16,17 @@
 
 package org.jsonschema2pojo.rules;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
 import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -427,7 +430,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private Map<String, JFieldVar> removeFieldsExcludedFromEqualsAndHashCode(Map<String, JFieldVar> fields, JsonNode node) {
-        Map<String, JFieldVar> filteredFields = new HashMap<>(fields);
+        Map<String, JFieldVar> filteredFields = new LinkedHashMap<>(fields);
 
         JsonNode properties = node.get("properties");
 
