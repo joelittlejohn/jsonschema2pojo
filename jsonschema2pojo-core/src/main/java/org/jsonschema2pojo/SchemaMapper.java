@@ -95,11 +95,13 @@ public class SchemaMapper {
 
         switch (ruleFactory.getGenerationConfig().getSourceType()) {
             case JSONSCHEMA:
+                break;
             case YAMLSCHEMA:
                 ObjectNode schemaNode = NODE_FACTORY.objectNode();
                 schemaNode.put("$ref", schemaUrl.toString());
                 return schemaNode;
             case JSON:
+                break;
             case YAML:
                 return schemaGenerator.schemaFromExample(schemaUrl);
             default:
