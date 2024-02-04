@@ -266,7 +266,7 @@ jsonSchema2Pojo {
   dateTimeType = "java.time.LocalDateTime"
 
   // What type to use instead of string when adding string properties of format "time" to Java types
-  timeType = "java.time.LocalDate"
+  timeType = "java.time.LocalTime"
 
   // A custom pattern to use when formatting date fields during serialization. Requires support from
   // your JSON binding library.
