@@ -290,7 +290,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
         JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
-        JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
+        JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), getBuilderName(jsonPropertyName, node));
 
         JVar param = builderMethod.param(field.type(), field.name());
         JBlock body = builderMethod.body();
