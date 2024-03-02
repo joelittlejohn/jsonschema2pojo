@@ -20,7 +20,7 @@
             }
         },
         "refarray" : {
-            "type": "array",
+            "type": [ "array" ],
             "items": {
                 "$ref": "#definitions/product"
             }

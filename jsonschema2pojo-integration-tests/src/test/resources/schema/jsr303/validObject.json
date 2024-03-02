@@ -5,7 +5,7 @@
             "type": "string"
         },
         "objectfield" : {
-            "type": "object",
+            "type": [ "object" ] ,
             "properties": {
                 "childprimitivefield" : {
                     "type": "string",
