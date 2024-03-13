@@ -22,14 +22,19 @@ import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -99,14 +104,15 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
+        boolean required = isRequired(nodeName, node, schema);
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
+			JMethod getter = addGetter(jclass, field, nodeName, node, required, useOptional(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeSetters) {
-            JMethod setter = addSetter(jclass, field, nodeName, node);
+            JMethod setter = addSetter(jclass, field, nodeName, node, required);
             ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
@@ -256,11 +262,16 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return getter;
     }
 
-    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean required) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName, node));
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
+        if (required && ruleFactory.getGenerationConfig().isIncludeRequireNonNullOnRequiredFields()) {
+        	JClass ref = c.owner().ref(Objects.class);
+        	JInvocation staticInvoke = ref.staticInvoke("requireNonNull").arg(param).arg(c.fullName()+"#"+ field.name()+" must not be null");
+        	body.add(staticInvoke);
+        }
         body.assign(JExpr._this().ref(field), param);
 
         return setter;

@@ -66,8 +66,8 @@ import org.jsonschema2pojo.util.URLUtil;
  *      Task</a>
  */
 public class Jsonschema2PojoTask extends Task implements GenerationConfig {
-
-    private boolean generateBuilders;
+	
+	private boolean generateBuilders;
 
     private boolean includeTypeInfo = false;
 
@@ -115,6 +115,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr303Annotations = false;
 
+    private boolean includeRequireNonNullOnRequiredFields = false;
+    
     private boolean includeJsr305Annotations = false;
 
     private boolean useOptionalForGetters;
@@ -947,6 +949,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public void setRefFragmentPathDelimiters(String refFragmentPathDelimiters) {
         this.refFragmentPathDelimiters = refFragmentPathDelimiters;
     }
+    
+    public void setIncludeRequireNonNullOnRequiredFields(boolean includeRequireNonNullOnRequiredFields) {
+		this.includeRequireNonNullOnRequiredFields = includeRequireNonNullOnRequiredFields;
+	}
 
     /**
      * Sets the 'sourceSortOrder' property of this class
@@ -1337,5 +1343,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+    @Override
+    public boolean isIncludeRequireNonNullOnRequiredFields() {
+    	return includeRequireNonNullOnRequiredFields;
     }
 }
