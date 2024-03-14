@@ -96,6 +96,13 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         } else if (fieldType.startsWith(String.class.getName()) && node != null ) {
             field.init(getDefaultValue(field.type(), node));
         } else if (defaultPresent) {
+        	boolean requireNonNullCheck = (ruleFactory.getGenerationConfig().isIncludeRequireNonNullOnRequiredFields() && isRequired(nodeName, node, currentSchema));
+        	if (requireNonNullCheck) {
+
+        		if (field.type() instanceof JDefinedClass && ((JDefinedClass) field.type()).getClassType().equals(ClassType.ENUM)) {
+            		field.annotate(SuppressWarnings.class).param("value", "null");
+        		}
+        	}
             field.init(getDefaultValue(field.type(), node));
 
         }
@@ -107,6 +114,9 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         return getDefaultValue(fieldType, node.asText());
     }
 
+    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
+        return PropertyRule.isRequired(nodeName, node, schema);
+    }
     static JExpression getDefaultValue(JType fieldType, String value) {
 
         fieldType = fieldType.unboxify();
