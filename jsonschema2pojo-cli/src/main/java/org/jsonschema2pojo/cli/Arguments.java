@@ -133,6 +133,8 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303/349 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
+    @Parameter(names = { "-RN", "--require-nonnull-check" }, description = "Add JSR-303/349 annotations to generated Java types.")
+    private boolean includeRequireNonNullOnRequiredFields = false;
 
     @Parameter(names = { "-305", "--jsr305-annotations" }, description = "Add JSR-305 annotations to generated Java types.")
     private boolean includeJsr305Annotations = false;
@@ -394,6 +396,11 @@ public class Arguments implements GenerationConfig {
         return customRuleFactory;
     }
 
+    @Override
+    public boolean isIncludeRequireNonNullOnRequiredFields() {
+    	return includeRequireNonNullOnRequiredFields;
+    }
+    
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;

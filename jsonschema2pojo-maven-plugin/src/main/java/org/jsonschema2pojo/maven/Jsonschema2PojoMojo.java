@@ -331,7 +331,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     @Parameter(property = "jsonschema2pojo.includeJsr303Annotations", defaultValue = "false")
     private boolean includeJsr303Annotations = false;
-
+    
+    
+    @Parameter(property = "jsonschema2pojo.includeRequireNonNullOnRequiredFields", defaultValue = "false")
+    private boolean includeRequireNonNullOnRequiredFields = false;
     /**
      * Whether to include
      * <a href="http://jcp.org/en/jsr/detail?id=305">JSR-305</a> annotations
@@ -992,6 +995,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         }
     }
 
+    @Override
+    public boolean isIncludeRequireNonNullOnRequiredFields() {
+    	return includeRequireNonNullOnRequiredFields;
+    }
     @Override
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
