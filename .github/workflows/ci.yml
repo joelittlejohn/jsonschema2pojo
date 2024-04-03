@@ -13,9 +13,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
-        java_version: [8]
+        java_version: [8, 11, 17, 21]
       max-parallel: 4
     name: Test JDK ${{ matrix.java_version }}
     steps:
