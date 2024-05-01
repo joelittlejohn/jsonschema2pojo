@@ -28,7 +28,7 @@ dependencies {
     // Required for @Generated annotation
     implementation 'org.glassfish:javax.annotation:10.0-b28'
     // Required if generating Moshi 1.x annotations
-    implementation 'com.squareup.moshi:moshi:1.12.0'
+    implementation 'com.squareup.moshi:moshi:1.15.1'
     // Required if generating JSR-303 annotations
     implementation 'javax.validation:validation-api:2.0.1.Final'
 }
