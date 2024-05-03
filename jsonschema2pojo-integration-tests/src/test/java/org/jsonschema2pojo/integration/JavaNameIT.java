@@ -52,8 +52,9 @@ public class JavaNameIT {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
-    public void propertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void propertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
@@ -65,6 +66,9 @@ public class JavaNameIT {
         assertThat(instance, hasProperty("enumWithoutJavaName"));
         assertThat(instance, hasProperty("javaObject"));
         assertThat(instance, hasProperty("objectWithoutJavaName"));
+        assertThat(instance, hasProperty("javaReference"));
+        instance.getClass().getMethod("getJavaReference");
+        assertThat(instance, hasProperty("referenceWithoutJavaName"));
 
     }
 
