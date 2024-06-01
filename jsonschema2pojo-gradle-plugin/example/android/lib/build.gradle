@@ -26,7 +26,7 @@ android {
 
 dependencies {
     // Required if generating Gson annotations
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
     // Required if generating Moshi 1.x annotations
     implementation 'com.squareup.moshi:moshi:1.12.0'
     // Required if generating JSR-303 annotations
