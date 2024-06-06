@@ -1,5 +1,5 @@
 plugins {
-  id "com.gradle.plugin-publish" version '0.21.0'
+  id "com.gradle.plugin-publish" version '1.2.1'
   id "java-gradle-plugin"
   id 'maven-publish'
   id "groovy"
@@ -42,8 +42,8 @@ pluginBundle {
   }
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 dependencies {
   implementation "org.jsonschema2pojo:jsonschema2pojo-core:${project.version}"
