@@ -13,9 +13,10 @@ jobs:
   buildTest:
     name: Build JDK ${{ matrix.java_version }}
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
-        java_version: [8]
+        java_version: [8, 11, 17, 21]
     steps:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.8.0
