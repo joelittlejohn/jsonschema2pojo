@@ -22,6 +22,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import java.util.Collection;
 
+import com.sun.codemodel.JClassContainer;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.junit.Rule;
@@ -35,7 +36,6 @@ import org.junit.runners.Parameterized.Parameters;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -66,12 +66,12 @@ public class Jsonschema2PojoRuleTest {
 
         public static class BrokenRuleFactory extends RuleFactory {
             @Override
-            public org.jsonschema2pojo.rules.Rule<JPackage, JType> getObjectRule() {
-                final org.jsonschema2pojo.rules.Rule<JPackage, JType> workingRule = super.getObjectRule();
+            public org.jsonschema2pojo.rules.Rule<JClassContainer, JType> getObjectRule() {
+                final org.jsonschema2pojo.rules.Rule<JClassContainer, JType> workingRule = super.getObjectRule();
 
-                return new org.jsonschema2pojo.rules.Rule<JPackage, JType>() {
+                return new org.jsonschema2pojo.rules.Rule<JClassContainer, JType>() {
                     @Override
-                    public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
+                    public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer generatableType, Schema currentSchema) {
                         JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
                         if( objectType instanceof JDefinedClass ) {
                             JDefinedClass jclass = (JDefinedClass)objectType;

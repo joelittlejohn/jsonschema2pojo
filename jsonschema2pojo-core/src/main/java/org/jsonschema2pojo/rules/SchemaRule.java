@@ -80,7 +80,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
         } else {
-            javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema);
+            javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType, schema);
         }
         schema.setJavaTypeIfEmpty(javaType);
 
