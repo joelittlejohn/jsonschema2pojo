@@ -274,14 +274,18 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JClass stringBuilderClass = jclass.owner().ref(StringBuilder.class);
         JVar sb = body.decl(stringBuilderClass, "sb", JExpr._new(stringBuilderClass));
 
-        // Write the header, e.g.: example.domain.MyClass@85e382a7[
-        body.add(sb
-                .invoke("append").arg(jclass.dotclass().invoke("getName"))
-                .invoke("append").arg(JExpr.lit('@'))
-                .invoke("append").arg(
-                        jclass.owner().ref(Integer.class).staticInvoke("toHexString").arg(
-                                jclass.owner().ref(System.class).staticInvoke("identityHashCode").arg(JExpr._this())))
-                .invoke("append").arg(JExpr.lit('[')));
+        if (ruleFactory.getGenerationConfig().isExcludeObjectHeaderFromToString()) {
+            body.add(sb.invoke("append").arg(JExpr.lit('[')));
+        } else {
+            // Write the header, e.g.: example.domain.MyClass@85e382a7[
+            body.add(sb
+                    .invoke("append").arg(jclass.dotclass().invoke("getName"))
+                    .invoke("append").arg(JExpr.lit('@'))
+                    .invoke("append").arg(
+                            jclass.owner().ref(Integer.class).staticInvoke("toHexString").arg(
+                                    jclass.owner().ref(System.class).staticInvoke("identityHashCode").arg(JExpr._this())))
+                    .invoke("append").arg(JExpr.lit('[')));
+        }
 
         // If this has a parent class, include its toString()
         if (!jclass._extends().fullName().equals(Object.class.getName())) {

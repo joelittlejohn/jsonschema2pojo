@@ -103,6 +103,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private String[] toStringExcludes = new String[] {};
 
+    private boolean excludeObjectHeaderFromToString = false;
+
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
     private boolean useTitleAsClassname = false;
@@ -196,6 +198,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -515,6 +518,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeToString(boolean includeToString) {
         this.includeToString = includeToString;
+    }
+
+    /**
+     * Sets the 'excludeObjectHeaderFromToString' property of this class
+     *
+     * @param excludeObjectHeaderFromToString
+     *            Whether to exclude the object header from the <code>toString</code> method in generated
+     *            Java types.
+     */
+    public void setExcludeObjectHeaderFromToString(boolean excludeObjectHeaderFromToString) {
+        this.excludeObjectHeaderFromToString = excludeObjectHeaderFromToString;
     }
 
     /**
@@ -1054,6 +1068,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public String[] getToStringExcludes() {
         return toStringExcludes;
+    }
+
+    @Override
+    public boolean isExcludeObjectHeaderFromToString() {
+        return excludeObjectHeaderFromToString;
     }
 
     @Override
