@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
@@ -214,6 +216,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
             JsonNode refNode = refSchema.getContent();
+            if (node.has("javaName") && (refNode.getNodeType().equals(JsonNodeType.OBJECT))) {
+                // A shallow copy would also work but this object does not implement `clone``.
+                refNode = ((ObjectNode) refNode).deepCopy().set("javaName", node.get("javaName"));
+            }
             return resolveRefs(refNode, refSchema);
         } else {
             return node;
