@@ -236,6 +236,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String[] toStringExcludes = new String[] {};
 
     /**
+     * Whether to include the object header in the generated toString implementation
+     *
+     * @since 1.2.1
+     */
+    @Parameter(property = "jsonschema2pojo.excludeObjectHeaderFromToString", defaultValue = "false")
+    private boolean excludeObjectHeaderFromToString = false;
+
+    /**
      * The style of annotations to use in the generated Java types.
      * <p>
      * Supported values:
@@ -948,6 +956,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public String[] getToStringExcludes() {
         return toStringExcludes;
     }
+
+    @Override
+    public boolean isExcludeObjectHeaderFromToString() { return excludeObjectHeaderFromToString; }
 
     @Override
     public AnnotationStyle getAnnotationStyle() {

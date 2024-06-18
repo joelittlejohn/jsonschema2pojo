@@ -116,6 +116,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-tse", "--tostring-excludes" }, description = "The fields that should be excluded from generated toString methods")
     private String toStringExcludes = "";
 
+    @Parameter(names = { "-tso", "--exclude-object-header-from-tostring" }, description = "Exclude the object header from generated toString methods")
+    private boolean excludeObjectHeaderFromToString = false;
+
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
@@ -368,7 +371,12 @@ public class Arguments implements GenerationConfig {
     public String[] getToStringExcludes() {
         return defaultString(toStringExcludes).split(" ");
     }
-    
+
+    @Override
+    public boolean isExcludeObjectHeaderFromToString() {
+        return excludeObjectHeaderFromToString;
+    }
+
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
