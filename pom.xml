@@ -66,7 +66,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -78,7 +78,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -94,7 +94,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -168,7 +168,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.3</version>
+                                    <version>3.9.6</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
@@ -350,14 +350,14 @@
                 <version>1.0.11</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.codemodel</groupId>
+                <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>codemodel</artifactId>
-                <version>2.6</version>
+                <version>3.0.2</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.15</version>
+                <version>1.16.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
