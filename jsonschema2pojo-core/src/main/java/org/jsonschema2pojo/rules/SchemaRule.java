@@ -20,7 +20,10 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Iterator;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -84,7 +87,37 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
         schema.setJavaTypeIfEmpty(javaType);
 
+        processDefinitions(schemaNode, generatableType, schema);
+
         return javaType;
+    }
+
+    private void processDefinitions(JsonNode schemaNode, JClassContainer generatableType, Schema parent) {
+        if (!ruleFactory.getGenerationConfig().isGenerateDefinitions()) {
+            return;
+        }
+
+        final String definitionsNodePath = getDefinitionsNodePath(schemaNode);
+        if (StringUtils.isNotBlank(definitionsNodePath)) {
+            final Iterator<Map.Entry<String, JsonNode>> definitions = schemaNode.at(definitionsNodePath).fields();
+            while (definitions.hasNext()) {
+                final Map.Entry<String, JsonNode> definition = definitions.next();
+
+                final Schema schema = ruleFactory.getSchemaStore().create(
+                        parent,
+                        "#" + definitionsNodePath + "/" + definition.getKey(),
+                        ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+                if (schema.isGenerated()) {
+                    continue;
+                }
+
+                apply(definition.getKey(), definition.getValue(), schemaNode, generatableType, schema);
+            }
+        }
+    }
+
+    protected String getDefinitionsNodePath(JsonNode schemaNode) {
+        return ruleFactory.getGenerationConfig().getDefinitionsPath();
     }
 
     private String nameFromRef(String ref) {
