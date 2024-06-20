@@ -269,6 +269,13 @@ public class AdditionalPropertiesIT {
         assertThat(jsonNode.has("additionalProperties"), is(false));
     }
 
+    @Test
+    public void propertyNamedAdditionalProperties() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/propertyNamedAdditionalProperties.json", "com.example", config("generateBuilders", true));
+
+        Class<?> classWithProperties = resultsClassLoader.loadClass("com.example.PropertyNamedAdditionalProperties.class");
+    }
+
     @SuppressWarnings("rawtypes")
     public static Matcher<Class> typeEqualTo(Class<?> type) {
         return equalTo((Class) type);
