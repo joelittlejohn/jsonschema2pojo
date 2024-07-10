@@ -153,6 +153,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     boolean includeCopyConstructor = false;
 
+    boolean includeNoArgsConstructor = true;
+
     private boolean includeAdditionalProperties = true;
 
     private boolean includeGetters = true;
@@ -192,7 +194,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
-    
+
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
@@ -340,6 +342,20 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeCopyConstructor(boolean includeCopyConstructor) {
         this.includeCopyConstructor = includeCopyConstructor;
+    }
+
+    /**
+     * Sets the 'includeNoArgsConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option, and will have no effect if {@link #isIncludeConstructors()}
+     * is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include the no-args constructor. This option is compatible with any
+     * of the other constructor related options, but will be ignored if no other constructor is to be generated -
+     * this is because java will always infer the no-args constructor if no other constructors are present.
+     *
+     * @param includeNoArgsConstructor controls whether the resulting class will include the no-args constructor
+     */
+    public void setIncludeNoArgsConstructor(boolean includeNoArgsConstructor) {
+        this.includeNoArgsConstructor = includeNoArgsConstructor;
     }
 
     /**
@@ -1210,6 +1226,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     @Override
+    public boolean isIncludeNoArgsConstructor() {
+        return includeNoArgsConstructor;
+    }
+
+    @Override
     public boolean isIncludeAdditionalProperties() {
         return includeAdditionalProperties;
     }
@@ -1313,7 +1334,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;
