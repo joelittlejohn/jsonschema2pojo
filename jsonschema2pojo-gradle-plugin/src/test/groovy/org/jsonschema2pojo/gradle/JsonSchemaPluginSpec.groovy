@@ -21,6 +21,9 @@ import java.lang.reflect.Field
 import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.FileUtils
+import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.ProjectConnection
 import org.junit.jupiter.api.Test
 
 class JsonSchemaPluginSpec {
@@ -48,4 +51,24 @@ class JsonSchemaPluginSpec {
     assertThat(missingProperties.toString(), missingProperties.isEmpty())
   }
 
+  @Test
+  void java() {
+    build("example/java");
+  }
+
+  void build(String projectDir) {
+    GradleConnector connector = GradleConnector.newConnector()
+    connector.useGradleVersion("8.9")
+    connector.forProjectDirectory(new File(projectDir))
+    ProjectConnection connection = connector.connect()
+    try {
+      BuildLauncher launcher = connection.newBuild()
+      launcher.setStandardOutput(System.out);
+      launcher.setStandardError(System.err);
+      launcher.forTasks("build")
+      launcher.run()
+    } finally {
+      connection.close()
+    }
+  }
 }
