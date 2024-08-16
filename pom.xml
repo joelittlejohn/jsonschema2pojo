@@ -56,6 +56,7 @@
         <jackson2x.version>2.17.2</jackson2x.version>
         <jackson2x.databind.version>2.17.2</jackson2x.databind.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
+        <maven-api.version>2.2.1</maven-api.version>
     </properties>
 
     <reporting>
@@ -546,7 +547,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -558,7 +559,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
