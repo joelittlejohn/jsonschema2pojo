@@ -46,9 +46,9 @@ public class Compiler {
 
     private static String defaultCompilerTarget() {
         return System.getProperty(
-            "maven.compiler.release", 
+            "maven.compiler.release",
             System.getProperty(
-                "maven.compiler.target", 
+                "maven.compiler.target",
                 "1.8"));
     }
 
