@@ -252,6 +252,11 @@ public class RuleFactory {
         return new DefaultRule(this);
     }
 
+
+    public Rule<JFieldVar, JFieldVar> getConstRule(JDefinedClass jclass) {
+        return new ConstRule(this, jclass);
+    }
+
     /**
      * Provides a rule instance that should be applied when a property
      * declaration is found in the schema, to assign any minimum/maximum
