@@ -16,7 +16,6 @@
 package org.jsonschema2pojo.gradle
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.Field
 
@@ -24,7 +23,6 @@ import org.apache.commons.io.FileUtils
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import org.junit.Test
 
 class JsonSchemaPluginSpec {
@@ -59,7 +57,7 @@ class JsonSchemaPluginSpec {
 
   void build(String projectDir) {
     GradleConnector connector = GradleConnector.newConnector()
-    connector.useGradleVersion("5.6")
+    connector.useGradleVersion("8.9")
     connector.forProjectDirectory(new File(projectDir))
     ProjectConnection connection = connector.connect()
     try {

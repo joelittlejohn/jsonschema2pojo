@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -49,12 +50,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <gradle.version>5.6</gradle.version>
+        <gradle.version>8.9</gradle.version>
         <gson.version>2.10.1</gson.version>
         <moshi.version>1.12.0</moshi.version>
         <jackson2x.version>2.15.2</jackson2x.version>
         <jackson2x.databind.version>2.15.2</jackson2x.databind.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
+        <maven-api.version>2.2.1</maven-api.version>
     </properties>
 
     <reporting>
@@ -289,6 +291,55 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <jdk>(,1.9)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>3.8</robolectric.version>
+                <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=574229 -->
+                <ecj.version>3.25.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk9</id>
+            <activation>
+                <jdk>[1.9,11)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <!-- latest ecj build with 1.8 target, next 11 -->
+                <ecj.version>3.26.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>[11,17)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <!-- latest ecj build with 11 target, next 17 -->
+                <ecj.version>3.33.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk17</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <ecj.version>3.38.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
+            </properties>
+        </profile>
     </profiles>
 
     <dependencies>
@@ -446,7 +497,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -458,7 +509,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -467,9 +518,10 @@
                 <version>3.3.4</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jdt.core.compiler</groupId>
+                <!-- https://github.com/eclipse-jdt/eclipse.jdt.core/issues/262 -->
+                <groupId>org.eclipse.jdt</groupId>
                 <artifactId>ecj</artifactId>
-                <version>4.6.1</version>
+                <version>${ecj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -493,7 +545,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.12.4</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -503,10 +555,10 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-               <groupId>org.robolectric</groupId>
-               <artifactId>robolectric</artifactId>
-               <version>3.8</version>
-               <scope>test</scope>
+                <groupId>org.robolectric</groupId>
+                <artifactId>robolectric</artifactId>
+                <version>${robolectric.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>
@@ -521,6 +573,11 @@
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <!-- Some Android dependencies are only available on the Google repository -->
+            <id>google</id>
+            <url>https://maven.google.com</url>
         </repository>
     </repositories>
 

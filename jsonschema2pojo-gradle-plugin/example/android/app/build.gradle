@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'jsonschema2pojo'
 
 android {
-    compileSdkVersion 30
-
     defaultConfig {
+        namespace "jsonschema2pojo.joelittlejohn.github.com.androidexample"
         applicationId "jsonschema2pojo.joelittlejohn.github.com.androidexample"
         minSdkVersion 26
+        compileSdkVersion 30
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

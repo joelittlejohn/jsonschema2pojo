@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -28,7 +29,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class DynamicPropertiesIT {
-    
+
+    private final boolean JAVA_EARLIER_21 = System.getProperty("java.specification.version").compareTo("21") < 0;
+
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
@@ -44,9 +47,24 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldSetStringFieldJava7() throws Throwable {
+        // jdk21 cannot build 1.7 target
+        assumeTrue(JAVA_EARLIER_21);
         setDeclaredPropertyTest(
                 config("includeDynamicAccessors", true, "includeDynamicGetters", true,
                     "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.7"),
+                "/schema/dynamic/parentType.json",
+                "ParentType",
+                String.class,
+                "stringValue",
+                "getStringValue",
+                "value");
+    }
+
+    @Test
+    public void shouldSetStringFieldJava8() throws Throwable {
+        setDeclaredPropertyTest(
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true,
+                        "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.8"),
                 "/schema/dynamic/parentType.json",
                 "ParentType",
                 String.class,

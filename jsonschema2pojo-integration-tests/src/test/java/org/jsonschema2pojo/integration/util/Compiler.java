@@ -49,7 +49,7 @@ public class Compiler {
     }
 
     public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
-        targetVersion = targetVersion == null ? "1.6" : targetVersion;
+        targetVersion = targetVersion == null ? "1.8" : targetVersion;
 
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 
