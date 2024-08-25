@@ -200,4 +200,26 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>ignore-android</id>
+            <activation>
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-failsafe-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>org.jsonschema2pojo.integration.config.ParcelableIT</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
