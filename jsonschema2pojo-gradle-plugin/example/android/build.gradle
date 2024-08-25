@@ -5,8 +5,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        if (JavaVersion.current().isJava11Compatible()) {
+        if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
             classpath 'com.android.tools.build:gradle:8.5.2'
+        } else if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
+            classpath 'com.android.tools.build:gradle:7.4.2'
         } else {
             classpath 'com.android.tools.build:gradle:4.2.2'
         }
