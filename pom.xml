@@ -376,6 +376,8 @@
                 <robolectric.version>3.8</robolectric.version>
                 <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=574229 -->
                 <ecj.version>3.25.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
             </properties>
         </profile>
         <profile>
@@ -387,21 +389,9 @@
                 <robolectric.version>4.13</robolectric.version>
                 <!-- latest ecj build with 1.8 target, next 11 -->
                 <ecj.version>3.26.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
             </properties>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <excludes>
-                                    <exclude>org.jsonschema2pojo.integration.config.ParcelableIT</exclude>
-                                </excludes>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
         </profile>
         <profile>
             <id>jdk11</id>
@@ -412,6 +402,7 @@
                 <robolectric.version>4.13</robolectric.version>
                 <!-- latest ecj build with 11 target, next 17 -->
                 <ecj.version>3.33.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
             </properties>
         </profile>
         <profile>
@@ -422,6 +413,7 @@
             <properties>
                 <robolectric.version>4.13</robolectric.version>
                 <ecj.version>3.38.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
             </properties>
         </profile>
 
@@ -641,7 +633,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>4.11.0</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
