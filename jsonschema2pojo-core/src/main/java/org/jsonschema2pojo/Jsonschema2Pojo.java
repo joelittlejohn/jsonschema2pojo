@@ -76,6 +76,7 @@ public class Jsonschema2Pojo {
             URL source = sources.next();
 
             if (URLUtil.parseProtocol(source.toString()) == URLProtocol.FILE && URLUtil.getFileFromURL(source).isDirectory()) {
+            	parseRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter())));
                 generateRecursive(config, mapper, codeModel, defaultString(config.getTargetPackage()), Arrays.asList(URLUtil.getFileFromURL(source).listFiles(config.getFileFilter())));
             } else {
                 mapper.generate(codeModel, getNodeName(source, config), defaultString(config.getTargetPackage()), source);
@@ -136,6 +137,22 @@ public class Jsonschema2Pojo {
                 mapper.generate(codeModel, getNodeName(child.toURI().toURL(), config), defaultString(packageName), child.toURI().toURL());
             } else {
                 generateRecursive(config, mapper, codeModel, childQualifiedName(packageName, child.getName()), Arrays.asList(child.listFiles(config.getFileFilter())));
+            }
+        }
+    }
+    private static void parseRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
+
+        Collections.sort(schemaFiles, config.getSourceSortOrder().getComparator());
+
+        for (File child : schemaFiles) {
+            if (child.isFile()) {
+                if (config.getSourceType() == SourceType.JSON || config.getSourceType() == SourceType.YAML) {
+                    // any cached schemas will have ids that are fragments, relative to the previous document (and shouldn't be reused)
+                    mapper.getRuleFactory().getSchemaStore().clearCache();
+                }
+                mapper.parse(codeModel, getNodeName(child.toURI().toURL(), config), defaultString(packageName), child.toURI().toURL());
+            } else {
+            	parseRecursive(config, mapper, codeModel, childQualifiedName(packageName, child.getName()), Arrays.asList(child.listFiles(config.getFileFilter())));
             }
         }
     }
