@@ -1,0 +1,10 @@
+{
+    "$id": "http://test.jsonschema2pojo.org/schema-json-test/data-first",
+    "title": "data-first",
+    "description": "Describe An Object.",
+    "type": "object",
+    "properties": {
+        "dataSecond": {"$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-second"}
+    },
+    "additionalProperties": false
+}

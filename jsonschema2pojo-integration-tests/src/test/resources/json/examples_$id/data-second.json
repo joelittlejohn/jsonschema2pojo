@@ -1,0 +1,25 @@
+{
+    "$id": "http://test.jsonschema2pojo.org/schema-json-test/data-second",
+    "title": "data-second",
+    "description": "Describe An Object.",
+    "type": "object",
+    "properties": {
+        "DataFirst": {
+            "description": "Reference to http://test.jsonschema2pojo.org/schema-json-test/data-first",
+            "type": "array",
+            "items": { "$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-first" },
+            "uniqueItems": true
+        },
+        "DataSecond": {
+            "description": "SecondReference to http://test.jsonschema2pojo.org/schema-json-test/data-second",
+            "type": "object",
+            "$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-second"
+        },
+        "DataMain": {
+            "description": "http://test.jsonschema2pojo.org/schema-json-test/main-data",
+            "type": "object",
+            "$ref": "http://test.jsonschema2pojo.org/schema-json-test/main-data"
+        }
+    },
+    "additionalProperties": false
+}

@@ -18,6 +18,7 @@ package org.jsonschema2pojo;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -37,6 +38,7 @@ import com.sun.codemodel.JType;
  * used to create type generation rules for this mapper.
  */
 public class SchemaMapper {
+	
     private static final JsonNodeFactory NODE_FACTORY = JsonNodeFactory.instance;
 
     private final RuleFactory ruleFactory;
@@ -88,6 +90,35 @@ public class SchemaMapper {
         ObjectNode schemaNode = readSchema(schemaUrl);
 
         return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
+
+    }
+    /**
+     * Reads a schema and register schema which may be used after during the generation.
+     *
+     * @param codeModel
+     *            the java code-generation context that should be used to
+     *            generated new types
+     * @param className
+     *            the name of the parent class the represented by this schema
+     * @param packageName
+     *            the target package that should be used for generated types
+     * @param schemaUrl
+     *            location of the schema to be used as input
+     */
+    public void parse(JCodeModel codeModel, String className, String packageName, URL schemaUrl) {
+
+			try {
+		        ObjectNode schemaNode = readSchema(schemaUrl);
+		        SchemaStore schemaStore = getRuleFactory().getSchemaStore();
+		        Schema schema = new Schema(schemaUrl.toURI(), schemaNode, null);
+		        schemaStore.registerId(schema, schemaUrl.toURI(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+				
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+
+
+//        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
 
     }
 

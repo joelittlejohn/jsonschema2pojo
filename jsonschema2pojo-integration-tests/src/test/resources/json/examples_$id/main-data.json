@@ -1,0 +1,43 @@
+{
+    "$id": "http://test.jsonschema2pojo.org/schema-json-test/main-data",
+
+    "title": "main-data",
+    "description": "Describe An Object.",
+    "type": "object",
+    "properties": {
+        "DataFirst1": {
+            "description": "Reference to http://test.jsonschema2pojo.org/schema-json-test/data-first",
+            "type": "array",
+            "items": { "$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-first" },
+            "uniqueItems": true
+        },
+        "DataFirst2": {
+            "description": "SecondReference to http://test.jsonschema2pojo.org/schema-json-test/data-first",
+            "type": "object",
+            "$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-first"
+        },
+        "DataSecond1": {
+            "description": "Reference to http://test.jsonschema2pojo.org/schema-json-test/data-second",
+            "type": "object",
+            "$ref": "http://test.jsonschema2pojo.org/schema-json-test/data-second"
+        },
+        "Prop": {
+            "description": "Tell how to initialize the component",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "Just an Id",
+                    "type": "integer"
+                },
+                "other-main-data": {
+                    "description": "A ref to the same class",
+		            "$ref": "http://test.jsonschema2pojo.org/schema-json-test/main-data"
+                }
+            },
+            "required": ["id"],
+            "additionalProperties": false
+        }
+    },
+    "required": ["DataFirst1"],
+    "additionalProperties": false
+}
