@@ -10,7 +10,7 @@
 
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
@@ -37,7 +37,8 @@
         <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
         <connection>scm:git:git@github.com:joelittlejohn/jsonschema2pojo.git</connection>
         <developerConnection>scm:git:git@github.com:joelittlejohn/jsonschema2pojo.git</developerConnection>
-    </scm>
+      <tag>jsonschema2pojo-1.2.2</tag>
+  </scm>
 
     <licenses>
         <license>
