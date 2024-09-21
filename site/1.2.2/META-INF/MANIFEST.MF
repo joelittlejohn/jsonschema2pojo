@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 1.8
+Created-By: Maven Site Plugin 3.12.1
+
