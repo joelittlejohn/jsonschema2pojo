@@ -115,7 +115,6 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         try {
             _enum = createEnum(node, nodeName, container);
         } catch (ClassAlreadyExistsException e) {
-            ruleFactory.getLogger().error("Could not create enum.", e);
             return e.getExistingClass();
         }
 

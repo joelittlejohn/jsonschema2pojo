@@ -116,3 +116,6 @@
 * TheTrueDentist
 * Josejulio Martínez
 * Nils Andresen
+* Michael Edgar
+* Julien Herr
+* Daniel Hammer

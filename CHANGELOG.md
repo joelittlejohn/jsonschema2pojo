@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+* Don't log ClassAlreadyExistsException for Enum ([#1597](https://github.com/joelittlejohn/jsonschema2pojo/pull/1597))
+* Prevent generating duplicate constructors when all properties are required; and both includeAllPropertiesConstructor and includeRequiredPropertiesConstructor are true ([#1553](https://github.com/joelittlejohn/jsonschema2pojo/pull/1553))
+* Add support for property names containing question mark(s) ([#1522](https://github.com/joelittlejohn/jsonschema2pojo/pull/1522))
+* Avoid NPE when setting additionalProperties path ([#1515](https://github.com/joelittlejohn/jsonschema2pojo/pull/1515))
+
 ## 1.2.1
 * Fix detection of targetVersion for Android gradle builds ([#1487](https://github.com/joelittlejohn/jsonschema2pojo/pull/1487))
 
