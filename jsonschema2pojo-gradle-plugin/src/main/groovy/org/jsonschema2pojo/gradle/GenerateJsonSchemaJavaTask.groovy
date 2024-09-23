@@ -56,7 +56,7 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
       setTargetVersion configuration
 
       inputs.property("configuration", configuration.toString())
-      inputs.files project.files(configuration.sourceFiles)
+      inputs.files project.files(configuration.source.findAll { 'file'.equals(it.protocol) })
     }
   }
 
