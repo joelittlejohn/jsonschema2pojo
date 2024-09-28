@@ -29,6 +29,11 @@ dependencies {
 }
 
 jsonSchema2Pojo {
+  // omitting 'source' will force plugin to look for sources under ${project.sourceSets.main.output.resourcesDir}/json
+  source = [
+          'https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/recursiveTreeNode.json',
+          file("src/main/resources/json")
+  ]
   targetPackage = 'example'
   includeJsr303Annotations = true
   propertyWordDelimiters = ['_'] as char[]
