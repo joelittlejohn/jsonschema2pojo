@@ -38,10 +38,6 @@ repositories {
   mavenCentral()
 }
 
-dependencies {
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-}
-
 jsonSchema2Pojo {
   targetPackage = 'com.example'
 }
