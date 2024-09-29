@@ -127,6 +127,22 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     @Parameter(property = "jsonschema2pojo.includeTypeInfo", defaultValue = "false")
     private boolean includeTypeInfo = false;
+
+    /**
+     * Whether to use static nested classes instead of top-level ones when generating types of complex inline
+     * subschemas.
+     *
+     * By default, complex types defined inline within a JSON schema are generated as top-level classes. This property
+     * allows to override the default behaviour so that complex types defined inline are generated as static nested
+     * classes of the main schema class.
+     *
+     * @parameter property="jsonschema2pojo.useNestedClasses"
+     *            default-value="false"
+     * @since 1.1.2
+     */
+    @Parameter(property = "jsonschema2pojo.useNestedClasses", defaultValue = "false")
+    private boolean useNestedClasses = false;
+
     /**
      * Whether to use primitives (<code>long</code>, <code>double</code>,
      * <code>boolean</code>) instead of wrapper types where possible when
@@ -884,6 +900,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isIncludeTypeInfo()
     {
         return includeTypeInfo;
+    }
+
+    @Override
+    public boolean isUseNestedClasses() {
+        return useNestedClasses;
     }
 
     @Override

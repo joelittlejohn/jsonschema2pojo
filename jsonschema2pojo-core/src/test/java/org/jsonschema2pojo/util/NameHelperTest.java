@@ -20,6 +20,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.junit.Test;
@@ -69,6 +71,52 @@ public class NameHelperTest {
         assertThat(nameHelper.getClassName("foo", node("title", "i am bar")), is("IAmBar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
+    }
+
+    @Test
+    public void testGetUniqueClassNamePackageNewClass() {
+        JCodeModel codeModel = new JCodeModel();
+        JPackage _package = codeModel._package("pkg");
+
+        assertThat(nameHelper.getUniqueClassName("foo", NODE, _package), is("Foo"));
+
+        // Repeat to make sure the name stays the same on subsequent invocation
+        assertThat(nameHelper.getUniqueClassName("foo", NODE, _package), is("Foo"));
+    }
+
+    @Test
+    public void testGetUniqueClassNamePackageExistingClass() throws Exception {
+        JCodeModel codeModel = new JCodeModel();
+        JPackage _package = codeModel._package("pkg");
+        _package._class("Foo");
+
+        assertThat(nameHelper.getUniqueClassName("foo", NODE, _package), is("Foo__1"));
+
+        // Repeat to make sure the name stays the same on subsequent invocation
+        assertThat(nameHelper.getUniqueClassName("foo", NODE, _package), is("Foo__1"));
+    }
+
+    @Test
+    public void testGetUniqueClassNameDefinedClassNewClass() throws Exception {
+        JCodeModel codeModel = new JCodeModel();
+        JDefinedClass _class = codeModel._class("Foo");
+
+        assertThat(nameHelper.getUniqueClassName("bar", NODE, _class), is("Bar"));
+
+        // Repeat to make sure the name stays the same on subsequent invocation
+        assertThat(nameHelper.getUniqueClassName("bar", NODE, _class), is("Bar"));
+    }
+
+    @Test
+    public void testGetUniqueClassNameDefinedClassExistingClass() throws Exception {
+        JCodeModel codeModel = new JCodeModel();
+        JDefinedClass _class = codeModel._class("Foo");
+        _class._class("Bar");
+
+        assertThat(nameHelper.getUniqueClassName("bar", NODE, _class), is("Bar__1"));
+
+        // Repeat to make sure the name stays the same on subsequent invocation
+        assertThat(nameHelper.getUniqueClassName("bar", NODE, _class), is("Bar__1"));
     }
 
     private NameHelper helper(boolean useTitleAsClassname) {

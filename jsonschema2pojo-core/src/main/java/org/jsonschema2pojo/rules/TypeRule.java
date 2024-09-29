@@ -31,6 +31,7 @@ import org.jsonschema2pojo.Schema;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 
 /**
@@ -82,8 +83,15 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     JType type;
 
     if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
-
-      type = ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
+      if (!ruleFactory.getGenerationConfig().isUseNestedClasses() || schema == schema.getParent()) {
+        type = ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer.getPackage(), schema);
+      } else if (jClassContainer instanceof JDefinedClass) {
+        return ruleFactory.getObjectRule().apply(nodeName, node, parent, jClassContainer, schema);
+      } else {
+        Schema parentSchema = ruleFactory.getSchemaStore().create(schema.getParent().getId(), null);
+        return ruleFactory.getObjectRule().apply(nodeName, node, parent, (JClassContainer) parentSchema.getJavaType(),
+                schema);
+      }
     } else if (node.has("existingJavaType")) {
       String typeName = node.path("existingJavaType").asText();
 

@@ -71,6 +71,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeTypeInfo = false;
 
+    private boolean useNestedClasses = false;
+
     private boolean useInnerClassBuilders = false;
 
     private boolean includeConstructorPropertiesAnnotation = false;
@@ -370,6 +372,23 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
      */
     public void setIncludeTypeInfo(boolean includeTypeInfo) {
         this.includeTypeInfo = includeTypeInfo;
+    }
+
+    /**
+     * Sets the 'useNestedClasses' property of this class.
+     *
+     * @param useNestedClasses
+     *            Whether to use static nested classes instead of top-level ones when generating types of complex inline
+     *            subschemas.
+     *            <p>
+     *            By default, complex types defined inline within a JSON schema are generated as top-level classes. This
+     *            property allows to override the default behaviour so that complex types defined inline are generated
+     *            as static nested classes of the main schema class.
+     *            <p>
+     *            Default: <code>false</code>.
+     */
+    public void setUseNestedClasses(boolean useNestedClasses) {
+        this.useNestedClasses = useNestedClasses;
     }
 
     /**
@@ -995,6 +1014,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public boolean isIncludeTypeInfo()
     {
         return includeTypeInfo;
+    }
+
+    @Override
+    public boolean isUseNestedClasses() {
+        return useNestedClasses;
     }
 
     @Override

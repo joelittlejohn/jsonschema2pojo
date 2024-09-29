@@ -46,6 +46,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Class<? extends RuleFactory> customRuleFactory
   boolean generateBuilders
   boolean includeJsonTypeInfoAnnotation
+  boolean useNestedClasses;
   boolean useInnerClassBuilders
   boolean includeConstructorPropertiesAnnotation
   boolean includeGetters
@@ -103,6 +104,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     // See DefaultGenerationConfig
     generateBuilders = false
     includeJsonTypeInfoAnnotation = false
+    useNestedClasses = false;
     useInnerClassBuilders = false
     usePrimitives = false
     sourceFiles = []
@@ -163,6 +165,11 @@ public class JsonSchemaExtension implements GenerationConfig {
   @Override
   boolean isIncludeTypeInfo() {
     return includeJsonTypeInfoAnnotation
+  }
+
+  @Override
+  boolean isUseNestedClasses() {
+    return useNestedClasses;
   }
 
   @Override
@@ -232,6 +239,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   public String toString() {
     """|generateBuilders = ${generateBuilders}
        |includeJsonTypeInfoAnnotation = ${includeJsonTypeInfoAnnotation}
+       |useNestedClasses = ${useNestedClasses}
        |usePrimitives = ${usePrimitives}
        |source = ${sourceFiles}
        |targetDirectory = ${targetDirectory}
