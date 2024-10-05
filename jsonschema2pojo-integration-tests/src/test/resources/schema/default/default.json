@@ -1,6 +1,56 @@
 {
     "type" : "object",
     "properties" : {
+        "emptyWithConst" : {
+            "type" : "string",
+            "const": ""
+        },
+        "stringWithConst" : {
+            "type" : "string",
+            "const": "abc"
+        },
+        "booleanWithConst" : {
+            "type" : "boolean",
+            "const": true
+        },
+        "integerWithConst" : {
+            "type" : "integer",
+            "const": 1
+        },
+        "numberWithConst" : {
+            "type" : "number",
+            "const": 1.1
+        },
+        "dateTimeWithConst" : {
+            "type" : "string",
+            "format" : "date-time",
+            "const" : 123456789
+        },
+        "dateTimeAsStringWithConst" : {
+            "type" : "string",
+            "format" : "date-time",
+            "const" : "2011-02-24T09:25:23.112+0000"
+        },
+        "dateAsStringWithConst" : {
+            "type" : "string",
+            "format" : "date",
+            "const" : "2015-03-04"
+        },
+        "timeAsStringWithConst" : {
+            "type" : "string",
+            "format" : "time",
+            "const" : "16:15:00"
+        },
+        "utcmillisecWithConst" : {
+            "type" : "integer",
+            "format" : "utc-millisec",
+            "const" : 123456789
+        },
+        "uriWithConst" : {
+            "type" : "string",
+            "format": "uri",
+            "const": "http://example.com"
+        },
         "emptyStringWithDefault" : {
           "type" : "string",
           "default" : ""

@@ -20,8 +20,10 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -37,7 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class DefaultIT {
-    
+
     @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
@@ -72,6 +74,162 @@ public class DefaultIT {
 
         assertThat((String) getter.invoke(instance), is(equalTo("abc")));
 
+    }
+
+    @Test
+    public void emptyConst()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        assertThrows(NoSuchFieldException.class, () -> classWithDefaults.getField("EMPTY_WITH_CONST"));
+        Method getter = classWithDefaults.getMethod("getEmptyWithConst");
+        assertNull(getter.invoke(instance));
+    }
+
+    @Test
+    public void stringConst()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Field field = classWithDefaults.getField("STRING_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getStringWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+        assertEquals("abc", value);
+        assertNull(getter.invoke(instance));
+    }
+
+    @Test
+    public void booleanConst()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Field field = classWithDefaults.getField("BOOLEAN_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getBooleanWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+        assertEquals(true, value);
+        assertNull(getter.invoke(instance));
+    }
+
+    @Test
+    public void integerConst()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Field field = classWithDefaults.getField("INTEGER_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getIntegerWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+        assertEquals(1, value);
+        assertNull(getter.invoke(instance));
+    }
+
+    @Test
+    public void numberConst()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Object instance = classWithDefaults.newInstance();
+
+        Field field = classWithDefaults.getField("NUMBER_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getNumberWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+        assertEquals(1.1, value);
+        assertNull(getter.invoke(instance));
+    }
+
+    @Test
+    public void numberConstBigDecimal() throws Exception {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
+        Class<?> c = resultsClassLoader.loadClass("com.example.Default");
+
+        Field field = c.getField("NUMBER_WITH_CONST");
+
+        assertPublicStaticFinal(field);
+        Object value = field.get(null);
+
+        assertThat((BigDecimal) value, is(equalTo(new BigDecimal("1.1"))));
+    }
+
+    @Test
+    public void dateTimeAsMillisecPropertyHasCorrectConstValue()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Field field = classWithDefaults.getField("DATE_TIME_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getDateTimeWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+
+        assertThat((Date) value, is(equalTo(new Date(123456789))));
+    }
+
+    private static void assertPublicStaticFinal(Field field) {
+        int modifiers = field.getModifiers();
+        assertTrue(Modifier.isPublic(modifiers));
+        assertTrue(Modifier.isStatic(modifiers));
+        assertTrue(Modifier.isFinal(modifiers));
+    }
+
+    @Test
+    public void dateTimeAsStringPropertyHasCorrectConstValue()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Field field = classWithDefaults.getField("DATE_TIME_AS_STRING_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getDateTimeAsStringWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+
+        assertThat((Date) value, is(equalTo(new Date(1298539523112L))));
+    }
+
+    @Test
+    public void utcmillisecPropertyHasCorrectConstValue()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchFieldException {
+
+        Field field = classWithDefaults.getField("UTCMILLISEC_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getUtcmillisecWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+
+        assertThat((Long) value, is(equalTo(123456789L)));
+    }
+
+    @Test
+    public void uriPropertyHasCorrectConstValue() throws Exception {
+        Field field = classWithDefaults.getField("URI_WITH_CONST");
+        Method getter = classWithDefaults.getMethod("getUriWithConst");
+
+        assertPublicStaticFinal(field);
+
+        Object value = field.get(null);
+
+        assertThat((URI) value, is(URI.create("http://example.com")));
     }
 
     @Test
@@ -270,7 +428,7 @@ public class DefaultIT {
         assertThat(getter.invoke(instance), is(nullValue()));
 
     }
-    
+
     @Test
     public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
