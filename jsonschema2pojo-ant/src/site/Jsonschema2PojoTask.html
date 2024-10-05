@@ -632,6 +632,21 @@
       </td>
       <td align="center" valign="top">No (default <code>false</code>)</td>
   </tr>
+  <tr>
+      <td valign="top"><a id="generateDefinitions"></a>generateDefinitions</td>
+      <td valign="top">Whether to generate POJO's from subschemas path defined by
+          <a href="#definitionsPath">definitionsPath</a> configuration option
+      </td>
+      <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
+      <td valign="top"><a id="definitionsPath"></a>definitionsPath</td>
+      <td valign="top">Defines path to subschemas that should be processed by jsonschema2pojo.<br/>
+          This property works in collaboration with the <a href="#generateDefinitions">generateDefinitions</a> configuration option and
+          will have no effect if latter is set to <code>false</code>
+      </td>
+      <td align="center" valign="top">No (default <code>/$defs</code>)</td>
+  </tr>
 </table>
 <h3>Examples</h3>
 <pre>
