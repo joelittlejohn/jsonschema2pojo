@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: [8]
+        java_version: [17]
     steps:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.14.0
