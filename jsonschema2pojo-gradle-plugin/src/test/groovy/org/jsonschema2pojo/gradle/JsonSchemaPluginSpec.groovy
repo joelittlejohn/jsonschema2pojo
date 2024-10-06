@@ -48,4 +48,24 @@ class JsonSchemaPluginSpec {
     assertThat(missingProperties.toString(), missingProperties.isEmpty())
   }
 
+  @Test
+  void java() {
+    build("example/java");
+  }
+
+  void build(String projectDir) {
+    GradleConnector connector = GradleConnector.newConnector()
+    connector.useGradleVersion("7.3")
+    connector.forProjectDirectory(new File(projectDir))
+    ProjectConnection connection = connector.connect()
+    try {
+      BuildLauncher launcher = connection.newBuild()
+      launcher.setStandardOutput(System.out);
+      launcher.setStandardError(System.err);
+      launcher.forTasks("build")
+      launcher.run()
+    } finally {
+      connection.close()
+    }
+  }
 }
