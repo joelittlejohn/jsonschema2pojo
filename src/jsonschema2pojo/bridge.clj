@@ -3,7 +3,7 @@
   (:import com.sun.codemodel.JCodeModel
            [com.sun.codemodel.writer SingleStreamCodeWriter ZipCodeWriter]
            java.io.ByteArrayOutputStream
-           [org.jsonschema2pojo AnnotationStyle AnnotatorFactory DefaultGenerationConfig Schema SchemaGenerator SchemaStore SourceType]
+           [org.jsonschema2pojo AnnotationStyle AnnotatorFactory DefaultGenerationConfig NoopRuleLogger Schema SchemaGenerator SchemaStore SourceType]
            com.fasterxml.jackson.dataformat.yaml.YAMLFactory
            org.jsonschema2pojo.ContentResolver
            org.jsonschema2pojo.rules.RuleFactory))
@@ -39,7 +39,7 @@
         schema (if (or (= (.getSourceType config) SourceType/JSON) (= (.getSourceType config) SourceType/YAML))
                  (.schemaFromExample (SchemaGenerator.) input)
                  input)]
-    (.. (RuleFactory. config (annotator config) (SchemaStore. (content-resolver config)))
+    (.. (RuleFactory. config (annotator config) (SchemaStore. (content-resolver config) (NoopRuleLogger.)))
         (getSchemaRule)
         (apply classname schema nil package (proxy [Schema] [nil schema nil])))))
 
