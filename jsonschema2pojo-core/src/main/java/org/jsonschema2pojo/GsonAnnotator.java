@@ -22,6 +22,7 @@ package org.jsonschema2pojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
@@ -46,7 +47,18 @@ public class GsonAnnotator extends AbstractAnnotator {
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
         field.annotate(SerializedName.class).param("value", propertyName);
-        field.annotate(Expose.class);
+        final JAnnotationUse expose = field.annotate(Expose.class);
+
+        if (propertyNode.has("gsonSerialize"))
+        {
+            expose.param("serialize", propertyNode.get("gsonSerialize").asBoolean(true));
+        }
+
+        if (propertyNode.has("gsonDeserialize"))
+        {
+            expose.param("deserialize", propertyNode.get("gsonDeserialize").asBoolean(true));
+        }
+
     }
 
     @Override
@@ -58,5 +70,4 @@ public class GsonAnnotator extends AbstractAnnotator {
     public boolean isAdditionalPropertiesSupported() {
         return false;
     }
-
 }
