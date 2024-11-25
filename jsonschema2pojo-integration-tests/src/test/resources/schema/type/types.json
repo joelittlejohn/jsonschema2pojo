@@ -103,6 +103,10 @@
         },
         "nullableStringProperty" : {
           "type" : ["null", "string"]
+        },
+        "existingTypeWithRef": {
+            "existingJavaType": "com.example.MyJsonViewClass",
+            "$ref": "genericJavaType.json"
         }
     }
 }
