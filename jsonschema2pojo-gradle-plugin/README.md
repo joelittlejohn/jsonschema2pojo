@@ -15,7 +15,7 @@ With Groovy:
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.2.1"
+  id "org.jsonschema2pojo" version "1.2.2"
 }
 
 jsonSchema2Pojo {
@@ -28,7 +28,7 @@ With Kotlin:
 ```kotlin
 plugins {
   id("java")
-  id("org.jsonschema2pojo") version "1.2.1"
+  id("org.jsonschema2pojo") version "1.2.2"
 }
 
 jsonSchema2Pojo {
@@ -44,7 +44,7 @@ Below we have a full build.gradle example, showing all available configuration o
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.2.1"
+  id "org.jsonschema2pojo" version "1.2.2"
 }
 
 repositories {
@@ -56,7 +56,7 @@ dependencies {
   implementation 'javax.validation:validation-api:1.1.0.CR2'
   implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
   // Required if generating Jackson 2 annotations
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
   // Required if generating JodaTime data types
   implementation 'joda-time:joda-time:2.2'
 }
@@ -266,7 +266,7 @@ jsonSchema2Pojo {
   dateTimeType = "java.time.LocalDateTime"
 
   // What type to use instead of string when adding string properties of format "time" to Java types
-  timeType = "java.time.LocalDate"
+  timeType = "java.time.LocalTime"
 
   // A custom pattern to use when formatting date fields during serialization. Requires support from
   // your JSON binding library.

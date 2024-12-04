@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
@@ -47,6 +48,8 @@ import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
+
+import static java.util.stream.Collectors.toSet;
 
 public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -139,6 +142,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
   }
 
   private void addFieldsConstructor(JDefinedClass instanceClass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
+    if (isConstructorAlreadyAdded(instanceClass, classProperties, combinedSuperProperties)) {
+      return;
+    }
+
     GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
     // Generate the constructor with the properties which were located
@@ -151,6 +158,17 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
       generateFieldsBuilderConstructor(baseBuilderClass, concreteBuilderClass, instanceClass, instanceConstructor);
     }
+  }
+
+  private boolean isConstructorAlreadyAdded(JDefinedClass instanceClass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
+    final Set<String> allProperties = Stream.of(classProperties.keySet(), combinedSuperProperties.keySet()).flatMap(Set::stream).collect(toSet());
+    for (Iterator<JMethod> constructorIterator = instanceClass.constructors(); constructorIterator.hasNext(); ) {
+      final Set<String> constructorParams = constructorIterator.next().params().stream().map(JVar::name).collect(toSet());
+      if (constructorParams.equals(allProperties)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void addCopyConstructor(JDefinedClass instanceClass, Map<String, String> classProperties, Map<String, String> combinedSuperProperties) {
