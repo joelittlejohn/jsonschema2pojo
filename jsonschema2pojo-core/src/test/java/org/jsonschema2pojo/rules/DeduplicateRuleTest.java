@@ -52,7 +52,7 @@ public class DeduplicateRuleTest {
     public void setupRule() {
         dedupeCache = new HashMap<>();
         DummyRule dummyRule = new DummyRule();
-        dedupeRule = new DeduplicateRule<>(ImmutableMap.of(dummyRule.getClass(), dedupeCache), dummyRule);
+        dedupeRule = new DeduplicateRule<>(new RuleFactory(), ImmutableMap.of(dummyRule.getClass(), dedupeCache), dummyRule);
     }
 
     @Test

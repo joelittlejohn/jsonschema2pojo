@@ -123,7 +123,7 @@ public class RuleFactory {
     public Rule<JClassContainer, JType> getEnumRule() {
         Rule<JClassContainer, JType> rule = new EnumRule(this);
         if (generationConfig.isUseDeduplication()) {
-            rule = new DeduplicateRule<>(dedupeCache, rule);
+            rule = new DeduplicateRule<>(this, dedupeCache, rule);
         }
         return rule;
     }
@@ -147,7 +147,7 @@ public class RuleFactory {
     public Rule<JPackage, JType> getObjectRule() {
         Rule<JPackage, JType> rule = new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
         if (generationConfig.isUseDeduplication()) {
-            rule = new DeduplicateRule<>(dedupeCache, rule);
+            rule = new DeduplicateRule<>(this, dedupeCache, rule);
         }
         return rule;
     }
@@ -251,7 +251,11 @@ public class RuleFactory {
      * @return a schema rule that can handle a schema declaration.
      */
     public Rule<JClassContainer, JType> getSchemaRule() {
-        return new SchemaRule(this);
+        Rule<JClassContainer, JType> rule = new SchemaRule(this);
+        if (generationConfig.isUseDeduplication()) {
+            rule = new DeduplicateRule<>(this, dedupeCache, rule);
+        }
+        return rule;
     }
 
     /**

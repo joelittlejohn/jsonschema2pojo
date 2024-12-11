@@ -27,10 +27,11 @@ import java.util.Map;
  */
 class DeduplicateRule<T, R> implements Rule<T, R> {
 
+    private final RuleFactory ruleFactory;
     private final Map<String, R> deduplicateCache;
     private final Rule<T, R> rule;
 
-    public DeduplicateRule(Map<Class<?>, Map<String, ?>> dedupeCacheByRule, Rule<T, R> rule) {
+    public DeduplicateRule(RuleFactory ruleFactory, Map<Class<?>, Map<String, ?>> dedupeCacheByRule, Rule<T, R> rule) {
         // noinspection unchecked map is populated by us and guaranteed to be of the correct type
         Map<String, R> dedupeCache = (Map<String, R>) dedupeCacheByRule.get(rule.getClass());
         if(dedupeCache == null) {
@@ -38,6 +39,7 @@ class DeduplicateRule<T, R> implements Rule<T, R> {
             dedupeCacheByRule.put(rule.getClass(), dedupeCache);
         }
         this.deduplicateCache = dedupeCache;
+        this.ruleFactory = ruleFactory;
         this.rule = rule;
     }
 
@@ -53,8 +55,11 @@ class DeduplicateRule<T, R> implements Rule<T, R> {
         String hash = currentSchema.calculateHash();
         R output = deduplicateCache.get(hash);
         if (output == null) {
+            ruleFactory.getLogger().trace("Deduplication miss for schema " + nodeName);
             output = rule.apply(nodeName, node, parent, generatableType, currentSchema);
             deduplicateCache.put(hash, output);
+        } else {
+            ruleFactory.getLogger().debug("Deduplicated schema " + nodeName);
         }
         return output;
     }
