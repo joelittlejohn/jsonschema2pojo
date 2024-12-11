@@ -196,6 +196,9 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
+
+    private boolean useDeduplication = false;
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -977,6 +980,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.useJakartaValidation = useJakartaValidation;
     }
 
+    /**
+     * Sets the 'useDeduplication' property of this class
+     *
+     * @param useDeduplication Whether to deduplicate generated types for identical schemas.
+     */
+    public void setUseDeduplication(boolean useDeduplication) {
+        this.useDeduplication = useDeduplication;
+    }
+
     public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
         this.formatTypeMapping = formatTypeMapping;
     }
@@ -1337,5 +1349,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public boolean isUseDeduplication() {
+        return useDeduplication;
     }
 }

@@ -36,6 +36,9 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Provides factory/creation methods for the code generation rules.
  */
@@ -47,6 +50,7 @@ public class RuleFactory {
     private GenerationConfig generationConfig;
     private Annotator annotator;
     private SchemaStore schemaStore;
+    private Map<Class<?>, Map<String, ?>> dedupeCache;
 
     /**
      * Create a new rule factory with the given generation config options.
@@ -68,6 +72,7 @@ public class RuleFactory {
         this.nameHelper = new NameHelper(generationConfig);
         this.reflectionHelper = new ReflectionHelper(this);
         this.logger = new NoopRuleLogger();
+        this.dedupeCache = new HashMap<>();
     }
 
     /**
@@ -116,7 +121,11 @@ public class RuleFactory {
      * @return a schema rule that can handle the "enum" declaration.
      */
     public Rule<JClassContainer, JType> getEnumRule() {
-        return new EnumRule(this);
+        Rule<JClassContainer, JType> rule = new EnumRule(this);
+        if (generationConfig.isUseDeduplication()) {
+            rule = new DeduplicateRule<>(dedupeCache, rule);
+        }
+        return rule;
     }
 
     /**
@@ -136,7 +145,11 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        return new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
+        Rule<JPackage, JType> rule = new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
+        if (generationConfig.isUseDeduplication()) {
+            rule = new DeduplicateRule<>(dedupeCache, rule);
+        }
+        return rule;
     }
 
     /**

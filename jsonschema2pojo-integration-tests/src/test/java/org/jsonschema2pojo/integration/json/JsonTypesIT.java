@@ -261,4 +261,27 @@ public class JsonTypesIT {
 
     }
 
+    @Test
+    public void propertiesWithSameNameOnDifferentObjectsWithDedupe() throws Exception {
+
+        final String filePath = "/" + format + "/commonSubClasses";
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example", config("sourceType", format, "useDeduplication", true));
+
+        Class<?> aType = resultsClassLoader.loadClass("com.example.A");
+        Class<?> bType = resultsClassLoader.loadClass("com.example.B");
+
+        Object deserializedValueA = objectMapper.readValue(this.getClass().getResourceAsStream(filePath("commonSubClasses/a")), aType);
+        Object deserializedValueB = objectMapper.readValue(this.getClass().getResourceAsStream(filePath("commonSubClasses/b")), bType);
+
+        assertNotEquals(aType.getMethod("getAa").getReturnType().getName(),
+                bType.getMethod("getAa").getReturnType().getName());
+        assertEquals(aType.getMethod("get1").getReturnType().getName(),
+                bType.getMethod("get1").getReturnType().getName());
+
+        Object a1 = aType.getMethod("get1").invoke(deserializedValueA);
+        Object b1 = bType.getMethod("get1").invoke(deserializedValueB);
+
+        assertEquals(a1.getClass().getMethod("get3").getReturnType().getName(),
+                b1.getClass().getMethod("get3").getReturnType().getName());
+    }
 }

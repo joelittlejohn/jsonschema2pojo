@@ -98,6 +98,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   Map<String, String> formatTypeMapping
   boolean includeGeneratedAnnotation
   boolean useJakartaValidation
+  boolean useDeduplication
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -158,6 +159,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     formatTypeMapping = Collections.emptyMap()
     includeGeneratedAnnotation = true
     useJakartaValidation = false
+    useDeduplication = false
   }
 
   @Override
@@ -292,6 +294,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeConstructorPropertiesAnnotation = ${includeConstructorPropertiesAnnotation}
        |includeGeneratedAnnotation = ${includeGeneratedAnnotation}
        |useJakartaValidation = ${useJakartaValidation}
+       |useDeduplication = ${useDeduplication}
      """.stripMargin()
   }
 
