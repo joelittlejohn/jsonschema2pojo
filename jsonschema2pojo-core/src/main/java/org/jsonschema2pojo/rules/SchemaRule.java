@@ -78,7 +78,12 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
 
         JType javaType;
         if (schemaNode.has("enum")) {
-            javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
+            // When de-duplicating enums, we cannot generate enums within another class
+            // Generation order is not deterministic so the enum would get randomly placed in one of the classes
+            JClassContainer generatableTypeForEnum = ruleFactory.getGenerationConfig().isUseDeduplication()
+                    ? generatableType.getPackage()
+                    : generatableType;
+            javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableTypeForEnum, schema);
         } else {
             javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema);
         }
