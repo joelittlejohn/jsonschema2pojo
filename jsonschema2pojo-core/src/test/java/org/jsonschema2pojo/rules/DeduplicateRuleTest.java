@@ -1,5 +1,5 @@
 /**
- * Copyright © 2024 Nokia
+ * Copyright © 2010-2020 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,34 +19,22 @@ package org.jsonschema2pojo.rules;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.util.NameHelper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.stubbing.Answer;
+import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 public class DeduplicateRuleTest {
 
-    private Map<String, UUID> dedupeCache;
-    private Rule<Object, UUID> dedupeRule;
+    private Map<String, JType> dedupeCache;
+    private Rule<Object, JType> dedupeRule;
 
     @Before
     public void setupRule() {
@@ -73,20 +61,23 @@ public class DeduplicateRuleTest {
         assertEquals(schema1.calculateHash(), schema2.calculateHash());
         assertNotEquals(schema1.calculateHash(), schema3.calculateHash());
 
-        UUID uuid1 = dedupeRule.apply(null, null, null, null, schema1);
-        UUID uuid2 = dedupeRule.apply(null, null, null, null, schema1);
-        UUID uuid3 = dedupeRule.apply(null, null, null, null, schema2);
-        UUID uuid4 = dedupeRule.apply(null, null, null, null, schema3);
+        JType type1 = dedupeRule.apply(null, null, null, null, schema1);
+        JType type2 = dedupeRule.apply(null, null, null, null, schema1);
+        JType type3 = dedupeRule.apply(null, null, null, null, schema2);
+        JType type4 = dedupeRule.apply(null, null, null, null, schema3);
 
-        assertEquals(uuid1, uuid2);
-        assertEquals(uuid1, uuid3);
-        assertNotEquals(uuid1, uuid4);
+        // Comparing the mock object references from DummyRule
+        assertSame(type1, type2);
+        assertSame(type1, type3);
+        assertNotSame(type1, type4);
     }
 
-    public static class DummyRule implements Rule<Object, UUID> {
+    public static class DummyRule implements Rule<Object, JType> {
         @Override
-        public UUID apply(String nodeName, JsonNode node, JsonNode parent, Object generatableType, Schema currentSchema) {
-            return UUID.randomUUID();
+        public JType apply(String nodeName, JsonNode node, JsonNode parent, Object generatableType, Schema currentSchema) {
+            // All we need here is a unique object to test deduplication
+            // If deduplicated, object reference of this mock will be the same
+            return Mockito.mock(JType.class);
         }
     }
 }

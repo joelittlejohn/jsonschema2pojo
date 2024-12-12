@@ -50,7 +50,7 @@ public class RuleFactory {
     private GenerationConfig generationConfig;
     private Annotator annotator;
     private SchemaStore schemaStore;
-    private Map<Class<?>, Map<String, ?>> dedupeCache;
+    private Map<Class<?>, Map<String, JType>> dedupeCache;
 
     /**
      * Create a new rule factory with the given generation config options.
@@ -121,11 +121,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "enum" declaration.
      */
     public Rule<JClassContainer, JType> getEnumRule() {
-        Rule<JClassContainer, JType> rule = new EnumRule(this);
-        if (generationConfig.isUseDeduplication()) {
-            rule = new DeduplicateRule<>(this, dedupeCache, rule);
-        }
-        return rule;
+        return deduplicate(new EnumRule(this));
     }
 
     /**
@@ -145,11 +141,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        Rule<JPackage, JType> rule = new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
-        if (generationConfig.isUseDeduplication()) {
-            rule = new DeduplicateRule<>(this, dedupeCache, rule);
-        }
-        return rule;
+        return deduplicate(new ObjectRule(this, new ParcelableHelper(), reflectionHelper));
     }
 
     /**
@@ -251,11 +243,7 @@ public class RuleFactory {
      * @return a schema rule that can handle a schema declaration.
      */
     public Rule<JClassContainer, JType> getSchemaRule() {
-        Rule<JClassContainer, JType> rule = new SchemaRule(this);
-        if (generationConfig.isUseDeduplication()) {
-            rule = new DeduplicateRule<>(this, dedupeCache, rule);
-        }
-        return rule;
+        return deduplicate(new SchemaRule(this));
     }
 
     /**
@@ -461,6 +449,13 @@ public class RuleFactory {
 
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
         return new JavaNameRule();
+    }
+
+    private <T> Rule<T, JType> deduplicate(Rule<T, JType> rule) {
+        if (generationConfig.isUseDeduplication()) {
+            rule = new DeduplicateRule<>(this, dedupeCache, rule);
+        }
+        return rule;
     }
 
 }

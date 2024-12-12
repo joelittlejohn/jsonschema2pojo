@@ -1,5 +1,5 @@
 /**
- * Copyright © 2024 Nokia
+ * Copyright © 2010-2020 Nokia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.Schema;
+import com.sun.codemodel.JType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,20 +26,16 @@ import java.util.Map;
 /**
  * Wraps an existing Rule and performs deduplication of identical schemas to the same output.
  */
-class DeduplicateRule<T, R> implements Rule<T, R> {
+class DeduplicateRule<T> implements Rule<T, JType> {
 
     private final RuleFactory ruleFactory;
-    private final Map<String, R> deduplicateCache;
-    private final Rule<T, R> rule;
+    private final Map<String, JType> deduplicateCache;
+    private final Rule<T, JType> rule;
 
-    public DeduplicateRule(RuleFactory ruleFactory, Map<Class<?>, Map<String, ?>> dedupeCacheByRule, Rule<T, R> rule) {
-        // noinspection unchecked map is populated by us and guaranteed to be of the correct type
-        Map<String, R> dedupeCache = (Map<String, R>) dedupeCacheByRule.get(rule.getClass());
-        if(dedupeCache == null) {
-            dedupeCache = new HashMap<>();
-            dedupeCacheByRule.put(rule.getClass(), dedupeCache);
-        }
-        this.deduplicateCache = dedupeCache;
+    public DeduplicateRule(RuleFactory ruleFactory, Map<Class<?>, Map<String, JType>> dedupeCacheByRule, Rule<T, JType> rule) {
+        this.deduplicateCache = dedupeCacheByRule.computeIfAbsent(
+                rule.getClass(),
+                k -> new HashMap<>());
         this.ruleFactory = ruleFactory;
         this.rule = rule;
     }
@@ -51,9 +48,9 @@ class DeduplicateRule<T, R> implements Rule<T, R> {
      * @return same {@code R} instance if a previous schema with the same hash code was already processed
      */
     @Override
-    public R apply(String nodeName, JsonNode node, JsonNode parent, T generatableType, Schema currentSchema) {
+    public JType apply(String nodeName, JsonNode node, JsonNode parent, T generatableType, Schema currentSchema) {
         String hash = currentSchema.calculateHash();
-        R output = deduplicateCache.get(hash);
+        JType output = deduplicateCache.get(hash);
         if (output == null) {
             ruleFactory.getLogger().trace("Deduplication miss for schema " + nodeName);
             output = rule.apply(nodeName, node, parent, generatableType, currentSchema);
