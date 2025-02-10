@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>1.2.2-SNAPSHOT</version>
+        <version>1.2.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>jsonschema2pojo-gradle-plugin</artifactId>
@@ -43,6 +43,10 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <integrationTestSourceDirectory>src/integrationTest/groovy</integrationTestSourceDirectory>
+    </properties>
+
     <build>
         <sourceDirectory>${project.basedir}/src/main/groovy</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/groovy</testSourceDirectory>
@@ -72,6 +76,18 @@
                         <configuration>
                             <sources>
                                 <source>src/test/groovy</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-integration-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${integrationTestSourceDirectory}</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -116,11 +132,27 @@
                         <include>**/*Spec.*</include>
                     </includes>
                 </configuration>
-              </plugin>
-              <plugin>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useFile>false</useFile>
+                    <testSourceDirectory>${integrationTestSourceDirectory}</testSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>codenarc-maven-plugin</artifactId>
-              </plugin>
+            </plugin>
         </plugins>
     </build>
 </project>
