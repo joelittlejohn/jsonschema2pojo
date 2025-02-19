@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "title": "AType",
+    "properties" : {
+        "propertyOfA" : {
+            "type" : "string"
+        }
+    }
+}

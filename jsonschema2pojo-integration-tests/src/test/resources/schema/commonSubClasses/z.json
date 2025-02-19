@@ -1,0 +1,54 @@
+{
+    "type" : "object",
+    "title" : "Z",
+    "properties" : {
+        "refToA" : {
+            "$ref": "includes/aType.json"
+        },
+        "arrayOfRefToZ" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "includes/zType.json"
+            }
+        },
+        "objectOfRefToZ" : {
+            "type" : "object",
+            "additionalProperties" : {
+                "$ref" : "includes/zType.json"
+            }
+        },
+        "inlineToA" : {
+            "type" : "object",
+            "title": "AType",
+            "properties" : {
+                "propertyOfA" : {
+                    "type" : "string"
+                }
+            }
+        },
+        "arrayOfInlineToZ" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "title": "ZType",
+                "properties" : {
+                    "propertyOfZ" : {
+                        "type" : "string"
+                    }
+                }
+            }
+        },
+        "objectOfInlineToZ" : {
+            "type" : "object",
+            "additionalProperties" : {
+                "type" : "object",
+                "title": "ZType",
+                "properties" : {
+                    "propertyOfZ" : {
+                        "type" : "string"
+                    }
+                }
+            }
+        }
+    }
+}
