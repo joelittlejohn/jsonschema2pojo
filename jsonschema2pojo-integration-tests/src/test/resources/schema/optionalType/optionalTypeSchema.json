@@ -1,0 +1,67 @@
+{
+  "type": "object",
+  "title": "NullableSchema",
+  "description": "Schema to test nullable types",
+  "properties": {
+    "nullableStringVer1": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "NullableString"
+    },
+    "nullableStringVer2": {
+      "type": ["string", "null"],
+      "title": "NullableStringWithDefault"
+    },
+    "nullableNumber": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "NullableNumber"
+    },
+    "nullableBoolean": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "NullableBoolean"
+    },
+    "unionTypeField": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "default": null,
+      "title": "UnionTypeField"
+    }
+  },
+  "required": [
+    "nullableString",
+    "nullableNumber",
+    "nullableBoolean"
+  ]
+}

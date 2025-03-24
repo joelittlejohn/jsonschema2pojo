@@ -23,6 +23,8 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.jsonschema2pojo.GenerationConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -517,6 +519,39 @@ public class TypeRuleTest {
         JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("boolean"));
+    }
+
+    @Test
+    public void applyGeneratesForNullableTypes() throws JsonProcessingException {
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        JsonNode objectNode = new ObjectMapper().readTree(
+                "{\"anyOf\": [{\"type\": \"integer\"}, {\"type\": \"null\"}]," +
+                "\"default\": \"null\"}"
+        );
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Integer"));
+    }
+
+    @Test
+    public void applyGeneratesForUnionTypes() throws JsonProcessingException {
+
+        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
+
+        JsonNode objectNode = new ObjectMapper().readTree(
+                "{\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"integer\"}]," +
+                        "\"default\": \"null\"}"
+        );
+
+        when(config.isUsePrimitives()).thenReturn(true);
+
+        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+
+        assertThat(result.fullName(), is("java.lang.Object"));
     }
 
     @Test
