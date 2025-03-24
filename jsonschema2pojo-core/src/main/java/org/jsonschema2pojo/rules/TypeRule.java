@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
@@ -81,12 +80,6 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     String propertyTypeName = getTypeName(node);
 
     JType type;
-
-    // Add this block to handle optional type (anyOf with null type)
-    JType optionalType = resolveOptionalType(nodeName, node, parent, jClassContainer, schema);
-    if (optionalType != null) {
-      return optionalType;
-    }
 
     if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
@@ -146,38 +139,6 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     }
 
     return DEFAULT_TYPE_NAME;
-  }
-
-  private JType resolveOptionalType(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
-    if (!node.has("anyOf") || !node.get("anyOf").isArray()) {
-      return null;
-    }
-
-    ArrayNode anyOfTypes = (ArrayNode) node.get("anyOf");
-
-    List<JsonNode> nonNullTypes = StreamSupport.stream(anyOfTypes.spliterator(), false)
-            .filter(typeOption -> !isNullType(typeOption))
-            .collect(Collectors.toList());
-
-    boolean hasNullType = anyOfTypes.size() != nonNullTypes.size();
-
-    if (hasNullType && nonNullTypes.size() == 1) {
-      JsonNode nonNullTypeNode = nonNullTypes.get(0).deepCopy();
-      JType resolvedType = apply(nodeName, nonNullTypeNode, parent, jClassContainer, schema);
-
-      // to make sure we always return a nullable type
-      return resolvedType.boxify();
-    }
-
-    return null;
-  }
-
-  /**
-   * Checks if the given schema node represents a null type.
-   */
-  private boolean isNullType(JsonNode node) {
-    return node.has("type") &&
-            "null".equals(node.get("type").asText());
   }
 
   private JType unboxIfNecessary(JType type, GenerationConfig config) {

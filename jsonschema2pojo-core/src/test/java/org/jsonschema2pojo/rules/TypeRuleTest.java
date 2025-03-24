@@ -522,39 +522,6 @@ public class TypeRuleTest {
     }
 
     @Test
-    public void applyGeneratesForNullableTypes() throws JsonProcessingException {
-        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
-
-        JsonNode objectNode = new ObjectMapper().readTree(
-                "{\"anyOf\": [{\"type\": \"integer\"}, {\"type\": \"null\"}]," +
-                "\"default\": \"null\"}"
-        );
-
-        when(config.isUsePrimitives()).thenReturn(true);
-
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
-
-        assertThat(result.fullName(), is("java.lang.Integer"));
-    }
-
-    @Test
-    public void applyGeneratesForUnionTypes() throws JsonProcessingException {
-
-        JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
-
-        JsonNode objectNode = new ObjectMapper().readTree(
-                "{\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"integer\"}]," +
-                        "\"default\": \"null\"}"
-        );
-
-        when(config.isUsePrimitives()).thenReturn(true);
-
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
-
-        assertThat(result.fullName(), is("java.lang.Object"));
-    }
-
-    @Test
     public void applyGeneratesAnyAsObject() {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());

@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +20,16 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Pattern;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -44,9 +51,13 @@ public class OptionalTypeIT {
     public static void generateAndCompileClass() throws ClassNotFoundException {
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/optionalType/optionalTypeSchema.json",
                 "com.example",
-                config("targetVersion", "1.8")
+                config("useJakartaValidation", true,
+                        "includeJsr303Annotations", true,
+                        "useBigDecimals", true)
         );
+
         nullableClass = classLoader.loadClass("com.example.OptionalTypeSchema");
+
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.ALWAYS);
@@ -69,7 +80,7 @@ public class OptionalTypeIT {
     @Test
     public void nullableNumberIsDoubleType() throws Exception {
         Method getter = nullableClass.getMethod("getNullableNumber");
-        assertThat(getter.getReturnType().getName(), is("java.lang.Double"));
+        assertThat(getter.getReturnType().getName(), is("java.math.BigDecimal"));
     }
 
     @Test
@@ -112,7 +123,7 @@ public class OptionalTypeIT {
 
         assertThat(stringGetter1.invoke(instance), is("test"));
         assertThat(stringGetter2.invoke(instance), is("test2"));
-        assertThat(numberGetter.invoke(instance), is(123.45));
+        assertThat(numberGetter.invoke(instance), is(new BigDecimal("123.45")));
         assertThat(booleanGetter.invoke(instance), is(true));
     }
 
@@ -137,4 +148,42 @@ public class OptionalTypeIT {
         assertThat(jsonNode.has("nullableBoolean"), is(true));
         assertThat(jsonNode.get("nullableBoolean").isNull(), is(true));
     }
+
+    @Test
+    public void nullableNumberHasValidationAnnotations() throws Exception {
+        Field optionalString = nullableClass.getDeclaredField("nullableStringVer1");
+        Field nullableNumberField = nullableClass.getDeclaredField("nullableNumber");
+
+        Pattern pattern = optionalString.getAnnotation(Pattern.class);
+        assertNotNull("Nullable string should have pattern", pattern);
+        assertThat(pattern.regexp(), is("^[a-zA-Z0-9]+$"));
+
+        DecimalMin decimalMinAnnotation = nullableNumberField.getAnnotation(DecimalMin.class);
+        assertNotNull("nullableNumber field should have @DecimalMin annotation", decimalMinAnnotation);
+        assertEquals("10", decimalMinAnnotation.value());
+
+        DecimalMax decimalMax = nullableNumberField.getAnnotation(DecimalMax.class);
+        assertNotNull("nullableNumber field should have @DecimalMax annotation", decimalMinAnnotation);
+        assertEquals("12", decimalMax.value());
+    }
+
+    @Test
+    public void optionalEnumIsEnumType() throws Exception {
+        Method getter = nullableClass.getMethod("getOptionalEnum");
+        Class<?> enumType = getter.getReturnType();
+
+        assertTrue("optionalEnum should be an enum type", enumType.isEnum());
+
+        Object[] enumConstants = enumType.getEnumConstants();
+        assertThat("Enum should have 2 constants", enumConstants.length, is(2));
+
+        Set<String> enumValues = new HashSet<>();
+        for (Object enumConstant : enumConstants) {
+            enumValues.add(enumConstant.toString());
+        }
+
+        assertThat("Enum should contain OPTION_1 and OPTION_2",
+                enumValues, containsInAnyOrder("OPTION_1", "OPTION_2"));
+    }
+
 }

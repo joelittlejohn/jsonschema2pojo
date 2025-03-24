@@ -6,7 +6,8 @@
     "nullableStringVer1": {
       "anyOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]+$"
         },
         {
           "type": "null"
@@ -22,7 +23,9 @@
     "nullableNumber": {
       "anyOf": [
         {
-          "type": "number"
+          "type": "number",
+          "minimum": 10,
+          "maximum": 12
         },
         {
           "type": "null"
@@ -42,6 +45,18 @@
       ],
       "default": null,
       "title": "NullableBoolean"
+    },
+    "optionalEnum": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": ["OPTION_1", "OPTION_2"]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "OptionalEnum"
     },
     "unionTypeField": {
       "anyOf": [

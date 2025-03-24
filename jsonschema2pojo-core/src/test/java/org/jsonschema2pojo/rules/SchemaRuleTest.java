@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,8 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.sun.codemodel.*;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
@@ -32,10 +34,6 @@ import org.mockito.ArgumentCaptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JType;
 
 public class SchemaRuleTest {
 
@@ -122,9 +120,76 @@ public class SchemaRuleTest {
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
+        JType result = rule.apply(NODE_NAME, schemaNode, null, null, schema);
 
         assertThat(result, is(sameInstance(previouslyGeneratedType)));
 
+    }
+
+    @Test
+    public void returnsNullWhenNoAnyOf() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode schemaNode = mapper.createObjectNode();
+        schemaNode.put("type", "string");
+
+        JClassContainer jClass = mock(JClassContainer.class);
+        JType mockJType = mock(JType.class);
+        TypeRule mockTypeRule = givenTypeRule(mockJType);
+
+        Schema schema = new Schema(null, schemaNode, null);
+        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, schema);
+
+        assertThat(result, is(mockTypeRule.apply(NODE_NAME, schemaNode, null, jClass, schema)));
+        verify(mockTypeRule).apply(eq(NODE_NAME), eq(schemaNode), isNull(), eq(jClass), any());
+    }
+
+    @Test
+    public void returnsNullWhenAnyOfHasMultipleNonNullTypes() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode schemaNode = mapper.createObjectNode();
+        ArrayNode anyOfArray = schemaNode.putArray("anyOf");
+
+        anyOfArray.addObject().put("type", "null");
+        anyOfArray.addObject().put("type", "string");
+        anyOfArray.addObject().put("type", "number");
+
+        JDefinedClass jClass = new JCodeModel()._class("com.example.TestClass");
+        JType mockType = mock(JType.class);
+        givenTypeRule(mockType);
+
+        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, new Schema(null, schemaNode, null));
+
+        assertThat(result, is(mockType));
+    }
+
+    @Test
+    public void returnsNullWhenAnyOfHasNoNullType() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode schemaNode = mapper.createObjectNode();
+        ArrayNode anyOfArray = schemaNode.putArray("anyOf");
+
+        ObjectNode stringType = anyOfArray.addObject();
+        stringType.put("type", "string");
+
+        ObjectNode numberType = anyOfArray.addObject();
+        numberType.put("type", "number");
+
+        JDefinedClass jClass = new JCodeModel()._class("com.example.TestClass");
+        JType mockType = mock(JType.class);
+        givenTypeRule(mockType);
+
+        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, new Schema(null, schemaNode, null));
+
+        assertThat(result, is(sameInstance(mockType)));
+    }
+
+    private TypeRule givenTypeRule(JType mockType) {
+        TypeRule mockTypeRule = mock(TypeRule.class);
+        when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
+
+        when(mockTypeRule.apply(anyString(),
+                any(), any(), any(), any()))
+                .thenReturn(mockType);
+        return mockTypeRule;
     }
 }
