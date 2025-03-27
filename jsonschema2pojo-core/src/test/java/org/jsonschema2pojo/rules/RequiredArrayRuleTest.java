@@ -19,11 +19,12 @@ package org.jsonschema2pojo.rules;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.junit.Test;
@@ -74,7 +75,10 @@ public class RequiredArrayRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("fooBar");
 
-        rule.apply("Class", requiredNode, null, jclass, new Schema(null, requiredNode, null));
+        // Proper schema node setup
+        Schema schema = givenSchema(mapper, requiredNode, "fooBar");
+
+        rule.apply("Class", requiredNode, schema.getContent(), jclass, schema);
 
         JDocComment fooBarJavaDoc = jclass.fields().get("fooBar").javadoc();
         JDocComment fooJavaDoc = jclass.fields().get("foo").javadoc();
@@ -91,13 +95,17 @@ public class RequiredArrayRuleTest {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
+        // Java field names use camelCase
         jclass.field(JMod.PRIVATE, jclass.owner().ref(String.class), "fooBar");
         jclass.field(JMod.PRIVATE, jclass.owner().ref(String.class), "foo");
 
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode requiredNode = mapper.createArrayNode().add("foo_bar");
 
-        rule.apply("Class", requiredNode, null, jclass, new Schema(null, requiredNode, null));
+        // Schema properties must use original JSON property names
+        Schema schema = givenSchema(mapper, requiredNode, "foo_bar");
+
+        rule.apply("Class", requiredNode, schema.getContent(), jclass, schema);
 
         Collection<JAnnotationUse> fooBarAnnotations = jclass.fields().get("fooBar").annotations();
         Collection<JAnnotationUse> fooAnnotations = jclass.fields().get("foo").annotations();
@@ -108,13 +116,32 @@ public class RequiredArrayRuleTest {
         assertThat(fooAnnotations.size(), is(0));
     }
 
+    private static Schema givenSchema(ObjectMapper mapper, ArrayNode requiredNode, String propertyName) {
+
+        ObjectNode schemaNode = mapper.createObjectNode();
+        ObjectNode propertiesNode = mapper.createObjectNode();
+        propertiesNode.set(propertyName, mapper.createObjectNode());
+        schemaNode.set("properties", propertiesNode);
+        schemaNode.set("required", requiredNode);
+
+        return new Schema(null, schemaNode, null);
+    }
+
     private void setupRuleFactoryToIncludeJsr303() {
-        GenerationConfig config = mock(GenerationConfig.class);
-        when(config.getPropertyWordDelimiters()).thenReturn(new char[] { '-', ' ', '_' });
+        GenerationConfig config = new DefaultGenerationConfig() {
+            @Override
+            public boolean isIncludeJsr303Annotations() {
+                return true;
+            }
+
+            @Override
+            public boolean isUseJakartaValidation() {
+                return useJakartaValidation;
+            }
+        };
+
         RuleFactory ruleFactory = new RuleFactory();
         ruleFactory.setGenerationConfig(config);
         rule = new RequiredArrayRule(ruleFactory);
-        when(config.isIncludeJsr303Annotations()).thenReturn(true);
-        when(config.isUseJakartaValidation()).thenReturn(useJakartaValidation);
     }
 }

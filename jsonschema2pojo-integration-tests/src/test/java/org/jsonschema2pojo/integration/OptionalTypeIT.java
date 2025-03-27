@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -184,6 +185,50 @@ public class OptionalTypeIT {
 
         assertThat("Enum should contain OPTION_1 and OPTION_2",
                 enumValues, containsInAnyOrder("OPTION_1", "OPTION_2"));
+    }
+
+    @Test
+    public void requiredNullableFieldsHaveCorrectAnnotations() throws Exception {
+        // Fields that should not have @NotNull despite being required
+        Field nullableStringVer1 = nullableClass.getDeclaredField("nullableStringVer1");
+        Field nullableBoolean = nullableClass.getDeclaredField("nullableBoolean");
+
+        // Check Jakarta Validation annotations
+        assertNull("Required but nullable field should not have @NotNull annotation",
+                nullableStringVer1.getAnnotation(NotNull.class));
+        assertNull("Required but nullable field should not have @NotNull annotation",
+                nullableBoolean.getAnnotation(NotNull.class));
+
+        // Check JSR-305 annotations if they're enabled
+        if (nullableStringVer1.isAnnotationPresent(javax.annotation.Nullable.class)) {
+            assertNotNull("Required but nullable field should have @Nullable annotation",
+                    nullableStringVer1.getAnnotation(javax.annotation.Nullable.class));
+            assertNotNull("Required but nullable field should have @Nullable annotation",
+                    nullableBoolean.getAnnotation(javax.annotation.Nullable.class));
+
+            assertNull("Required but nullable field should not have @Nonnull annotation",
+                    nullableStringVer1.getAnnotation(javax.annotation.Nonnull.class));
+            assertNull("Required but nullable field should not have @Nonnull annotation",
+                    nullableBoolean.getAnnotation(javax.annotation.Nonnull.class));
+        }
+
+        // Check non-required nullable fields
+        Field nullableNumber = nullableClass.getDeclaredField("nullableNumber");
+        Field nullableStringVer2 = nullableClass.getDeclaredField("nullableStringVer2");
+
+        assertNull("Optional nullable field should not have @NotNull annotation",
+                nullableNumber.getAnnotation(NotNull.class));
+        assertNull("Optional nullable field should not have @NotNull annotation",
+                nullableStringVer2.getAnnotation(NotNull.class));
+
+        // Test getters for annotation presence
+        Method stringGetter1 = nullableClass.getMethod("getNullableStringVer1");
+        Method booleanGetter = nullableClass.getMethod("getNullableBoolean");
+
+        assertNull("Getter for required but nullable field should not have @NotNull annotation",
+                stringGetter1.getAnnotation(NotNull.class));
+        assertNull("Getter for required but nullable field should not have @NotNull annotation",
+                booleanGetter.getAnnotation(NotNull.class));
     }
 
 }

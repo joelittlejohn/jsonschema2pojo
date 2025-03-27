@@ -76,13 +76,18 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
                 continue;
             }
 
+            Schema propertySchema = ruleFactory.getSchemaStore().createPropertySchema(
+                    schema,
+                    requiredArrayItem,
+                    ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+
             addJavaDoc(field);
 
-            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && !propertySchema.isNullable()) {
                 addNotNullAnnotation(field);
             }
 
-            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()) {
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations() && !propertySchema.isNullable()) {
                 addNonnullAnnotation(field);
             }
 

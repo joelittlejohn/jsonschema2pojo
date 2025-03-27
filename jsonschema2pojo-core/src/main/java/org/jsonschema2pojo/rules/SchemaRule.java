@@ -122,6 +122,9 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
                     entry -> originalNode.set(entry.getKey(), entry.getValue())
             );
 
+            // set the property to nullable
+            schema.setNullable(true);
+
             // Remove "anyOf" from the original node to avoid conflicts, we don't need it anymore
             originalNode.remove("anyOf");
 

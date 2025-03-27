@@ -66,7 +66,7 @@ public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
     @Override
     public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
 
-        if (node.asBoolean()) {
+        if (node.asBoolean() && !schema.isNullable()) {
             generatableType.javadoc().append("\n(Required)");
 
             if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()

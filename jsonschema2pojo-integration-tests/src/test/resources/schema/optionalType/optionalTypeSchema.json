@@ -44,6 +44,7 @@
         }
       ],
       "default": null,
+      "required": true,
       "title": "NullableBoolean"
     },
     "optionalEnum": {
@@ -75,8 +76,6 @@
     }
   },
   "required": [
-    "nullableString",
-    "nullableNumber",
-    "nullableBoolean"
+    "nullableStringVer1"
   ]
 }

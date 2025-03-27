@@ -19,6 +19,7 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import org.jsonschema2pojo.Schema;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,12 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
+        JDocCommentable result = rule.apply(
+                "fooBar",
+                descriptionNode,
+                null,
+                jclass,
+                new Schema(null, null, null));
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(1));
@@ -58,7 +64,28 @@ public class RequiredRuleTest {
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
+        JDocCommentable result = rule.apply(
+                "fooBar",
+                descriptionNode,
+                null,
+                jclass,
+                new Schema(null, null, null));
+
+        assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
+        assertThat(result.javadoc().size(), is(0));
+    }
+
+    @Test
+    public void applySkipsTextWhenNullable() throws JClassAlreadyExistsException {
+
+        JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
+
+        ObjectMapper mapper = new ObjectMapper();
+        BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
+        Schema schema = new Schema(null, null, null);
+        schema.setNullable(true);
+
+        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, schema);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(0));

@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -108,7 +108,7 @@ public class SchemaRuleTest {
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema schema = schemaStore.create(schemaUri, "#/.");
+        Schema schema = schemaStore.create(schemaUri, "#/.", null);
         schema.setJavaType(previouslyGeneratedType);
 
         final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
@@ -127,20 +127,23 @@ public class SchemaRuleTest {
     }
 
     @Test
-    public void returnsNullWhenNoAnyOf() throws Exception {
+    public void returnsNullWhenNoAnyOf() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode schemaNode = mapper.createObjectNode();
-        schemaNode.put("type", "string");
+        ArrayNode anyOfArray = schemaNode.putArray("anyOf");
+
+        anyOfArray.addObject().put("type", "null");
+        anyOfArray.addObject().put("type", "string");
 
         JClassContainer jClass = mock(JClassContainer.class);
         JType mockJType = mock(JType.class);
-        TypeRule mockTypeRule = givenTypeRule(mockJType);
+        givenTypeRule(mockJType);
 
         Schema schema = new Schema(null, schemaNode, null);
         JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, schema);
 
-        assertThat(result, is(mockTypeRule.apply(NODE_NAME, schemaNode, null, jClass, schema)));
-        verify(mockTypeRule).apply(eq(NODE_NAME), eq(schemaNode), isNull(), eq(jClass), any());
+        assertThat(result, is(sameInstance(mockJType)));
+        assertThat(schema.isNullable(), is(true));
     }
 
     @Test
@@ -157,9 +160,10 @@ public class SchemaRuleTest {
         JType mockType = mock(JType.class);
         givenTypeRule(mockType);
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, new Schema(null, schemaNode, null));
+        Schema schema = new Schema(null, schemaNode, null);
+        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, schema);
 
-        assertThat(result, is(mockType));
+        assertThat(result, is(sameInstance(mockType)));
     }
 
     @Test
@@ -178,7 +182,9 @@ public class SchemaRuleTest {
         JType mockType = mock(JType.class);
         givenTypeRule(mockType);
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, new Schema(null, schemaNode, null));
+        Schema schema = new Schema(null, schemaNode, null);
+
+        JType result = rule.apply(NODE_NAME, schemaNode, null, jClass, schema);
 
         assertThat(result, is(sameInstance(mockType)));
     }

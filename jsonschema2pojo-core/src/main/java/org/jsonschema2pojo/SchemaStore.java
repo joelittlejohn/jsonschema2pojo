@@ -148,19 +148,19 @@ public class SchemaStore {
      * Creates or looks up a new property schema using the given schema as a parent.
      *
      * @param parentSchema parent schema to start the resolution with
-     * @param propertyName name of the field to create a schema for
+     * @param schemaPropertyName name of the field to create a schema for
      * @param refFragmentPathDelimiters A string containing any characters
      *                                  that should act as path delimiters when resolving $ref fragments.
      * @return a schema object for the property
      */
-    public Schema createPropertySchema(Schema parentSchema, String propertyName, String refFragmentPathDelimiters) {
+    public Schema createPropertySchema(Schema parentSchema, String schemaPropertyName, String refFragmentPathDelimiters) {
         String pathToProperty;
         if (parentSchema.getId() == null || parentSchema.getId().getFragment() == null) {
-            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(propertyName);
+            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(schemaPropertyName);
         } else {
             pathToProperty =
                     "#" + parentSchema.getId().getFragment() + "/properties/" +
-                            JsonPointerUtils.encodeReferenceToken(propertyName);
+                            JsonPointerUtils.encodeReferenceToken(schemaPropertyName);
         }
 
         return create(parentSchema, pathToProperty, refFragmentPathDelimiters);
