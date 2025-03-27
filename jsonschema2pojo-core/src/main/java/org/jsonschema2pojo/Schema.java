@@ -30,6 +30,7 @@ public class Schema {
     private final JsonNode content;
     private final Schema parent;
     private JType javaType;
+    private boolean nullable = false;
 
     public Schema(URI id, JsonNode content, Schema parent) {
         this.id = id;
@@ -75,4 +76,11 @@ public class Schema {
         return javaType != null;
     }
 
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
+    }
 }

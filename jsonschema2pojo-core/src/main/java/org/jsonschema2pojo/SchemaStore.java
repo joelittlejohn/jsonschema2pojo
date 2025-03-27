@@ -48,13 +48,13 @@ public class SchemaStore {
      * contents of the given ID as a URL. If a schema with the given ID is
      * already known, then a reference to the original schema will be returned.
      *
-     * @param id
-     *            the id of the schema being created
+     * @param id                        the id of the schema being created
      * @param refFragmentPathDelimiters A string containing any characters
      *                                  that should act as path delimiters when resolving $ref fragments.
+     * @param parent
      * @return a schema object containing the contents of the given path
      */
-    public synchronized Schema create(URI id, String refFragmentPathDelimiters) {
+    public synchronized Schema create(URI id, String refFragmentPathDelimiters, Schema parent) {
 
         URI normalizedId = id.normalize();
 
@@ -64,13 +64,13 @@ public class SchemaStore {
             if (!schemas.containsKey(baseId)) {
                 logger.debug("Reading schema: " + baseId);
                 final JsonNode baseContent = contentResolver.resolve(baseId);
-                schemas.put(baseId, new Schema(baseId, baseContent, null));
+                schemas.put(baseId, new Schema(baseId, baseContent, parent));
             }
 
             final Schema baseSchema = schemas.get(baseId);
             if (normalizedId.toString().contains("#")) {
                 JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
-                schemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema));
+                schemas.put(normalizedId, new Schema(normalizedId, childContent, parent != null ? parent : baseSchema));
             }
         }
 
@@ -141,8 +141,29 @@ public class SchemaStore {
             }
         }
 
-        return create(id, refFragmentPathDelimiters);
+        return create(id, refFragmentPathDelimiters, parent);
+    }
 
+    /**
+     * Creates or looks up a new property schema using the given schema as a parent.
+     *
+     * @param parentSchema parent schema to start the resolution with
+     * @param propertyName name of the field to create a schema for
+     * @param refFragmentPathDelimiters A string containing any characters
+     *                                  that should act as path delimiters when resolving $ref fragments.
+     * @return a schema object for the property
+     */
+    public Schema createPropertySchema(Schema parentSchema, String propertyName, String refFragmentPathDelimiters) {
+        String pathToProperty;
+        if (parentSchema.getId() == null || parentSchema.getId().getFragment() == null) {
+            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(propertyName);
+        } else {
+            pathToProperty =
+                    "#" + parentSchema.getId().getFragment() + "/properties/" +
+                            JsonPointerUtils.encodeReferenceToken(propertyName);
+        }
+
+        return create(parentSchema, pathToProperty, refFragmentPathDelimiters);
     }
 
     protected boolean selfReferenceWithoutParentFile(Schema parent, String path) {

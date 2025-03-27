@@ -69,7 +69,7 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
 
         // Since NotRequiredRule is executed for all fields that do not have "required" present,
         // we need to recognize whether the field is part of the RequiredArrayRule.
-        JsonNode requiredArray = schema.getContent().get("required");
+        JsonNode requiredArray = schema.getParent().getContent().get("required");
 
         if (requiredArray != null) {
             for (Iterator<JsonNode> iterator = requiredArray.elements(); iterator.hasNext(); ) {
