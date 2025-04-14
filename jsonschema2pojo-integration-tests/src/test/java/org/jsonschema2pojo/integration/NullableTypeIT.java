@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 
-public class OptionalTypeIT {
+public class NullableTypeIT {
 
     @ClassRule
     public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
@@ -50,7 +50,7 @@ public class OptionalTypeIT {
 
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/optionalType/optionalTypeSchema.json",
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/nullableType/nullableTypeSchema.json",
                 "com.example",
                 config("useJakartaValidation", true,
                         "includeJsr303Annotations", true,

@@ -82,9 +82,9 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
 
         // Add this block to handle optional type (anyOf with null type)
-        JType optionalType = resolveOptionalType(nodeName, schemaNode, parent, generatableType, schema);
-        if (optionalType != null) {
-            return optionalType;
+        JType nullableType = resolveNullableType(nodeName, schemaNode, parent, generatableType, schema);
+        if (nullableType != null) {
+            return nullableType;
         }
 
         JType javaType;
@@ -98,7 +98,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         return javaType;
     }
 
-    private JType resolveOptionalType(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
+    private JType resolveNullableType(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
         if (!node.has("anyOf") || !node.get("anyOf").isArray()) {
             return null;
         }
