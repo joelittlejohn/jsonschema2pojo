@@ -57,7 +57,7 @@ public class NullableTypeIT {
                         "useBigDecimals", true)
         );
 
-        nullableClass = classLoader.loadClass("com.example.OptionalTypeSchema");
+        nullableClass = classLoader.loadClass("com.example.NullableTypeSchema");
 
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
