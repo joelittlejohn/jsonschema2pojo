@@ -64,9 +64,16 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
-            final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
+            final String refValue = schemaNode.get("$ref").asText();
+            if ("#".equals(refValue)) {
+                // Handle self-referencing schema to prevent infinite recursion
+                schema.setJavaTypeIfEmpty(ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema));
+                return schema.getJavaType();
+            }
 
-            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            final String nameFromRef = nameFromRef(refValue);
+
+            schema = ruleFactory.getSchemaStore().create(schema, refValue, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
             schemaNode = schema.getContent();
 
             if (schema.isGenerated()) {
