@@ -47,6 +47,9 @@ public class IncludeGeneratedAnnotationIT {
 
         File sourceJava11 = schemaRule.generate(SCHEMA_PATH, "com.example", config("targetVersion", "11"));
         assertThat(sourceJava11, containsText("javax.annotation.processing.Generated"));
+
+        File sourceJava17 = schemaRule.generate(SCHEMA_PATH, "com.example", config("targetVersion", "17", "useJakartaValidation", true));
+        assertThat(sourceJava17, containsText("jakarta.annotation.Generated"));
     }
 
     @Test

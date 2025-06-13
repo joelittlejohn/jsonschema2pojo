@@ -26,6 +26,7 @@ public class AnnotationHelper {
 
     private static final String JAVA_8_GENERATED = "javax.annotation.Generated";
     private static final String JAVA_9_GENERATED = "javax.annotation.processing.Generated";
+	private static final String JAVA_9_JAKARTA_GENERATED = "jakarta.annotation.Generated";
     private static final String GENERATOR_NAME = "jsonschema2pojo";
 
     private static boolean tryToAnnotate(JDefinedClass jclass, String annotationClassName) {
@@ -43,7 +44,12 @@ public class AnnotationHelper {
 
     public static void addGeneratedAnnotation(GenerationConfig config, JDefinedClass jclass) {
         if (JavaVersion.is9OrLater(config.getTargetVersion())) {
-            tryToAnnotate(jclass, JAVA_9_GENERATED);
+			if (config.isUseJakartaValidation()) {
+				tryToAnnotate(jclass, JAVA_9_JAKARTA_GENERATED);
+			}
+			else {
+				tryToAnnotate(jclass, JAVA_9_GENERATED);
+			}
         } else {
             tryToAnnotate(jclass, JAVA_8_GENERATED);
         }
