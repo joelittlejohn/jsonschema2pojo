@@ -52,6 +52,14 @@ public interface GenerationConfig {
    */
   boolean isIncludeTypeInfo();
 
+  /**
+   * Gets the 'useNestedClasses' configuration option.
+   *
+   * @return whether to use static nested classes instead of top-level ones when generating types for complex inline
+   *         subschemas
+   */
+  boolean isUseNestedClasses();
+
     /**
      * Gets the 'includeConstructorPropertiesAnnotation' configuration option.
      *

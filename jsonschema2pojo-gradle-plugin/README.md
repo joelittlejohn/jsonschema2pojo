@@ -291,6 +291,12 @@ jsonSchema2Pojo {
   // deserializationClassProperty in the schema
   includeJsonTypeInfoAnnotation = false
 
+  // Whether to use static nested classes instead of top-level ones when generating types of complex inline subschemas.
+  // By default, complex types defined inline within a JSON schema are generated as top-level classes. This
+  // property allows to override the default behaviour so that complex types defined inline are generated
+  // as static nested classes of the main schema class.
+  useNestedClasses = false
+
   // Whether to use java.util.Optional for getters on properties that are not required
   useOptionalForGetters = false
 

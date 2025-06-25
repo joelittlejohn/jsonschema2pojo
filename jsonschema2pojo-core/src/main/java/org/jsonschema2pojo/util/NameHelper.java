@@ -16,6 +16,10 @@
 
 package org.jsonschema2pojo.util;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
+
 import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -26,9 +30,8 @@ import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
 public class NameHelper {
@@ -258,11 +261,11 @@ public class NameHelper {
         return "Builder";
     }
 
-    public String getUniqueClassName(String nodeName, JsonNode node, JPackage _package) {
-        return makeUnique(getClassName(nodeName, node, _package), _package);
+    public String getUniqueClassName(String nodeName, JsonNode node, JClassContainer container) {
+        return makeUnique(getClassName(nodeName, node, container), container);
     }
 
-    public String getClassName(String nodeName, JsonNode node, JPackage _package) {
+    public String getClassName(String nodeName, JsonNode node, JClassContainer container) {
         String prefix = generationConfig.getClassNamePrefix();
         String suffix = generationConfig.getClassNameSuffix();
         String fieldName = getClassName(nodeName, node);
@@ -286,13 +289,12 @@ public class NameHelper {
         return returnString;
     }
 
-    private String makeUnique(String className, JPackage _package) {
-        try {
-            JDefinedClass _class = _package._class(className);
-            _package.remove(_class);
-            return className;
-        } catch (JClassAlreadyExistsException e) {
-            return makeUnique(MakeUniqueClassName.makeUnique(className), _package);
+    private String makeUnique(String className, JClassContainer container) {
+        if (StreamSupport.stream(Spliterators.spliteratorUnknownSize(container.classes(), Spliterator.DISTINCT), false)
+                .anyMatch(x -> x.name().equals(className))) {
+            return makeUnique(MakeUniqueClassName.makeUnique(className), container);
         }
+
+        return className;
     }
 }

@@ -181,6 +181,17 @@
     <td align="center" valign="top">No (default <code>false</code>)</td>
   </tr>
   <tr>
+    <td valign="top">useNestedClasses</td>
+    <td valign="top">
+      <p>Whether to use static nested classes instead of top-level ones when generating types for complex inline
+        subschemas.</p>
+      <p>By default, complex types defined inline within a JSON schema are generated as top-level classes. This property
+        allows to override the default behaviour so that complex types defined inline are generated as static nested
+        classes of the main schema class.</p>
+    </td>
+    <td align="center" valign="top">No (default <code>false</code>)</td>
+  </tr>
+  <tr>
     <td valign="top">useInnerClassBuilders</td>
     <td valign="top">Determines whether builders will be chainable setters or embedded classes when
       generateBuilders is used.

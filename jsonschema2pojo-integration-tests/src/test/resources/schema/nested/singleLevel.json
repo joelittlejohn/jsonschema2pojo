@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "nestedOne": {
+      "type": "object",
+      "properties": {
+        "bar": {
+          "type": "boolean"
+        }
+      }
+    },
+    "nestedTwo": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

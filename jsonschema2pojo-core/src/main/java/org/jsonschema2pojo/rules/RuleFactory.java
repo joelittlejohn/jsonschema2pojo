@@ -135,7 +135,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "object" declaration.
      */
-    public Rule<JPackage, JType> getObjectRule() {
+    public Rule<JClassContainer, JType> getObjectRule() {
         return new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
     }
 
