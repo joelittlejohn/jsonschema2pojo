@@ -119,6 +119,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), node, field, schema);
         }
 
+        ruleFactory.getConstRule(jclass).apply(nodeName, node.get("const"), node, field, schema);
+
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), node, field, schema);
 
         ruleFactory.getMinimumMaximumRule().apply(nodeName, node, parent, field, schema);
