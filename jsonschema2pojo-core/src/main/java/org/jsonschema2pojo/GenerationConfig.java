@@ -417,6 +417,18 @@ public interface GenerationConfig {
   boolean isIncludeCopyConstructor();
 
   /**
+   * Gets the 'includeNoArgsConstructor' configuration option. This property works in collaboration with the {@link
+   * #isIncludeConstructors()} configuration option, and will have no effect if {@link #isIncludeConstructors()}
+   * is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+   * whether the resulting object should include the default constructor. This option is compatible with any
+   * of the other constructor related options, but will be ignored if no other constructor is to be generated -
+   * this is because java will always infer the default constructor if no other constructors are present.
+   *
+   * @return whether the resulting object should not include the default a constructor.
+   */
+  boolean isIncludeNoArgsConstructor();
+
+  /**
    * Gets the 'includeAdditionalProperties' configuration option.
    *
    * @return Whether to allow 'additional properties' support in objects.

@@ -328,6 +328,12 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>true</code>
      */
     @Override
+    public boolean isIncludeNoArgsConstructor() { return true; }
+
+    /**
+     * @return <code>true</code>
+     */
+    @Override
     public boolean isIncludeAdditionalProperties() {
         return true;
     }
