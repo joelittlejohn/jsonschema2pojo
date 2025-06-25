@@ -21,6 +21,8 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.Assert.*;
 
+import jakarta.validation.constraints.Size;
+
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -61,7 +63,10 @@ public class MediaIT {
     @BeforeClass
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example",
+            config("customAnnotator", QuotedPrintableAnnotator.class.getName(),
+                "includeJsr303Annotations", true,
+                "useJakartaValidation", true));
 
         classWithMediaProperties = resultsClassLoader.loadClass("com.example.MediaProperties");
     }
@@ -169,6 +174,20 @@ public class MediaIT {
                         equalTo(new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00})));
     }
 
+    @Test
+    public void shouldCreateCorrectValidationAnnotations() throws SecurityException, NoSuchFieldException {
+      Field minimalField = classWithMediaProperties.getDeclaredField("minimalBinary");
+      Field annotatedField = classWithMediaProperties.getDeclaredField("base64WithMinAndMaxLength");
+
+      assertThat("any minimal binary field has return type byte[]", minimalField.getType(), equalToType(BYTE_ARRAY));
+      assertThat("any minimal binary field has no @Size annotation", minimalField.getAnnotation(Size.class), nullValue());
+      
+      assertThat("the annotated binary field has type byte[]", annotatedField.getType(), equalToType(BYTE_ARRAY));
+      assertThat("the annotated binary field has annotation @Size", annotatedField.getAnnotation(Size.class), notNullValue());
+      assertThat("the annotated binary field has annotation @Size with min=1", annotatedField.getAnnotation(Size.class).min(), equalTo(1));
+      assertThat("the annotated binary field has annotation @Size with max=100", annotatedField.getAnnotation(Size.class).max(), equalTo(100));
+    }
+    
     @Test
     public void shouldRoundTripBase64Field() throws Exception {
         roundTripAssertions(
