@@ -20,7 +20,12 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.GenerationException;
@@ -76,6 +81,12 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
         }
 
+        // Add this block to handle optional type (anyOf with null type)
+        JType nullableType = resolveNullableType(nodeName, schemaNode, parent, generatableType, schema);
+        if (nullableType != null) {
+            return nullableType;
+        }
+
         JType javaType;
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
@@ -85,6 +96,54 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         schema.setJavaTypeIfEmpty(javaType);
 
         return javaType;
+    }
+
+    private JType resolveNullableType(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
+        if (!node.has("anyOf") || !node.get("anyOf").isArray()) {
+            return null;
+        }
+
+        ArrayNode anyOfTypes = (ArrayNode) node.get("anyOf");
+
+        List<JsonNode> nonNullTypes = StreamSupport.stream(anyOfTypes.spliterator(), false)
+                .filter(typeOption -> !isNullType(typeOption))
+                .collect(Collectors.toList());
+
+        boolean hasNullType = anyOfTypes.size() != nonNullTypes.size();
+
+        if (hasNullType && nonNullTypes.size() == 1) {
+            JsonNode nonNullTypeNode = nonNullTypes.get(0).deepCopy();
+
+            ObjectNode nonNullObjectNode = (ObjectNode) nonNullTypeNode;
+            ObjectNode originalNode = (ObjectNode) node;
+
+            // Copy all fields from the non-null type node to the original node
+            nonNullObjectNode.fields().forEachRemaining(
+                    entry -> originalNode.set(entry.getKey(), entry.getValue())
+            );
+
+            // set the property to nullable
+            schema.setNullable(true);
+
+            // Remove "anyOf" from the original node to avoid conflicts, we don't need it anymore
+            originalNode.remove("anyOf");
+
+            // resolve type normally
+            JType resolvedType = apply(nodeName, originalNode, parent, jClassContainer, schema);
+
+            // to make sure we always return a nullable type
+            return resolvedType.boxify();
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the given schema node represents a null type.
+     */
+    private boolean isNullType(JsonNode node) {
+        return node.has("type") &&
+                "null".equals(node.get("type").asText());
     }
 
     private String nameFromRef(String ref) {

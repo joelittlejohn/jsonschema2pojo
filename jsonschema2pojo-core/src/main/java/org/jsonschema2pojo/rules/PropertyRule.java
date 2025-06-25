@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -74,14 +73,11 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
         }
 
-        String pathToProperty;
-        if (schema.getId() == null || schema.getId().getFragment() == null) {
-            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
-        } else {
-            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
-        }
+        Schema propertySchema = ruleFactory.getSchemaStore().createPropertySchema(
+                schema,
+                nodeName,
+                ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
 
-        Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
         JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
         propertySchema.setJavaTypeIfEmpty(propertyType);
 
@@ -93,22 +89,25 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
         JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
 
-        propertyAnnotations(nodeName, node, schema, field);
+        propertyAnnotations(nodeName, node, propertySchema, field);
 
         formatAnnotation(field, jclass, node);
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
+            JMethod getter = addGetter(jclass, field, nodeName, node,
+                    isRequired(nodeName, node, propertySchema),
+                    useOptional(nodeName, node, propertySchema));
+
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
-            propertyAnnotations(nodeName, node, schema, getter);
+            propertyAnnotations(nodeName, node, propertySchema, getter);
         }
 
         if (isIncludeSetters) {
             JMethod setter = addSetter(jclass, field, nodeName, node);
             ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
-            propertyAnnotations(nodeName, node, schema, setter);
+            propertyAnnotations(nodeName, node, propertySchema, setter);
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
@@ -116,21 +115,21 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         if (node.has("pattern")) {
-            ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), node, field, schema);
+            ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), node, field, propertySchema);
         }
 
-        ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), node, field, schema);
+        ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), node, field, propertySchema);
 
-        ruleFactory.getMinimumMaximumRule().apply(nodeName, node, parent, field, schema);
+        ruleFactory.getMinimumMaximumRule().apply(nodeName, node, parent, field, propertySchema);
 
-        ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, parent, field, schema);
+        ruleFactory.getMinItemsMaxItemsRule().apply(nodeName, node, parent, field, propertySchema);
 
-        ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, parent, field, schema);
+        ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, parent, field, propertySchema);
 
-        ruleFactory.getDigitsRule().apply(nodeName, node, parent, field, schema);
+        ruleFactory.getDigitsRule().apply(nodeName, node, parent, field, propertySchema);
 
         if (isObject(node) || isArray(node)) {
-            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
+            ruleFactory.getValidRule().apply(nodeName, node, parent, field, propertySchema);
         }
 
         return jclass;
@@ -268,7 +267,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JMethod result = null;
-        if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+        if (ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
             result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
         } else {
             result = addLegacyBuilder(c, field, jsonPropertyName, node);
@@ -287,7 +286,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return builder;
     }
 
-    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
         JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), getBuilderName(jsonPropertyName, node));

@@ -27,6 +27,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.sun.codemodel.JDefinedClass;
@@ -39,7 +40,7 @@ public class SchemaStoreTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = new SchemaStore().create(schemaUri, "#/.");
+        Schema schema = new SchemaStore().create(schemaUri, "#/.", null);
 
         assertThat(schema, is(notNullValue()));
         assertThat(schema.getId(), is(equalTo(schemaUri)));
@@ -54,7 +55,7 @@ public class SchemaStoreTest {
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
+        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.", null);
         Schema enumSchema = schemaStore.create(addressSchema, "enum.json", "#/.");
 
         String expectedUri = removeEnd(addressSchemaUri.toString(), "address.json") + "enum.json";
@@ -78,8 +79,8 @@ public class SchemaStoreTest {
 
         SchemaStore schemaStore = new SchemaStore();
 
-        Schema schemaWithRelativeSegment = schemaStore.create(relativePath.toURI(), "#/.");
-        Schema schemaWithoutRelativeSegment = schemaStore.create(nonRelativePath.toURI(), "#/.");
+        Schema schemaWithRelativeSegment = schemaStore.create(relativePath.toURI(), "#/.", null);
+        Schema schemaWithoutRelativeSegment = schemaStore.create(nonRelativePath.toURI(), "#/.", null);
 
         //Both schema objects should have the same Id value since their URI's point to the same resource
         assertThat(schemaWithoutRelativeSegment.getId(), is(schemaWithRelativeSegment.getId()));
@@ -92,7 +93,7 @@ public class SchemaStoreTest {
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(schemaUri, "#/.");
+        Schema addressSchema = schemaStore.create(schemaUri, "#/.", null);
         Schema selfRefSchema = schemaStore.create(addressSchema, "#", "#/.");
 
         assertThat(addressSchema, is(sameInstance(selfRefSchema)));
@@ -105,7 +106,7 @@ public class SchemaStoreTest {
         URI schemaUri = getClass().getResource("/schema/embeddedRef.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema topSchema = schemaStore.create(schemaUri, "#/.");
+        Schema topSchema = schemaStore.create(schemaUri, "#/.", null);
         Schema embeddedSchema = schemaStore.create(topSchema, "#/definitions/embedded", "#/.");
         Schema selfRefSchema = schemaStore.create(embeddedSchema, "#", "#/.");
 
@@ -119,7 +120,7 @@ public class SchemaStoreTest {
         URI addressSchemaUri = getClass().getResource("/schema/address.json").toURI();
 
         SchemaStore schemaStore = new SchemaStore();
-        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
+        Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.", null);
         Schema innerSchema = schemaStore.create(addressSchema, "#/properties/post-office-box", "#/.");
 
         String expectedUri = addressSchemaUri.toString() + "#/properties/post-office-box";
@@ -138,9 +139,9 @@ public class SchemaStoreTest {
 
         SchemaStore schemaStore = new SchemaStore();
 
-        Schema schema1 = schemaStore.create(schemaUri, "#/.");
+        Schema schema1 = schemaStore.create(schemaUri, "#/.", null);
 
-        Schema schema2 = schemaStore.create(schemaUri, "#/.");
+        Schema schema2 = schemaStore.create(schemaUri, "#/.", null);
 
         assertThat(schema1, is(sameInstance(schema2)));
 
@@ -154,7 +155,7 @@ public class SchemaStoreTest {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
-        Schema schema = new SchemaStore().create(schemaUri, "#/.");
+        Schema schema = new SchemaStore().create(schemaUri, "#/.", null);
 
         schema.setJavaTypeIfEmpty(firstClass);
         assertThat(schema.getJavaType(), is(equalTo(firstClass)));
@@ -162,6 +163,21 @@ public class SchemaStoreTest {
         schema.setJavaTypeIfEmpty(secondClass);
         assertThat(schema.getJavaType(), is(not(equalTo(secondClass))));
 
+    }
+
+    @Test
+    public void createPropertySchemaWithIdNoFragment() throws Exception {
+        // Setup
+        SchemaStore schemaStore = new SchemaStore();
+        URI schemaUri = getClass().getResource("/schema/address.json").toURI();
+        Schema schema = new SchemaStore().create(schemaUri, "#/.", null);
+
+        // Test
+        Schema propertySchema = schemaStore.createPropertySchema(schema, "locality", "#/.");
+
+        // Verify
+        assertThat(propertySchema.getId().toString(),
+                Matchers.endsWith("schema/address.json#/properties/locality"));
     }
 
 }

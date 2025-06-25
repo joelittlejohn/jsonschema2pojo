@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "title": "NullableSchema",
+  "description": "Schema to test nullable types",
+  "properties": {
+    "nullableStringVer1": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "NullableString"
+    },
+    "nullableStringVer2": {
+      "type": ["string", "null"],
+      "title": "NullableStringWithDefault"
+    },
+    "nullableNumber": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 12
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "NullableNumber"
+    },
+    "nullableBoolean": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "required": true,
+      "title": "NullableBoolean"
+    },
+    "optionalEnum": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": ["OPTION_1", "OPTION_2"]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "OptionalEnum"
+    },
+    "unionTypeField": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "default": null,
+      "title": "UnionTypeField"
+    }
+  },
+  "required": [
+    "nullableStringVer1"
+  ]
+}
