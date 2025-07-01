@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

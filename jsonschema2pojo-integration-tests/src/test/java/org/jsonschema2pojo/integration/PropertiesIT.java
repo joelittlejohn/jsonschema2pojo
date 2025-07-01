@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -167,10 +167,10 @@ public class PropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("property1"));
-        assertNotNull(generatedType.getDeclaredField("propertyTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyThreeWithSpace"));
-        assertNotNull(generatedType.getDeclaredField("propertyFour"));
+        assertThat(generatedType.getDeclaredField("property1"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyThreeWithSpace"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyFour"), is(notNullValue()));
 
         assertThat(jsonified.has("Property1"), is(true));
         assertThat(jsonified.has("PropertyTwo"), is(true));
@@ -192,10 +192,10 @@ public class PropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("propertyOne"));
-        assertNotNull(generatedType.getDeclaredField("propertyOneTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyOneTwoThree"));
-        assertNotNull(generatedType.getDeclaredField("pROPERTYONETWOTHREEFour"));
+        assertThat(generatedType.getDeclaredField("propertyOne"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyOneTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyOneTwoThree"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("pROPERTYONETWOTHREEFour"), is(notNullValue()));
 
         assertThat(jsonified.has("PROPERTY_ONE"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO"), is(true));
@@ -208,10 +208,10 @@ public class PropertiesIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithSpecialCharacters.json", "com.example");
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesWithSpecialCharacters");
 
-        assertNotNull(generatedType.getDeclaredMethod("getVersv"));
-        assertNotNull(generatedType.getDeclaredMethod("getFooBar"));
-        assertNotNull(generatedType.getDeclaredMethod("get$RfcNumber"));
-        assertNotNull(generatedType.getDeclaredMethod("getOrgHispDhisCommonFileTypeValueOptions"));
-        assertNotNull(generatedType.getDeclaredMethod("getGood"));
+        assertThat(generatedType.getDeclaredMethod("getVersv"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getFooBar"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("get$RfcNumber"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getOrgHispDhisCommonFileTypeValueOptions"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getGood"), is(notNullValue()));
     }
 }

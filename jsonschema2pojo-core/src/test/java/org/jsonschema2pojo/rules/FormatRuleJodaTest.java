@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collection;
@@ -42,7 +42,7 @@ import com.sun.codemodel.JType;
 @RunWith(Parameterized.class)
 public class FormatRuleJodaTest {
 
-    private GenerationConfig config = mock(GenerationConfig.class);
+    private final GenerationConfig config = mock(GenerationConfig.class);
     private FormatRule rule;
 
     private final String formatValue;

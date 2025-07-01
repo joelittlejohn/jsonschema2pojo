@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collection;
@@ -64,7 +64,7 @@ public class FormatRuleArraysTest {
     public void useArraysWithCustomTypeMapping() {
         JType result = rule.apply("fooBar", TextNode.valueOf("test"), null, new JCodeModel().ref(Object.class), null);
 
-        assertTrue(result.isArray());
+        assertThat(result.isArray(), is(true));
 
         JType expectedJType = new JCodeModel().ref(expectedType);
 

@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration;
 
 import static java.lang.String.format;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;

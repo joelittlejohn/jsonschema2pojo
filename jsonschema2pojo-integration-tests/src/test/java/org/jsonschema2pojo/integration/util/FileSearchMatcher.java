@@ -38,7 +38,7 @@ public class FileSearchMatcher extends BaseMatcher<File> {
      * Create a new matcher with the given search text.
      * 
      * @param searchText
-     *            text that the matched file should contains
+     *            text that the matched file should contain
      */
     public FileSearchMatcher(String searchText) {
         this.searchText = searchText;
@@ -63,11 +63,9 @@ public class FileSearchMatcher extends BaseMatcher<File> {
     }
 
     private boolean isSearchTextPresentInLinesOfFile(File f) {
-        LineIterator it = null;
-        try {
-            it = FileUtils.lineIterator(f, "UTF-8");
+        try (LineIterator it = FileUtils.lineIterator(f, "UTF-8")) {
             while (it.hasNext()) {
-                String line = it.nextLine();
+                String line = it.next();
                 if (line.contains(searchText)) {
                     return true;
                 }
@@ -75,8 +73,6 @@ public class FileSearchMatcher extends BaseMatcher<File> {
             return false;
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            LineIterator.closeQuietly(it);
         }
     }
 

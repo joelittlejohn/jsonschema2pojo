@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import org.jsonschema2pojo.Annotator;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import com.beust.jcommander.ParameterException;
 
 public class ClassConverterTest {
 
-    private ClassConverter converter = new ClassConverter("--custom-annotator");
+    private final ClassConverter converter = new ClassConverter("--custom-annotator");
 
     @Test
     @SuppressWarnings("unchecked")

@@ -17,8 +17,8 @@
 package org.jsonschema2pojo;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.net.URI;
 
@@ -30,7 +30,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 /**
-  * @author {@link "https://github.com/s13o" "s13o"}
+  * @author <a href="https://github.com/s13o">s13o</a>
   * @since 3/17/2017
   */
 public class ContentResolverNetworkTest {
@@ -52,7 +52,7 @@ public class ContentResolverNetworkTest {
         server.stop();
     }
 
-    private ContentResolver resolver = new ContentResolver();
+    private final ContentResolver resolver = new ContentResolver();
     
     @Test(expected=IllegalArgumentException.class)
     public void brokenLinkCausesIllegalArgumentException() {

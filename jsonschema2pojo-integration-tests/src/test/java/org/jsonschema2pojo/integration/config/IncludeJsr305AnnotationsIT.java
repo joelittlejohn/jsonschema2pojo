@@ -17,9 +17,10 @@
 package org.jsonschema2pojo.integration.config;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -148,16 +149,16 @@ public class IncludeJsr305AnnotationsIT {
         Nonnull nonnullAnnotation = nonnullField.getAnnotation(Nonnull.class);
         Nullable nullableAnnotation = nonnullField.getAnnotation(Nullable.class);
 
-        assertNotNull("Expected @Nonnull annotation is missing.", nonnullAnnotation);
-        assertNull("Unexpected @Nullable annotation found.", nullableAnnotation);
+        assertThat("Expected @Nonnull annotation is missing.", nonnullAnnotation, is(notNullValue()));
+        assertThat("Unexpected @Nullable annotation found.", nullableAnnotation, is(nullValue()));
     }
 
     private static void validateNullableField(Field nullableField) {
         Nonnull nonnullAnnotation = nullableField.getAnnotation(Nonnull.class);
         Nullable nullableAnnotation = nullableField.getAnnotation(Nullable.class);
 
-        assertNull("Unexpected @Nonnull annotation found.", nonnullAnnotation);
-        assertNotNull("Expected @Nullable annotation is missing.", nullableAnnotation);
+        assertThat("Unexpected @Nonnull annotation found.", nonnullAnnotation, is(nullValue()));
+        assertThat("Expected @Nullable annotation is missing.", nullableAnnotation, is(notNullValue()));
     }
 
     private static Matcher<File> containsText(String searchText) {

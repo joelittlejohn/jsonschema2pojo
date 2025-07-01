@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.AnnotationStyle.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class AnnotatorFactoryTest {
 
-    private AnnotatorFactory factory = new AnnotatorFactory(new DefaultGenerationConfig());
+    private final AnnotatorFactory factory = new AnnotatorFactory(new DefaultGenerationConfig());
 
     @Test
     public void canCreateCorrectAnnotatorFromAnnotationStyle() {
@@ -67,10 +67,13 @@ public class AnnotatorFactoryTest {
      * invoke as if invoked through typical configuration.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void attemptToCreateAnnotatorFromIncompatibleClassCausesIllegalArgumentException() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-
-        Method factoryMethod = AnnotatorFactory.class.getMethod("getAnnotator", Class.class);
-        factoryMethod.invoke(String.class);
+    public void attemptToCreateAnnotatorFromIncompatibleClassCausesIllegalArgumentException() throws Throwable {
+        try {
+            Method factoryMethod = AnnotatorFactory.class.getMethod("getAnnotator", Class.class);
+            factoryMethod.invoke(factory, String.class);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
 
     }
 

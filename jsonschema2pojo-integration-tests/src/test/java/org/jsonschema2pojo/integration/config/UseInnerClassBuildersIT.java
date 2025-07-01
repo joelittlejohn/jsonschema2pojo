@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -67,7 +67,7 @@ public class UseInnerClassBuildersIT {
         .map(Method::getName)
         .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
 
-    assertTrue("Generated class missing any builders at all", containsWithMethod);
+    assertThat("Generated class missing any builders at all", containsWithMethod, is(true));
 
     resultsClassLoader.loadClass("com.example.Child.ChildBuilder");
   }
@@ -85,9 +85,9 @@ public class UseInnerClassBuildersIT {
         .map(Method::getName)
         .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
 
-    assertFalse("Generated contains unexpected builders", containsWithMethod);
+    assertThat("Generated contains unexpected builders", containsWithMethod, is(false));
 
-    assertNotNull(resultsClassLoader.loadClass("com.example.Child$ChildBuilder"));
+    assertThat(resultsClassLoader.loadClass("com.example.Child$ChildBuilder"), is(notNullValue()));
   }
 
   /**
@@ -104,9 +104,9 @@ public class UseInnerClassBuildersIT {
     Method buildMethod = builderClass.getMethod("build");
 
     Object builder = builderClass.newInstance();
-    assertNotNull(builder);
+    assertThat(builder, is(notNullValue()));
 
-    assertNotNull(buildMethod.invoke(builder));
+    assertThat(buildMethod.invoke(builder), is(notNullValue()));
   }
 
   /**
@@ -140,9 +140,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(childProperty, is(equalTo(getChildProperty.invoke(childObject))));
+    assertThat(parentProperty, is(equalTo(getParentProperty.invoke(childObject))));
+    assertThat(sharedProperty, is(equalTo(getSharedProperty.invoke(childObject))));
   }
 
   /**
@@ -154,10 +154,10 @@ public class UseInnerClassBuildersIT {
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
     Class<?> builderClass = resultsClassLoader.loadClass("com.example.Child$ChildBuilder");
-    assertEquals(1, builderClass.getConstructors().length);
+    assertThat(builderClass.getConstructors().length, is(equalTo(1)));
 
     Constructor<?> constructor = builderClass.getConstructors()[0];
-    assertEquals(0, constructor.getParameterCount());
+    assertThat(constructor.getParameterCount(), is(equalTo(0)));
   }
 
   /**
@@ -185,9 +185,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 
   /**
@@ -220,9 +220,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 
   /**
@@ -261,9 +261,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 
   /**
@@ -299,8 +299,8 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(childProperty, is(equalTo(getChildProperty.invoke(childObject))));
+    assertThat(parentProperty, is(equalTo(getParentProperty.invoke(childObject))));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 }

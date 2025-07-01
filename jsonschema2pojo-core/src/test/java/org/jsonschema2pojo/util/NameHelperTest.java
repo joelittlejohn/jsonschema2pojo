@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
@@ -64,16 +64,16 @@ public class NameHelperTest {
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
 
         // TITLE_ATTRIBUTE
-        NameHelper nameHelper = helper(true);
+        NameHelper nameHelper = helper();
         assertThat(nameHelper.getClassName("foo", node("title", "bar")), is("Bar"));
         assertThat(nameHelper.getClassName("foo", node("title", "i am bar")), is("IAmBar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar")), is("bar"));
         assertThat(nameHelper.getClassName("foo", node("javaName", "bar").put("title", "abc")), is("bar"));
     }
 
-    private NameHelper helper(boolean useTitleAsClassname) {
+    private NameHelper helper() {
         GenerationConfig config = mock(GenerationConfig.class);
-        when(config.isUseTitleAsClassname()).thenReturn(useTitleAsClassname);
+        when(config.isUseTitleAsClassname()).thenReturn(true);
         return new NameHelper(config);
     }
 

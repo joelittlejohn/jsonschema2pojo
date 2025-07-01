@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.net.URL;
 
@@ -27,7 +27,7 @@ import com.beust.jcommander.ParameterException;
 
 public class UrlConverterTest {
 
-    private UrlConverter converter = new UrlConverter("--source");
+    private final UrlConverter converter = new UrlConverter("--source");
 
     @Test
     public void urlIsCreatedFromFilePath() {

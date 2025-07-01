@@ -113,7 +113,7 @@ public class CompilerWarningIT {
     return warnings;
   }
 
-  public static Matcher<Iterable<Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
+  public static Matcher<Iterable<? extends Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
     return Matchers.everyItem(hasMessage(containsString("Type safety: Unchecked cast from")));
   }
 

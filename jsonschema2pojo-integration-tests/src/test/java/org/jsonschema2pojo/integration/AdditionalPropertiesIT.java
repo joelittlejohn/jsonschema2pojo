@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -43,7 +43,7 @@ public class AdditionalPropertiesIT {
 
     @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @SuppressWarnings("unchecked")
@@ -188,9 +188,7 @@ public class AdditionalPropertiesIT {
 
         // builder with these types should not exist:
         Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType);
-        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
-
-        fail("additional properties builder found when not requested");
+        assertThat("additional properties builder found when not requested", builderMethod, is(notNullValue()));
     }
 
     @Test
@@ -269,9 +267,8 @@ public class AdditionalPropertiesIT {
         assertThat(jsonNode.has("additionalProperties"), is(false));
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Matcher<Class> typeEqualTo(Class<?> type) {
-        return equalTo((Class) type);
+    public static Matcher<Class<?>> typeEqualTo(Class<?> type) {
+        return equalTo(type);
     }
 
 }

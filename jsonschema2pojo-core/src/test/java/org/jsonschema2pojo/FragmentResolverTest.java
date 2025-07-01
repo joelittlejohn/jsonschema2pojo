@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class FragmentResolverTest {
 
-    private FragmentResolver resolver = new FragmentResolver();
+    private final FragmentResolver resolver = new FragmentResolver();
 
     @Test
     public void hashResolvesToRoot() {

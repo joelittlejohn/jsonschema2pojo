@@ -16,8 +16,8 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -205,21 +205,21 @@ public class JavaNameIT {
     }
 
     @Test
-    public void generateClassInTargetPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void generateClassInTargetPackage() throws ClassNotFoundException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
         Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.OCSPRequestData");
 
-        assertEquals("com.example.javaname.OCSPRequestData", classWithTargetPackage.getName());
+        assertThat("com.example.javaname.OCSPRequestData", is(equalTo(classWithTargetPackage.getName())));
     }
 
     @Test
-    public void generateClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void generateClassInJavaTypePackage() throws ClassNotFoundException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0.json", "com.example.javaname");
         Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo");
 
-        assertEquals("com.apetecan.javaname.AdditionalInfo", classWithJavaTypePackage.getName());
+        assertThat("com.apetecan.javaname.AdditionalInfo", is(equalTo(classWithJavaTypePackage.getName())));
     }
 
     @Test
@@ -228,7 +228,7 @@ public class JavaNameIT {
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.AuthorizeRequestV1p02");
 
-        assertEquals("com.example.javaname.AuthorizeRequestV1p02", classWithTargetPackage.getName());
+        assertThat(classWithTargetPackage.getName(), is(equalTo("com.example.javaname.AuthorizeRequestV1p02")));
 
         classWithTargetPackage.newInstance();
 
@@ -241,7 +241,7 @@ public class JavaNameIT {
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken");
 
-        assertEquals("com.apetecan.javaname.IdToken", classWithJavaTypePackage.getName());
+        assertThat(classWithJavaTypePackage.getName(), is(equalTo("com.apetecan.javaname.IdToken")));
 
         classWithJavaTypePackage.newInstance();
 

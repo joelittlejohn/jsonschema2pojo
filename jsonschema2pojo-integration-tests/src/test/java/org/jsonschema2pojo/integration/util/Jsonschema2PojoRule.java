@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.Compiler.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -176,7 +176,7 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     private void checkActive() {
-        if (active != true) {
+        if (!active) {
             throw new IllegalStateException("cannot access Jsonschema2PojoRule state when inactive");
         }
     }

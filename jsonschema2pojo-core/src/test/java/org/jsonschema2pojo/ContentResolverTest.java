@@ -16,14 +16,15 @@
 
 package org.jsonschema2pojo;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ContentResolverTest {
 
-    private ContentResolver resolver = new ContentResolver();
+    private final ContentResolver resolver = new ContentResolver();
     
     @Test(expected=IllegalArgumentException.class)
     public void wrongProtocolCausesIllegalArgumentException() {
@@ -79,7 +80,7 @@ public class ContentResolverTest {
         tempFile.deleteOnExit();
 
         try (OutputStream outputStream = new FileOutputStream(tempFile)) {
-            outputStream.write("{\"type\" : \"string\"}".getBytes("utf-8"));
+            outputStream.write("{\"type\" : \"string\"}".getBytes(StandardCharsets.UTF_8));
         }
         
         return tempFile.toURI();
