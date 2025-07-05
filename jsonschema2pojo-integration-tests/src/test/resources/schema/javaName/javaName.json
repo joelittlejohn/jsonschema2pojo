@@ -21,6 +21,13 @@
     },
     "objectWithoutJavaName" : {
       "type" : "object"
+    },
+    "referenceWithJavaName": {
+      "$ref": "../properties/primitiveProperties.json",
+      "javaName": "javaReference"
+    },
+    "referenceWithoutJavaName": {
+      "$ref": "../properties/primitiveProperties.json"
     }
   }
 }
