@@ -18,8 +18,9 @@ package org.jsonschema2pojo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -117,25 +118,21 @@ public class FragmentResolverTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void missingPathThrowsIllegalArgumentException() {
-
         ObjectNode root = new ObjectMapper().createObjectNode();
 
-        resolver.resolve(root, "#/a/b/c", "#/.");
-
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(root, "#/a/b/c", "#/."));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void attemptToUsePropertyNameOnArrayNodeThrowsIllegalArgumentException() {
-
         ObjectNode root = new ObjectMapper().createObjectNode();
 
         ArrayNode a = root.arrayNode();
         root.set("a", a);
 
-        resolver.resolve(root, "#/a/b", "#/.");
-
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(root, "#/a/b", "#/."));
     }
 
 }

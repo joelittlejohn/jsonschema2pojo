@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -37,11 +37,12 @@ import com.thoughtworks.qdox.model.JavaType;
 import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class RequiredIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithRequired;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws IOException {
 
         classSchemaRule.generateAndCompile("/schema/required/required.json", "com.example");

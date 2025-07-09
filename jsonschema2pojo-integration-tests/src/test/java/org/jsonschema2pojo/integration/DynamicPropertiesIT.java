@@ -19,17 +19,18 @@ package org.jsonschema2pojo.integration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class DynamicPropertiesIT {
     
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void shouldSetStringField() throws Throwable {
@@ -88,32 +89,28 @@ public class DynamicPropertiesIT {
                 "value");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowExceptionWhenSettingWrongType() throws Throwable {
-        setDeclaredPropertyTest(
-                "/schema/dynamic/childType.json",
-                "ChildType",
-                String.class,
-                "stringValue",
-                "getStringValue",
-                1L);
+    @Test
+    public void shouldThrowExceptionWhenSettingWrongType() {
+        final String schemaLocation = "/schema/dynamic/childType.json";
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> setDeclaredPropertyTest(schemaLocation, "ChildType", String.class, "stringValue", "getStringValue", 1L));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowExceptionWhenSettingUnknownField() throws Throwable {
-        setPropertyTest(
-                "/schema/dynamic/noAdditionalProperties.json",
-                "NoAdditionalProperties",
-                "unknownField",
-                1L);
+    @Test
+    public void shouldThrowExceptionWhenSettingUnknownField() {
+        final String schemaLocation = "/schema/dynamic/noAdditionalProperties.json";
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> setPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField", 1L));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldThrowExceptionWhenGettingUnknownField() throws Throwable {
-        getPropertyTest(
-                "/schema/dynamic/noAdditionalProperties.json",
-                "NoAdditionalProperties",
-                "unknownField");
+        final String schemaLocation = "/schema/dynamic/noAdditionalProperties.json";
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> getPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField"));
     }
 
     @Test

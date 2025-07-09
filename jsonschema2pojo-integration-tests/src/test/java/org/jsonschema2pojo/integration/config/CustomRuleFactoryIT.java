@@ -28,14 +28,15 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.jsonschema2pojo.rules.FormatRule;
 import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
 
 public class CustomRuleFactoryIT {
 
-    @org.junit.Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void customAnnotatorIsAbleToAddCustomAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {

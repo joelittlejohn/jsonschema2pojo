@@ -23,17 +23,17 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RelativeRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> relativeRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader relativeRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refsToA.json", "com.example");

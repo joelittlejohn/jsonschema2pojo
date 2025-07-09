@@ -19,17 +19,19 @@ package org.jsonschema2pojo.integration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ExtendsIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings("rawtypes")
@@ -70,12 +72,10 @@ public class ExtendsIT {
 
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void extendsStringCausesNoNewTypeToBeGenerated() throws ClassNotFoundException {
-
+    @Test
+    public void extendsStringCausesNoNewTypeToBeGenerated() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsString.json", "com.example");
-        resultsClassLoader.loadClass("com.example.ExtendsString");
-
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.ExtendsString"));
     }
 
     @Test

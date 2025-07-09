@@ -16,10 +16,10 @@
 
 package org.jsonschema2pojo.util;
 
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
-import org.junit.Test;
 
 public class InflectorTest {
 

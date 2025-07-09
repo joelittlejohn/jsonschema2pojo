@@ -18,6 +18,7 @@ package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -27,9 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,15 +42,9 @@ import com.thoughtworks.qdox.model.JavaField;
  */
 public class JavaNameIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
-
-    @BeforeClass
-    public static void generateAndCompileClass() {
-
-
-    }
 
     @Test
     public void propertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
@@ -154,18 +148,14 @@ public class JavaNameIT {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void doesNotAllowDuplicateNames() {
-
-        schemaRule.generateAndCompile("/schema/javaName/duplicateName.json", "com.example");
-
+        assertThrows(IllegalArgumentException.class, () -> schemaRule.generateAndCompile("/schema/javaName/duplicateName.json", "com.example"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void doesNotAllowDuplicateDefaultNames() {
-
-        schemaRule.generateAndCompile("/schema/javaName/duplicateDefaultName.json", "com.example");
-
+        assertThrows(IllegalArgumentException.class, () -> schemaRule.generateAndCompile("/schema/javaName/duplicateDefaultName.json", "com.example"));
     }
 
     @Test

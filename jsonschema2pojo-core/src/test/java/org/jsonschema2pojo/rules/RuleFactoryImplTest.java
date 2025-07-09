@@ -25,7 +25,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RuleFactoryImplTest {
 

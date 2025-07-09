@@ -23,15 +23,15 @@ import static org.hamcrest.MatcherAssert.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MatchPatternsFileFilterTest {
 
     File basedir;
     MatchPatternsFileFilter fileFilter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         basedir = new File("./src/test/resources/filtered/schema");
     }

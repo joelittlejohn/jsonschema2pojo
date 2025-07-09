@@ -24,20 +24,20 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class JacksonViewIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void javaJsonViewWithJackson2x() throws Exception {
-
-        com.fasterxml.jackson.annotation.JsonView jsonViewAnnotation
-                = (com.fasterxml.jackson.annotation.JsonView) jsonViewTest("jackson2", com.fasterxml.jackson.annotation.JsonView.class);
+        JsonView jsonViewAnnotation = (JsonView) jsonViewTest("jackson2", JsonView.class);
 
         assertThat(jsonViewAnnotation.value()[0].getSimpleName(), equalTo("MyJsonViewClass"));
-
     }
 
     private Annotation jsonViewTest(String annotationStyle, Class<? extends Annotation> annotationType) throws ClassNotFoundException, NoSuchFieldException {

@@ -111,8 +111,8 @@
             <artifactId>maven-plugin-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-rules</artifactId>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -127,12 +127,8 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
@@ -168,11 +164,15 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.robolectric</groupId>
             <artifactId>robolectric</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.robolectric</groupId>
+            <artifactId>android-all-instrumented</artifactId>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.qdox</groupId>

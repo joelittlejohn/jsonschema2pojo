@@ -33,11 +33,10 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Checks general properties of includeAccessors and different configurations.
@@ -46,13 +45,14 @@ import org.junit.runners.Parameterized.Parameters;
  *
  */
 @SuppressWarnings({ "rawtypes" })
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("parameters")
 public class IncludeAccessorsPropertiesIT {
+
     public static final String PACKAGE = "com.example";
     public static final String PRIMITIVE_JSON = "/schema/properties/primitiveProperties.json";
     public static final String PRIMITIVE_TYPE = "com.example.PrimitiveProperties";
 
-    @Parameters
     public static Collection<Object[]> parameters() {
         return Arrays.asList(new Object[][] {
             { PRIMITIVE_JSON, PRIMITIVE_TYPE, config() },
@@ -61,7 +61,7 @@ public class IncludeAccessorsPropertiesIT {
         });
     }
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private String path;
     private String typeName;

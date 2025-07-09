@@ -16,6 +16,7 @@
 
 package org.jsonschema2pojo.integration.ant;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -31,12 +32,12 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.jsonschema2pojo.ant.Jsonschema2PojoTask;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class Jsonschema2PojoTaskIT {
     
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
@@ -63,7 +64,7 @@ public class Jsonschema2PojoTaskIT {
     @Test
     public void antTaskDocumentationIncludesAllProperties() throws IOException {
 
-        String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"));
+        String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"), UTF_8);
 
         for (Field f : Jsonschema2PojoTask.class.getDeclaredFields()) {
             assertThat(documentation, containsString(">"+f.getName()+"<"));

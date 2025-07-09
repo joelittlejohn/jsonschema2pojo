@@ -26,18 +26,18 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ExcludedFromEqualsAndHashCodeIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> clazz;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
-
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/excludedFromEqualsAndHashCode/excludedFromEqualsAndHashCode.json", "com.example");
 
         clazz = resultsClassLoader.loadClass("com.example.ExcludedFromEqualsAndHashCode");

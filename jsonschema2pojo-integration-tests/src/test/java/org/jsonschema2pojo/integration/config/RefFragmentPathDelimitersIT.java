@@ -19,12 +19,12 @@ package org.jsonschema2pojo.integration.config;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RefFragmentPathDelimitersIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void refFragmentPathDelimitersUsedInAPropertyIsReadSuccessfully() throws ClassNotFoundException, SecurityException {

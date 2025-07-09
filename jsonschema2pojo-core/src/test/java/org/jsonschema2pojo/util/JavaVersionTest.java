@@ -16,10 +16,10 @@
 
 package org.jsonschema2pojo.util;
 
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
-
-import org.junit.Test;
 
 public class JavaVersionTest {
 

@@ -16,45 +16,44 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeToStringExcludesIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void testConfig(Map<String,Object> config, String expectedResultTemplate) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    private void testConfig(Map<String,Object> config, String expectedResultTemplate) throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
         // throws NoSuchMethodException if method is not found
         Method toString = generatedType.getDeclaredMethod("toString");
-        try {
-            Object primitiveProperties = generatedType.newInstance();
-            Object result = toString.invoke(primitiveProperties);
-            assertEquals(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))), result);
-        } catch (Exception e) {
-            fail("Unable to invoke toString method: "+ e.getMessage());
-        }
+        Object primitiveProperties = generatedType.newInstance();
+        Object result = toString.invoke(primitiveProperties);
+        assertThat(
+                result,
+                is(equalTo(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))))));
     }
 
     @Test
-    public void beansIncludeAllToStringPropertiesByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void beansIncludeAllToStringPropertiesByDefault() throws ReflectiveOperationException {
         testConfig(config(),
                 "com.example.PrimitiveProperties@%s[a=<null>,b=<null>,c=<null>,additionalProperties={}]");
     }
 
     @Test
-    public void beansOmitToStringProperties() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void beansOmitToStringProperties() throws ReflectiveOperationException {
         testConfig(config("toStringExcludes", new String[] {"b","c"}),
                 "com.example.PrimitiveProperties@%s[a=<null>,additionalProperties={}]");
     }

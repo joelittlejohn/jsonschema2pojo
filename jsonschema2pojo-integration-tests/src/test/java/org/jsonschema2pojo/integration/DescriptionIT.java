@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -38,13 +38,12 @@ import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class DescriptionIT {
 
-    @ClassRule public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithDescription;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws IOException {
-
         schemaRule.generateAndCompile("/schema/description/description.json", "com.example");
         File generatedJavaFile = schemaRule.generated("com/example/Description.java");
 

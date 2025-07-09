@@ -17,17 +17,15 @@
 package org.jsonschema2pojo.rules;
 
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -38,28 +36,20 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JMod;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@ValueSource(classes = { Set.class, List.class })
 public class DefaultRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
     private final DefaultRule rule = new DefaultRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
 
     private final Class<?> fieldTypeClass;
-
-    @Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { Set.class },
-                { List.class }
-        });
-    }
 
     public DefaultRuleTest(Class<?> fieldTypeClass) {
         this.fieldTypeClass = fieldTypeClass;

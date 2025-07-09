@@ -33,9 +33,9 @@ import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.AbstractAnnotator;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -54,11 +54,12 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
 public class MediaIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     private static Class<?> classWithMediaProperties;
     private static Class<byte[]> BYTE_ARRAY = byte[].class;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
@@ -213,9 +214,8 @@ public class MediaIT {
      * @param type the type to check.
      * @return a matcher that tests for equality to the specified type.
      */
-    @SuppressWarnings("rawtypes")
-    public static Matcher<Class> equalToType( Class<?> type ) {
-        return equalTo((Class)type);
+    public static Matcher<Class<?>> equalToType( Class<?> type ) {
+        return equalTo(type);
     }
 
     public static void roundTripAssertions( ObjectMapper objectMapper, String propertyName, String jsonValue, Object javaValue) throws Exception {
@@ -275,7 +275,7 @@ public class MediaIT {
     public static class QuotedPrintableSerializer
     extends StdSerializer<byte[]>
     {
-        private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
+        private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableSerializer() {
             super(byte[].class);
@@ -288,11 +288,10 @@ public class MediaIT {
 
     }
 
-    @SuppressWarnings("serial")
     public static class QuotedPrintableDeserializer
     extends StdDeserializer<byte[]>
     {
-        private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
+        private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableDeserializer() {
             super(byte[].class);
@@ -303,7 +302,7 @@ public class MediaIT {
             try {
                 return codec.decode(jp.getText().getBytes(StandardCharsets.UTF_8));
             } catch (DecoderException e) {
-                throw new IOException(format("could not decode quoted string in %s", jp.getCurrentName()), e);
+                throw new IOException(format("could not decode quoted string in %s", jp.currentName()), e);
             }
         }
 

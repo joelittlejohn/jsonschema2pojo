@@ -29,9 +29,9 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,12 +42,12 @@ import com.squareup.moshi.Moshi;
 
 public class Moshi1IT {
 
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Moshi moshi;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         moshi = new Moshi.Builder().build();
     }

@@ -29,8 +29,8 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,7 +39,7 @@ import com.google.gson.Gson;
 
 public class GsonIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })

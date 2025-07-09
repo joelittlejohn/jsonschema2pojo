@@ -21,7 +21,7 @@ import java.lang.reflect.Field
 import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.FileUtils
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class JsonSchemaPluginSpec {
 

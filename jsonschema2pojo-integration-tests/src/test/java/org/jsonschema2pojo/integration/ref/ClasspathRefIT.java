@@ -20,17 +20,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ClasspathRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classpathRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader classpathRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/classpathRefs.json", "com.example");

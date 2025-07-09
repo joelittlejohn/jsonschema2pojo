@@ -28,27 +28,24 @@ import java.util.List;
 import java.util.Set;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ArrayIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithArrayProperties;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
-
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example");
 
         classWithArrayProperties = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
-
     }
 
     @Test

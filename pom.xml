@@ -87,7 +87,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.5.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -138,7 +138,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.5.3</version>
                 </plugin>
                 <plugin>
                     <groupId>com.bluetrainsoftware.maven</groupId>
@@ -320,17 +320,6 @@
                 <version>${jackson2x.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-rules</artifactId>
-                <version>1.19.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.android</groupId>
-                <artifactId>android</artifactId>
-                <version>4.1.1.4</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
@@ -402,16 +391,10 @@
                 <version>2.13.0</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.13.2</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -421,8 +404,8 @@
             </dependency>
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock</artifactId>
-                <version>2.27.2</version>
+                <artifactId>wiremock-jre8</artifactId>
+                <version>2.35.2</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -467,6 +450,12 @@
                 <artifactId>maven-project</artifactId>
                 <version>2.2.1</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
@@ -499,8 +488,8 @@
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>3.12.4</version>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>4.11.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -513,7 +502,19 @@
                <groupId>org.robolectric</groupId>
                <artifactId>robolectric</artifactId>
                <version>3.8</version>
+               <exclusions>
+                   <exclusion>
+                       <groupId>junit</groupId>
+                       <artifactId>junit</artifactId>
+                   </exclusion>
+               </exclusions>
                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-all-instrumented</artifactId>
+                <version>9-robolectric-4913185-2-i1</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>

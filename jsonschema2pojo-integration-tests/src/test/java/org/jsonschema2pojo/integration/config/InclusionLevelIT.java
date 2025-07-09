@@ -21,14 +21,14 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class InclusionLevelIT {
 
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test

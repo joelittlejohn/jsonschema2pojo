@@ -27,21 +27,20 @@ import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> selfRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader selfRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/selfRefs.json", "com.example");

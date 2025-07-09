@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;

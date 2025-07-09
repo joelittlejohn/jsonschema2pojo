@@ -19,7 +19,7 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
@@ -32,7 +32,7 @@ public class RequiredRuleTest {
 
     private static final String TARGET_CLASS_NAME = RequiredRuleTest.class.getName() + ".DummyClass";
 
-    private RequiredRule rule = new RequiredRule(new RuleFactory());
+    private final RequiredRule rule = new RequiredRule(new RuleFactory());
 
     @Test
     public void applyAddsTextWhenRequired() throws JClassAlreadyExistsException {

@@ -19,16 +19,16 @@ package org.jsonschema2pojo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+
 /**
   * @author <a href="https://github.com/s13o">s13o</a>
   * @since 3/17/2017
@@ -37,38 +37,28 @@ public class ContentResolverNetworkTest {
 
     private static final String ADDRESS = "localhost";
 
-    @Rule
-    public WireMockRule server = new WireMockRule(
-            options().dynamicPort().bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock")
-    );
-
-    @Before
-    public void before() {
-        server.start();
-    }
-
-    @After
-    public void after() {
-        server.stop();
-    }
+    @RegisterExtension
+    private static final WireMockExtension server = WireMockExtension.newInstance()
+            .options(options().dynamicPort().bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock"))
+            .build();
 
     private final ContentResolver resolver = new ContentResolver();
     
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void brokenLinkCausesIllegalArgumentException() {
-        URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.port() + "/address404.json");
-        resolver.resolve(brokenHttpUri);
+        URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.getPort() + "/address404.json");
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(brokenHttpUri));
     }
     
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void serverErrorCausesIllegalArgumentException() {
-        URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.port() + "/address500.json");
-        resolver.resolve(brokenHttpUri);
+        URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.getPort() + "/address500.json");
+        assertThrows(IllegalArgumentException.class, () -> resolver.resolve(brokenHttpUri));
     }
 
     @Test
     public void httpLinkIsResolvedToContent() {
-        URI httpUri = URI.create("http://" + ADDRESS + ":" + server.port() + "/address.json");
+        URI httpUri = URI.create("http://" + ADDRESS + ":" + server.getPort() + "/address.json");
         JsonNode uriContent = resolver.resolve(httpUri);
         assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
     }

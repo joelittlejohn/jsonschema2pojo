@@ -16,35 +16,46 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.sun.codemodel.JMod;
 
-@RunWith(Enclosed.class)
+// Using @TestInstance(TestInstance.Lifecycle.PER_CLASS) and 'public static Jsonschema2PojoRule classSchemaRule' on top level
+// as Java8 does not support static methods in nested classes
 public class ConstructorsIT {
 
+  @RegisterExtension
+  public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
   public static void assertHasModifier(int modifier, int modifiers, String modifierName) {
-    assertEquals("Expected the bit " + modifierName + " (" + modifier + ")" + " to be set but got: " + modifiers, modifier, modifier & modifiers);
+    assertThat(
+            "Expected the bit " + modifierName + " (" + modifier + ")" + " to be set but got: " + modifiers,
+            modifier & modifiers,
+            is(equalTo(modifier)));
   }
 
   public static void assertHasOnlyDefaultConstructor(Class<?> cls) {
     Constructor<?>[] constructors = cls.getConstructors();
 
-    assertEquals(constructors.length, 1);
+    assertThat(constructors.length, is(equalTo(1)));
 
-    assertEquals("Expected " + cls + " to only have the default, no-args constructor", 0, constructors[0].getParameterTypes().length);
+    assertThat(
+            "Expected " + cls + " to only have the default, no-args constructor",
+            constructors[0].getParameterTypes().length,
+            is(equalTo(0)));
   }
 
   public static Constructor<?> getAllPropertiesConstructor(Class<?> clazz) throws NoSuchMethodException {
@@ -71,7 +82,6 @@ public class ConstructorsIT {
         .getMethod(methodName)
         .invoke(instance);
   }
-
 
   private static class ConstructorTestClasses {
 
@@ -102,15 +112,14 @@ public class ConstructorsIT {
   /**
    * Tests what happens when includeConstructors is set to true
    */
-  public static class DefaultIncludeConstructorsIT {
+  @Nested
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class DefaultIncludeConstructorsIT {
 
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private ConstructorTestClasses testClasses;
 
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+    @BeforeAll
+    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
       // @formatter:off
       testClasses = new ConstructorTestClasses(classSchemaRule, config(
           "propertyWordDelimiters", "_",
@@ -137,15 +146,14 @@ public class ConstructorsIT {
   /**
    * Tests with constructorsRequiredPropertiesOnly set to true
    */
-  public static class RequiredOnlyIT {
+  @Nested
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class RequiredOnlyIT {
 
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private ConstructorTestClasses testClasses = null;
 
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+    @BeforeAll
+    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
       // @formatter:off
       testClasses = new ConstructorTestClasses(classSchemaRule,
           config(
@@ -180,9 +188,9 @@ public class ConstructorsIT {
     public void testConstructorAssignsFields() throws Exception {
       Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true);
 
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
+      assertThat(getValue(instance, "getType"), is(equalTo("type")));
+      assertThat(getValue(instance, "getId"), is(equalTo(5)));
+      assertThat(getValue(instance, "getHasTickets"), is(true));
     }
 
     @Test
@@ -199,15 +207,14 @@ public class ConstructorsIT {
   /**
    * Tests what happens when includeConstructors is set to true
    */
-  public static class IncludeRequiredConstructorsIT {
+  @Nested
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class IncludeRequiredConstructorsIT {
 
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private ConstructorTestClasses testClasses = null;
 
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+    @BeforeAll
+    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
       // @formatter:off
       testClasses = new ConstructorTestClasses(classSchemaRule,
           config(
@@ -252,20 +259,20 @@ public class ConstructorsIT {
     public void testRequiredFieldsConstructorAssignsFields() throws Exception {
       Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true);
 
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
+      assertThat(getValue(instance, "getType"), is(equalTo("type")));
+      assertThat(getValue(instance, "getId"), is(equalTo(5)));
+      assertThat(getValue(instance, "getHasTickets"), is(equalTo(true)));
     }
 
     @Test
     public void testAllFieldsConstructorAssignsFields() throws Exception {
       Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
 
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
-      assertEquals("provider", getValue(instance, "getProvider"));
-      assertEquals("startTime", getValue(instance, "getStarttime"));
+      assertThat(getValue(instance, "getType"), is(equalTo("type")));
+      assertThat(getValue(instance, "getId"), is(equalTo(5)));
+      assertThat(getValue(instance, "getHasTickets"), is(true));
+      assertThat(getValue(instance, "getProvider"), is(equalTo("provider")));
+      assertThat(getValue(instance, "getStarttime"), is(equalTo("startTime")));
     }
 
     /**
@@ -290,15 +297,14 @@ public class ConstructorsIT {
   /**
    * Tests what happens when includeConstructors is set to true
    */
-  public static class IncludeCopyConstructorsIT {
+  @Nested
+  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class IncludeCopyConstructorsIT {
 
-    @ClassRule
-    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private ConstructorTestClasses testClasses = null;
 
-    private static ConstructorTestClasses testClasses = null;
-
-    @BeforeClass
-    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+    @BeforeAll
+    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
       // @formatter:off
       testClasses = new ConstructorTestClasses(classSchemaRule,
           config("propertyWordDelimiters", "_",
@@ -336,22 +342,22 @@ public class ConstructorsIT {
       Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
       Object copyInstance = getInstance(testClasses.typeWithRequired, instance);
 
-      assertEquals("type", getValue(copyInstance, "getType"));
-      assertEquals(5, getValue(copyInstance, "getId"));
-      assertEquals(true, getValue(copyInstance, "getHasTickets"));
-      assertEquals("provider", getValue(copyInstance, "getProvider"));
-      assertEquals("startTime", getValue(copyInstance, "getStarttime"));
+      assertThat(getValue(copyInstance, "getType"), is(equalTo("type")));
+      assertThat(getValue(copyInstance, "getId"), is(equalTo(5)));
+      assertThat(getValue(copyInstance, "getHasTickets"), is(true));
+      assertThat(getValue(copyInstance, "getProvider"), is(equalTo("provider")));
+      assertThat(getValue(copyInstance, "getStarttime"), is(equalTo("startTime")));
     }
 
     @Test
     public void testAllFieldsConstructorAssignsFields() throws Exception {
       Object instance = getInstance(testClasses.typeWithRequired, "type", 5, true, "provider", "startTime");
 
-      assertEquals("type", getValue(instance, "getType"));
-      assertEquals(5, getValue(instance, "getId"));
-      assertEquals(true, getValue(instance, "getHasTickets"));
-      assertEquals("provider", getValue(instance, "getProvider"));
-      assertEquals("startTime", getValue(instance, "getStarttime"));
+      assertThat(getValue(instance, "getType"), is(equalTo("type")));
+      assertThat(getValue(instance, "getId"), is(equalTo(5)));
+      assertThat(getValue(instance, "getHasTickets"), is(true));
+      assertThat(getValue(instance, "getProvider"), is(equalTo("provider")));
+      assertThat(getValue(instance, "getStarttime"), is(equalTo("startTime")));
     }
   }
 

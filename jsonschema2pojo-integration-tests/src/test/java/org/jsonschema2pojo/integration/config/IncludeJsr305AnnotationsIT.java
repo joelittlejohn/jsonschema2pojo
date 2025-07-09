@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -32,19 +31,19 @@ import javax.annotation.Nullable;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class IncludeJsr305AnnotationsIT {
 
     private final boolean useJakartaValidation;
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    @Parameterized.Parameters
     public static Collection<Object> data() {
         return asList(true, false);
     }
@@ -73,52 +72,40 @@ public class IncludeJsr305AnnotationsIT {
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void jsr305NonnullAnnotationIsAddedForSchemaRuleRequired() throws ClassNotFoundException {
+    public void jsr305NonnullAnnotationIsAddedForSchemaRuleRequired() throws ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/required.json", "com.example",
                                                                        config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
 
-        try {
-            validateNonnullField(generatedType.getDeclaredField("required"));
-        } catch (NoSuchFieldException e) {
-            fail("Field is missing in generated class.");
-        }
+        validateNonnullField(generatedType.getDeclaredField("required"));
     }
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void jsr305NullableAnnotationIsAddedByDefault() throws ClassNotFoundException {
+    public void jsr305NullableAnnotationIsAddedByDefault() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/required.json", "com.example",
                                                                        config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.Required");
 
-        try {
-            validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
-            validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
-            validateNullableField(generatedType.getDeclaredField("defaultNotRequiredProperty"));
-        } catch (NoSuchFieldException e) {
-            fail("Expected field is missing in generated class.");
-        }
+        validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("defaultNotRequiredProperty"));
     }
 
     @Test
     @SuppressWarnings("rawtypes")
-    public void jsr305RequiredArrayIsTakenIntoConsideration() throws ClassNotFoundException {
+    public void jsr305RequiredArrayIsTakenIntoConsideration() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/required/requiredArray.json", "com.example",
                                                                        config("includeJsr305Annotations", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.RequiredArray");
 
-        try {
-            validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
-            validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
-            validateNullableField(generatedType.getDeclaredField("defaultNotRequiredProperty"));
-        } catch (NoSuchFieldException e) {
-            fail("Expected field is missing in generated class.");
-        }
+        validateNonnullField(generatedType.getDeclaredField("requiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("nonRequiredProperty"));
+        validateNullableField(generatedType.getDeclaredField("defaultNotRequiredProperty"));
     }
 
     @Test

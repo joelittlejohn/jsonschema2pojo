@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -30,13 +31,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-@SuppressWarnings("rawtypes")
 public class UseInnerClassBuildersIT {
 
-  @Rule
+  @RegisterExtension
   public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
   private static Matcher<File> containsText(String searchText) {
@@ -57,7 +57,7 @@ public class UseInnerClassBuildersIT {
    * This method confirms that if you choose to generate builders, but don't indicate that useInnerBuilders is true, they will be generated using the
    * chaining setters instead of the inner classes
    */
-  @Test(expected = ClassNotFoundException.class)
+  @Test
   public void defaultBuilderIsChainedSetters() throws ClassNotFoundException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true));
@@ -69,7 +69,7 @@ public class UseInnerClassBuildersIT {
 
     assertThat("Generated class missing any builders at all", containsWithMethod, is(true));
 
-    resultsClassLoader.loadClass("com.example.Child.ChildBuilder");
+    assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.Child.ChildBuilder"));
   }
 
   /**

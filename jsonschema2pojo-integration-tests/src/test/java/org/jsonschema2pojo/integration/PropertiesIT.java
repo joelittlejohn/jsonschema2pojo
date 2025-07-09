@@ -27,14 +27,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropertiesIT {
-    @Rule
+
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();

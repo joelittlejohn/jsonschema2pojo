@@ -32,35 +32,30 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.bval.jsr.ApacheValidationProvider;
 import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @SuppressWarnings("rawtypes")
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@ValueSource(booleans = { true, false })
 public class IncludeJsr303AnnotationsIT {
 
     private final boolean useJakartaValidation;
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static final javax.validation.Validator javaxValidator = javax.validation.Validation.byProvider(ApacheValidationProvider.class)
             .configure()
             .buildValidatorFactory()
             .getValidator();
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    @Parameterized.Parameters
-    public static Collection<Object> data() {
-        return asList(true, false);
-    }
 
     public IncludeJsr303AnnotationsIT(boolean useJakartaValidation) {
         this.useJakartaValidation = useJakartaValidation;

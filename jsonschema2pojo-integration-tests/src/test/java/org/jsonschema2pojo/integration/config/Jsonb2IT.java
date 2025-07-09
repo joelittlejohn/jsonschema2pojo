@@ -24,13 +24,13 @@ import static org.jsonschema2pojo.integration.util.JsonAssert.assertEqualsJson;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -40,11 +40,12 @@ import jakarta.json.bind.annotation.JsonbPropertyOrder;
 
 public class Jsonb2IT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Jsonb jsonb;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         jsonb = JsonbBuilder.create();
     }
@@ -93,10 +94,10 @@ public class Jsonb2IT {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException, IOException {
+    private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 
-        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), Charset.forName("UTF-8"));
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), StandardCharsets.UTF_8);
         Object javaInstance = jsonb.fromJson(expectedJson, generatedType);
         String actualJson = jsonb.toJson(javaInstance);
 

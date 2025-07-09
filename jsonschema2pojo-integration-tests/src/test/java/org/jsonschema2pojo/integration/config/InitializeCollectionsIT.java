@@ -28,16 +28,15 @@ import java.util.Map;
 
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{0}")
+@MethodSource("parameters")
 public class InitializeCollectionsIT {
     
-    @Parameters(name="{0}")
     public static Collection<Object[]> parameters() {
         Map<String, Object> withOptionFalse = config("initializeCollections", false);
         Map<String, Object> withOptionAbsent = config();
@@ -50,7 +49,7 @@ public class InitializeCollectionsIT {
         });
     }
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Map<String, Object> config;
     private Matcher<Object> resultMatcher;
