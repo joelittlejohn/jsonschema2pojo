@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -28,12 +29,14 @@ import java.util.List;
 
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class CustomDatesIT {
-    
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    private static final String UNKNOWN_TYPE = "org.jsonschema2pojo.integration.config.UnknownType";
+
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void defaultTypesAreNotCustom() throws ClassNotFoundException, IntrospectionException {
@@ -103,22 +106,28 @@ public class CustomDatesIT {
         assertTypeIsExpected(classWithTime, "stringAsTime", "java.lang.String");
     }
 
-    @Test(expected=GenerationException.class)
+    @Test
     public void throwsGenerationExceptionForUnknownDateTimeType() {
-        schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("dateTimeType", "org.jsonschema2pojo.integration.config.UnknownType"));
+        final String schema = "/schema/format/formattedProperties.json";
+        assertThrows(
+                GenerationException.class,
+                () -> schemaRule.generateAndCompile(schema, "com.example", config("dateTimeType", UNKNOWN_TYPE)));
     }
 
-    @Test(expected=GenerationException.class)
+    @Test
     public void throwsGenerationExceptionForUnknownDateType() {
-        schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("dateType", "org.jsonschema2pojo.integration.config.UnknownType"));
+        final String schema = "/schema/format/formattedProperties.json";
+        assertThrows(
+                GenerationException.class,
+                () -> schemaRule.generateAndCompile(schema, "com.example", config("dateType", UNKNOWN_TYPE)));
     }
 
-    @Test(expected=GenerationException.class)
+    @Test
     public void throwsGenerationExceptionForUnknownTimeType() {
-        schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("timeType", "org.jsonschema2pojo.integration.config.UnknownType"));
+        final String schema = "/schema/format/formattedProperties.json";
+        assertThrows(
+                GenerationException.class,
+                () -> schemaRule.generateAndCompile(schema, "com.example", config("timeType", UNKNOWN_TYPE)));
     }
 
     private void assertTypeIsExpected(Class<?> classInstance, String propertyName, String expectedType)

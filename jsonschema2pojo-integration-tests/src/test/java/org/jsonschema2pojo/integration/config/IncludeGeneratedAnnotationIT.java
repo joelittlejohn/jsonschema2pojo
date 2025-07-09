@@ -24,14 +24,14 @@ import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import java.io.File;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeGeneratedAnnotationIT {
 
     private static final String SCHEMA_PATH = "/schema/includeGeneratedAnnotation/includeGeneratedAnnotation.json";
 
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
@@ -50,14 +50,14 @@ public class IncludeGeneratedAnnotationIT {
     }
 
     @Test
-    public void disabled() throws ClassNotFoundException {
+    public void disabled() {
         File source = schemaRule.generate(SCHEMA_PATH, "com.example", config("includeGeneratedAnnotation", false));
 
         assertThat(source, not(containsText("@Generated")));
     }
 
     @Test
-    public void enabled() throws ClassNotFoundException {
+    public void enabled() {
         File source = schemaRule.generate(SCHEMA_PATH, "com.example", config("includeGeneratedAnnotation", true));
 
         assertThat(source, containsText("@Generated"));

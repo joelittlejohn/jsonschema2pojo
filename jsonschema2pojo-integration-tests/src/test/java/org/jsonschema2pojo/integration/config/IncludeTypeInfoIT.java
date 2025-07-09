@@ -17,19 +17,18 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 public class IncludeTypeInfoIT
 {
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
@@ -40,7 +39,7 @@ public class IncludeTypeInfoIT
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-        assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(nullValue()));
     }
 
     @Test
@@ -51,7 +50,7 @@ public class IncludeTypeInfoIT
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));
 
         JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
         assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
@@ -68,7 +67,7 @@ public class IncludeTypeInfoIT
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-        assertNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(nullValue()));
     }
 
     @Test
@@ -79,7 +78,7 @@ public class IncludeTypeInfoIT
                                                                 config("includeTypeInfo", false));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));
 
         JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
         assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
@@ -96,7 +95,7 @@ public class IncludeTypeInfoIT
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
-        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));
 
         JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
         assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));
@@ -112,7 +111,7 @@ public class IncludeTypeInfoIT
                                                                 config("includeTypeInfo", true));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
-        assertNotNull(classWithTypeInfo.getAnnotation(JsonTypeInfo.class));
+        assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));
 
         JsonTypeInfo jsonTypeInfo = classWithTypeInfo.getAnnotation(JsonTypeInfo.class);
         assertThat(jsonTypeInfo.use(), is(JsonTypeInfo.Id.CLASS));

@@ -16,16 +16,16 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -35,11 +35,12 @@ import com.thoughtworks.qdox.model.JavaClass;
   added to root-level enums is added to the javadoc.
  */
 public class TitleEnumIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithTitle;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws IOException {
 
         classSchemaRule.generateAndCompile("/schema/title/titleEnum.json", "com.example");

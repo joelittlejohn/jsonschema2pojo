@@ -20,8 +20,8 @@ import static com.sun.codemodel.JMod.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -41,7 +41,7 @@ public class DynamicPropertiesRuleTest {
 
     JDefinedClass type2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws JClassAlreadyExistsException {
         type = codeModel._class("org.jsonschema2pojo.rules.ExampleClass");
         numberGetter = type.method(PUBLIC, codeModel._ref(Integer.class), "getNumber");

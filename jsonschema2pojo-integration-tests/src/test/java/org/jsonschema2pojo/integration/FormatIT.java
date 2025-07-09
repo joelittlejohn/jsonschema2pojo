@@ -35,24 +35,24 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name = "{0}")
+@MethodSource("data")
 public class FormatIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithFormattedProperties;
 
-    @Parameters(name="{0}")
     public static List<Object[]> data() {
         return asList(new Object[][] {
             /* { propertyName, expectedType, jsonValue, javaValue } */
@@ -87,9 +87,8 @@ public class FormatIT {
         this.javaValue = javaValue;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-
         Map<String,String> formatMapping = new HashMap<String,String>() {{
             put("int32", "int");
         }};
@@ -97,7 +96,6 @@ public class FormatIT {
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("formatTypeMapping", formatMapping));
 
         classWithFormattedProperties = resultsClassLoader.loadClass("com.example.FormattedProperties");
-
     }
 
     @Test

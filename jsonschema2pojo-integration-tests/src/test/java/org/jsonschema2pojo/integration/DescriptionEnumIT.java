@@ -16,16 +16,16 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -36,11 +36,11 @@ import com.thoughtworks.qdox.model.JavaClass;
  */
 public class DescriptionEnumIT {
 
-    @ClassRule public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithDescription;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws IOException {
 
         schemaRule.generateAndCompile("/schema/description/descriptionEnum.json", "com.example");

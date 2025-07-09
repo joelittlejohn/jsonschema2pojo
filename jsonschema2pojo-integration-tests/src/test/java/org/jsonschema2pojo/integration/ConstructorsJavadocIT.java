@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +29,11 @@ import java.util.stream.Collectors;
 
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
@@ -43,21 +41,17 @@ import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaConstructor;
 import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
-@RunWith(Enclosed.class)
 public class ConstructorsJavadocIT {
 
     private static final DefaultJavaClass cString = new DefaultJavaClass(String.class.getName());
     private static final DefaultJavaClass cDouble = new DefaultJavaClass(Double.class.getName());
 
-    @RunWith(Parameterized.class)
-    public static class ConstructorWithRequiredPropertiesOnlyIT {
+    @Nested
+    @ParameterizedClass(name = "{0}")
+    @ValueSource(strings = { "constructorsRequiredPropertiesOnly", "includeRequiredPropertiesConstructor" })
+    class ConstructorWithRequiredPropertiesOnlyIT {
 
-        @Parameters(name = "{0}")
-        public static Collection<String> data() {
-            return asList("constructorsRequiredPropertiesOnly", "includeRequiredPropertiesConstructor");
-        }
-
-        @Rule
+        @RegisterExtension
         public final Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
         private final String configuration;
@@ -84,9 +78,10 @@ public class ConstructorsJavadocIT {
         }
     }
 
-    public static class ConstructorWithAllPropertiesIT {
+    @Nested
+    class ConstructorWithAllPropertiesIT {
 
-        @Rule
+        @RegisterExtension
         public final Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
         @Test
@@ -111,9 +106,10 @@ public class ConstructorsJavadocIT {
 
     }
 
-    public static class IncludeCopyConstructorIT {
+    @Nested
+    class IncludeCopyConstructorIT {
 
-        @Rule
+        @RegisterExtension
         public final Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
         @Test

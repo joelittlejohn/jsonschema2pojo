@@ -17,14 +17,15 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class PrefixSuffixIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void defaultClassPrefix() throws ClassNotFoundException {
@@ -40,12 +41,11 @@ public class PrefixSuffixIT {
         resultsClassLoader.loadClass("com.example.AbstractPrimitiveProperties");
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void customClassPrefixExistingClass() throws ClassNotFoundException {
-
+    @Test
+    public void customClassPrefixExistingClass() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesJavaType.json",
                 "com.example", config("classNamePrefix", "SomePrefix"));
-        resultsClassLoader.loadClass("org.jsonschema2pojo.SomePrefixNoopAnnotator");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("org.jsonschema2pojo.SomePrefixNoopAnnotator"));
     }
     
     @Test
@@ -75,30 +75,28 @@ public class PrefixSuffixIT {
         resultsClassLoader.loadClass("com.example.PrimitivePropertiesdao");
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void NotExistingClassPrefix() throws ClassNotFoundException{
-
+    @Test
+    public void NotExistingClassPrefix() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNamePrefix","Abstract"));
-        resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties"));
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void NotExistingClassSufix() throws ClassNotFoundException{
-
+    @Test
+    public void NotExistingClassSufix() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("classNameSuffix","Dao"));
-        resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties"));
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void SuffixWithDefaultPackageName() throws ClassNotFoundException{
+    @Test
+    public void SuffixWithDefaultPackageName() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "", config("classNameSuffix","Dao"));
-        resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties"));
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void PrefixWithDefaultPackageName() throws ClassNotFoundException{
+    @Test
+    public void PrefixWithDefaultPackageName() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "", config("classNamePrefix","Abstract"));
-        resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties");
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.NotExistingPrimitiveProperties"));
     }
 
     @Test

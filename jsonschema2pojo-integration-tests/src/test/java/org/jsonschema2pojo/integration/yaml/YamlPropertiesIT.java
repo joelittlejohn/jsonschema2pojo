@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration.yaml;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -27,15 +27,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class YamlPropertiesIT {
  
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -142,10 +142,10 @@ public class YamlPropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("property1"));
-        assertNotNull(generatedType.getDeclaredField("propertyTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyThreeWithSpace"));
-        assertNotNull(generatedType.getDeclaredField("propertyFour"));
+        assertThat(generatedType.getDeclaredField("property1"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyThreeWithSpace"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyFour"), is(notNullValue()));
 
         assertThat(jsonified.has("Property1"), is(true));
         assertThat(jsonified.has("PropertyTwo"), is(true));
