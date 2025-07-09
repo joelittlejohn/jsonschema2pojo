@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collection;
@@ -29,26 +29,25 @@ import org.joda.time.LocalTime;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class FormatRuleJodaTest {
 
-    private GenerationConfig config = mock(GenerationConfig.class);
+    private final GenerationConfig config = mock(GenerationConfig.class);
     private FormatRule rule;
 
     private final String formatValue;
     private final Class<?> expectedType;
 
-    @Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { "date-time", DateTime.class },
@@ -61,7 +60,7 @@ public class FormatRuleJodaTest {
         this.expectedType = expectedType;
     }
 
-    @Before
+    @BeforeEach
     public void setupConfig() {
         when(config.isUseJodaLocalTimes()).thenReturn(true);
         when(config.isUseJodaLocalDates()).thenReturn(true);

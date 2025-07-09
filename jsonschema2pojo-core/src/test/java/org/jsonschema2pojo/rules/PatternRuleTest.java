@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
@@ -31,10 +31,10 @@ import java.util.stream.Stream;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,7 +48,8 @@ import jakarta.validation.constraints.Pattern;
 /**
  * Tests {@link PatternRuleTest}
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class PatternRuleTest {
 
     private final boolean isApplicable;
@@ -65,7 +66,6 @@ public class PatternRuleTest {
     @Mock
     private JAnnotationUse annotation;
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { true, String.class },
@@ -91,7 +91,7 @@ public class PatternRuleTest {
         this.patternClass = useJakartaValidation ? Pattern.class : javax.validation.constraints.Pattern.class;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new PatternRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));

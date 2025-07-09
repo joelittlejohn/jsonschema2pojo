@@ -17,8 +17,8 @@
 package org.jsonschema2pojo;
 
 import static org.apache.commons.lang3.StringUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;

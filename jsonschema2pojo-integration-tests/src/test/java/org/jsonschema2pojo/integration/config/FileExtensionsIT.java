@@ -21,12 +21,12 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import java.net.URL;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class FileExtensionsIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void extensionsCanBeRemovedFromNames() throws ClassNotFoundException {

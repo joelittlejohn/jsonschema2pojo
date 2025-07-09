@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.Compiler.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +37,12 @@ import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * A JUnit rule that executes JsonSchema2Pojo.
@@ -47,7 +50,7 @@ import org.junit.runners.model.Statement;
  * @author Christian Trimble
  *
  */
-public class Jsonschema2PojoRule implements TestRule {
+public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
 
     private File generateDir;
     private File compileDir;
@@ -55,6 +58,7 @@ public class Jsonschema2PojoRule implements TestRule {
     private boolean captureDiagnostics = false;
     private boolean sourceDirInitialized = false;
     private boolean classesDirInitialized = false;
+    private boolean isStatic = false;
     private List<Diagnostic<? extends JavaFileObject>> diagnostics;
 
     public Jsonschema2PojoRule captureDiagnostics() {
@@ -89,32 +93,58 @@ public class Jsonschema2PojoRule implements TestRule {
         return diagnostics;
     }
 
-    @Override
-    public Statement apply(final Statement base, final Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                active = true;
-                diagnostics = new ArrayList<>();
-                boolean captureDiagnosticsStart = captureDiagnostics;
-                try {
-                    File testRoot = methodNameDir(classNameDir(rootDirectory(), description.getClassName()),
-                            description.getMethodName());
-                    generateDir = new File(testRoot, "generate");
-                    compileDir = new File(testRoot, "compile");
+    private void setUp(String className, String methodName) {
+        active = true;
+        diagnostics = new ArrayList<>();
 
-                    base.evaluate();
-                } finally {
-                    generateDir = null;
-                    compileDir = null;
-                    sourceDirInitialized = false;
-                    classesDirInitialized = false;
-                    captureDiagnostics = captureDiagnosticsStart;
-                    diagnostics = null;
-                    active = false;
-                }
-            }
-        };
+        final File testRoot = methodNameDir(classNameDir(rootDirectory(), className), methodName);
+        generateDir = new File(testRoot, "generate");
+        compileDir = new File(testRoot, "compile");
+    }
+
+    private void cleanUp() {
+        generateDir = null;
+        compileDir = null;
+        sourceDirInitialized = false;
+        classesDirInitialized = false;
+        diagnostics = null;
+        active = false;
+    }
+
+    @Override
+    public void beforeAll(ExtensionContext context) {
+        isStatic = true;
+        setUp(context.getRequiredTestClass().getName(), null);
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) {
+        if (isStatic) {
+            return;
+        }
+
+        final String contextDisplayName = context.getParent().map(ExtensionContext::getDisplayName).orElse(context.getDisplayName());
+        final String displayName = StringUtils.removeEnd(contextDisplayName, "()");
+        String methodName = context.getRequiredTestMethod().getName();
+        if (!StringUtils.equals(displayName, methodName)
+               // displayName may differ from methodName in case of nested test classes, e.g. when using @Nested
+               && !StringUtils.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
+            methodName = methodName + "[" + displayName + "]";
+        }
+        setUp(context.getRequiredTestClass().getName(), methodName);
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+        if (isStatic) {
+            return;
+        }
+        cleanUp();
+    }
+
+    @Override
+    public void afterAll(ExtensionContext context) {
+        cleanUp();
     }
 
     public File generate(String schema, String targetPackage) {
@@ -176,16 +206,18 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     private void checkActive() {
-        if (active != true) {
+        if (!active) {
             throw new IllegalStateException("cannot access Jsonschema2PojoRule state when inactive");
         }
     }
 
     class CapturingDiagnosticListener implements DiagnosticListener<JavaFileObject> {
+
         @Override
         public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
             diagnostics.add(diagnostic);
         }
+
     }
 
     private static List<File> emptyClasspath() {
@@ -225,9 +257,10 @@ public class Jsonschema2PojoRule implements TestRule {
         }
     }
 
-    static File methodNameDir(File baseDir, String methodName) throws IOException {
-        if (methodName == null)
+    static File methodNameDir(File baseDir, String methodName) {
+        if (methodName == null) {
             methodName = "class";
+        }
         Matcher matcher = methodNamePattern.matcher(methodName);
 
         if (matcher.matches()) {
@@ -236,7 +269,7 @@ public class Jsonschema2PojoRule implements TestRule {
             }
             return new File(baseDir, safeDirName(matcher.group(1)));
         } else {
-            throw new IOException("cannot transform methodName (" + methodName + ") into path");
+            throw new IllegalArgumentException("cannot transform methodName (" + methodName + ") into path");
         }
     }
 
@@ -253,7 +286,7 @@ public class Jsonschema2PojoRule implements TestRule {
     }
 
     static String safeDirName(String label) {
-        return label.replaceAll("[^a-zA-Z1-9]+", "_");
+        return label.replaceAll("[^a-zA-Z0-9]+", "_");
     }
 
     static String classNameToPath(String className) {

@@ -27,9 +27,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import org.jsonschema2pojo.InclusionLevel;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ArgumentsTest {
 
@@ -38,13 +38,13 @@ public class ArgumentsTest {
     private final ByteArrayOutputStream systemOutCapture = new ByteArrayOutputStream();
     private final ByteArrayOutputStream systemErrCapture = new ByteArrayOutputStream();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setOut(new PrintStream(systemOutCapture));
         System.setErr(new PrintStream(systemErrCapture));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setOut(SYSTEM_OUT);
         System.setErr(SYSTEM_ERR);

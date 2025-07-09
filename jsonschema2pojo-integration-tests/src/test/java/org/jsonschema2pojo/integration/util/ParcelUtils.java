@@ -16,6 +16,8 @@
 
 package org.jsonschema2pojo.integration.util;
 
+import java.lang.reflect.Field;
+
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -45,12 +47,11 @@ public final class ParcelUtils {
 
         Bundle bundle = parcel.readBundle();
         bundle.setClassLoader(parcelableType.getClassLoader());
-        
-        Parcelable unparceledInstance = bundle.getParcelable(key);
-        return unparceledInstance;
+
+        return bundle.getParcelable(key);
     }
 
-    public static Parcelable parcelableReadFromParcel(Parcel parcel, Class<?> parcelableType, Parcelable parcelable) {
+    public static Parcelable parcelableReadFromParcel(Parcel parcel, Parcelable parcelable) {
         parcel.setDataPosition(0);
         return createFromParcelFromParcelable(parcel, parcelable);
     }
@@ -59,16 +60,12 @@ public final class ParcelUtils {
     private static Parcelable createFromParcelFromParcelable(Parcel in, Parcelable parcelable) {
         try {
             Class<?> parcelableClass = parcelable.getClass().getClassLoader().loadClass(parcelable.getClass().getName());
-            java.lang.reflect.Field creatorField = parcelableClass.getDeclaredField("CREATOR");
-            Object creatorInstance = creatorField.get(parcelable);
-            java.lang.reflect.Method createFromParcel = creatorInstance.getClass().getDeclaredMethod("createFromParcel", new Class[] { Parcel.class });
-            createFromParcel.setAccessible(true);
-            return (Parcelable) createFromParcel.invoke(creatorInstance, in);
+            Field creatorField = parcelableClass.getDeclaredField("CREATOR");
+            Parcelable.Creator<?> creatorInstance = (Parcelable.Creator<?>) creatorField.get(parcelable);
+
+            return (Parcelable) creatorInstance.createFromParcel(in);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException(e);
         }
-        catch (Throwable ignored) {
-            ignored.getCause().printStackTrace();
-            // Ignore
-        }
-        return null;
     }
 }

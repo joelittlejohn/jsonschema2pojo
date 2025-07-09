@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
@@ -28,16 +28,16 @@ import java.util.Collections;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class FormatRulePrimitivesTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
@@ -46,7 +46,6 @@ public class FormatRulePrimitivesTest {
     private final Class<?> primitive;
     private final Class<?> wrapper;
 
-    @Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { boolean.class, Boolean.class },

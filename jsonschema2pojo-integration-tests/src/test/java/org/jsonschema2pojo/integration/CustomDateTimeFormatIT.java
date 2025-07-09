@@ -16,32 +16,32 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.Locale;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CustomDateTimeFormatIT {
-    @ClassRule
+
+    @RegisterExtension
     public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWhenFormatDatesTrue;
     private static Class<?> classWhenFormatDatesFalse;
     private static Class<?> classWithCustomPatterns;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
                 "dateType", "java.util.Date",
                 "timeType", "java.util.Date",

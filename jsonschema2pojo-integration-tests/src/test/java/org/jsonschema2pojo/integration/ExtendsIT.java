@@ -16,20 +16,22 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ExtendsIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings("rawtypes")
@@ -70,12 +72,10 @@ public class ExtendsIT {
 
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void extendsStringCausesNoNewTypeToBeGenerated() throws ClassNotFoundException {
-
+    @Test
+    public void extendsStringCausesNoNewTypeToBeGenerated() {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsString.json", "com.example");
-        resultsClassLoader.loadClass("com.example.ExtendsString");
-
+        assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.ExtendsString"));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ExtendsIT {
         new PropertyDescriptor("parent", generatedType).getWriteMethod().invoke(instance2, "not-equal");
         new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance2, "2");
 
-        assertNotEquals(instance, instance2);
+        assertThat(instance, is(not(equalTo(instance2))));
     }
 
     @Test
@@ -103,10 +103,10 @@ public class ExtendsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/extendsSchemaWithinDefinitions.json", "com.example");
 
         Class subtype = resultsClassLoader.loadClass("com.example.Child");
-        assertNotNull("no propertyOfChild field", subtype.getDeclaredField("propertyOfChild"));
+        assertThat("no propertyOfChild field", subtype.getDeclaredField("propertyOfChild"), is(notNullValue()));
 
         Class supertype = resultsClassLoader.loadClass("com.example.Parent");
-        assertNotNull("no propertyOfParent field", supertype.getDeclaredField("propertyOfParent"));
+        assertThat("no propertyOfParent field", supertype.getDeclaredField("propertyOfParent"), is(notNullValue()));
 
         assertThat(subtype.getSuperclass(), is(equalTo(supertype)));
     }
@@ -121,8 +121,8 @@ public class ExtendsIT {
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
-        assertNotNull("Parent constructor is missing", supertype.getConstructor(String.class));
-        assertNotNull("Constructor is missing", type.getConstructor(String.class, String.class));
+        assertThat("Parent constructor is missing", supertype.getConstructor(String.class), is(notNullValue()));
+        assertThat("Constructor is missing", type.getConstructor(String.class, String.class), is(notNullValue()));
 
         Object typeInstance = type.getConstructor(String.class, String.class).newInstance("String1", "String2");
 
@@ -148,9 +148,9 @@ public class ExtendsIT {
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
-        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
-        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
-        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, String.class, String.class));
+        assertThat("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class), is(notNullValue()));
+        assertThat("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class), is(notNullValue()));
+        assertThat("Constructor is missing", type.getDeclaredConstructor(String.class, String.class, String.class), is(notNullValue()));
 
         Object typeInstance = type.getConstructor(String.class, String.class, String.class).newInstance("String1", "String2", "String3");
 
@@ -180,9 +180,9 @@ public class ExtendsIT {
 
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
-        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class));
-        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class));
-        assertNotNull("Constructor is missing", type.getDeclaredConstructor(Integer.class, String.class, String.class));
+        assertThat("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class), is(notNullValue()));
+        assertThat("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, String.class), is(notNullValue()));
+        assertThat("Constructor is missing", type.getDeclaredConstructor(Integer.class, String.class, String.class), is(notNullValue()));
 
         Object typeInstance = type.getConstructor(Integer.class, String.class, String.class).newInstance(5, "String2", "String3");
 
@@ -210,9 +210,9 @@ public class ExtendsIT {
         Class supertype = resultsClassLoader.loadClass("com.example.SubtypeOfC");
         Class superSupertype = resultsClassLoader.loadClass("com.example.C");
 
-        assertNotNull("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class, Integer.class));
-        assertNotNull("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, Boolean.class, Integer.class));
-        assertNotNull("Constructor is missing", type.getDeclaredConstructor(String.class, Integer.class, Boolean.class, Integer.class));
+        assertThat("Parent Parent constructor is missing", superSupertype.getDeclaredConstructor(String.class, Integer.class), is(notNullValue()));
+        assertThat("Parent Constructor is missing", supertype.getDeclaredConstructor(String.class, Boolean.class, Integer.class), is(notNullValue()));
+        assertThat("Constructor is missing", type.getDeclaredConstructor(String.class, Integer.class, Boolean.class, Integer.class), is(notNullValue()));
 
         Object typeInstance = type.getConstructor(String.class, Integer.class, Boolean.class, Integer.class).newInstance("String1", 5, true, 6);
 
@@ -271,11 +271,11 @@ public class ExtendsIT {
         assertThat(type.getSuperclass(), is(equalTo(supertype)));
 
         Method builderMethod = supertype.getDeclaredMethod(builderMethodName, String.class);
-        assertNotNull("Builder method not found on super type: " + builderMethodName, builderMethod);
+        assertThat("Builder method not found on super type: " + builderMethodName, builderMethod, is(notNullValue()));
         assertThat(builderMethod.getReturnType(), is(equalTo(supertype)));
 
         Method builderMethodOverride = type.getDeclaredMethod(builderMethodName, String.class);
-        assertNotNull("Builder method not overridden on type: " + builderMethodName, builderMethodOverride);
+        assertThat("Builder method not overridden on type: " + builderMethodName, builderMethodOverride, is(notNullValue()));
         assertThat(builderMethodOverride.getReturnType(), is(equalTo(type)));
     }
 

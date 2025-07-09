@@ -16,18 +16,19 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,7 +38,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AnnotationStyleIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -115,15 +116,14 @@ public class AnnotationStyleIT {
 
     @Test
     public void invalidAnnotationStyleCausesMojoException() {
+        final String schema = "/schema/properties/primitiveProperties.json";
 
-        try {
-            schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "invalidstyle"));
-            fail();
-        } catch (RuntimeException e) {
-            assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));
-            assertThat(e.getCause().getMessage(), is(containsString("invalidstyle")));
-        }
+        final RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> schemaRule.generate(schema, "com.example", config("annotationStyle", "invalidstyle")));
 
+        assertThat(exception.getCause(), is(instanceOf(MojoExecutionException.class)));
+        assertThat(exception.getCause().getMessage(), is(containsString("invalidstyle")));
     }
 
 }

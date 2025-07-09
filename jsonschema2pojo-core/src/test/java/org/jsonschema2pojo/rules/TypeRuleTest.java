@@ -24,8 +24,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.jsonschema2pojo.GenerationConfig;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ public class TypeRuleTest {
 
     private final TypeRule rule = new TypeRule(ruleFactory);
 
-    @Before
+    @BeforeEach
     public void wireUpConfig() {
         when(ruleFactory.getGenerationConfig()).thenReturn(config);
     }

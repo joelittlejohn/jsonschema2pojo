@@ -38,11 +38,10 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.jsonschema2pojo.integration.util.Compiler;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * <p>Tests looking for warning coming from generated output.</p>
@@ -55,11 +54,12 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Christian Trimble
  *
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{0}")
+@MethodSource("parameters")
 public class CompilerWarningIT {
-  @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule().captureDiagnostics();
-  
-  @Parameters(name="{0}")
+
+  @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule().captureDiagnostics();
+
   public static Collection<Object[]> parameters() {
     JavaCompiler systemJavaCompiler = Compiler.systemJavaCompiler();
     JavaCompiler eclipseCompiler = Compiler.eclipseCompiler();
@@ -96,7 +96,7 @@ public class CompilerWarningIT {
   @Test
   public void checkWarnings() {
     schemaRule.generate(schema, "com.example", config);
-    schemaRule.compile(compiler, new NullWriter(), new ArrayList<>(), config);
+    schemaRule.compile(compiler, NullWriter.INSTANCE, new ArrayList<>(), config);
     
     List<Diagnostic<? extends JavaFileObject>> warnings = warnings(schemaRule.getDiagnostics());
     
@@ -113,7 +113,7 @@ public class CompilerWarningIT {
     return warnings;
   }
 
-  public static Matcher<Iterable<Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
+  public static Matcher<Iterable<? extends Diagnostic<? extends JavaFileObject>>> onlyCastExceptions() {
     return Matchers.everyItem(hasMessage(containsString("Type safety: Unchecked cast from")));
   }
 
