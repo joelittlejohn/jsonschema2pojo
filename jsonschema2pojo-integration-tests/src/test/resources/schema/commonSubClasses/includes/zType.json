@@ -1,0 +1,9 @@
+{
+    "type" : "object",
+    "title": "ZType",
+    "properties" : {
+        "propertyOfZ" : {
+            "type" : "string"
+        }
+    }
+}

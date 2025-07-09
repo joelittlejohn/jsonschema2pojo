@@ -90,8 +90,12 @@ public class SchemaRuleTest {
         when(schema.getContent()).thenReturn(schemaContent);
         schema.setJavaTypeIfEmpty(jclass);
 
+        final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
+        when(mockGenerationConfig.isUseDeduplication()).thenReturn(false);
+
         EnumRule enumRule = mock(EnumRule.class);
         when(mockRuleFactory.getEnumRule()).thenReturn(enumRule);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
 
         when(enumRule.apply(NODE_NAME, enumNode, null, jclass, schema)).thenReturn(jclass);
 
