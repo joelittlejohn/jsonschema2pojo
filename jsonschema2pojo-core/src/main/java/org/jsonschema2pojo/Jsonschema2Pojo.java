@@ -174,6 +174,10 @@ public class Jsonschema2Pojo {
 
     public static String getNodeName(String filePath, GenerationConfig config) {
         try {
+            if(filePath.endsWith("/-")) {
+                // if standard input '-' use base directory as name.
+                filePath = filePath.substring(0, filePath.length() - 2);
+            }
             String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, StandardCharsets.UTF_8.toString()));
             String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
             
