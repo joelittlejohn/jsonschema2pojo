@@ -16,16 +16,32 @@
 
 package org.jsonschema2pojo.util;
 
+import org.apache.commons.lang.StringUtils;
+import org.jsonschema2pojo.URLProtocol;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.apache.commons.lang.StringUtils;
-import org.jsonschema2pojo.URLProtocol;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class URLUtil {
+
+    private static final Set<URLProtocol> LOCAL_PROTOCOL = Collections.unmodifiableSet(EnumSet.of(URLProtocol.NO_PROTOCOL, URLProtocol.FILE));
+
+    private URLUtil() {
+    }
+
+    public static boolean isLocalUrl(String input) {
+        return LOCAL_PROTOCOL.contains(parseProtocol(input));
+    }
+
+    public static boolean isRemoteUrl(String input) {
+        return !isLocalUrl(input);
+    }
 
     public static URLProtocol parseProtocol(String input) {
         return URLProtocol.fromString(StringUtils.substringBefore(input, ":"));
