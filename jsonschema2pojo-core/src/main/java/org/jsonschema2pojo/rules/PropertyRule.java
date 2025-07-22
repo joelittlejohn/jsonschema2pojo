@@ -22,14 +22,19 @@ import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocCommentable;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -99,20 +104,21 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
 
+        boolean required = isRequired(nodeName, node, schema);
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
+			JMethod getter = addGetter(jclass, field, nodeName, node, required, useOptional(nodeName, node, schema));
             ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeSetters) {
-            JMethod setter = addSetter(jclass, field, nodeName, node);
+            JMethod setter = addSetter(jclass, field, nodeName, node, required);
             ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
-            addBuilderMethod(jclass, field, nodeName, node);
+            addBuilderMethod(jclass, field, nodeName, node, required);
         }
 
         if (node.has("pattern")) {
@@ -136,7 +142,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return jclass;
     }
 
-    private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
+    protected static boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
         JsonNode array = schema.getContent().get(arrayFieldName);
         if (array != null) {
             for (JsonNode requiredNode : array) {
@@ -148,7 +154,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean hasFlag(JsonNode node, String fieldName) {
+    protected static boolean hasFlag(JsonNode node, String fieldName) {
         if (node.has(fieldName)) {
             final JsonNode requiredNode = node.get(fieldName);
             return requiredNode.asBoolean();
@@ -157,15 +163,15 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return false;
     }
 
-    private boolean isDeclaredAs(String type, String nodeName, JsonNode node, Schema schema) {
+    protected static boolean isDeclaredAs(String type, String nodeName, JsonNode node, Schema schema) {
         return hasEnumerated(schema, type, nodeName) || hasFlag(node, type);
     }
 
-    private boolean isRequired(String nodeName, JsonNode node, Schema schema) {
+    protected static boolean isRequired(String nodeName, JsonNode node, Schema schema) {
         return isDeclaredAs("required", nodeName, node, schema);
     }
 
-    private boolean useOptional(String nodeName, JsonNode node, Schema schema) {
+    protected static boolean useOptional(String nodeName, JsonNode node, Schema schema) {
         return isDeclaredAs("javaOptional", nodeName, node, schema);
     }
 
@@ -256,44 +262,55 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return getter;
     }
 
-    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    private JMethod addSetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean required) {
         JMethod setter = c.method(JMod.PUBLIC, void.class, getSetterName(jsonPropertyName, node));
 
         JVar param = setter.param(field.type(), field.name());
         JBlock body = setter.body();
+        addRequireNonNullCheck(c, field, required, param, body);
         body.assign(JExpr._this().ref(field), param);
 
         return setter;
     }
 
-    private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+	public void addRequireNonNullCheck(JDefinedClass c, JFieldVar field, boolean required, JVar param, JBlock body) {
+		if (required && ruleFactory.getGenerationConfig().isIncludeRequireNonNullOnRequiredFields()) {
+        	JClass ref = c.owner().ref(Objects.class);
+        	JInvocation staticInvoke = ref.staticInvoke("requireNonNull").arg(param).arg(c.fullName()+"#"+ field.name()+" must not be null");
+        	body.add(staticInvoke);
+        }
+	}
+
+    private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean required) {
         JMethod result = null;
         if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
-            result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
+            result = addInnerBuilderMethod(c, field, jsonPropertyName, node, required);
         } else {
-            result = addLegacyBuilder(c, field, jsonPropertyName, node);
+            result = addLegacyBuilder(c, field, jsonPropertyName, node, required);
         }
         return result;
     }
 
-    private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
+    private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean required) {
         JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
         JVar param = builder.param(field.type(), field.name());
         JBlock body = builder.body();
+        addRequireNonNullCheck(c, field, required, param, body);
         body.assign(JExpr._this().ref(field), param);
         body._return(JExpr._this());
 
         return builder;
     }
 
-    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean required)    {
         JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
         JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), getBuilderName(jsonPropertyName, node));
 
         JVar param = builderMethod.param(field.type(), field.name());
         JBlock body = builderMethod.body();
+        addRequireNonNullCheck(c, field, required, param, body);
         body.assign(JExpr.ref(JExpr.cast(c, JExpr._this().ref("instance")), field), param);
         body._return(JExpr._this());
 

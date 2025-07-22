@@ -98,6 +98,8 @@ public class JsonSchemaExtension implements GenerationConfig {
   Map<String, String> formatTypeMapping
   boolean includeGeneratedAnnotation
   boolean useJakartaValidation
+  boolean includeRequireNonNullOnRequiredFields
+    
 
   public JsonSchemaExtension() {
     // See DefaultGenerationConfig
@@ -150,6 +152,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeDynamicGetters = false
     includeDynamicSetters = false
     includeDynamicBuilders = false
+	includeRequireNonNullOnRequiredFields = false
     formatDates = false
     formatTimes = false
     formatDateTimes = false
@@ -255,6 +258,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customAnnotator = ${customAnnotator.getName()}
        |customRuleFactory = ${customRuleFactory.getName()}
        |includeJsr303Annotations = ${includeJsr303Annotations}
+	   |includeRequireNonNullOnRequiredFields = ${includeRequireNonNullOnRequiredFields}
        |includeJsr305Annotations = ${includeJsr305Annotations}
        |useOptionalForGetters = ${useOptionalForGetters}
        |sourceType = ${sourceType.toString().toLowerCase()}

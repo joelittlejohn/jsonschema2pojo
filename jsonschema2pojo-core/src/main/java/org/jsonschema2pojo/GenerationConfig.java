@@ -250,6 +250,12 @@ public interface GenerationConfig {
    *         generated Java types.
    */
   boolean isIncludeJsr305Annotations();
+  /**
+   * Gets the 'includeRequireNonNullOnRequiredFields' configuration option.
+   *
+   * @return Whether to add non-null check in setter method on given field.
+   */
+  boolean isIncludeRequireNonNullOnRequiredFields();
 
   /**
    * Gets the 'useOptionalForGetters' configuration option.

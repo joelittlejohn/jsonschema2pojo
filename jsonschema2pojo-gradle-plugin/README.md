@@ -153,7 +153,8 @@ jsonSchema2Pojo {
 
   // Whether to include JSR-305 annotations, for schema rules like Nullable, NonNull, etc
   includeJsr305Annotations = false
-
+  // Whether to add Objects.requireNonNull in setter
+  includeRequireNonNullOnRequiredFields = false
   // The Level of inclusion to set in the generated Java types (for Jackson serializers)
   inclusionLevel = InclusionLevel.NON_NULL
 
