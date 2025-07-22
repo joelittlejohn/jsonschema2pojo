@@ -296,6 +296,9 @@ jsonSchema2Pojo {
 
   // properties to exclude from generated toString
   toStringExcludes = ["someProperty"]
+    
+  // Whether to exclude the object header from the toString method
+  excludeObjectHeaderFromToString = false
 
     // What Java version to target with generated source code (1.6, 1.8, 9, 11, etc).
     // By default, the version will be taken from the Gradle Java plugin's 'sourceCompatibility',
