@@ -634,5 +634,9 @@ public interface GenerationConfig {
    * @return Whether to use <a href="http://jcp.org/en/jsr/detail?id=303">JSR-303</a> annotations from {@code jakarta.validation} package instead of {@code javax.validation} package when adding JSR-303 annotations to generated Java types
    */
   boolean isUseJakartaValidation();
+  
+  default boolean isOnlyAbstractJavaTypeClasses() {
+      return false;
+  }
 
 }
