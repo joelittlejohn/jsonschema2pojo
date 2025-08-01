@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.rules;
 
 import static java.lang.String.*;
-import static org.apache.commons.lang.StringUtils.*;
 
 import java.net.URI;
 import java.util.Date;
@@ -27,6 +26,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -164,10 +164,9 @@ public class FormatRule implements Rule<JType, JType> {
     }
 
     private static Class<?> tryLoadType(String typeName, String format) {
-        if (!isEmpty(typeName)) {
+        if (StringUtils.isNotEmpty(typeName)) {
             try {
-                Class<?> type = ClassUtils.getClass(Thread.currentThread().getContextClassLoader(), typeName);
-                return type;
+                return ClassUtils.getClass(Thread.currentThread().getContextClassLoader(), typeName);
             }
             catch (ClassNotFoundException e) {
                 throw new GenerationException(format("could not load java type %s for %s", typeName, format), e);
