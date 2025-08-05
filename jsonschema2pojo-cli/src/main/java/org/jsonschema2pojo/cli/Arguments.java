@@ -251,6 +251,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
 
+    @Parameter(names = { "--useDeduplication" }, description = "Whether to deduplicate generated types for identical schemas")
+    private boolean useDeduplication = false;
+
     @Parameter(names = { "-v", "--version"}, description = "Print version information", help = true)
     private boolean printVersion = false;
 
@@ -623,5 +626,10 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public boolean isUseDeduplication() {
+        return useDeduplication;
     }
 }
