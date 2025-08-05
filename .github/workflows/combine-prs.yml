@@ -95,7 +95,7 @@ jobs:
             console.log('Combined: ' + combined);
             return combined
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       # Creates a branch with other PR branches merged together
