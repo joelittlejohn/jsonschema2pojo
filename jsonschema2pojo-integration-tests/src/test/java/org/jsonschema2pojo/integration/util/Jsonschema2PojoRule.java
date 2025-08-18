@@ -24,6 +24,7 @@ import static org.jsonschema2pojo.integration.util.Compiler.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +174,7 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     }
 
     public ClassLoader compile(List<File> classpath, Map<String, Object> config) {
-        return compile(systemJavaCompiler(), null, classpath, config);
+        return compile(systemJavaCompiler(), new PrintWriter(System.out), classpath, config);
     }
 
     public ClassLoader compile(JavaCompiler compiler, Writer out, List<File> classpath, Map<String, Object> config) {

@@ -302,6 +302,48 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>java-8-profile</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!--
+                          Version 3.25.0 is the last version supporting Java 8.
+                          Starting at 3.26.0, the Eclipse Compiler is looking for MODULE_SOURCE_PATH (Part of Jigsaw).
+                          -->
+                        <version>3.25.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
+        <profile>
+            <id>java-11-profile</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!-- 
+                          Version 3.33.0 is the last version supporting Java 11.
+                          Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
+                          -->
+                        <version>3.33.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
     </profiles>
 
     <dependencies>
@@ -470,9 +512,9 @@
                 <version>3.3.4</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jdt.core.compiler</groupId>
+                <groupId>org.eclipse.jdt</groupId>
                 <artifactId>ecj</artifactId>
-                <version>4.6.1</version>
+                <version>3.42.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
