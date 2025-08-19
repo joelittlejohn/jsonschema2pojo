@@ -371,6 +371,13 @@ public class TypeIT {
                 }));
     }
 
+    @Test
+    public void existingTypeAndRefIgnoresRef() throws NoSuchMethodException {
+        Method getterMethod = classWithManyTypes.getMethod("getExistingTypeWithRef");
+
+        assertThat(getterMethod.getReturnType().getName(), is("com.example.MyJsonViewClass"));
+    }
+
     public static class InheritedClassWithGenerics<X, Y, Z> {
     }
 

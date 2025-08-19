@@ -63,7 +63,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     @Override
     public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
 
-        if (schemaNode.has("$ref")) {
+        if (schemaNode.has("$ref") && !schemaNode.has("existingJavaType")) {
             final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
 
             schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());

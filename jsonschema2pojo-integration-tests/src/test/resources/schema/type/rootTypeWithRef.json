@@ -1,0 +1,5 @@
+{
+    "type" : "object",
+    "$ref": "genericJavaType.json",
+    "existingJavaType": "com.example.MyJsonViewClass"
+}
