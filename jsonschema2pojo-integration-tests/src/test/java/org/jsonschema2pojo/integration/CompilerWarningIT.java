@@ -39,6 +39,7 @@ import org.hamcrest.Matchers;
 import org.jsonschema2pojo.integration.util.Compiler;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -94,6 +95,7 @@ public class CompilerWarningIT {
   }
 
   @Test
+  @EnabledIfSystemProperty(named = "java.version", matches = "1\\.8\\..*")
   public void checkWarnings() {
     schemaRule.generate(schema, "com.example", config);
     schemaRule.compile(compiler, NullWriter.INSTANCE, new ArrayList<>(), config);

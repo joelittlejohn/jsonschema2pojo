@@ -159,6 +159,18 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>define-root</id>
+                        <goals>
+                            <goal>rootlocation</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
@@ -190,7 +202,7 @@
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>
                     <headerDefinitions>
-                        <headerDefinition>license-plugin-definition.xml</headerDefinition>
+                        <headerDefinition>${rootlocation}/license-plugin-definition.xml</headerDefinition>
                     </headerDefinitions>
                     <includes>
                         <include>**/src/main/java/**</include>
