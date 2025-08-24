@@ -19,7 +19,9 @@ package org.jsonschema2pojo.rules;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
+import java.util.Objects;
 
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
@@ -64,6 +66,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
+            final Schema parentSchema = null != schema ? schema.getParent() : null;
             final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
 
             schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
@@ -73,7 +76,9 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
                 return schema.getJavaType();
             }
 
-            return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
+            if (!Objects.equals(schema, parentSchema)) {
+                return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
+            }
         }
 
         JType javaType;
