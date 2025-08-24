@@ -88,6 +88,27 @@
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.5.3</version>
+                    <configuration>
+                        <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                            <disable>false</disable>
+                            <version>3.5.3</version>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        </statelessTestsetReporter>
+                        <consoleOutputReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5ConsoleOutputReporter">
+                            <disable>false</disable>
+                            <encoding>UTF-8</encoding>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                        </consoleOutputReporter>
+                        <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoReporter">
+                            <disable>false</disable>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+                            <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+                        </statelessTestsetInfoReporter>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -139,6 +160,27 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.5.3</version>
+                    <configuration>
+                        <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                            <disable>false</disable>
+                            <version>3.5.3</version>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        </statelessTestsetReporter>
+                        <consoleOutputReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5ConsoleOutputReporter">
+                            <disable>false</disable>
+                            <encoding>UTF-8</encoding>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                        </consoleOutputReporter>
+                        <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoReporter">
+                            <disable>false</disable>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+                            <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+                        </statelessTestsetInfoReporter>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.bluetrainsoftware.maven</groupId>
@@ -158,6 +200,18 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>define-root</id>
+                        <goals>
+                            <goal>rootlocation</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -190,7 +244,7 @@
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>
                     <headerDefinitions>
-                        <headerDefinition>license-plugin-definition.xml</headerDefinition>
+                        <headerDefinition>${rootlocation}/license-plugin-definition.xml</headerDefinition>
                     </headerDefinitions>
                     <includes>
                         <include>**/src/main/java/**</include>
@@ -290,6 +344,48 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>java-8-profile</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!--
+                          Version 3.25.0 is the last version supporting Java 8.
+                          Starting at 3.26.0, the Eclipse Compiler is looking for MODULE_SOURCE_PATH (Part of Jigsaw).
+                          -->
+                        <version>3.25.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
+        <profile>
+            <id>java-11-profile</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!-- 
+                          Version 3.33.0 is the last version supporting Java 11.
+                          Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
+                          -->
+                        <version>3.33.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
     </profiles>
 
     <dependencies>
@@ -458,9 +554,9 @@
                 <version>3.3.4</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jdt.core.compiler</groupId>
+                <groupId>org.eclipse.jdt</groupId>
                 <artifactId>ecj</artifactId>
-                <version>4.6.1</version>
+                <version>3.42.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
