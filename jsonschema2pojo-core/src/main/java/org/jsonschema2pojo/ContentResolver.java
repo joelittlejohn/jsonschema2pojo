@@ -51,6 +51,8 @@ public class ContentResolver {
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
 
+    static JsonNode cachedStdIn;
+
     /**
      * Resolve a given URI to read its contents and parse the result as JSON.
      * <p>
@@ -73,7 +75,14 @@ public class ContentResolver {
         }
 
         try {
-            return objectMapper.readTree(uri.toURL());
+            if(uri.getPath().endsWith("/-")) {
+                if(cachedStdIn==null) {
+                    cachedStdIn = objectMapper.readTree(System.in);
+                }
+                return cachedStdIn;
+            } else {
+                return objectMapper.readTree(uri.toURL());
+            }
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
         } catch (IOException e) {
