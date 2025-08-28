@@ -199,6 +199,16 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a "deprecated"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "deprecated" declaration.
+     */
+    public Rule<JDocCommentable, JDocCommentable> getDeprecatedRule() {
+        return new DeprecatedRule(this);
+    }
+
+    /**
      * Provides a rule instance that should be applied to a node to find its
      * equivalent Java type. Typically invoked for properties, arrays, etc for
      * which a Java type must be found/generated.
