@@ -446,4 +446,14 @@ public class RuleFactory {
         return new JavaNameRule();
     }
 
+    /**
+     * A rule that generates the field type used to represent the type for a schema.  This
+     * is indended to provide a way to inject wrapper types like java.util.Optional.
+     * 
+     * @return the rule used to map schema types to field types.
+     */
+    public Rule<JType, JType> getFieldTypeRule() {
+        return new IdentityFieldTypeRule();
+    }
+
 }

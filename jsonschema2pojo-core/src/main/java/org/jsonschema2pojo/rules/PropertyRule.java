@@ -82,8 +82,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
-        propertySchema.setJavaTypeIfEmpty(propertyType);
+        JType propertySchemaType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        propertySchema.setJavaTypeIfEmpty(propertySchemaType);
+
+        JType propertyType = ruleFactory.getFieldTypeRule().apply(nodeName, node, parent, propertySchemaType, propertySchema);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
         boolean isIncludeSetters = ruleFactory.getGenerationConfig().isIncludeSetters();
