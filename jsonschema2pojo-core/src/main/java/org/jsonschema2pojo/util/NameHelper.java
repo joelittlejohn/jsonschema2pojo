@@ -219,13 +219,24 @@ public class NameHelper {
     public String getGetterName(String propertyName, JType type, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
 
-        String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
+        boolean isBoolean = type.equals(type.owner()._ref(boolean.class));
+
+        boolean nameAlreadyHasIsPrefix = isBoolean &&
+                                        propertyName.startsWith("is") &&
+                                        propertyName.length() > 2 &&
+                                        Character.isUpperCase(propertyName.charAt(2));
 
         String getterName;
-        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
-            getterName = prefix + propertyName;
+        if (nameAlreadyHasIsPrefix) {
+            getterName = propertyName;
         } else {
-            getterName = prefix + capitalize(propertyName);
+            String prefix = isBoolean ? "is" : "get";
+
+            if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+                getterName = prefix + propertyName;
+            } else {
+                getterName = prefix + capitalize(propertyName);
+            }
         }
 
         if (getterName.equals("getClass")) {
