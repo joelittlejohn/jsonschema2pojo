@@ -23,10 +23,9 @@ jobs:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java_version }}
           java-distribution: temurin
-          maven-version: 3.8.7
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Install latest jsonschema2pojo SNAPSHOT
-        run: mvn -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
+        run: ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
       - name: Build projects
         run: cd jsonschema2pojo-gradle-plugin/example/android && ./gradlew --info assembleDebug

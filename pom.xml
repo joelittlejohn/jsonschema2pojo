@@ -232,7 +232,7 @@
                                     <version>[${java.version},)</version>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
-                                    <version>3.3</version>
+                                    <version>[3.9.9,)</version>
                                 </requireMavenVersion>
                                 <requireUpperBoundDeps/>
                             </rules>
@@ -385,7 +385,7 @@
                     <dependency>
                         <groupId>org.eclipse.jdt</groupId>
                         <artifactId>ecj</artifactId>
-                        <!-- 
+                        <!--
                           Version 3.33.0 is the last version supporting Java 11.
                           Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
                           -->
