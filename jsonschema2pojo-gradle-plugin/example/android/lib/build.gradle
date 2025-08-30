@@ -3,6 +3,7 @@ apply plugin: 'jsonschema2pojo'
 
 
 android {
+    namespace "jsonschema2pojo.joelittlejohn.github.com.androidexample"
     compileSdkVersion 30
 
     defaultConfig {

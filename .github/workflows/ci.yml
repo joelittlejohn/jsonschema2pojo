@@ -15,7 +15,7 @@ jobs:
     continue-on-error: true # allow jobs to complete even if some fail
     strategy:
       matrix:
-        java: [8]
+        java: [8, 11, 17, 21]
       max-parallel: 4
     name: JDK ${{ matrix.java }} | Project
     steps:
@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-java: [8]
+        build-java: [8, 11, 17, 21]
         run:
           - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
           - { java: 11, gradle: '7.6.4' }
@@ -87,7 +87,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-java: [8]
+        build-java: [8, 11, 17, 21]
         run-java: [8, 11, 17, 21]
     name: JDK ${{ matrix.build-java }} | Example Gradle (Java) | run on Java ${{ matrix.run-java }}
     steps:
