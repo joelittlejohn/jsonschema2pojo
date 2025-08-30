@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class DynamicPropertiesIT {
-    
+
     @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
@@ -45,9 +45,24 @@ public class DynamicPropertiesIT {
 
     @Test
     public void shouldSetStringFieldJava7() throws Throwable {
+        // jdk21 cannot build 1.7 target
+        assumeTrue(JAVA_EARLIER_21);
         setDeclaredPropertyTest(
                 config("includeDynamicAccessors", true, "includeDynamicGetters", true,
                     "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.7"),
+                "/schema/dynamic/parentType.json",
+                "ParentType",
+                String.class,
+                "stringValue",
+                "getStringValue",
+                "value");
+    }
+
+    @Test
+    public void shouldSetStringFieldJava8() throws Throwable {
+        setDeclaredPropertyTest(
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true,
+                        "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.8"),
                 "/schema/dynamic/parentType.json",
                 "ParentType",
                 String.class,

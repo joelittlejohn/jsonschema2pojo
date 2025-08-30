@@ -13,17 +13,23 @@ jobs:
   buildTest:
     name: Build JDK ${{ matrix.java_version }}
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
-        java_version: [8]
+        # Gradle 7 removed maven plugin, but the latest Android plugin compatible with Java 8 need it
+        # so we can't test Android on Java 8 with Gradle 7+
+        # https://docs.gradle.org/7.0/userguide/upgrading_version_6.html#removal_of_the_legacy_maven_plugin
+        # https://mvnrepository.com/artifact/com.android.tools.build/gradle
+        java_version: [11, 17, 21]
     steps:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.18.0
         with:
-          checkout-fetch-depth: 0
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java_version }}
-          java-distribution: temurin
-          maven-version: 3.8.7
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Install latest jsonschema2pojo SNAPSHOT

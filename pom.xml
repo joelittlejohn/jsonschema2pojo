@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,12 +51,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <gradle.version>5.6</gradle.version>
+        <gradle.version>8.9</gradle.version>
         <gson.version>2.11.0</gson.version>
         <moshi.version>1.12.0</moshi.version>
         <jackson2x.version>2.17.2</jackson2x.version>
         <jackson2x.databind.version>2.17.2</jackson2x.databind.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
+        <maven-api.version>2.2.1</maven-api.version>
     </properties>
 
     <reporting>
@@ -366,6 +368,56 @@
         </profile>
 
         <profile>
+            <id>to-jdk8</id>
+            <activation>
+                <jdk>(,1.9)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>3.8</robolectric.version>
+                <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=574229 -->
+                <ecj.version>3.25.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>from-jdk9</id>
+            <activation>
+                <jdk>[1.9,11)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <!-- latest ecj build with 1.8 target, next 11 -->
+                <ecj.version>3.26.0</ecj.version>
+                <!-- latest mockito build with 1.8 target, next 11 -->
+                <mockito.version>4.11.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>[11,17)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <!-- latest ecj build with 11 target, next 17 -->
+                <ecj.version>3.33.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk17</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <properties>
+                <robolectric.version>4.13</robolectric.version>
+                <ecj.version>3.38.0</ecj.version>
+                <mockito.version>5.12.0</mockito.version>
+            </properties>
+        </profile>
+
+        <profile>
             <id>java-11-profile</id>
             <activation>
                 <jdk>11</jdk>
@@ -375,7 +427,7 @@
                     <dependency>
                         <groupId>org.eclipse.jdt</groupId>
                         <artifactId>ecj</artifactId>
-                        <!-- 
+                        <!--
                           Version 3.33.0 is the last version supporting Java 11.
                           Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
                           -->
@@ -400,6 +452,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.13.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
@@ -482,12 +541,6 @@
                 <version>2.13.0</version>
             </dependency>
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>5.13.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>1.7.36</version>
@@ -527,7 +580,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -539,7 +592,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
-                <version>2.2.1</version>
+                <version>${maven-api.version}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
@@ -554,9 +607,10 @@
                 <version>3.3.4</version>
             </dependency>
             <dependency>
+                <!-- https://github.com/eclipse-jdt/eclipse.jdt.core/issues/262 -->
                 <groupId>org.eclipse.jdt</groupId>
                 <artifactId>ecj</artifactId>
-                <version>3.42.0</version>
+                <version>${ecj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -580,7 +634,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>4.11.0</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -592,7 +646,7 @@
             <dependency>
                <groupId>org.robolectric</groupId>
                <artifactId>robolectric</artifactId>
-               <version>4.4</version>
+               <version>${robolectric.version}</version>
                <exclusions>
                    <exclusion>
                        <groupId>junit</groupId>
@@ -628,6 +682,11 @@
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <!-- Some Android dependencies are only available on the Google repository -->
+            <id>google</id>
+            <url>https://maven.google.com</url>
         </repository>
     </repositories>
 
