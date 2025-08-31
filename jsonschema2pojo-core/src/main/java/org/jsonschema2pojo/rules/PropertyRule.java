@@ -16,20 +16,21 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -66,7 +67,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      * @return the given jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) throws JCodeModelException {
         String propertyName;
         if (StringUtils.isEmpty(nodeName)) {
             propertyName = "__EMPTY__";
@@ -82,7 +83,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        AbstractJType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
         propertySchema.setJavaTypeIfEmpty(propertyType);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
@@ -169,7 +170,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return isDeclaredAs("javaOptional", nodeName, node, schema);
     }
 
-    private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, JDocCommentable generatedJavaConstruct) {
+    private void propertyAnnotations(String nodeName, JsonNode node, Schema schema, IJDocCommentable generatedJavaConstruct) throws JCodeModelException {
         if (node.has("title")) {
             ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, generatedJavaConstruct, schema);
         }
@@ -228,8 +229,8 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return node.path("type").asText().equals("array");
     }
 
-    private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
-        JType returnType = field.type();
+    private AbstractJType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
+        AbstractJType returnType = field.type();
         if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) {
             if (!required && field.type().isReference()) {
                 returnType = c.owner().ref("java.util.Optional").narrow(field.type());
@@ -241,7 +242,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired, boolean usesOptional) {
 
-        JType type = getReturnType(c, field, isRequired, usesOptional);
+        AbstractJType type = getReturnType(c, field, isRequired, usesOptional);
 
         JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
 
@@ -308,7 +309,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return ruleFactory.getNameHelper().getSetterName(propertyName, node);
     }
 
-    private String getGetterName(String propertyName, JType type, JsonNode node) {
+    private String getGetterName(String propertyName, AbstractJType type, JsonNode node) {
         return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
     }
 

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
@@ -30,8 +32,6 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
-import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
@@ -93,22 +93,22 @@ public class SelfRefIT {
     }
 
     @Test
-    public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
+    public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException, JCodeModelException {
 
         String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"));
         JCodeModel codeModel = new JCodeModel();
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
 
         codeModel.build(schemaRule.getGenerateDir());
-        
+
         ClassLoader classLoader = schemaRule.compile();
-        
+
         Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsInString");
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));
-        
+
         Class<?> listEntryType = (Class<?>) ((ParameterizedType)nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(listEntryType.getName(), equalTo("com.example.Thing"));
-        
+
         Class<?> thingClass = classLoader.loadClass("com.example.Thing");
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));

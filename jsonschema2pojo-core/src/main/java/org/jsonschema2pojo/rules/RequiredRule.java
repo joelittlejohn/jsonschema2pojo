@@ -21,11 +21,11 @@ import java.lang.annotation.Annotation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -35,7 +35,7 @@ import jakarta.validation.constraints.NotNull;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
+public class RequiredRule implements Rule<IJDocCommentable, IJDocCommentable> {
 
     private final RuleFactory ruleFactory;
 
@@ -64,7 +64,7 @@ public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
      *         required.
      */
     @Override
-    public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
+    public IJDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema schema) {
 
         if (node.asBoolean()) {
             generatableType.javadoc().append("\n(Required)");

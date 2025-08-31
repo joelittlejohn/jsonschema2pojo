@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.exception;
 
-import com.sun.codemodel.JType;
+import com.helger.jcodemodel.AbstractJType;
 
 /**
  * Thrown to indicate that an attempt to create a new class failed, because a
@@ -27,7 +27,7 @@ public class ClassAlreadyExistsException extends Exception {
 
     private static final long serialVersionUID = 7694477714975772317L;
 
-    private final JType existingClass;
+    private final AbstractJType existingClass;
 
     /**
      * Creates a new exception where the given existing class was found to
@@ -38,7 +38,7 @@ public class ClassAlreadyExistsException extends Exception {
      *            classes to be generated) when attempt to create a new class
      *            was made.
      */
-    public ClassAlreadyExistsException(JType existingClass) {
+    public ClassAlreadyExistsException(AbstractJType existingClass) {
         super(existingClass.fullName());
         this.existingClass = existingClass;
     }
@@ -50,7 +50,7 @@ public class ClassAlreadyExistsException extends Exception {
      *         classes to be generated) when attempt to create a new class was
      *         made.
      */
-    public JType getExistingClass() {
+    public AbstractJType getExistingClass() {
         return existingClass;
     }
 

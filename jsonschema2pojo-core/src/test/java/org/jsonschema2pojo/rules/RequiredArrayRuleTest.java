@@ -24,6 +24,12 @@ import static org.mockito.Mockito.*;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
+import com.helger.jcodemodel.JMod;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.junit.jupiter.api.Test;
@@ -32,12 +38,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JMod;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -65,7 +65,7 @@ public class RequiredArrayRuleTest {
     }
 
     @Test
-    public void shouldUpdateJavaDoc() throws JClassAlreadyExistsException {
+    public void shouldUpdateJavaDoc() throws JCodeModelException {
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         jclass.field(JMod.PRIVATE, jclass.owner().ref(String.class), "fooBar");
@@ -86,7 +86,7 @@ public class RequiredArrayRuleTest {
     }
 
     @Test
-    public void shouldUpdateAnnotations() throws JClassAlreadyExistsException {
+    public void shouldUpdateAnnotations() throws JCodeModelException {
         setupRuleFactoryToIncludeJsr303();
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);

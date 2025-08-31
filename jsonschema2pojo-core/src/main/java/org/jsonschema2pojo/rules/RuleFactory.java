@@ -16,6 +16,14 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJClassContainer;
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
@@ -26,15 +34,6 @@ import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
-
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 /**
  * Provides factory/creation methods for the code generation rules.
@@ -85,7 +84,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "array" declaration.
      */
-    public Rule<JPackage, JClass> getArrayRule() {
+    public Rule<JPackage, AbstractJClass> getArrayRule() {
         return new ArrayRule(this);
     }
 
@@ -95,7 +94,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "description" declaration.
      */
-    public Rule<JDocCommentable, JDocComment> getDescriptionRule() {
+    public Rule<IJDocCommentable, JDocComment> getDescriptionRule() {
         return new DescriptionRule();
     }
 
@@ -105,7 +104,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "$comment" declaration.
      */
-    public Rule<JDocCommentable, JDocComment> getCommentRule() {
+    public Rule<IJDocCommentable, JDocComment> getCommentRule() {
         return new CommentRule();
     }
 
@@ -115,7 +114,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "enum" declaration.
      */
-    public Rule<JClassContainer, JType> getEnumRule() {
+    public Rule<IJClassContainer, AbstractJType> getEnumRule() {
         return new EnumRule(this);
     }
 
@@ -125,7 +124,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "format" declaration.
      */
-    public Rule<JType, JType> getFormatRule() {
+    public Rule<AbstractJType, AbstractJType> getFormatRule() {
         return new FormatRule(this);
     }
 
@@ -135,7 +134,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "object" declaration.
      */
-    public Rule<JPackage, JType> getObjectRule() {
+    public Rule<JPackage, AbstractJType> getObjectRule() {
         return new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
     }
 
@@ -184,7 +183,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "required" declaration.
      */
-    public Rule<JDocCommentable, JDocCommentable> getRequiredRule() {
+    public Rule<IJDocCommentable, IJDocCommentable> getRequiredRule() {
         return new RequiredRule(this);
     }
 
@@ -194,7 +193,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "required" declaration.
      */
-    public Rule<JDocCommentable, JDocCommentable> getNotRequiredRule() {
+    public Rule<IJDocCommentable, IJDocCommentable> getNotRequiredRule() {
         return new NotRequiredRule(this);
     }
 
@@ -206,7 +205,7 @@ public class RuleFactory {
      * @return a schema rule that can find/generate the relevant Java type for a
      *         given schema node.
      */
-    public Rule<JClassContainer, JType> getTypeRule() {
+    public Rule<IJClassContainer, AbstractJType> getTypeRule() {
         return new TypeRule(this);
     }
 
@@ -227,7 +226,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "title" declaration.
      */
-    public Rule<JDocCommentable, JDocComment> getTitleRule() {
+    public Rule<IJDocCommentable, JDocComment> getTitleRule() {
         return new TitleRule();
     }
 
@@ -237,7 +236,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle a schema declaration.
      */
-    public Rule<JClassContainer, JType> getSchemaRule() {
+    public Rule<IJClassContainer, AbstractJType> getSchemaRule() {
         return new SchemaRule(this);
     }
 
@@ -424,7 +423,7 @@ public class RuleFactory {
      *
      * @return a schema rule that can handle the "media" declaration.
      */
-    public Rule<JType, JType> getMediaRule() {
+    public Rule<AbstractJType, AbstractJType> getMediaRule() {
         return new MediaRule();
     }
 
@@ -442,7 +441,7 @@ public class RuleFactory {
         return new BuilderRule(this, reflectionHelper);
     }
 
-    public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
+    public Rule<IJDocCommentable, JDocComment> getJavaNameRule() {
         return new JavaNameRule();
     }
 

@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -35,8 +37,6 @@ import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 
 @ParameterizedClass
 @MethodSource("data")
@@ -75,7 +75,7 @@ public class FormatRuleTest {
     public void applyGeneratesTypeFromFormatValue() {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
-        JType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
+        AbstractJType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
 
         assertThat(result.fullName(), equalTo(expectedType.getName()));
     }
@@ -84,9 +84,9 @@ public class FormatRuleTest {
     public void applyDefaultsToBaseType() {
         TextNode formatNode = TextNode.valueOf("unknown-format");
 
-        JType baseType = new JCodeModel().ref(Long.class);
+        AbstractJType baseType = new JCodeModel().ref(Long.class);
 
-        JType result = rule.apply("fooBar", formatNode, null, baseType, null);
+        AbstractJType result = rule.apply("fooBar", formatNode, null, baseType, null);
 
         assertThat(result, equalTo(baseType));
     }

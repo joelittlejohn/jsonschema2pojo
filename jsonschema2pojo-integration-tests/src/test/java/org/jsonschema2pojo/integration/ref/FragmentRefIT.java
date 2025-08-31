@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -32,8 +35,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
 
 public class FragmentRefIT {
 
@@ -78,7 +79,7 @@ public class FragmentRefIT {
     }
 
     @Test
-    public void selfRefWithoutParentFile() throws IOException {
+    public void selfRefWithoutParentFile() throws IOException, JCodeModelException {
         JCodeModel codeModel = new JCodeModel();
         JsonNode schema = new ObjectMapper().readTree("{\"type\":\"object\", \"properties\":{\"a\":{\"$ref\":\"#/b\"}}, \"b\":\"string\"}");
 
@@ -87,7 +88,7 @@ public class FragmentRefIT {
     }
 
     @Test
-    public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException {
+    public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException, JCodeModelException {
         JCodeModel codeModel = new JCodeModel();
         JsonNode schema = new ObjectMapper().readTree("{\n" +
                 "    \"type\": \"object\",\n" +
@@ -116,7 +117,7 @@ public class FragmentRefIT {
     }
 
     @Test
-    public void refToInnerFragmentThatHasRefToAnotherFragmentWithoutParentFile() throws IOException {
+    public void refToInnerFragmentThatHasRefToAnotherFragmentWithoutParentFile() throws IOException, JCodeModelException {
         JCodeModel codeModel = new JCodeModel();
         JsonNode schema = new ObjectMapper().readTree("{\n"
                 + "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n"

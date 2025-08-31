@@ -25,20 +25,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJClassContainer;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 
 /**
  * Applies the "type" schema rule.
  *
  * @see <a href= "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http:/ /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
-public class TypeRule implements Rule<JClassContainer, JType> {
+public class TypeRule implements Rule<IJClassContainer, AbstractJType> {
 
   private static final String DEFAULT_TYPE_NAME = "any";
 
@@ -75,11 +76,11 @@ public class TypeRule implements Rule<JClassContainer, JType> {
    * @return the Java type which, after reading the details of the given schema node, most appropriately matches the "type" specified
    */
   @Override
-  public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer jClassContainer, Schema schema) {
+  public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, IJClassContainer jClassContainer, Schema schema) throws JCodeModelException {
 
     String propertyTypeName = getTypeName(node);
 
-    JType type;
+    AbstractJType type;
 
     if (propertyTypeName.equals("object") || node.has("properties") && node.path("properties").size() > 0) {
 
@@ -141,7 +142,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
     return DEFAULT_TYPE_NAME;
   }
 
-  private JType unboxIfNecessary(JType type, GenerationConfig config) {
+  private AbstractJType unboxIfNecessary(AbstractJType type, GenerationConfig config) {
     if (config.isUsePrimitives()) {
       return type.unboxify();
     } else {
@@ -152,7 +153,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
   /**
    * Returns the JType for an integer field. Handles type lookup and unboxing.
    */
-  private JType getIntegerType(JCodeModel owner, JsonNode node, GenerationConfig config) {
+  private AbstractJType getIntegerType(JCodeModel owner, JsonNode node, GenerationConfig config) {
 
     if (config.isUseBigIntegers()) {
       return unboxIfNecessary(owner.ref(BigInteger.class), config);
@@ -168,7 +169,7 @@ public class TypeRule implements Rule<JClassContainer, JType> {
   /**
    * Returns the JType for a number field. Handles type lookup and unboxing.
    */
-  private JType getNumberType(JCodeModel owner, GenerationConfig config) {
+  private AbstractJType getNumberType(JCodeModel owner, GenerationConfig config) {
 
     if (config.isUseBigDecimals()) {
       return unboxIfNecessary(owner.ref(BigDecimal.class), config);

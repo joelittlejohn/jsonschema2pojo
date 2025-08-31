@@ -28,6 +28,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldVar;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.hamcrest.Matcher;
@@ -50,8 +52,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
 
 public class MediaIT {
 

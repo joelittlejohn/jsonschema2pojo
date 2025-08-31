@@ -19,11 +19,11 @@ package org.jsonschema2pojo;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
 
+import com.helger.jcodemodel.JAnnotationArrayMember;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
 import org.jsonschema2pojo.rules.FormatRule;
 
 import javax.json.bind.annotation.JsonbDateFormat;

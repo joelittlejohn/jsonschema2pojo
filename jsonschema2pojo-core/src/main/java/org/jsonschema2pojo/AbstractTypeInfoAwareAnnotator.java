@@ -17,7 +17,7 @@
 package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDefinedClass;
+import com.helger.jcodemodel.JDefinedClass;
 
 public abstract class AbstractTypeInfoAwareAnnotator extends AbstractAnnotator
 {

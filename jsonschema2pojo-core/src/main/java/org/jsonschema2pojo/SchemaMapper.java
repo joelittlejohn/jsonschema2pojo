@@ -20,6 +20,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -28,9 +32,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 /**
  * Generates Java types from a JSON schema. Can accept a factory which will be
@@ -81,7 +82,7 @@ public class SchemaMapper {
      *            location of the schema to be used as input
      * @return The top-most type generated from the given file
      */
-    public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) {
+    public AbstractJType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) throws JCodeModelException {
 
         JPackage jpackage = codeModel._package(packageName);
 
@@ -108,8 +109,8 @@ public class SchemaMapper {
 
     }
 
-    public JType generate(JCodeModel codeModel, String className, String packageName, String json,
-            URI schemaLocation) throws IOException {
+    public AbstractJType generate(JCodeModel codeModel, String className, String packageName, String json,
+            URI schemaLocation) throws IOException, JCodeModelException {
 
         JPackage jpackage = codeModel._package(packageName);
 
@@ -119,7 +120,7 @@ public class SchemaMapper {
                 new Schema(schemaLocation, schemaNode, null));
     }
 
-    public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
+    public AbstractJType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException, JCodeModelException {
 
         JPackage jpackage = codeModel._package(packageName);
 

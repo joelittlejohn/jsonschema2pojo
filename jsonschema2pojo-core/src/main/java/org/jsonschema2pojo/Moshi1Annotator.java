@@ -17,10 +17,10 @@
 package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JFieldVar;
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JEnumConstant;
+import com.helger.jcodemodel.JFieldVar;
 
 /**
  * Annotates generated Java types using Moshi. The annotations used here are most
@@ -39,13 +39,13 @@ public class Moshi1Annotator extends AbstractAnnotator {
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
-        JClass moshiAnnotation = clazz.owner().directClass("com.squareup.moshi.Json");
+        AbstractJClass moshiAnnotation = clazz.owner().directClass("com.squareup.moshi.Json");
         field.annotate(moshiAnnotation).param("name", propertyName);
     }
 
     @Override
     public void enumConstant(JDefinedClass _enum, JEnumConstant constant, String value) {
-        JClass moshiAnnotation = _enum.owner().directClass("com.squareup.moshi.Json");
+        AbstractJClass moshiAnnotation = _enum.owner().directClass("com.squareup.moshi.Json");
         constant.annotate(moshiAnnotation).param("name", value);
     }
 

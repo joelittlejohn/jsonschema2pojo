@@ -21,13 +21,14 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJClassContainer;
+import com.helger.jcodemodel.JCodeModelException;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JType;
 
 /**
  * Applies a JSON schema.
@@ -35,7 +36,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
-public class SchemaRule implements Rule<JClassContainer, JType> {
+public class SchemaRule implements Rule<IJClassContainer, AbstractJType> {
 
     private final RuleFactory ruleFactory;
 
@@ -61,7 +62,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
      *            the schema within which this schema rule is being applied
      */
     @Override
-    public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
+    public AbstractJType apply(String nodeName, JsonNode schemaNode, JsonNode parent, IJClassContainer generatableType, Schema schema) throws JCodeModelException {
 
         if (schemaNode.has("$ref")) {
             final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
@@ -76,7 +77,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
         }
 
-        JType javaType;
+        AbstractJType javaType;
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
         } else {

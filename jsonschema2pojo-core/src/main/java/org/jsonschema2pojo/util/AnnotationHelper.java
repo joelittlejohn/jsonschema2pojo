@@ -16,11 +16,10 @@
 
 package org.jsonschema2pojo.util;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JDefinedClass;
 import org.jsonschema2pojo.GenerationConfig;
-
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
 
 public class AnnotationHelper {
 
@@ -31,7 +30,7 @@ public class AnnotationHelper {
     private static boolean tryToAnnotate(JDefinedClass jclass, String annotationClassName) {
         try {
             Class.forName(annotationClassName);
-            JClass annotationClass = jclass.owner().ref(annotationClassName);
+            AbstractJClass annotationClass = jclass.owner().ref(annotationClassName);
             JAnnotationUse generated = jclass.annotate(annotationClass);
             generated.param("value", GENERATOR_NAME);
             return true;

@@ -18,23 +18,24 @@ package org.jsonschema2pojo.rules;
 
 import java.util.Objects;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JTypeVar;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.ReflectionHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JTypeVar;
-import com.sun.codemodel.JVar;
 
 public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -47,7 +48,7 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
   }
 
   @Override
-  public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass instanceClass, Schema currentSchema) {
+  public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass instanceClass, Schema currentSchema) throws JCodeModelException {
 
     // Create the inner class for the builder
     JDefinedClass concreteBuilderClass;
@@ -64,12 +65,12 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
       concreteBuilderClass._extends(builderClass.narrow(instanceClass));
 
     } catch (JClassAlreadyExistsException e) {
-      return e.getExistingClass();
+      return (JDefinedClass)e.getExistingClass();
     }
 
     // Determine which base builder (if any) this builder should inherit from
-    JClass parentBuilderClass = null;
-    JClass parentClass = instanceClass._extends();
+    AbstractJClass parentBuilderClass = null;
+    AbstractJClass parentClass = instanceClass._extends();
     if (!(parentClass.isPrimitive() || reflectionHelper.isFinal(parentClass) || Objects.equals(parentClass.fullName(), "java.lang.Object"))) {
       parentBuilderClass = reflectionHelper.getBaseBuilderClass(parentClass);
     }
@@ -131,7 +132,7 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // Determine if we need to invoke the super() method for our parent builder
     if (!(baseBuilderClass.isPrimitive() || reflectionHelper.isFinal(baseBuilderClass) || Objects.equals(baseBuilderClass.fullName(), "java.lang.Object"))) {
-      constructorBlock.invoke("super");
+      constructorBlock.add(JInvocation._super());
     }
   }
 
@@ -146,9 +147,9 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
     JFieldVar instanceField = reflectionHelper.searchClassAndSuperClassesForField("instance", builderClass);
 
     // Determine if we need to invoke the super() method for our parent builder
-    JClass parentClass = builderClass._extends();
+    AbstractJClass parentClass = builderClass._extends();
     if (!(parentClass.isPrimitive() || reflectionHelper.isFinal(parentClass) || Objects.equals(parentClass.fullName(), "java.lang.Object"))) {
-      constructorBlock.invoke("super");
+      constructorBlock.add(JInvocation._super());
     }
 
     // Only initialize the instance if the object being constructed is actually this class

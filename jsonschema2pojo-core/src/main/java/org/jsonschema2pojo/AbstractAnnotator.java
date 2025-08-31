@@ -17,10 +17,10 @@
 package org.jsonschema2pojo;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JEnumConstant;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
 
 /**
  * A default implementation of the Annotator interface that makes it easier to
@@ -56,7 +56,7 @@ public abstract class AbstractAnnotator implements Annotator {
 
     @Override
     public void propertyField(JFieldVar field, JDefinedClass clazz,
-            String propertyName, JsonNode propertyNode) {
+                              String propertyName, JsonNode propertyNode) {
     }
 
     @Override

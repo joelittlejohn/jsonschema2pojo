@@ -22,6 +22,12 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.helger.jcodemodel.JAnnotationArrayMember;
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JEnumConstant;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.rules.FormatRule;
 
@@ -39,12 +45,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.

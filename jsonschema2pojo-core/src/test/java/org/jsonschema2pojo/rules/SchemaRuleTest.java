@@ -23,6 +23,10 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
@@ -32,10 +36,6 @@ import org.mockito.ArgumentCaptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JType;
 
 public class SchemaRuleTest {
 
@@ -46,7 +46,7 @@ public class SchemaRuleTest {
     private final SchemaRule rule = new SchemaRule(mockRuleFactory);
 
     @Test
-    public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JClassAlreadyExistsException {
+    public void refsToOtherSchemasAreLoaded() throws URISyntaxException, JCodeModelException {
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
@@ -77,7 +77,7 @@ public class SchemaRuleTest {
     }
 
     @Test
-    public void enumAsRootIsGeneratedCorrectly() throws JClassAlreadyExistsException {
+    public void enumAsRootIsGeneratedCorrectly() throws JCodeModelException {
 
         ObjectNode schemaContent = new ObjectMapper().createObjectNode();
         ObjectNode enumNode = schemaContent.objectNode();
@@ -103,9 +103,9 @@ public class SchemaRuleTest {
     }
 
     @Test
-    public void existingTypeIsUsedWhenTypeIsAlreadyGenerated() throws URISyntaxException {
+    public void existingTypeIsUsedWhenTypeIsAlreadyGenerated() throws URISyntaxException, JCodeModelException {
 
-        JType previouslyGeneratedType = mock(JType.class);
+        AbstractJType previouslyGeneratedType = mock(AbstractJType.class);
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 
@@ -122,7 +122,7 @@ public class SchemaRuleTest {
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
+        AbstractJType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
 
         assertThat(result, is(sameInstance(previouslyGeneratedType)));
 

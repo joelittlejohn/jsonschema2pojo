@@ -28,6 +28,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.helger.jcodemodel.JAnnotationUse;
+import com.helger.jcodemodel.JFieldVar;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -41,8 +43,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;

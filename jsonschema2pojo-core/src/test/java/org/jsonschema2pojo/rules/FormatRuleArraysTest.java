@@ -24,6 +24,8 @@ import static org.mockito.Mockito.*;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -32,8 +34,6 @@ import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 
 @ParameterizedClass
 @MethodSource("data")
@@ -59,11 +59,11 @@ public class FormatRuleArraysTest {
 
     @Test
     public void useArraysWithCustomTypeMapping() {
-        JType result = rule.apply("fooBar", TextNode.valueOf("test"), null, new JCodeModel().ref(Object.class), null);
+        AbstractJType result = rule.apply("fooBar", TextNode.valueOf("test"), null, new JCodeModel().ref(Object.class), null);
 
         assertThat(result.isArray(), is(true));
 
-        JType expectedJType = new JCodeModel().ref(expectedType);
+        AbstractJType expectedJType = new JCodeModel().ref(expectedType);
 
         assertThat(result.fullName(), equalTo(expectedJType.fullName()));
     }

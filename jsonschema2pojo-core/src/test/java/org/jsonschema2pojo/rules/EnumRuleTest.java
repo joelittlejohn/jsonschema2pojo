@@ -20,6 +20,10 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
@@ -33,9 +37,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 public class EnumRuleTest {
 
@@ -57,7 +58,7 @@ public class EnumRuleTest {
     }
 
     @Test
-    public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
+    public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() throws JCodeModelException {
         final Answer<?> firstArgAnswer = invocation -> invocation.getArgument(0);
         when(nameHelper.getClassName(anyString(), ArgumentMatchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
@@ -77,8 +78,8 @@ public class EnumRuleTest {
         when(typeRule.apply("status", enumNode, null, jpackage, schema))
         .thenReturn(jpackage.owner()._ref(String.class));
 
-        JType result1 = rule.apply("status", enumNode, null, jpackage, schema);
-        JType result2 = rule.apply("status", enumNode, null, jpackage, schema);
+        AbstractJType result1 = rule.apply("status", enumNode, null, jpackage, schema);
+        AbstractJType result2 = rule.apply("status", enumNode, null, jpackage, schema);
 
         assertThat(result1.fullName(), is("org.jsonschema2pojo.rules.Status"));
         assertThat(result2.fullName(), is("org.jsonschema2pojo.rules.Status_"));

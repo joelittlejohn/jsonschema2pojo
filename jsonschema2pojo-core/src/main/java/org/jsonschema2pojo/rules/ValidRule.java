@@ -18,24 +18,24 @@ package org.jsonschema2pojo.rules;
 
 import java.lang.annotation.Annotation;
 
+import com.helger.jcodemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JFieldVar;
 
 import jakarta.validation.Valid;
 
 public class ValidRule implements Rule<JFieldVar, JFieldVar> {
-    
+
     private final RuleFactory ruleFactory;
-    
+
     public ValidRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
 
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
-        
+
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
             final Class<? extends Annotation> validClass
                     = ruleFactory.getGenerationConfig().isUseJakartaValidation()
@@ -43,8 +43,8 @@ public class ValidRule implements Rule<JFieldVar, JFieldVar> {
                     : javax.validation.Valid.class;
             field.annotate(validClass);
         }
-        
+
         return field;
     }
-    
+
 }

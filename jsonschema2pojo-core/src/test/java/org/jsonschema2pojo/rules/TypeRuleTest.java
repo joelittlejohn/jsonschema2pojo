@@ -23,6 +23,12 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.GenerationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +37,6 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
 
@@ -50,20 +51,20 @@ public class TypeRuleTest {
     }
 
     @Test
-    public void applyGeneratesString() {
+    public void applyGeneratesString() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "string");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(String.class.getName()));
     }
 
     @Test
-    public void applyGeneratesDate() {
+    public void applyGeneratesDate() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -73,31 +74,31 @@ public class TypeRuleTest {
         TextNode formatNode = TextNode.valueOf("date-time");
         objectNode.set("format", formatNode);
 
-        JType mockDateType = mock(JType.class);
+        AbstractJType mockDateType = mock(AbstractJType.class);
         FormatRule mockFormatRule = mock(FormatRule.class);
-        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(JType.class), isNull())).thenReturn(mockDateType);
+        when(mockFormatRule.apply(eq("fooBar"), eq(formatNode), any(), Mockito.isA(AbstractJType.class), isNull())).thenReturn(mockDateType);
         when(ruleFactory.getFormatRule()).thenReturn(mockFormatRule);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result, equalTo(mockDateType));
     }
 
     @Test
-    public void applyGeneratesInteger() {
+    public void applyGeneratesInteger() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "integer");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Integer.class.getName()));
     }
 
     @Test
-    public void applyGeneratesIntegerPrimitive() {
+    public void applyGeneratesIntegerPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -106,13 +107,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("int"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeIntegerPrimitive() {
+    public void applyGeneratesIntegerUsingJavaTypeIntegerPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -122,13 +123,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("int"));
     }
 
     @Test
-    public void applyGeneratesBigInteger() {
+    public void applyGeneratesBigInteger() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -137,13 +138,13 @@ public class TypeRuleTest {
 
         when(config.isUseBigIntegers()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(BigInteger.class.getName()));
     }
 
     @Test
-    public void applyGeneratesBigIntegerOverridingLong() {
+    public void applyGeneratesBigIntegerOverridingLong() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -154,13 +155,13 @@ public class TypeRuleTest {
         when(config.isUseBigIntegers()).thenReturn(true);
         when(config.isUseLongIntegers()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(BigInteger.class.getName()));
     }
 
     @Test
-    public void applyGeneratesBigDecimal() {
+    public void applyGeneratesBigDecimal() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -169,13 +170,13 @@ public class TypeRuleTest {
 
         when(config.isUseBigDecimals()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(BigDecimal.class.getName()));
     }
 
     @Test
-    public void applyGeneratesBigDecimalOverridingDouble() {
+    public void applyGeneratesBigDecimalOverridingDouble() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -186,14 +187,14 @@ public class TypeRuleTest {
         when(config.isUseDoubleNumbers()).thenReturn(true);
         when(config.isUseBigDecimals()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(BigDecimal.class.getName()));
     }
 
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeInteger() {
+    public void applyGeneratesIntegerUsingJavaTypeInteger() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -203,13 +204,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.lang.Integer"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongPrimitive() {
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -219,13 +220,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLong() {
+    public void applyGeneratesIntegerUsingJavaTypeLong() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -235,13 +236,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.lang.Long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumGreaterThanIntegerMax() {
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumGreaterThanIntegerMax() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -251,13 +252,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumGreaterThanIntegerMax() {
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumGreaterThanIntegerMax() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -267,13 +268,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Long.class.getName()));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumLessThanIntegerMin() {
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMaximumLessThanIntegerMin() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -283,13 +284,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumLessThanIntegerMin() {
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMaximumLessThanIntegerMin() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -299,13 +300,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Long.class.getName()));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumLessThanIntegerMin() {
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumLessThanIntegerMin() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -315,13 +316,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumLessThanIntegerMin() {
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumLessThanIntegerMin() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -331,13 +332,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Long.class.getName()));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumGreaterThanIntegerMax() {
+    public void applyGeneratesIntegerUsingJavaTypeLongPrimitiveWhenMinimumGreaterThanIntegerMax() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -347,13 +348,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("long"));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumGreaterThanIntegerMax() {
+    public void applyGeneratesIntegerUsingJavaTypeLongWhenMinimumGreaterThanIntegerMax() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -363,13 +364,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Long.class.getName()));
     }
 
     @Test
-    public void applyGeneratesIntegerUsingJavaTypeBigInteger() {
+    public void applyGeneratesIntegerUsingJavaTypeBigInteger() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -377,13 +378,13 @@ public class TypeRuleTest {
         objectNode.put("type", "integer");
         objectNode.put("existingJavaType", "java.math.BigInteger");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.math.BigInteger"));
     }
 
     @Test
-    public void applyGeneratesNumber() {
+    public void applyGeneratesNumber() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -392,13 +393,13 @@ public class TypeRuleTest {
 
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Double.class.getName()));
     }
 
     @Test
-    public void applyGeneratesNumberPrimitive() {
+    public void applyGeneratesNumberPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -408,13 +409,13 @@ public class TypeRuleTest {
         when(config.isUsePrimitives()).thenReturn(true);
         when(config.isUseDoubleNumbers()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("double"));
     }
 
     @Test
-    public void applyGeneratesNumberUsingJavaTypeFloatPrimitive() {
+    public void applyGeneratesNumberUsingJavaTypeFloatPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -424,13 +425,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("float"));
     }
 
     @Test
-    public void applyGeneratesNumberUsingJavaTypeFloat() {
+    public void applyGeneratesNumberUsingJavaTypeFloat() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -440,13 +441,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.lang.Float"));
     }
 
     @Test
-    public void applyGeneratesNumberUsingJavaTypeDoublePrimitive() {
+    public void applyGeneratesNumberUsingJavaTypeDoublePrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -456,13 +457,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(false);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("double"));
     }
 
     @Test
-    public void applyGeneratesNumberUsingJavaTypeDouble() {
+    public void applyGeneratesNumberUsingJavaTypeDouble() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -472,13 +473,13 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.lang.Double"));
     }
 
     @Test
-    public void applyGeneratesNumberUsingJavaTypeBigDecimal() {
+    public void applyGeneratesNumberUsingJavaTypeBigDecimal() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -486,26 +487,26 @@ public class TypeRuleTest {
         objectNode.put("type", "number");
         objectNode.put("existingJavaType", "java.math.BigDecimal");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("java.math.BigDecimal"));
     }
 
     @Test
-    public void applyGeneratesBoolean() {
+    public void applyGeneratesBoolean() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "boolean");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Boolean.class.getName()));
     }
 
     @Test
-    public void applyGeneratesBooleanPrimitive() {
+    public void applyGeneratesBooleanPrimitive() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -514,57 +515,57 @@ public class TypeRuleTest {
 
         when(config.isUsePrimitives()).thenReturn(true);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is("boolean"));
     }
 
     @Test
-    public void applyGeneratesAnyAsObject() {
+    public void applyGeneratesAnyAsObject() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "any");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Object.class.getName()));
     }
 
     @Test
-    public void applyGeneratesNullAsObject() {
+    public void applyGeneratesNullAsObject() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "null");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Object.class.getName()));
     }
 
     @Test
-    public void applyGeneratesArray() {
+    public void applyGeneratesArray() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "array");
 
-        JClass mockArrayType = mock(JClass.class);
+        AbstractJClass mockArrayType = mock(AbstractJClass.class);
         ArrayRule mockArrayRule = mock(ArrayRule.class);
         when(mockArrayRule.apply("fooBar", objectNode, null, jpackage, null)).thenReturn(mockArrayType);
         when(ruleFactory.getArrayRule()).thenReturn(mockArrayRule);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result, is(mockArrayType));
     }
 
     @Test
-    public void applyGeneratesCustomObject() {
+    public void applyGeneratesCustomObject() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
@@ -576,33 +577,33 @@ public class TypeRuleTest {
         when(mockObjectRule.apply("fooBar", objectNode, null, jpackage, null)).thenReturn(mockObjectType);
         when(ruleFactory.getObjectRule()).thenReturn(mockObjectRule);
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result, is(mockObjectType));
     }
 
     @Test
-    public void applyChoosesObjectOnUnrecognizedType() {
+    public void applyChoosesObjectOnUnrecognizedType() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
         objectNode.put("type", "unknown");
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Object.class.getName()));
 
     }
 
     @Test
-    public void applyDefaultsToTypeAnyObject() {
+    public void applyDefaultsToTypeAnyObject() throws JCodeModelException {
 
         JPackage jpackage = new JCodeModel()._package(getClass().getPackage().getName());
 
         ObjectNode objectNode = new ObjectMapper().createObjectNode();
 
-        JType result = rule.apply("fooBar", objectNode, null, jpackage, null);
+        AbstractJType result = rule.apply("fooBar", objectNode, null, jpackage, null);
 
         assertThat(result.fullName(), is(Object.class.getName()));
     }

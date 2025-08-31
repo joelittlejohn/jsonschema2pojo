@@ -16,19 +16,19 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDocComment;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
 
 /**
  * Applies the "title" property property.
- * 
+ *
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21</a>
  */
-public class TitleRule implements Rule<JDocCommentable, JDocComment> {
+public class TitleRule implements Rule<IJDocCommentable, JDocComment> {
 
     protected TitleRule() {
     }
@@ -42,7 +42,7 @@ public class TitleRule implements Rule<JDocCommentable, JDocComment> {
      * property.
      * <p>
      * Note that the title is always inserted at the top of the JavaDoc comment.
-     * 
+     *
      * @param nodeName
      *            the name of the property to which this title applies
      * @param node
@@ -55,7 +55,7 @@ public class TitleRule implements Rule<JDocCommentable, JDocComment> {
      * @return the JavaDoc comment created to contain the title
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
         javadoc.add(0, node.asText() + "\n<p>\n");

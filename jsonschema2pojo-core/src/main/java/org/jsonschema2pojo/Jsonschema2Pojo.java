@@ -24,12 +24,17 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.writer.AbstractCodeWriter;
+import com.helger.jcodemodel.writer.FileCodeWriter;
 import org.apache.commons.io.FilenameUtils;
 import org.jsonschema2pojo.exception.GenerationException;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -37,8 +42,6 @@ import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.URLUtil;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
 
 public class Jsonschema2Pojo {
     /**
@@ -55,7 +58,7 @@ public class Jsonschema2Pojo {
      * @throws IOException
      *             if the application is unable to read data from the source
      */
-    public static void generate(GenerationConfig config, RuleLogger logger) throws IOException {
+    public static void generate(GenerationConfig config, RuleLogger logger) throws IOException, JCodeModelException {
         Annotator annotator = getAnnotator(config);
         RuleFactory ruleFactory = createRuleFactory(config);
 
@@ -83,14 +86,16 @@ public class Jsonschema2Pojo {
         }
 
         if (config.getTargetDirectory().exists() || config.getTargetDirectory().mkdirs()) {
-            CodeWriter sourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
-            CodeWriter resourcesWriter = new FileCodeWriterWithEncoding(config.getTargetDirectory(), config.getOutputEncoding());
-            codeModel.build(sourcesWriter, resourcesWriter);
+            try (AbstractCodeWriter sourcesWriter = new FileCodeWriter(config.getTargetDirectory(), Charset.forName(config.getOutputEncoding()));
+                 AbstractCodeWriter resourcesWriter = new FileCodeWriter(config.getTargetDirectory(), Charset.forName(config.getOutputEncoding()))) {
+
+              codeModel.build(sourcesWriter, resourcesWriter);
+            }
         } else {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
     }
-    
+
     private static ContentResolver createContentResolver(GenerationConfig config) {
         if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
             return new ContentResolver(new YAMLFactory());
@@ -123,7 +128,7 @@ public class Jsonschema2Pojo {
         }
     }
 
-    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException {
+    private static void generateRecursive(GenerationConfig config, SchemaMapper mapper, JCodeModel codeModel, String packageName, List<File> schemaFiles) throws IOException, JCodeModelException {
 
         Collections.sort(schemaFiles, config.getSourceSortOrder().getComparator());
 
@@ -176,7 +181,7 @@ public class Jsonschema2Pojo {
         try {
             String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, StandardCharsets.UTF_8.toString()));
             String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
-            
+
             boolean extensionRemoved = false;
             for (int i = 0; i < extensions.length; i++) {
                 String extension = extensions[i];
@@ -200,5 +205,5 @@ public class Jsonschema2Pojo {
             throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", filePath), e);
         }
     }
-    
+
 }

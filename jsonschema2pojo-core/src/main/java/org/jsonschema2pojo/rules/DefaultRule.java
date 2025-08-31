@@ -29,6 +29,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.IJExpression;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JInvocation;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -37,14 +45,6 @@ import org.jsonschema2pojo.Schema;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JType;
 
 /**
  * Applies the "default" schema rule.
@@ -103,11 +103,11 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         return field;
     }
 
-    static JExpression getDefaultValue(JType fieldType, JsonNode node) {
+    static IJExpression getDefaultValue(AbstractJType fieldType, JsonNode node) {
         return getDefaultValue(fieldType, node.asText());
     }
 
-    static JExpression getDefaultValue(JType fieldType, String value) {
+    static IJExpression getDefaultValue(AbstractJType fieldType, String value) {
 
         fieldType = fieldType.unboxify();
 
@@ -153,7 +153,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
             JInvocation invokeCreate = fieldType.owner().ref(URI.class).staticInvoke("create");
             return invokeCreate.arg(JExpr.lit(value));
 
-        } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(ClassType.ENUM)) {
+        } else if (fieldType instanceof JDefinedClass && ((JDefinedClass) fieldType).getClassType().equals(EClassType.ENUM)) {
 
             return getDefaultEnum(fieldType, value);
 
@@ -180,11 +180,11 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * @return an expression that creates a default value that can be assigned
      *         to this field
      */
-    private JExpression getDefaultList(JType fieldType, JsonNode node) {
+    private IJExpression getDefaultList(AbstractJType fieldType, JsonNode node) {
 
-        JClass listGenericType = ((JClass) fieldType).getTypeParameters().get(0);
+        AbstractJClass listGenericType = ((AbstractJClass) fieldType).getTypeParameters().get(0);
 
-        JClass listImplClass = fieldType.owner().ref(ArrayList.class);
+        AbstractJClass listImplClass = fieldType.owner().ref(ArrayList.class);
         listImplClass = listImplClass.narrow(listGenericType);
 
         JInvocation newListImpl = JExpr._new(listImplClass);
@@ -219,11 +219,11 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * @return an expression that creates a default value that can be assigned
      *         to this field
      */
-    private JExpression getDefaultSet(JType fieldType, JsonNode node) {
+    private IJExpression getDefaultSet(AbstractJType fieldType, JsonNode node) {
 
-        JClass setGenericType = ((JClass) fieldType).getTypeParameters().get(0);
+        AbstractJClass setGenericType = ((AbstractJClass) fieldType).getTypeParameters().get(0);
 
-        JClass setImplClass = fieldType.owner().ref(LinkedHashSet.class);
+        AbstractJClass setImplClass = fieldType.owner().ref(LinkedHashSet.class);
         setImplClass = setImplClass.narrow(setGenericType);
 
         JInvocation newSetImpl = JExpr._new(setImplClass);
@@ -245,10 +245,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     /**
      * @see EnumRule
      */
-    private static JExpression getDefaultEnum(JType fieldType, String value) {
+    private static IJExpression getDefaultEnum(AbstractJType fieldType, String value) {
 
         JDefinedClass enumClass = (JDefinedClass) fieldType;
-        JType backingType = enumClass.fields().get("value").type();
+        AbstractJType backingType = enumClass.fields().get("value").type();
         JInvocation invokeFromValue = enumClass.staticInvoke("fromValue");
         invokeFromValue.arg(getDefaultValue(backingType, value));
 

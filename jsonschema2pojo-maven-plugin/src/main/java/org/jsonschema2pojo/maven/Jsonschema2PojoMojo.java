@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.helger.jcodemodel.JCodeModelException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Plugin;
@@ -855,7 +856,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
         try {
             Jsonschema2Pojo.generate(this, logger);
-        } catch (IOException e) {
+        } catch (IOException | JCodeModelException e) {
             throw new MojoExecutionException("Error generating classes from JSON Schema file(s) " + sourceDirectory, e);
         }
 

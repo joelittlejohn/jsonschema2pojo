@@ -21,6 +21,11 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -31,10 +36,6 @@ import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 public class Jsonschema2PojoRuleTest {
 
@@ -82,13 +83,13 @@ public class Jsonschema2PojoRuleTest {
 
     public static class BrokenRuleFactory extends RuleFactory {
         @Override
-        public Rule<JPackage, JType> getObjectRule() {
-            final Rule<JPackage, JType> workingRule = super.getObjectRule();
+        public Rule<JPackage, AbstractJType> getObjectRule() {
+            final Rule<JPackage, AbstractJType> workingRule = super.getObjectRule();
 
-            return new Rule<JPackage, JType>() {
+            return new Rule<JPackage, AbstractJType>() {
                 @Override
-                public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
-                    JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
+                public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) throws JCodeModelException {
+                    AbstractJType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
                     if( objectType instanceof JDefinedClass ) {
                         JDefinedClass jclass = (JDefinedClass)objectType;
                         jclass.method(JMod.PUBLIC, jclass.owner().BOOLEAN, "brokenMethod").body();

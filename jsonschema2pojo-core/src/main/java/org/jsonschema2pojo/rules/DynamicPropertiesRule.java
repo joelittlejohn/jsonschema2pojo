@@ -16,26 +16,27 @@
 
 package org.jsonschema2pojo.rules;
 
-import static com.sun.codemodel.JExpr.*;
-import static com.sun.codemodel.JMod.*;
+import static com.helger.jcodemodel.JExpr.*;
+import static com.helger.jcodemodel.JMod.*;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJExpression;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldRef;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JOp;
+import com.helger.jcodemodel.JSwitch;
+import com.helger.jcodemodel.JTypeVar;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.Models;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JOp;
-import com.sun.codemodel.JSwitch;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
-import com.sun.codemodel.JVar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -151,7 +152,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         found._then()._return(cast(returnType, valueVar));
         JBlock notFound = found._else();
 
-        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[] {});
+        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new AbstractJType[] {});
         if (getAdditionalProperties != null) {
             notFound._return(cast(returnType, invoke(getAdditionalProperties).invoke("get").arg(nameParam)));
         } else {
@@ -174,26 +175,26 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
                 String propertyName = property.getKey();
                 JsonNode node = property.getValue();
                 String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);
-                JType propertyType = jclass.fields().get(fieldName).type();
+                AbstractJType propertyType = jclass.fields().get(fieldName).type();
 
-                JExpression condition = lit(propertyName).invoke("equals").arg(nameParam);
+                IJExpression condition = lit(propertyName).invoke("equals").arg(nameParam);
                 if (propertyConditional == null) {
                     propertyConditional = body._if(condition);
                 } else {
                     propertyConditional = propertyConditional._elseif(condition);
                 }
-                JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new JType[] {});
+                JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new AbstractJType[]{});
                 propertyConditional._then()._return(invoke(propertyGetter));
             }
         }
 
-        JClass extendsType = jclass._extends();
+        AbstractJClass extendsType = jclass._extends();
         JBlock lastBlock = propertyConditional == null ? body : propertyConditional._else();
         if (extendsType != null && extendsType instanceof JDefinedClass) {
             JDefinedClass parentClass = (JDefinedClass) extendsType;
             JMethod parentMethod = parentClass.getMethod(DEFINED_GETTER_NAME,
-                    new JType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
-            lastBlock._return(_super().invoke(parentMethod).arg(nameParam).arg(notFoundParam));
+                    new AbstractJType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
+            lastBlock._return(JExpr._super().invoke(parentMethod).arg(nameParam).arg(notFoundParam));
         } else {
             lastBlock._return(notFoundParam);
         }
@@ -201,8 +202,8 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         return method;
     }
 
-    private void addGetPropertyCase(JDefinedClass jclass, JSwitch propertySwitch, String propertyName, JType propertyType, JsonNode node) {
-        JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new JType[] {});
+    private void addGetPropertyCase(JDefinedClass jclass, JSwitch propertySwitch, String propertyName, AbstractJType propertyType, JsonNode node) {
+        JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new AbstractJType[] {});
         propertySwitch._case(lit(propertyName)).body()
         ._return(invoke(propertyGetter));
     }
@@ -220,9 +221,9 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
         // if we have additional properties, then put value.
-        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[] {});
+        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new AbstractJType[] {});
         if (getAdditionalProperties != null) {
-            JType additionalPropertiesType = ((JClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
+            AbstractJClass additionalPropertiesType = ((AbstractJClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
             notFound.add(invoke(getAdditionalProperties).invoke("put").arg(nameParam)
                     .arg(cast(additionalPropertiesType, valueParam)));
         }
@@ -247,9 +248,9 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
         // if we have additional properties, then put value.
-        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[] {});
+        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new AbstractJType[] {});
         if (getAdditionalProperties != null) {
-            JType additionalPropertiesType = ((JClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
+            AbstractJType additionalPropertiesType = ((AbstractJClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
             notFound.add(invoke(getAdditionalProperties).invoke("put").arg(nameParam)
                     .arg(cast(additionalPropertiesType, valueParam)));
         }
@@ -274,8 +275,8 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
                 String propertyName = property.getKey();
                 JsonNode node = property.getValue();
                 String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);
-                JType propertyType = jclass.fields().get(fieldName).type();
-                JExpression condition = lit(propertyName).invoke("equals").arg(nameParam);
+                AbstractJType propertyType = jclass.fields().get(fieldName).type();
+                IJExpression condition = lit(propertyName).invoke("equals").arg(nameParam);
                 propertyConditional = propertyConditional == null ? propertyConditional = body._if(condition)
                         : propertyConditional._elseif(condition);
 
@@ -284,14 +285,14 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
                 callSite._return(TRUE);
             }
         }
-        JClass extendsType = jclass._extends();
+        AbstractJClass extendsType = jclass._extends();
         JBlock lastBlock = propertyConditional == null ? body : propertyConditional._else();
 
         if (extendsType != null && extendsType instanceof JDefinedClass) {
             JDefinedClass parentClass = (JDefinedClass) extendsType;
             JMethod parentMethod = parentClass.getMethod(DEFINED_SETTER_NAME,
-                    new JType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
-            lastBlock._return(_super().invoke(parentMethod).arg(nameParam).arg(valueParam));
+                    new AbstractJType[] { parentClass.owner()._ref(String.class), parentClass.owner()._ref(Object.class) });
+            lastBlock._return(JExpr._super().invoke(parentMethod).arg(nameParam).arg(valueParam));
         } else {
             lastBlock._return(FALSE);
         }
@@ -300,25 +301,25 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
 
     private JMethod getInternalSetMethod(JDefinedClass jclass) {
         return jclass.getMethod(DEFINED_SETTER_NAME,
-                new JType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
+                new AbstractJType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
     }
 
     private JMethod getInternalGetMethod(JDefinedClass jclass) {
         return jclass.getMethod(DEFINED_GETTER_NAME,
-                new JType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
+                new AbstractJType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
     }
 
-    private void addSetPropertyCase(JDefinedClass jclass, JSwitch setterSwitch, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {
+    private void addSetPropertyCase(JDefinedClass jclass, JSwitch setterSwitch, String propertyName, AbstractJType propertyType, JVar valueVar, JsonNode node) {
         JBlock setterBody = setterSwitch._case(lit(propertyName)).body();
         addSetProperty(jclass, setterBody, propertyName, propertyType, valueVar, node);
         setterBody._return(TRUE);
     }
 
-    private void addSetProperty(JDefinedClass jclass, JBlock callSite, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {
-        JMethod propertySetter = jclass.getMethod(getSetterName(propertyName, node), new JType[] { propertyType });
+    private void addSetProperty(JDefinedClass jclass, JBlock callSite, String propertyName, AbstractJType propertyType, JVar valueVar, JsonNode node) {
+        JMethod propertySetter = jclass.getMethod(getSetterName(propertyName, node), new AbstractJType[] { propertyType });
         JConditional isInstance = callSite._if(valueVar._instanceof(propertyType.boxify().erasure()));
         isInstance._then()
-        .invoke(propertySetter).arg(cast(propertyType.boxify(), valueVar));
+            .add(JExpr._this().invoke(propertySetter).arg(cast(propertyType.boxify(), valueVar)));
         isInstance._else()
         ._throw(illegalArgumentInvocation(jclass, propertyName, propertyType, valueVar));
     }
@@ -328,7 +329,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
                 .arg(lit("property \"").plus(propertyName).plus(lit("\" is not defined")));
     }
 
-    private JInvocation illegalArgumentInvocation(JDefinedClass jclass, String propertyName, JType propertyType, JVar valueVar) {
+    private JInvocation illegalArgumentInvocation(JDefinedClass jclass, String propertyName, AbstractJType propertyType, JVar valueVar) {
         return _new(jclass.owner()._ref(IllegalArgumentException.class))
                 .arg(lit("property \"" + propertyName + "\" is of type \"" + propertyType.fullName() + "\", but got ")
                         .plus(valueVar.invoke("getClass").invoke("toString")));
@@ -338,7 +339,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         return ruleFactory.getNameHelper().getSetterName(propertyName, node);
     }
 
-    private String getGetterName(String propertyName, JType type, JsonNode node) {
+    private String getGetterName(String propertyName, AbstractJType type, JsonNode node) {
         return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
     }
 }

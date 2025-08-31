@@ -16,17 +16,17 @@
 
 package org.jsonschema2pojo.util;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
+
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.jsonschema2pojo.util.Models.*;
-
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 
 public class ParcelableHelper {
 
@@ -44,9 +44,9 @@ public class ParcelableHelper {
                 continue;
             }
             if (f.type().erasure().name().equals("List")) {
-                method.body().invoke(dest, "writeList").arg(f);
+                method.body().add(dest.invoke("writeList").arg(f));
             } else {
-                method.body().invoke(dest, "writeValue").arg(f);
+                method.body().add(dest.invoke("writeValue").arg(f));
             }
         }
     }
@@ -57,7 +57,7 @@ public class ParcelableHelper {
     }
 
     public void addCreator(JDefinedClass jclass) {
-        JClass creatorType = jclass.owner().directClass("Creator").narrow(jclass);
+        AbstractJClass creatorType = jclass.owner().directClass("Creator").narrow(jclass);
         JDefinedClass creatorClass = jclass.owner().anonymousClass(creatorType);
 
         addCreateFromParcel(jclass, creatorClass);
@@ -82,9 +82,9 @@ public class ParcelableHelper {
             }
             if (f.type().erasure().name().equals("List")) {
                 ctorFromParcel.body()
-                .invoke(in, "readList")
+                .add(in.invoke("readList")
                 .arg(JExpr._this().ref(f))
-                .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
+                .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()")));
             } else {
                 ctorFromParcel.body().assign(
                         JExpr._this().ref(f),
@@ -112,10 +112,10 @@ public class ParcelableHelper {
     }
 
     private boolean extendsParcelable(final JDefinedClass jclass) {
-        final java.util.Iterator<JClass> interfaces = jclass._extends() != null ? jclass._extends()._implements() : null;
+        final java.util.Iterator<AbstractJClass> interfaces = jclass._extends() != null ? jclass._extends()._implements() : null;
         if (interfaces != null) {
             while (interfaces.hasNext()) {
-                final JClass iface = interfaces.next();
+                final AbstractJClass iface = interfaces.next();
                 if (iface.erasure().name().equals("Parcelable")) {
                     return true;
                 }
@@ -124,7 +124,7 @@ public class ParcelableHelper {
         return false;
     }
 
-    private String getListType(JType jType) {
+    private String getListType(AbstractJType jType) {
         final String typeName = jType.fullName();
         return substringBeforeLast(substringAfter(typeName, "<"), ">");
     }

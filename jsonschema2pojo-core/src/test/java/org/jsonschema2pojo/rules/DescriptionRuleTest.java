@@ -19,14 +19,14 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
 
 public class DescriptionRuleTest {
 
@@ -35,7 +35,7 @@ public class DescriptionRuleTest {
     private final DescriptionRule rule = new DescriptionRule();
 
     @Test
-    public void applyAddsDescriptionToJavadoc() throws JClassAlreadyExistsException {
+    public void applyAddsDescriptionToJavadoc() throws JCodeModelException {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 

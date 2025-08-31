@@ -69,7 +69,7 @@ public class Moshi1IT {
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.google.gson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("@SerializedName")));
         assertThat(schemaRule.getGenerateDir(), containsText("com.squareup.moshi"));
-        assertThat(schemaRule.getGenerateDir(), containsText("@com.squareup.moshi.Json"));
+        assertThat(schemaRule.getGenerateDir(), containsText("@Json"));
 
         Method getter = generatedType.getMethod("getBuild");
 
