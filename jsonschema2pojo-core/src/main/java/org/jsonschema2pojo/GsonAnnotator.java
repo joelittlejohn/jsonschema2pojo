@@ -22,9 +22,9 @@ package org.jsonschema2pojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JFieldVar;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JEnumConstant;
+import com.helger.jcodemodel.JFieldVar;
 
 /**
  * Annotates generated Java types using Gson. The annotations used here are most

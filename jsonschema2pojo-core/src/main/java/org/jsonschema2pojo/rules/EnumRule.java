@@ -28,6 +28,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.IJClassContainer;
+import com.helger.jcodemodel.IJExpression;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JEnumConstant;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JForEach;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
@@ -40,23 +58,6 @@ import org.jsonschema2pojo.util.AnnotationHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JEnumConstant;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForEach;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 
 /**
  * Applies the "enum" schema rule.
@@ -65,7 +66,7 @@ import com.sun.codemodel.JVar;
  *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19">http:
  *      //tools.ietf.org/html/draft-zyp-json-schema-03#section-5.19</a>
  */
-public class EnumRule implements Rule<JClassContainer, JType> {
+public class EnumRule implements Rule<IJClassContainer, AbstractJType> {
 
     private static final String VALUE_FIELD_NAME = "value";
 
@@ -103,10 +104,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      *         given enum
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer container, Schema schema) {
+    public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, IJClassContainer container, Schema schema) throws JCodeModelException {
 
         if (node.has("existingJavaType")) {
-            JType type = ruleFactory.getTypeRule().apply(nodeName, node, parent, container.getPackage(), schema);
+            AbstractJType type = ruleFactory.getTypeRule().apply(nodeName, node, parent, container.getPackage(), schema);
             schema.setJavaTypeIfEmpty(type);
             return type;
         }
@@ -143,7 +144,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
         // If type is specified on the enum, get a type rule for it.  Otherwise, we're a string.
         // (This is different from the default of Object, which is why we don't do this for every case.)
-        JType backingType = node.has("type") ?
+        AbstractJType backingType = node.has("type") ?
                 ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) :
                     container.owner().ref(String.class);
 
@@ -169,9 +170,9 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return _enum;
     }
 
-    protected void addEnumConstants(EnumDefinition enumDefinition, JDefinedClass _enum, Schema schema) {
+    protected void addEnumConstants(EnumDefinition enumDefinition, JDefinedClass _enum, Schema schema) throws JCodeModelException {
 
-        JType type = enumDefinition.getBackingType();
+        AbstractJType type = enumDefinition.getBackingType();
 
         String nodeName = enumDefinition.getNodeName();
         JsonNode parentNode = enumDefinition.getEnumNode();
@@ -216,9 +217,9 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      * <p>
      * This function determines which method it should delegate creating of the definition to:
      *
-     * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, AbstractJType)}
+     * For "enum" and "javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, AbstractJType)}
+     * For "enum" and "javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, AbstractJType)}
      *
      * @param nodeName
      *            the name of the property which is an "enum"
@@ -229,7 +230,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      *
      * @return the effective definition for enumeration
      */
-    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType)
+    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, AbstractJType backingType)
     {
 
         JsonNode enums = node.path("enum");
@@ -259,7 +260,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return enumDefinition;
     }
 
-    protected EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, JType backingType) {
+    protected EnumDefinition buildEnumDefinitionWithNoExtensions(String nodeName, JsonNode parentNode, JsonNode enums, AbstractJType backingType) {
         ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
 
         Collection<String> existingConstantNames = new ArrayList<>();
@@ -279,7 +280,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return new EnumDefinition(nodeName, parentNode, backingType, enumValues, EnumDefinitionExtensionType.NONE);
     }
 
-    protected EnumDefinition buildEnumDefinitionWithJavaEnumNamesExtension(String nodeName, JsonNode parentNode, JsonNode enums, JsonNode javaEnumNames, JType backingType) {
+    protected EnumDefinition buildEnumDefinitionWithJavaEnumNamesExtension(String nodeName, JsonNode parentNode, JsonNode enums, JsonNode javaEnumNames, AbstractJType backingType) {
 
         ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
 
@@ -300,7 +301,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return new EnumDefinition(nodeName, parentNode, backingType, enumValues, EnumDefinitionExtensionType.JAVA_ENUM_NAMES);
     }
 
-    protected EnumDefinition buildEnumDefinitionWithJavaEnumsExtension(String nodeName, JsonNode enumNode, JsonNode enums, JsonNode javaEnums, JType type) {
+    protected EnumDefinition buildEnumDefinitionWithJavaEnumsExtension(String nodeName, JsonNode enumNode, JsonNode enums, JsonNode javaEnums, AbstractJType type) {
         ArrayList<EnumValueDefinition> enumValues = new ArrayList<>();
 
         Collection<String> existingConstantNames = new ArrayList<>();
@@ -329,7 +330,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         return new EnumDefinition(nodeName, enumNode, type, enumValues, EnumDefinitionExtensionType.JAVA_ENUMS);
     }
 
-    protected JDefinedClass createEnum(JsonNode node, String nodeName, JClassContainer container) throws ClassAlreadyExistsException {
+    protected JDefinedClass createEnum(JsonNode node, String nodeName, IJClassContainer<JDefinedClass> container) throws ClassAlreadyExistsException, JCodeModelException {
 
         try {
             if (node.has("javaType")) {
@@ -347,13 +348,13 @@ public class EnumRule implements Rule<JClassContainer, JType> {
                     Class<?> existingClass = Thread.currentThread().getContextClassLoader().loadClass(fqn);
                     throw new ClassAlreadyExistsException(container.owner().ref(existingClass));
                 } catch (ClassNotFoundException e) {
-                    JDefinedClass enumClass = container.owner()._class(fqn, ClassType.ENUM);
+                    JDefinedClass enumClass = container.owner()._class(fqn, EClassType.ENUM);
                     ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
                     return enumClass;
                 }
             } else {
                 try {
-                    JDefinedClass enumClass = container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), ClassType.ENUM);
+                    JDefinedClass enumClass = container._class(JMod.PUBLIC, getEnumName(nodeName, node, container), EClassType.ENUM);
                     ruleFactory.getLogger().debug("Adding " + enumClass.fullName());
                     return enumClass;
                 } catch (JClassAlreadyExistsException e) {
@@ -367,7 +368,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     protected JFieldVar addConstructorAndFields(EnumDefinition enumDefinition, JDefinedClass _enum) {
 
-        JType backingType = enumDefinition.getBackingType();
+        AbstractJType backingType = enumDefinition.getBackingType();
         JFieldVar valueField = _enum.field(JMod.PRIVATE | JMod.FINAL, backingType, VALUE_FIELD_NAME);
 
         JMethod constructor = _enum.constructor(JMod.NONE);
@@ -380,7 +381,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     protected void addFactoryMethod(EnumDefinition enumDefinition, JDefinedClass _enum) {
 
-        JType backingType = enumDefinition.getBackingType();
+        AbstractJType backingType = enumDefinition.getBackingType();
         JFieldVar quickLookupMap = addQuickLookupMap(enumDefinition, _enum);
 
         JMethod fromValue = _enum.method(JMod.PUBLIC | JMod.STATIC, _enum, "fromValue");
@@ -393,7 +394,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JConditional _if = body._if(constant.eq(JExpr._null()));
 
         JInvocation illegalArgumentException = JExpr._new(_enum.owner().ref(IllegalArgumentException.class));
-        JExpression expr = valueParam;
+        IJExpression expr = valueParam;
 
         // if string no need to add ""
         if(!isString(backingType)){
@@ -418,18 +419,16 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
     protected JFieldVar addQuickLookupMap(EnumDefinition enumDefinition, JDefinedClass _enum) {
 
-        JType backingType = enumDefinition.getBackingType();
+        AbstractJType backingType = enumDefinition.getBackingType();
 
-        JClass lookupType = _enum.owner().ref(Map.class).narrow(backingType.boxify(), _enum);
+        AbstractJClass lookupType = _enum.owner().ref(Map.class).narrow(backingType.boxify(), _enum);
         JFieldVar lookupMap = _enum.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, lookupType, "CONSTANTS");
 
-        JClass lookupImplType = _enum.owner().ref(HashMap.class).narrow(backingType.boxify(), _enum);
+        AbstractJClass lookupImplType = _enum.owner().ref(HashMap.class).narrow(backingType.boxify(), _enum);
         lookupMap.init(JExpr._new(lookupImplType));
 
         JForEach forEach = _enum.init().forEach(_enum, "c", JExpr.invoke("values"));
-        JInvocation put = forEach.body().invoke(lookupMap, "put");
-        put.arg(forEach.var().ref("value"));
-        put.arg(forEach.var());
+        forEach.body().add(lookupMap.invoke("put").arg(forEach.var().ref("value")).arg(forEach.var()));
 
         return lookupMap;
     }
@@ -438,7 +437,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JMethod toString = _enum.method(JMod.PUBLIC, String.class, "toString");
         JBlock body = toString.body();
 
-        JExpression toReturn = JExpr._this().ref(valueField);
+        IJExpression toReturn = JExpr._this().ref(valueField);
         if(!isString(valueField.type())){
             toReturn = toReturn.plus(JExpr.lit(""));
         }
@@ -448,18 +447,18 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         toString.annotate(Override.class);
     }
 
-    protected boolean isString(JType type){
+    protected boolean isString(AbstractJType type){
         return type.fullName().equals(String.class.getName());
     }
 
-    protected String getEnumName(String nodeName, JsonNode node, JClassContainer container) {
+    protected String getEnumName(String nodeName, JsonNode node, IJClassContainer<JDefinedClass> container) {
         String fieldName = ruleFactory.getNameHelper().getClassName(nodeName, node);
         String className = ruleFactory.getNameHelper().replaceIllegalCharacters(capitalize(fieldName));
         String normalizedName = ruleFactory.getNameHelper().normalizeName(className);
 
         Collection<String> existingClassNames = new ArrayList<>();
-        for (Iterator<JDefinedClass> classes = container.classes(); classes.hasNext();) {
-            existingClassNames.add(classes.next().name());
+        for (JDefinedClass clazz : container.classes()) {
+            existingClassNames.add(clazz.name());
         }
         return makeUnique(normalizedName, existingClassNames);
     }

@@ -27,6 +27,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.EClassType;
+import com.helger.jcodemodel.IJExpression;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldRef;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JOp;
+import com.helger.jcodemodel.JPackage;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
@@ -38,22 +55,6 @@ import org.jsonschema2pojo.util.ReflectionHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.ClassType;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JOp;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 
 /**
  * Applies the generation steps required for schemas of type "object".
@@ -62,7 +63,7 @@ import com.sun.codemodel.JVar;
  *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1">http:/
  *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1</a>
  */
-public class ObjectRule implements Rule<JPackage, JType> {
+public class ObjectRule implements Rule<JPackage, AbstractJType> {
 
     private final RuleFactory ruleFactory;
     private final ReflectionHelper reflectionHelper;
@@ -82,9 +83,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
      * characteristics. See other implementers of {@link Rule} for details.
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage _package, Schema schema) {
+    public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, JPackage _package, Schema schema) throws JCodeModelException {
 
-        JType superType = reflectionHelper.getSuperType(nodeName, node, _package, schema);
+        AbstractJType superType = reflectionHelper.getSuperType(nodeName, node, _package, schema);
         if (superType.isPrimitive() || reflectionHelper.isFinal(superType)) {
             return superType;
         }
@@ -96,7 +97,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             return e.getExistingClass();
         }
 
-        jclass._extends((JClass) superType);
+        jclass._extends((AbstractJClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
 
@@ -130,7 +131,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
         }
-       
+
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
             AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
@@ -195,7 +196,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
      *             that already exists, either on the classpath or in the
      *             current map of classes to be generated.
      */
-    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
+    private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException, JCodeModelException {
 
         JDefinedClass newType;
 
@@ -209,7 +210,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                     throw new ClassAlreadyExistsException(primitiveType(fqn, _package.owner()));
                 }
 
-                JClass existingClass = resolveType(_package, fqn + (node.get("existingJavaType").asText().contains("<") ? "<" + substringAfter(node.get("existingJavaType").asText(), "<") : ""));
+                AbstractJClass existingClass = resolveType(_package, fqn + (node.get("existingJavaType").asText().contains("<") ? "<" + substringAfter(node.get("existingJavaType").asText(), "<") : ""));
                 throw new ClassAlreadyExistsException(existingClass);
             }
 
@@ -237,7 +238,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
 
                 if (usePolymorphicDeserialization) {
-                    newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
+                    newType = _package.owner()._class(JMod.PUBLIC, fqn, EClassType.CLASS);
                 } else {
                     newType = _package.owner()._class(fqn);
                 }
@@ -245,7 +246,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             } else {
                 final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package);
                 if (usePolymorphicDeserialization) {
-                    newType = _package._class(JMod.PUBLIC, className, ClassType.CLASS);
+                    newType = _package._class(JMod.PUBLIC, className, EClassType.CLASS);
                 } else {
                     newType = _package._class(className);
                 }
@@ -271,7 +272,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         // The following toString implementation roughly matches the commons ToStringBuilder for
         // backward compatibility
-        JClass stringBuilderClass = jclass.owner().ref(StringBuilder.class);
+        AbstractJClass stringBuilderClass = jclass.owner().ref(StringBuilder.class);
         JVar sb = body.decl(stringBuilderClass, "sb", JExpr._new(stringBuilderClass));
 
         // Write the header, e.g.: example.domain.MyClass@85e382a7[
@@ -386,7 +387,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             JFieldRef fieldRef = JExpr.refthis(fieldVar.name());
 
-            JExpression fieldHash;
+            IJExpression fieldHash;
             if (fieldVar.type().isPrimitive()) {
                 if ("long".equals(fieldVar.type().name())) {
                     fieldHash = JExpr.cast(jclass.owner().INT, fieldRef.xor(fieldRef.shrz(JExpr.lit(32))));
@@ -395,8 +396,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 } else if ("int".equals(fieldVar.type().name())) {
                     fieldHash = fieldRef;
                 } else if ("double".equals(fieldVar.type().name())) {
-                    JClass doubleClass = jclass.owner().ref(Double.class);
-                    JExpression longField = doubleClass.staticInvoke("doubleToLongBits").arg(fieldRef);
+                    AbstractJClass doubleClass = jclass.owner().ref(Double.class);
+                    IJExpression longField = doubleClass.staticInvoke("doubleToLongBits").arg(fieldRef);
                     fieldHash = JExpr.cast(jclass.owner().INT,
                             longField.xor(longField.shrz(JExpr.lit(32))));
                 } else if ("float".equals(fieldVar.type().name())) {
@@ -470,7 +471,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         JVar rhsVar = body.decl(jclass, "rhs").init(JExpr.cast(jclass, otherObject));
 
-        JExpression result = JExpr.lit(true);
+        IJExpression result = JExpr.lit(true);
 
         // First, check super.equals(other)
         if (!jclass._extends().fullName().equals(Object.class.getName())) {
@@ -485,15 +486,15 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             JFieldRef thisFieldRef = JExpr.refthis(fieldVar.name());
             JFieldRef otherFieldRef = JExpr.ref(rhsVar, fieldVar.name());
-            JExpression fieldEquals;
+            IJExpression fieldEquals;
 
             if (fieldVar.type().isPrimitive()) {
                 if ("double".equals(fieldVar.type().name())) {
-                    JClass doubleClass = jclass.owner().ref(Double.class);
+                    AbstractJClass doubleClass = jclass.owner().ref(Double.class);
                     fieldEquals = doubleClass.staticInvoke("doubleToLongBits").arg(thisFieldRef).eq(
                             doubleClass.staticInvoke("doubleToLongBits").arg(otherFieldRef));
                 } else if ("float".equals(fieldVar.type().name())) {
-                    JClass floatClass = jclass.owner().ref(Float.class);
+                    AbstractJClass floatClass = jclass.owner().ref(Float.class);
                     fieldEquals = floatClass.staticInvoke("floatToIntBits").arg(thisFieldRef).eq(
                             floatClass.staticInvoke("floatToIntBits").arg(otherFieldRef));
                 } else {

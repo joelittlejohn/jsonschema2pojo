@@ -23,19 +23,19 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 
 /**
  * Applies the "additionalProperties" JSON schema rule.
@@ -85,7 +85,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
      * @return the given Java type jclass
      */
     @Override
-    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) throws JCodeModelException {
 
         if (node != null && node.isBoolean() && node.asBoolean() == false) {
             // no additional properties allowed
@@ -102,7 +102,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
             return jclass;
         }
 
-        JType propertyType;
+        AbstractJType propertyType;
         if (node != null && node.size() != 0) {
             String pathToAdditionalProperties;
             if (schema.getId() == null || schema.getId().getFragment() == null) {
@@ -134,11 +134,11 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return jclass;
     }
 
-    private JFieldVar addAdditionalPropertiesField(JDefinedClass jclass, JType propertyType) {
-        JClass propertiesMapType = jclass.owner().ref(Map.class);
+    private JFieldVar addAdditionalPropertiesField(JDefinedClass jclass, AbstractJType propertyType) {
+        AbstractJClass propertiesMapType = jclass.owner().ref(Map.class);
         propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
-        JClass propertiesMapImplType = jclass.owner().ref(LinkedHashMap.class);
+        AbstractJClass propertiesMapImplType = jclass.owner().ref(LinkedHashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");
@@ -150,17 +150,14 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return field;
     }
 
-    private void addSetter(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private void addSetter(JDefinedClass jclass, AbstractJType propertyType, JFieldVar field) {
         JMethod setter = jclass.method(JMod.PUBLIC, void.class, "setAdditionalProperty");
 
         ruleFactory.getAnnotator().anySetter(setter, jclass);
 
         JVar nameParam = setter.param(String.class, "name");
         JVar valueParam = setter.param(propertyType, "value");
-
-        JInvocation mapInvocation = setter.body().invoke(JExpr._this().ref(field), "put");
-        mapInvocation.arg(nameParam);
-        mapInvocation.arg(valueParam);
+        setter.body().add(JExpr._this().ref(field).invoke("put").arg(nameParam).arg(valueParam));
     }
 
     private JMethod addGetter(JDefinedClass jclass, JFieldVar field) {
@@ -172,7 +169,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return getter;
     }
 
-    private JMethod addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private JMethod addBuilder(JDefinedClass jclass, AbstractJType propertyType, JFieldVar field) {
 
         JMethod result = null;
         if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
@@ -184,24 +181,22 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         return result;
     }
 
-    private JMethod addLegacyBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private JMethod addLegacyBuilder(JDefinedClass jclass, AbstractJType propertyType, JFieldVar field) {
         JMethod builder = jclass.method(JMod.PUBLIC, jclass, "withAdditionalProperty");
 
         JVar nameParam = builder.param(String.class, "name");
         JVar valueParam = builder.param(propertyType, "value");
 
         JBlock body = builder.body();
-        JInvocation mapInvocation = body.invoke(JExpr._this().ref(field), "put");
-        mapInvocation.arg(nameParam);
-        mapInvocation.arg(valueParam);
+        body.add(JExpr._this().ref(field).invoke("put").arg(nameParam).arg(valueParam));
         body._return(JExpr._this());
 
         return builder;
     }
 
-    private JMethod addInnerBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
+    private JMethod addInnerBuilder(JDefinedClass jclass, AbstractJType propertyType, JFieldVar field) {
         Optional<JDefinedClass> builderClass = StreamSupport
-                .stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false)
+                .stream(Spliterators.spliteratorUnknownSize(jclass.classes().iterator(), Spliterator.ORDERED), false)
                 .filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass)))
                 .findFirst();
 
@@ -211,9 +206,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JVar valueParam = builder.param(propertyType, "value");
 
         JBlock body = builder.body();
-        JInvocation mapInvocation = body.invoke(JExpr.ref(JExpr.cast(jclass, JExpr._this().ref("instance")), field), "put");
-        mapInvocation.arg(nameParam);
-        mapInvocation.arg(valueParam);
+        body.add(JExpr.ref(JExpr.cast(jclass, JExpr._this().ref("instance")), field).invoke("put").arg(nameParam).arg(valueParam));
         body._return(JExpr._this());
 
         return builder;

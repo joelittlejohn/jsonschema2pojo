@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.helger.jcodemodel.JCodeModelException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -192,7 +193,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceSortOrder sourceSortOrder = SourceSortOrder.OS;
 
     private Map<String, String> formatTypeMapping = new HashMap<>();
-    
+
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
@@ -247,7 +248,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
         try {
             Jsonschema2Pojo.generate(this, ruleLogger);
-        } catch (IOException e) {
+        } catch (IOException | JCodeModelException e) {
             throw new BuildException("Error generating classes from JSON Schema file(s) " + source, e);
         }
     }
@@ -1313,7 +1314,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return sourceSortOrder;
     }
-    
+
     @Override
     public Map<String, String> getFormatTypeMapping() {
         return formatTypeMapping;

@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -28,11 +30,9 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 
-import com.sun.codemodel.JCodeModel;
-
 public class Example {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, JCodeModelException {
 
         // BEGIN EXAMPLE
 

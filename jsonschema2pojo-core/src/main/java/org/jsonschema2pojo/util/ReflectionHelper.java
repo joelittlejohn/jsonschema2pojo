@@ -27,15 +27,16 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 public class ReflectionHelper {
 
@@ -45,12 +46,12 @@ public class ReflectionHelper {
     this.ruleFactory = ruleFactory;
   }
 
-  public JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
+  public AbstractJType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) throws JCodeModelException {
     if (node.has("extends") && node.has("extendsJavaClass")) {
       throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
     }
 
-    JType superType = jPackage.owner().ref(Object.class);
+    AbstractJType superType = jPackage.owner().ref(Object.class);
     Schema superTypeSchema = getSuperSchema(node, schema, false);
     if (superTypeSchema != null) {
       superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
@@ -85,7 +86,7 @@ public class ReflectionHelper {
    * Mutually recursive with searchClassAndSuperClassesForField
    */
   public JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
-    JClass superClass = jclass._extends();
+    AbstractJClass superClass = jclass._extends();
     JDefinedClass definedSuperClass = definedClassOrNullFromType(superClass);
     if (definedSuperClass == null) {
       return null;
@@ -96,11 +97,11 @@ public class ReflectionHelper {
   public JDefinedClass getConcreteBuilderClass(JDefinedClass instanceClass) {
     String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(instanceClass);
 
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instanceClass.classes(), Spliterator.ORDERED), false)
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instanceClass.classes().iterator(), Spliterator.ORDERED), false)
             .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
   }
 
-  public JDefinedClass getConcreteBuilderClass(JClass target) {
+  public JDefinedClass getConcreteBuilderClass(AbstractJClass target) {
     String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
     return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
             .orElse(null);
@@ -109,17 +110,17 @@ public class ReflectionHelper {
   public JDefinedClass getBaseBuilderClass(JDefinedClass target) {
     String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
 
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes(), Spliterator.ORDERED), false)
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes().iterator(), Spliterator.ORDERED), false)
         .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
   }
 
-  public JDefinedClass getBaseBuilderClass(JClass target) {
+  public JDefinedClass getBaseBuilderClass(AbstractJClass target) {
     String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
     return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
         .orElse(null);
   }
 
-  public boolean isFinal(JType superType) {
+  public boolean isFinal(AbstractJType superType) {
     try {
       Class<?> javaClass = Class.forName(superType.fullName());
       return Modifier.isFinal(javaClass.getModifiers());
@@ -140,11 +141,11 @@ public class ReflectionHelper {
     return field;
   }
 
-  private JDefinedClass definedClassOrNullFromType(JType type) {
+  private JDefinedClass definedClassOrNullFromType(AbstractJType type) {
     if (type == null || type.isPrimitive()) {
       return null;
     }
-    JClass fieldClass = type.boxify();
+    AbstractJClass fieldClass = type.boxify();
     JPackage jPackage = fieldClass._package();
     try
     {
@@ -169,7 +170,7 @@ public class ReflectionHelper {
 
   private Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
     LinkedList<JDefinedClass> result = new LinkedList<>();
-    StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false)
+    StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes().iterator(), Spliterator.ORDERED), false)
         .forEach(_class -> result.addAll(getAllClassClasses(_class)));
     return result;
   }
@@ -178,7 +179,7 @@ public class ReflectionHelper {
     LinkedList<JDefinedClass> result = new LinkedList<>();
     result.add(_class);
 
-    _class.classes().forEachRemaining(result::add);
+    _class.classes().iterator().forEachRemaining(result::add);
     return result;
   }
 

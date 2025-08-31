@@ -19,16 +19,16 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JMethod;
 import org.jsonschema2pojo.Schema;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JType;
 
 public class AdditionalPropertiesRuleTest {
 
@@ -45,8 +45,8 @@ public class AdditionalPropertiesRuleTest {
         AdditionalPropertiesRule rule = new AdditionalPropertiesRule(new RuleFactory());
 
         JDefinedClass result = rule.apply("node", node, parent, jclass, schema);
-        JMethod method = result.getMethod("getAdditionalProperties", new JType[0]);
-        JClass returnType = (JClass) method.type();
+        JMethod method = result.getMethod("getAdditionalProperties", new AbstractJType[0]);
+        AbstractJClass returnType = (AbstractJClass) method.type();
         assertThat(returnType.name(), is(equalTo("Map<String,Integer>")));
     }
 

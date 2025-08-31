@@ -23,6 +23,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collection;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -35,8 +37,6 @@ import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JType;
 
 @ParameterizedClass
 @MethodSource("data")
@@ -72,7 +72,7 @@ public class FormatRuleJodaTest {
     public void applyGeneratesTypeFromFormatValue() {
         TextNode formatNode = TextNode.valueOf(formatValue);
 
-        JType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
+        AbstractJType result = rule.apply("fooBar", formatNode, null, new JCodeModel().ref(String.class), null);
 
         assertThat(result.fullName(), equalTo(expectedType.getName()));
     }

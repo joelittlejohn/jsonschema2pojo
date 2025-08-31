@@ -23,15 +23,15 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JDocComment;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JType;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -116,7 +116,7 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
         field.annotate(Nonnull.class);
     }
 
-    private void addJavaDoc(JDocCommentable docCommentable) {
+    private void addJavaDoc(IJDocCommentable docCommentable) {
         JDocComment javadoc = docCommentable.javadoc();
         javadoc.append(REQUIRED_COMMENT_TEXT);
     }
@@ -125,7 +125,7 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
         return ruleFactory.getNameHelper().getSetterName(propertyName, node);
     }
 
-    private String getGetterName(String propertyName, JType type, JsonNode node) {
+    private String getGetterName(String propertyName, AbstractJType type, JsonNode node) {
         return ruleFactory.getNameHelper().getGetterName(propertyName, type, node);
     }
 

@@ -27,10 +27,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JDefinedClass;
 import org.junit.jupiter.api.Test;
-
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JType;
 
 public class SchemaStoreTest {
 
@@ -149,8 +148,8 @@ public class SchemaStoreTest {
     @Test
     public void setIfEmptyOnlySetsIfEmpty() throws URISyntaxException {
 
-        JType firstClass = mock(JDefinedClass.class);
-        JType secondClass = mock(JDefinedClass.class);
+        AbstractJType firstClass = mock(JDefinedClass.class);
+        AbstractJType secondClass = mock(JDefinedClass.class);
 
         URI schemaUri = getClass().getResource("/schema/address.json").toURI();
 

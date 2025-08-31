@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDocComment;
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
 
@@ -28,7 +28,7 @@ import org.jsonschema2pojo.Schema;
  * @see <a
  *      href="https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9">https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9</a>
  */
-public class CommentRule implements Rule<JDocCommentable, JDocComment> {
+public class CommentRule implements Rule<IJDocCommentable, JDocComment> {
 
     protected CommentRule() {
     }
@@ -51,7 +51,7 @@ public class CommentRule implements Rule<JDocCommentable, JDocComment> {
      * @return the JavaDoc comment created to contain the description
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
         String descriptionText = node.asText();

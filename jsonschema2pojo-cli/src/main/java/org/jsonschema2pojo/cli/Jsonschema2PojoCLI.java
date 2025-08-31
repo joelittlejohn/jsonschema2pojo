@@ -19,6 +19,7 @@ package org.jsonschema2pojo.cli;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.helger.jcodemodel.JCodeModelException;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 
 /**
@@ -33,7 +34,7 @@ public final class Jsonschema2PojoCLI {
      * Main method, entry point for the application when invoked via the command
      * line. Arguments are expected in POSIX format, invoke with --help for
      * details.
-     * 
+     *
      * @param args
      *            Incoming arguments from the command line
      * @throws FileNotFoundException
@@ -42,7 +43,7 @@ public final class Jsonschema2PojoCLI {
      *             if the application is unable to read data from the paths
      *             specified
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, JCodeModelException {
         Arguments arguments = new Arguments().parse(args);
         CommandLineLogger logger = new CommandLineLogger(arguments.getLogLevel());
 

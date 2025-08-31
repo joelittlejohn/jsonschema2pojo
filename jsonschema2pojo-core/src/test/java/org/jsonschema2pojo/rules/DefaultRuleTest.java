@@ -20,6 +20,13 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.SourcePrintWriter;
+import com.helger.jcodemodel.writer.JFormatter;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
@@ -29,12 +36,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JFormatter;
-import com.sun.codemodel.JMod;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -56,7 +57,7 @@ public class DefaultRuleTest {
     }
 
     @Test
-    public void whenIsInitializeCollections_false_applyDoesNotInitializeField() throws JClassAlreadyExistsException {
+    public void whenIsInitializeCollections_false_applyDoesNotInitializeField() throws JCodeModelException {
         final String fieldName = "fieldName";
         when(config.isInitializeCollections()).thenReturn(false);
 
@@ -65,12 +66,13 @@ public class DefaultRuleTest {
         ArrayNode node = new ObjectMapper().createArrayNode();
 
         StringWriter sw = new StringWriter();
-        rule.apply("fooBar", node, null, field, null).bind(new JFormatter(sw));
+        SourcePrintWriter spw = new SourcePrintWriter(sw, "\n");
+        rule.apply("fooBar", node, null, field, null).bind(new JFormatter(spw, "  "));
         assertThat(sw.toString(), is(String.format("%s<%s> %s", fieldTypeClass.getName(), Object.class.getName(), fieldName)));
     }
 
     @Test
-    public void whenIsInitializeCollections_true_applyInitializesField() throws JClassAlreadyExistsException {
+    public void whenIsInitializeCollections_true_applyInitializesField() throws JCodeModelException {
         when(config.isInitializeCollections()).thenReturn(true);
 
         JDefinedClass jclass = new JCodeModel()._class("org.jsonschema2pojo.rules.ExampleClass");
@@ -78,7 +80,8 @@ public class DefaultRuleTest {
         ArrayNode node = new ObjectMapper().createArrayNode().add(1);
 
         StringWriter sw = new StringWriter();
-        rule.apply("fooBar", node, null, field, null).bind(new JFormatter(sw));
+        SourcePrintWriter spw = new SourcePrintWriter(sw, "\n");
+        rule.apply("fooBar", node, null, field, null).bind(new JFormatter(spw, "  "));
         assertThat(sw.toString(), startsWith(String.format("%s<%s> value = ", fieldTypeClass.getName(), Object.class.getName())));
     }
 }

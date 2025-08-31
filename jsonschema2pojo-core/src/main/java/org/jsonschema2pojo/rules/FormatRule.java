@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.helger.jcodemodel.AbstractJType;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -35,7 +36,6 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
 
 /**
  * Applies the "format" schema rule.
@@ -43,7 +43,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
  */
-public class FormatRule implements Rule<JType, JType> {
+public class FormatRule implements Rule<AbstractJType, AbstractJType> {
 
     public static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd";
     public static String ISO_8601_TIME_FORMAT = "HH:mm:ss.SSS";
@@ -92,11 +92,11 @@ public class FormatRule implements Rule<JType, JType> {
      * @return the Java type that is appropriate for the format value
      */
     @Override
-    public JType apply(String nodeName, JsonNode node, JsonNode parent, JType baseType, Schema schema) {
+    public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, AbstractJType baseType, Schema schema) {
 
         Class<?> type = getType(node.asText());
         if (type != null) {
-            JType jtype = baseType.owner()._ref(type);
+            AbstractJType jtype = baseType.owner()._ref(type);
             if (ruleFactory.getGenerationConfig().isUsePrimitives()) {
                 jtype = jtype.unboxify();
             }

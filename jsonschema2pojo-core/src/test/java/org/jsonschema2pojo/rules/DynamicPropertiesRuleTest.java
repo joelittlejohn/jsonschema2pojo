@@ -16,18 +16,17 @@
 
 package org.jsonschema2pojo.rules;
 
-import static com.sun.codemodel.JMod.*;
+import static com.helger.jcodemodel.JMod.PUBLIC;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JFieldRef;
+import com.helger.jcodemodel.JMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldRef;
-import com.sun.codemodel.JMethod;
 
 public class DynamicPropertiesRuleTest {
 
@@ -42,7 +41,7 @@ public class DynamicPropertiesRuleTest {
     JDefinedClass type2;
 
     @BeforeEach
-    public void setUp() throws JClassAlreadyExistsException {
+    public void setUp() throws JCodeModelException {
         type = codeModel._class("org.jsonschema2pojo.rules.ExampleClass");
         numberGetter = type.method(PUBLIC, codeModel._ref(Integer.class), "getNumber");
         numberSetter = type.method(PUBLIC, codeModel._ref(Integer.class), "setNumber");

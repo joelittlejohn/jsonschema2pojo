@@ -20,16 +20,17 @@ import static java.lang.Character.*;
 import static javax.lang.model.SourceVersion.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JClassAlreadyExistsException;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JPackage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.jsonschema2pojo.GenerationConfig;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 public class NameHelper {
 
@@ -216,7 +217,7 @@ public class NameHelper {
      *         the JsonNode representing the schema for this property
      * @return a safe, appropriate name for the Java getter method
      */
-    public String getGetterName(String propertyName, JType type, JsonNode node) {
+    public String getGetterName(String propertyName, AbstractJType type, JsonNode node) {
         propertyName = getPropertyNameForAccessor(propertyName, node);
 
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
@@ -242,23 +243,23 @@ public class NameHelper {
         return jsonPropertyName;
     }
 
-    public String getBaseBuilderClassName(JClass outerClass) {
+    public String getBaseBuilderClassName(AbstractJClass outerClass) {
         return outerClass.name() + getBuilderClassNameSuffix(outerClass) + getBaseBuilderClassNameSuffix(outerClass);
     }
 
-    public String getBaseBuilderClassNameSuffix(JClass outerClass) {
+    public String getBaseBuilderClassNameSuffix(AbstractJClass outerClass) {
         return "Base";
     }
 
-    public String getBuilderClassName(JClass outerClass) {
+    public String getBuilderClassName(AbstractJClass outerClass) {
         return outerClass.name() + getBuilderClassNameSuffix(outerClass);
     }
 
-    public String getBuilderClassNameSuffix(JClass outerClass) {
+    public String getBuilderClassNameSuffix(AbstractJClass outerClass) {
         return "Builder";
     }
 
-    public String getUniqueClassName(String nodeName, JsonNode node, JPackage _package) {
+    public String getUniqueClassName(String nodeName, JsonNode node, JPackage _package) throws JCodeModelException {
         return makeUnique(getClassName(nodeName, node, _package), _package);
     }
 
@@ -286,7 +287,7 @@ public class NameHelper {
         return returnString;
     }
 
-    private String makeUnique(String className, JPackage _package) {
+    private String makeUnique(String className, JPackage _package) throws JCodeModelException {
         try {
             JDefinedClass _class = _package._class(className);
             _package.remove(_class);

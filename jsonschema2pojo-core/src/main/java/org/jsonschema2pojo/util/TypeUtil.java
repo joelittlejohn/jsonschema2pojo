@@ -18,10 +18,9 @@ package org.jsonschema2pojo.util;
 
 import java.util.List;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.IJClassContainer;
 import org.jsonschema2pojo.exception.GenerationException;
-
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassContainer;
 
 import japa.parser.JavaParser;
 import japa.parser.ParseException;
@@ -33,7 +32,7 @@ import japa.parser.ast.type.WildcardType;
 
 public class TypeUtil {
 
-    public static JClass resolveType(JClassContainer _package, String typeDefinition) {
+    public static AbstractJClass resolveType(IJClassContainer _package, String typeDefinition) {
 
         try {
             FieldDeclaration fieldDeclaration = (FieldDeclaration) JavaParser.parseBodyDeclaration(typeDefinition + " foo;");
@@ -45,10 +44,10 @@ public class TypeUtil {
         }
     }
 
-    private static JClass buildClass(JClassContainer _package, ClassOrInterfaceType c, int arrayCount) {
+    private static AbstractJClass buildClass(IJClassContainer _package, ClassOrInterfaceType c, int arrayCount) {
         final String packagePrefix = (c.getScope() != null) ? c.getScope().toString() + "." : "";
 
-        JClass _class = _package.owner().ref(packagePrefix + c.getName());
+        AbstractJClass _class = _package.owner().ref(packagePrefix + c.getName());
 
         for (int i = 0; i < arrayCount; i++) {
             _class = _class.array();
@@ -56,12 +55,12 @@ public class TypeUtil {
 
         List<Type> typeArgs = c.getTypeArgs();
         if (typeArgs != null && typeArgs.size() > 0) {
-            JClass[] genericArgumentClasses = new JClass[typeArgs.size()];
+            AbstractJClass[] genericArgumentClasses = new AbstractJClass[typeArgs.size()];
 
             for (int i = 0; i < typeArgs.size(); i++) {
                 final Type type = typeArgs.get(i);
 
-                final JClass resolvedClass;
+                final AbstractJClass resolvedClass;
                 if (type instanceof WildcardType) {
                     final WildcardType wildcardType = (WildcardType) type;
                     if (wildcardType.getSuper() != null) {

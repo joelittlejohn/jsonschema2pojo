@@ -16,12 +16,12 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDocComment;
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
 
 /**
  * Applies the "description" schema property.
@@ -29,7 +29,7 @@ import com.sun.codemodel.JDocCommentable;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
-public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
+public class DescriptionRule implements Rule<IJDocCommentable, JDocComment> {
 
     protected DescriptionRule() {
     }
@@ -52,7 +52,7 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
      * @return the JavaDoc comment created to contain the description
      */
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema schema) {
         JDocComment javadoc = generatableType.javadoc();
 
         String descriptionText = node.asText();

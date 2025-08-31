@@ -24,14 +24,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import com.helger.jcodemodel.JMod;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
-import com.sun.codemodel.JMod;
 
 // Using @TestInstance(TestInstance.Lifecycle.PER_CLASS) and 'public static Jsonschema2PojoRule classSchemaRule' on top level
 // as Java8 does not support static methods in nested classes

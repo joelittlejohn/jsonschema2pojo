@@ -16,11 +16,9 @@
 
 package org.jsonschema2pojo.rules;
 
-import org.jsonschema2pojo.exception.GenerationException;
-
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPrimitiveType;
-import com.sun.codemodel.JType;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JPrimitiveType;
 
 /**
  * Helper for checking and creating primitive type references during code
@@ -33,7 +31,7 @@ public final class PrimitiveTypes {
 
     /**
      * Check if a name string refers to a given type.
-     * 
+     *
      * @param name
      *            the name of a Java type
      * @param owner
@@ -43,7 +41,7 @@ public final class PrimitiveTypes {
      */
     public static boolean isPrimitive(String name, JCodeModel owner) {
         try {
-            return JType.parse(owner, name) != owner.VOID;
+            return AbstractJType.parse(owner, name) != owner.VOID;
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -52,7 +50,7 @@ public final class PrimitiveTypes {
     /**
      * Create a primitive type reference (for code generation) using the given
      * primitive type name.
-     * 
+     *
      * @param name
      *            the name of a primitive Java type
      * @param owner
@@ -60,13 +58,7 @@ public final class PrimitiveTypes {
      * @return a type reference created by the given owner
      */
     public static JPrimitiveType primitiveType(String name, JCodeModel owner) {
-        try {
-            return (JPrimitiveType) owner.parseType(name);
-        } catch (ClassNotFoundException e) {
-            throw new GenerationException(
-                    "Given name does not refer to a primitive type, this type can't be found: "
-                            + name, e);
-        }
+        return (JPrimitiveType) owner.parseType(name);
     }
 
 }

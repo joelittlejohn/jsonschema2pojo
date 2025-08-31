@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -30,23 +31,22 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JTypeVar;
+import com.helger.jcodemodel.JVar;
 import org.jsonschema2pojo.exception.GenerationException;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
-import com.sun.codemodel.JVar;
-
 public class SerializableHelper {
-    private static final Comparator<JClass> INTERFACE_COMPARATOR =
-            new Comparator<JClass>() {
+    private static final Comparator<AbstractJClass> INTERFACE_COMPARATOR =
+            new Comparator<AbstractJClass>() {
         @Override
-        public int compare(JClass object1, JClass object2) {
+        public int compare(AbstractJClass object1, AbstractJClass object2) {
             if (object1 == null && object2 == null) {
                 return 0;
             }
@@ -103,9 +103,8 @@ public class SerializableHelper {
 
         //sorted
         TreeMap<String, JDefinedClass> sortedClasses = new TreeMap<>();
-        Iterator<JDefinedClass> classes = jclass.classes();
-        while (classes.hasNext()) {
-            JDefinedClass nestedClass = classes.next();
+        Collection<JDefinedClass> classes = jclass.classes();
+        for (JDefinedClass nestedClass: classes) {
             sortedClasses.put(nestedClass.fullName(), nestedClass);
         }
 
@@ -123,15 +122,15 @@ public class SerializableHelper {
             }
         }
 
-        Iterator<JClass> interfaces = jclass._implements();
-        List<JClass> interfacesList = new ArrayList<>();
+        Iterator<AbstractJClass> interfaces = jclass._implements();
+        List<AbstractJClass> interfacesList = new ArrayList<>();
         while (interfaces.hasNext()) {
-            JClass aInterface = interfaces.next();
+            AbstractJClass aInterface = interfaces.next();
             interfacesList.add(aInterface);
         }
 
         Collections.sort(interfacesList, INTERFACE_COMPARATOR);
-        for (JClass aInterface : interfacesList) {
+        for (AbstractJClass aInterface : interfacesList) {
             dataOutputStream.writeUTF(aInterface.fullName());
         }
 
@@ -148,7 +147,7 @@ public class SerializableHelper {
     private static void processFieldVarForSerializableSupport(JFieldVar fieldVar, DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeUTF(fieldVar.name());
         dataOutputStream.writeInt(fieldVar.mods().getValue());
-        JType type = fieldVar.type();
+        AbstractJType type = fieldVar.type();
         dataOutputStream.writeUTF(type.fullName());
     }
 

@@ -22,18 +22,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JPackage;
 import org.junit.jupiter.api.Test;
-
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
 
 public class TypeUtilTest {
 
     @Test
     public void testResolveTypeCanHandleWildcard() {
         final JCodeModel codeModel = new JCodeModel();
-        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<?>");
+        final AbstractJClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<?>");
 
         assertThat(_class.erasure(), equalTo(codeModel.ref(List.class)));
         assertThat(_class.typeParams(), emptyArray());
@@ -45,7 +44,7 @@ public class TypeUtilTest {
     @Test
     public void testResolveTypeCanHandleExtendsWildcard() {
         final JCodeModel codeModel = new JCodeModel();
-        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<? extends java.lang.Number>");
+        final AbstractJClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<? extends java.lang.Number>");
 
         assertThat(_class.erasure(), equalTo(codeModel.ref(List.class)));
         assertThat(_class.typeParams(), emptyArray());

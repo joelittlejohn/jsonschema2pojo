@@ -16,10 +16,10 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.AbstractJType;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
 
 /**
  * <p>
@@ -32,7 +32,7 @@ import com.sun.codemodel.JType;
  * @author Christian Trimble
  * @since 0.4.2
  */
-public class MediaRule implements Rule<JType, JType> {
+public class MediaRule implements Rule<AbstractJType, AbstractJType> {
 
     private static final String BINARY_ENCODING = "binaryEncoding";
 
@@ -65,7 +65,7 @@ public class MediaRule implements Rule<JType, JType> {
      * @since 0.4.2
      */
     @Override
-    public JType apply(String nodeName, JsonNode mediaNode, JsonNode parent, JType baseType, Schema schema) {
+    public AbstractJType apply(String nodeName, JsonNode mediaNode, JsonNode parent, AbstractJType baseType, Schema schema) {
         if (!mediaNode.has(BINARY_ENCODING)) {
             return baseType;
         }

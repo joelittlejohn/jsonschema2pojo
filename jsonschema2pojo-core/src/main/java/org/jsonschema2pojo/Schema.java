@@ -19,7 +19,7 @@ package org.jsonschema2pojo;
 import java.net.URI;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
+import com.helger.jcodemodel.AbstractJType;
 
 /**
  * A JSON Schema document.
@@ -29,7 +29,7 @@ public class Schema {
     private final URI id;
     private final JsonNode content;
     private final Schema parent;
-    private JType javaType;
+    private AbstractJType javaType;
 
     public Schema(URI id, JsonNode content, Schema parent) {
         this.id = id;
@@ -37,15 +37,15 @@ public class Schema {
         this.parent = parent != null ? parent : this;
     }
 
-    public JType getJavaType() {
+    public AbstractJType getJavaType() {
         return javaType;
     }
 
-    public void setJavaType(JType javaType) {
+    public void setJavaType(AbstractJType javaType) {
         this.javaType = javaType;
     }
 
-    public void setJavaTypeIfEmpty(JType javaType) {
+    public void setJavaTypeIfEmpty(AbstractJType javaType) {
         if (this.getJavaType() == null) {
             this.setJavaType(javaType);
         }

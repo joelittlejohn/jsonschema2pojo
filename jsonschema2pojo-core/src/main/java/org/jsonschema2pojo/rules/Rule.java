@@ -16,6 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.JCodeModelException;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Represents a JSON Schema rule (production from JSON Schema). Can be executed
  * or 'applied' to perform the code generation steps associated with that schema
  * rule.
- * 
+ *
  * @param <T>
  *            The type of source code item on which this rule can operate
  * @param <R>
@@ -35,7 +36,7 @@ public interface Rule<T, R> {
     /**
      * Add whatever Java source is required to the given generatable to
      * represent this schema rule.
-     * 
+     *
      * @param nodeName
      *            the name of the JSON schema node
      * @param node
@@ -51,6 +52,6 @@ public interface Rule<T, R> {
      * @return the newly generated source code item that was added/created as a
      *         result of executing this rule
      */
-    R apply(String nodeName, JsonNode node, JsonNode parent, T generatableType, Schema currentSchema);
+    R apply(String nodeName, JsonNode node, JsonNode parent, T generatableType, Schema currentSchema) throws JCodeModelException;
 
 }

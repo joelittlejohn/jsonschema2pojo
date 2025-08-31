@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JPackage;
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -32,8 +35,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
 
 public class CyclicalRefIT {
 
@@ -73,7 +74,7 @@ public class CyclicalRefIT {
     }
 
     @Test
-    public void recursiveTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
+    public void recursiveTreeNodeWithNoParentFileIsReadCorrectly() throws IOException, JCodeModelException {
 
         JCodeModel codeModel = new JCodeModel();
         String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveTreeNode.json"));
@@ -104,7 +105,7 @@ public class CyclicalRefIT {
     }
 
     @Test
-    public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
+    public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws IOException, JCodeModelException {
 
         JCodeModel codeModel = new JCodeModel();
         String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json"));

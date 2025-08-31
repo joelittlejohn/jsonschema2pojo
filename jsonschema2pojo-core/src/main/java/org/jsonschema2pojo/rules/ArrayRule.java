@@ -19,13 +19,14 @@ package org.jsonschema2pojo.rules;
 import java.util.List;
 import java.util.Set;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.AbstractJType;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JPackage;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.Inflector;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
 
 /**
  * Applies the "type":"array" schema rule.
@@ -35,7 +36,7 @@ import com.sun.codemodel.JType;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.15</a>
  */
-public class ArrayRule implements Rule<JPackage, JClass> {
+public class ArrayRule implements Rule<JPackage, AbstractJClass> {
 
     private final RuleFactory ruleFactory;
 
@@ -73,12 +74,12 @@ public class ArrayRule implements Rule<JPackage, JClass> {
      *         or {@link List}, narrowed by the "items" type
      */
     @Override
-    public JClass apply(String nodeName, JsonNode node, JsonNode parent, JPackage jpackage, Schema schema) {
+    public AbstractJClass apply(String nodeName, JsonNode node, JsonNode parent, JPackage jpackage, Schema schema) throws JCodeModelException {
 
         boolean uniqueItems = node.has("uniqueItems") && node.get("uniqueItems").asBoolean();
         boolean rootSchemaIsArray = !schema.isGenerated();
 
-        JType itemType;
+        AbstractJType itemType;
         if (node.has("items")) {
             String pathToItems;
             if (schema.getId() == null || schema.getId().getFragment() == null) {
@@ -97,7 +98,7 @@ public class ArrayRule implements Rule<JPackage, JClass> {
             itemType = jpackage.owner().ref(Object.class);
         }
 
-        JClass arrayType;
+        AbstractJClass arrayType;
         if (uniqueItems) {
             arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
         } else {

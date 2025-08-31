@@ -22,6 +22,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import java.lang.reflect.Method;
 
+import com.helger.jcodemodel.AbstractJType;
 import org.joda.time.LocalDate;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
 
 public class CustomRuleFactoryIT {
 
@@ -55,10 +55,10 @@ public class CustomRuleFactoryIT {
     public static class TestRuleFactory extends RuleFactory {
 
         @Override
-        public Rule<JType, JType> getFormatRule() {
+        public Rule<AbstractJType, AbstractJType> getFormatRule() {
             return new FormatRule(this) {
                 @Override
-                public JType apply(String nodeName, JsonNode node, JsonNode parent, JType baseType, Schema schema) {
+                public AbstractJType apply(String nodeName, JsonNode node, JsonNode parent, AbstractJType baseType, Schema schema) {
                     if (node.asText().equals("date")) {
                         return baseType.owner().ref(LocalDate.class);
                     }

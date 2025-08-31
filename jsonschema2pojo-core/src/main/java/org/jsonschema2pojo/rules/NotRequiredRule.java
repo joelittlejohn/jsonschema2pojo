@@ -20,11 +20,11 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JFieldVar;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocCommentable;
-import com.sun.codemodel.JFieldVar;
 
 /**
  * Applies the "required" schema rule.
@@ -32,7 +32,7 @@ import com.sun.codemodel.JFieldVar;
  * @see <a
  *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
-public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
+public class NotRequiredRule implements Rule<IJDocCommentable, IJDocCommentable> {
 
     /**
      * Text added to JavaDoc to indicate that a field is not required
@@ -65,7 +65,7 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
      *         not required.
      */
     @Override
-    public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
+    public IJDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema schema) {
 
         // Since NotRequiredRule is executed for all fields that do not have "required" present,
         // we need to recognize whether the field is part of the RequiredArrayRule.

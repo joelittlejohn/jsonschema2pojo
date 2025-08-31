@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JType;
+import com.helger.jcodemodel.AbstractJType;
 
 /**
  * Holds an enum types effective definition.
@@ -32,7 +32,7 @@ import com.sun.codemodel.JType;
  *    "enum" and "javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
  */
 public class EnumDefinition {
-  private final JType backingType;
+  private final AbstractJType backingType;
   private final ArrayList<EnumValueDefinition> enumValues;
   private final String nodeName;
   private final JsonNode enumNode;
@@ -40,7 +40,7 @@ public class EnumDefinition {
 
   public EnumDefinition(String nodeName,
                         JsonNode enumNode,
-                        JType backingType,
+                        AbstractJType backingType,
                         ArrayList<EnumValueDefinition> enumValues,
                         EnumDefinitionExtensionType type) {
     this.nodeName = nodeName;
@@ -62,7 +62,7 @@ public class EnumDefinition {
          enumDefinition.type);
   }
 
-  public JType getBackingType() {
+  public AbstractJType getBackingType() {
     return backingType;
   }
 

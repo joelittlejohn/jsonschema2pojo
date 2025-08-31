@@ -19,14 +19,14 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JCodeModel;
+import com.helger.jcodemodel.JCodeModelException;
+import com.helger.jcodemodel.JDefinedClass;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JDocCommentable;
 
 public class RequiredRuleTest {
 
@@ -35,14 +35,14 @@ public class RequiredRuleTest {
     private final RequiredRule rule = new RequiredRule(new RuleFactory());
 
     @Test
-    public void applyAddsTextWhenRequired() throws JClassAlreadyExistsException {
+    public void applyAddsTextWhenRequired() throws JCodeModelException {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(true);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
+        IJDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(1));
@@ -51,14 +51,14 @@ public class RequiredRuleTest {
     }
 
     @Test
-    public void applySkipsTextWhenNotRequired() throws JClassAlreadyExistsException {
+    public void applySkipsTextWhenNotRequired() throws JCodeModelException {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
         BooleanNode descriptionNode = mapper.createObjectNode().booleanNode(false);
 
-        JDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
+        IJDocCommentable result = rule.apply("fooBar", descriptionNode, null, jclass, null);
 
         assertThat(result.javadoc(), sameInstance(jclass.javadoc()));
         assertThat(result.javadoc().size(), is(0));

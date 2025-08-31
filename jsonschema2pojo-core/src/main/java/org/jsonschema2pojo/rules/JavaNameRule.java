@@ -16,16 +16,16 @@
 
 package org.jsonschema2pojo.rules;
 
+import com.helger.jcodemodel.IJDocCommentable;
+import com.helger.jcodemodel.JDocComment;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JDocComment;
-import com.sun.codemodel.JDocCommentable;
 
-public class JavaNameRule implements Rule<JDocCommentable, JDocComment> {
+public class JavaNameRule implements Rule<IJDocCommentable, JDocComment> {
 
     @Override
-    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema currentSchema) {
+    public JDocComment apply(String nodeName, JsonNode node, JsonNode parent, IJDocCommentable generatableType, Schema currentSchema) {
         JDocComment javaDoc = generatableType.javadoc();
 
         javaDoc.append(String.format("%nCorresponds to the \"%s\" property.", nodeName));

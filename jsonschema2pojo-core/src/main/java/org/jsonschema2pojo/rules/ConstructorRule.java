@@ -30,6 +30,17 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
+import com.helger.jcodemodel.AbstractJClass;
+import com.helger.jcodemodel.JAnnotationArrayMember;
+import com.helger.jcodemodel.JBlock;
+import com.helger.jcodemodel.JConditional;
+import com.helger.jcodemodel.JDefinedClass;
+import com.helger.jcodemodel.JExpr;
+import com.helger.jcodemodel.JFieldVar;
+import com.helger.jcodemodel.JInvocation;
+import com.helger.jcodemodel.JMethod;
+import com.helger.jcodemodel.JMod;
+import com.helger.jcodemodel.JVar;
 import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
@@ -37,17 +48,6 @@ import org.jsonschema2pojo.util.NameHelper;
 import org.jsonschema2pojo.util.ReflectionHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JConditional;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JInvocation;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JVar;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -281,9 +281,9 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     // Determine if we need to invoke the super() method for our parent builder
-    JClass parentClass = builderClass._extends();
+    AbstractJClass parentClass = builderClass._extends();
     if (!(parentClass.isPrimitive() || reflectionHelper.isFinal(parentClass) || Objects.equals(parentClass.fullName(), "java.lang.Object"))) {
-      constructorBlock.invoke("super");
+      constructorBlock.add(JInvocation._super());
     }
 
     // The constructor invocation will also need all the parameters passed through
@@ -321,11 +321,11 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     if (!(baseBuilderClass.isPrimitive() || reflectionHelper.isFinal(baseBuilderClass) || Objects.equals(baseBuilderClass.fullName(), "java.lang.Object"))) {
-      JInvocation superMethod = builderConstructorBlock.invoke("super");
-
+      JInvocation superMethod = JInvocation._super();
       for (JVar param : builderConstructor.params()) {
         superMethod.arg(param);
       }
+      builderConstructorBlock.add(superMethod);
     }
   }
 
@@ -344,10 +344,11 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     // Invoke the super class constructor for this class. We'll include the original object
     // being copied if there are any combinedSuperProperties to be set, and if not then we'll
     // simply call the empty constructor from the super class
-    JInvocation superInvocation = constructorBody.invoke("super");
+    JInvocation superInvocation = JInvocation._super();
     if (!combinedSuperProperties.isEmpty()) {
       superInvocation.arg(copyConstructorParam);
     }
+    constructorBody.add(superInvocation);
 
     // For each of the class properties being set we then need to do something like the following
     // this.property = source.property
@@ -381,7 +382,8 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     JBlock constructorBody = fieldsConstructor.body();
-    JInvocation superInvocation = constructorBody.invoke("super");
+    JInvocation superInvocation = JInvocation._super();
+    constructorBody.add(superInvocation);
 
     Map<String, JFieldVar> fields = jclass.fields();
     Map<String, JVar> classFieldParams = new HashMap<>();
