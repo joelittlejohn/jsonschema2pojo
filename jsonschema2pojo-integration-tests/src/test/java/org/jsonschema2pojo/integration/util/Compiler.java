@@ -44,12 +44,20 @@ import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
  */
 public class Compiler {
 
+    private static String defaultCompilerTarget() {
+        return System.getProperty(
+            "maven.compiler.release", 
+            System.getProperty(
+                "maven.compiler.target", 
+                "1.8"));
+    }
+
     public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
       compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
     }
 
     public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
-        targetVersion = targetVersion == null ? "1.6" : targetVersion;
+        targetVersion = targetVersion == null ? defaultCompilerTarget() : targetVersion;
 
         StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 

@@ -21,6 +21,10 @@ import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.ParcelUtils.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +41,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.robolectric.android.AndroidInterceptors;
 import org.robolectric.internal.ShadowProvider;
+import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 import org.robolectric.internal.bytecode.Interceptors;
+import org.robolectric.internal.bytecode.MutableClass;
+import org.robolectric.internal.bytecode.OldClassInstrumentor;
 import org.robolectric.internal.bytecode.Sandbox;
+import org.robolectric.internal.bytecode.SandboxClassLoader;
+import org.robolectric.internal.bytecode.ShadowDecorator;
 import org.robolectric.internal.bytecode.ShadowMap;
 import org.robolectric.internal.bytecode.ShadowWrangler;
+import org.robolectric.internal.bytecode.UrlResourceProvider;
+import org.robolectric.sandbox.ShadowMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -55,8 +67,13 @@ public class ParcelableIT {
     @BeforeAll
     public static void setUp() {
         final Interceptors interceptors = new Interceptors(AndroidInterceptors.all());
-        final ShadowMap shadowMap = ShadowMap.createFromShadowProviders(ServiceLoader.load(ShadowProvider.class));
-        new Sandbox(ParcelableIT.class.getClassLoader()).configure(new ShadowWrangler(shadowMap, 23, interceptors), interceptors);
+        final ShadowMap shadowMap = ShadowMap.createFromShadowProviders(Lists.newArrayList(ServiceLoader.load(ShadowProvider.class)));
+
+        InstrumentationConfiguration config = mock(InstrumentationConfiguration.class);
+        when(config.shouldAcquire(anyString())).thenReturn(false);
+        when(config.shouldInstrument(any(MutableClass.class))).thenReturn(false);
+        SandboxClassLoader classLoader = new SandboxClassLoader(config, new UrlResourceProvider(), new OldClassInstrumentor(new ShadowDecorator()));
+        new Sandbox(classLoader).configure(new ShadowWrangler(shadowMap, ShadowMatcher.MATCH_ALL, interceptors), interceptors);
     }
 
     @Test
