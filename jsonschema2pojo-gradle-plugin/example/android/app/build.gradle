@@ -39,7 +39,7 @@ dependencies {
     // Required if generating Jackson 2 annotations
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
 
-    testImplementation 'androidx.test.ext:junit:1.2.1'
+    testImplementation 'androidx.test.ext:junit:1.3.0'
     testImplementation 'org.robolectric:robolectric:4.10.3'
 }
 
