@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -96,7 +97,7 @@ public class CompilerWarningIT {
   @Test
   public void checkWarnings() {
     schemaRule.generate(schema, "com.example", config);
-    schemaRule.compile(compiler, NullWriter.INSTANCE, new ArrayList<>(), config);
+    schemaRule.compile(compiler, new PrintWriter(System.out), new ArrayList<>(), config);
     
     List<Diagnostic<? extends JavaFileObject>> warnings = warnings(schemaRule.getDiagnostics());
     
