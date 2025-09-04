@@ -78,7 +78,6 @@ public class NameHelperTest {
     }
 
     private ObjectNode node(String key, String value) {
-        return JsonNodeFactory.instance.objectNode()
-                .put(key, value);
+        return JsonNodeFactory.instance.objectNode().put(key, value);
     }
 }

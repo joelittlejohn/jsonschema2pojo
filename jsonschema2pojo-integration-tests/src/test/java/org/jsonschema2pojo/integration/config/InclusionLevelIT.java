@@ -35,8 +35,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelAlways() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "ALWAYS"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "ALWAYS"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -48,8 +47,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonAbsent() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "NON_ABSENT"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "NON_ABSENT"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -61,8 +59,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonDefault() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "NON_DEFAULT"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "NON_DEFAULT"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -74,8 +71,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonEmpty() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "NON_EMPTY"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "NON_EMPTY"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -87,8 +83,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNonNull() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "NON_NULL"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "NON_NULL"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -100,8 +95,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelUseDefault() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2", "inclusionLevel", "USE_DEFAULTS"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2", "inclusionLevel", "USE_DEFAULTS"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -113,8 +107,7 @@ public class InclusionLevelIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void Jackson2InclusionLevelNotSet() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 

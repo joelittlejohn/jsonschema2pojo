@@ -19,15 +19,14 @@ package org.jsonschema2pojo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
 
-public abstract class AbstractTypeInfoAwareAnnotator extends AbstractAnnotator
-{
+public abstract class AbstractTypeInfoAwareAnnotator extends AbstractAnnotator {
     public AbstractTypeInfoAwareAnnotator(GenerationConfig generationConfig) {
         super(generationConfig);
     }
 
     @Override
     public void typeInfo(JDefinedClass clazz, JsonNode node) {
-        if(getGenerationConfig().isIncludeTypeInfo()) {
+        if (getGenerationConfig().isIncludeTypeInfo()) {
             // Have per-schema JavaTypeInfo configuration override what is defined in generation config; backward comparability
             if (node.has("deserializationClassProperty")) {
                 String annotationName = node.get("deserializationClassProperty").asText();

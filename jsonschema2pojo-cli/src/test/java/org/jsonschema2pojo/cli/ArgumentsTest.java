@@ -52,10 +52,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesValidArguments() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "--source", "/home/source", "--target", "/home/target", "--disable-getters", "--package", "mypackage",
-                "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors",
-                "--include-dynamic-getters", "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--source", "/home/source", "--target", "/home/target", "--disable-getters", "--package", "mypackage", "--generate-builders", "--use-primitives", "--omit-hashcode-and-equals", "--omit-tostring", "--include-dynamic-accessors", "--include-dynamic-getters", "--include-dynamic-setters", "--include-dynamic-builders", "--inclusion-level", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -77,8 +74,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesShorthandArguments() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-idg", "-ids", "-idb", "-il", "ALWAYS"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "/home/source", "-t", "/home/target", "-p", "mypackage", "-b", "-P", "-E", "-S", "-ida", "-idg", "-ids", "-idb", "-il", "ALWAYS"
         });
 
         assertThat(args.didExit(), is(false));
@@ -98,8 +94,7 @@ public class ArgumentsTest {
 
     @Test
     public void parserAcceptsHyphenWordDelimiter() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-t", "/home/target", "--word-delimiters", "-"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "/home/source", "-t", "/home/target", "--word-delimiters", "-"
         });
 
         assertThat(args.getPropertyWordDelimiters(), is(new char[] { '-' }));
@@ -107,8 +102,7 @@ public class ArgumentsTest {
 
     @Test
     public void allOptionalArgsCanBeOmittedAndDefaultsPrevail() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "--source", "/home/source", "--target", "/home/target"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "--source", "/home/source", "--target", "/home/target"
         });
 
         assertThat(args.didExit(), is(false));
@@ -155,8 +149,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesSourceWithMultipleValues() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "/home/second_source", "-t", "/home/target"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "/home/source", "/home/second_source", "-t", "/home/target"
         });
 
         assertThat(args.didExit(), is(false));
@@ -168,8 +161,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesMultipleSources() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "-s", "/home/second_source", "-t", "/home/target"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "/home/source", "-s", "/home/second_source", "-t", "/home/target"
         });
 
         assertThat(args.didExit(), is(false));
@@ -181,8 +173,7 @@ public class ArgumentsTest {
 
     @Test
     public void parseRecognisesMultipleSourcesWithMultipleValues() {
-        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {
-                "-s", "/home/source", "/home/second_source", "-s", "/home/third_source", "-t", "/home/target"
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] { "-s", "/home/source", "/home/second_source", "-s", "/home/third_source", "-t", "/home/target"
         });
 
         assertThat(args.didExit(), is(false));

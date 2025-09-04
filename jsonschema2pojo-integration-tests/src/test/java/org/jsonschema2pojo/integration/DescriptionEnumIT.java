@@ -36,7 +36,8 @@ import com.thoughtworks.qdox.model.JavaClass;
  */
 public class DescriptionEnumIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithDescription;
 

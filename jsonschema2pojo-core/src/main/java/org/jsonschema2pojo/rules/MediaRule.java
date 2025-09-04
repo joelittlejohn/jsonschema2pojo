@@ -26,8 +26,10 @@ import com.sun.codemodel.JType;
  * Applies the "media" hyper schema rule.
  * </p>
  *
- * @see <a href="http://json-schema.org/latest/json-schema-hypermedia.html#rfc.section.4.3">
- *   Section 4.3 media, JSON Hyper-Schema: Hypertext definitions for JSON Schema</a>
+ * @see <a href=
+ *      "http://json-schema.org/latest/json-schema-hypermedia.html#rfc.section.4.3">
+ *      Section 4.3 media, JSON Hyper-Schema: Hypertext definitions for JSON
+ *      Schema</a>
  *
  * @author Christian Trimble
  * @since 0.4.2
@@ -58,7 +60,7 @@ public class MediaRule implements Rule<JType, JType> {
      * @param parent
      *            the parent node
      * @param baseType
-     *            the type with the media node.  This must be java.lang.String.
+     *            the type with the media node. This must be java.lang.String.
      * @param schema
      *            the schema containing the property.
      * @return byte[] when a binary encoding is specified, baseType otherwise.

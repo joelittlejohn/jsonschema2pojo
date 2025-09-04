@@ -28,7 +28,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class CommonsLangRemovalIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void hashCodeAndEqualsDontUseCommonsLang() throws SecurityException {

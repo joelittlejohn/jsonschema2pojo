@@ -32,140 +32,122 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeConstructorPropertiesAnnotationIT {
 
-  @RegisterExtension
-  public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-  private String[] expectedValueForAllValuesConstructor = { "x", "y", "z" };
-  private String[] expectedValueForRequiredValuesConstructor = { "x", "y" };
-  private String testObjectPackage = "com.example";
-  private String testObjectName = testObjectPackage + "." + "TestObject";
-  private String testObjectSchema = "/schema/includeConstructorPropertiesAnnotation/testObject.json";
+    private String[] expectedValueForAllValuesConstructor = { "x", "y", "z" };
+    private String[] expectedValueForRequiredValuesConstructor = { "x", "y" };
+    private String testObjectPackage = "com.example";
+    private String testObjectName = testObjectPackage + "." + "TestObject";
+    private String testObjectSchema = "/schema/includeConstructorPropertiesAnnotation/testObject.json";
 
-  @Test
-  public void defaultConfig() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage);
+    @Test
+    public void defaultConfig() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage);
 
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void defaultWithConstructors() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void disabled() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructorPropertiesAnnotation", false));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void disabledWithConstructors() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", true,
-                                                                   "constructorsRequiredPropertiesOnly", true,
-                                                                   "includeConstructorPropertiesAnnotation", false));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  @Test
-  public void enabled() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", true,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateConstructor(3, expectedValueForAllValuesConstructor, testObjectClass);
-  }
-
-  @Test
-  public void enabledWithRequiredPropertiesOnly() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", true,
-                                                                   "constructorsRequiredPropertiesOnly", true,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateConstructor(2, expectedValueForRequiredValuesConstructor, testObjectClass);
-  }
-
-  @Test
-  public void enabledWithoutConstructors() throws ClassNotFoundException {
-    ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage,
-                                                            config("includeConstructors", false,
-                                                                   "includeConstructorPropertiesAnnotation", true));
-
-    Class<?> testObjectClass = classLoader.loadClass(testObjectName);
-
-    validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
-  }
-
-  private String expectedValueForFail(String[] expectedValue) {
-    StringJoiner joiner = new StringJoiner(",", "{", "}");
-
-    for (String v : expectedValue)
-    {
-      joiner.add("\"" + v + "\"");
+        validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
     }
 
-    return joiner.toString();
-  }
+    @Test
+    public void defaultWithConstructors() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructors", true));
 
-  private String paramTypesJoin(Class<?>[] parameterTypes) {
-    StringJoiner joiner = new StringJoiner(",");
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
-    for (Class<?> clazz : parameterTypes)
-    {
-      joiner.add(clazz.getCanonicalName());
+        validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
     }
 
-    return joiner.toString();
-  }
+    @Test
+    public void disabled() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructorPropertiesAnnotation", false));
 
-  private void validateConstructor(int paramCount, String[] expectedValue, Class<?> testObjectClass) {
-    Constructor<?>[] constructors = testObjectClass.getConstructors();
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
-    for (Constructor<?> constructor : constructors)
-    {
-      if (constructor.getParameterCount() == paramCount)
-      {
-        ConstructorProperties constructorPropertiesAnnotation = constructor.getAnnotation(ConstructorProperties.class);
-        assertThat(constructorPropertiesAnnotation, is(notNullValue()));
-        assertThat(constructorPropertiesAnnotation.value(), is(expectedValue));
-        return;
-      }
+        validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
     }
 
-    fail("Could not find " + paramCount + " parameter constructor which was expect to have " + expectedValueForFail(expectedValue));
-  }
+    @Test
+    public void disabledWithConstructors() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructors", true, "constructorsRequiredPropertiesOnly", true, "includeConstructorPropertiesAnnotation", false));
 
-  private void validateNoAnnotationPresentOnAnyConstructors(Class<?> testObjectClass) {
-    Constructor<?>[] constructors = testObjectClass.getConstructors();
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
 
-    for (Constructor<?> constructor : constructors)
-    {
-      Annotation annotation = constructor.getAnnotation(ConstructorProperties.class);
-
-      if (annotation != null)
-      {
-        fail("Found constructor with annotation expected to not be present. The Constructor " + constructor.getName() + " with " + paramTypesJoin(constructor.getParameterTypes()) + " had annotation.");
-      }
+        validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
     }
-  }
+
+    @Test
+    public void enabled() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructors", true, "includeConstructorPropertiesAnnotation", true));
+
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
+
+        validateConstructor(3, expectedValueForAllValuesConstructor, testObjectClass);
+    }
+
+    @Test
+    public void enabledWithRequiredPropertiesOnly() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructors", true, "constructorsRequiredPropertiesOnly", true, "includeConstructorPropertiesAnnotation", true));
+
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
+
+        validateConstructor(2, expectedValueForRequiredValuesConstructor, testObjectClass);
+    }
+
+    @Test
+    public void enabledWithoutConstructors() throws ClassNotFoundException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(testObjectSchema, testObjectPackage, config("includeConstructors", false, "includeConstructorPropertiesAnnotation", true));
+
+        Class<?> testObjectClass = classLoader.loadClass(testObjectName);
+
+        validateNoAnnotationPresentOnAnyConstructors(testObjectClass);
+    }
+
+    private String expectedValueForFail(String[] expectedValue) {
+        StringJoiner joiner = new StringJoiner(",", "{", "}");
+
+        for (String v : expectedValue) {
+            joiner.add("\"" + v + "\"");
+        }
+
+        return joiner.toString();
+    }
+
+    private String paramTypesJoin(Class<?>[] parameterTypes) {
+        StringJoiner joiner = new StringJoiner(",");
+
+        for (Class<?> clazz : parameterTypes) {
+            joiner.add(clazz.getCanonicalName());
+        }
+
+        return joiner.toString();
+    }
+
+    private void validateConstructor(int paramCount, String[] expectedValue, Class<?> testObjectClass) {
+        Constructor<?>[] constructors = testObjectClass.getConstructors();
+
+        for (Constructor<?> constructor : constructors) {
+            if (constructor.getParameterCount() == paramCount) {
+                ConstructorProperties constructorPropertiesAnnotation = constructor.getAnnotation(ConstructorProperties.class);
+                assertThat(constructorPropertiesAnnotation, is(notNullValue()));
+                assertThat(constructorPropertiesAnnotation.value(), is(expectedValue));
+                return;
+            }
+        }
+
+        fail("Could not find " + paramCount + " parameter constructor which was expect to have " + expectedValueForFail(expectedValue));
+    }
+
+    private void validateNoAnnotationPresentOnAnyConstructors(Class<?> testObjectClass) {
+        Constructor<?>[] constructors = testObjectClass.getConstructors();
+
+        for (Constructor<?> constructor : constructors) {
+            Annotation annotation = constructor.getAnnotation(ConstructorProperties.class);
+
+            if (annotation != null) {
+                fail("Found constructor with annotation expected to not be present. The Constructor " + constructor.getName() + " with " + paramTypesJoin(constructor.getParameterTypes()) + " had annotation.");
+            }
+        }
+    }
 }

@@ -33,15 +33,16 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class YamlTypeIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithManyTypes;
 
     @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
-        classWithManyTypes = classSchemaRule.generateAndCompile("/schema/yaml/type/types.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.Types");
+        classWithManyTypes = classSchemaRule.generateAndCompile("/schema/yaml/type/types.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.Types");
     }
 
     @Test
@@ -186,8 +187,7 @@ public class YamlTypeIT {
 
     @Test
     public void maximumGreaterThanIntegerMaxCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMaximumAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.IntegerWithLongMaximumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -197,8 +197,7 @@ public class YamlTypeIT {
 
     @Test
     public void maximumGreaterThanIntegerMaxCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMaximumAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMaximumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema")).loadClass("com.example.IntegerWithLongMaximumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -208,8 +207,7 @@ public class YamlTypeIT {
 
     @Test
     public void minimumLessThanIntegerMinCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMinimumAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.IntegerWithLongMinimumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -219,8 +217,7 @@ public class YamlTypeIT {
 
     @Test
     public void minimumLessThanIntegerMinCausesIntegersToBecomePrimitiveLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerWithLongMinimumAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerWithLongMinimumAsLong.yaml", "com.example", config("usePrimitives", true, "sourceType", "yamlschema")).loadClass("com.example.IntegerWithLongMinimumAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -230,8 +227,7 @@ public class YamlTypeIT {
 
     @Test
     public void useLongIntegersParameterCausesIntegersToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "sourceType", "yamlschema")).loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -241,8 +237,7 @@ public class YamlTypeIT {
 
     @Test
     public void useLongIntegersParameterCausesPrimitiveIntsToBecomeLongs() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.IntegerAsLong");
+        Class<?> classWithLongProperty = schemaRule.generateAndCompile("/schema/yaml/type/integerAsLong.yaml", "com.example", config("useLongIntegers", true, "usePrimitives", true, "sourceType", "yamlschema")).loadClass("com.example.IntegerAsLong");
 
         Method getterMethod = classWithLongProperty.getMethod("getLongProperty");
 
@@ -251,8 +246,7 @@ public class YamlTypeIT {
 
     @Test
     public void useDoubleNumbersFalseCausesNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "sourceType", "yamlschema"))
-                .loadClass("com.example.NumberAsFloat");
+        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "sourceType", "yamlschema")).loadClass("com.example.NumberAsFloat");
 
         Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
 
@@ -262,8 +256,7 @@ public class YamlTypeIT {
 
     @Test
     public void useDoubleNumbersFalseCausesPrimitiveNumbersToBecomeFloats() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
-        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "usePrimitives", true, "sourceType", "yamlschema"))
-                .loadClass("com.example.NumberAsFloat");
+        Class<?> classWithDoubleProperty = schemaRule.generateAndCompile("/schema/yaml/type/numberAsFloat.yaml", "com.example", config("useDoubleNumbers", false, "usePrimitives", true, "sourceType", "yamlschema")).loadClass("com.example.NumberAsFloat");
 
         Method getterMethod = classWithDoubleProperty.getMethod("getFloatProperty");
 
@@ -355,10 +348,8 @@ public class YamlTypeIT {
         final Class<?> generatedClass = getterMethod.getReturnType();
         assertThat(generatedClass.getName(), is("com.example.TypeWithInheritedClassWithGenerics"));
         assertThat(generatedClass.getSuperclass().equals(InheritedClassWithGenerics.class), equalTo(true));
-        assertThat(((ParameterizedType) generatedClass.getGenericSuperclass()).getActualTypeArguments(), equalTo(new Type[]
-                {
-                        String.class, Integer.class, Boolean.class
-                }));
+        assertThat(((ParameterizedType) generatedClass.getGenericSuperclass()).getActualTypeArguments(), equalTo(new Type[] { String.class, Integer.class, Boolean.class
+        }));
     }
 
     public static class InheritedClassWithGenerics<X, Y, Z> {

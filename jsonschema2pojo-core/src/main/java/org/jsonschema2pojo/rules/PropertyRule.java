@@ -36,8 +36,8 @@ import org.apache.commons.lang3.StringUtils;
  * Applies the schema rules that represent a property definition.
  *
  * @see <a href=
- * "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
- * /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http:/
+ *      /tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -50,19 +50,22 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * This rule adds a property to a given Java class according to the Java
-     * Bean spec. A private field is added to the class, along with accompanying
-     * accessor methods.
+     * This rule adds a property to a given Java class according to the Java Bean
+     * spec. A private field is added to the class, along with accompanying accessor
+     * methods.
      * <p>
-     * If this rule's schema mapper is configured to include builder methods
-     * (see {@link GenerationConfig#isGenerateBuilders()} ),
-     * then a builder method of the form <code>withFoo(Foo foo);</code> is also
-     * added.
+     * If this rule's schema mapper is configured to include builder methods (see
+     * {@link GenerationConfig#isGenerateBuilders()} ), then a builder method of the
+     * form <code>withFoo(Foo foo);</code> is also added.
      *
-     * @param nodeName the name of the property to be applied
-     * @param node     the node describing the characteristics of this property
-     * @param parent   the parent node
-     * @param jclass   the Java class which should have this property added
+     * @param nodeName
+     *            the name of the property to be applied
+     * @param node
+     *            the node describing the characteristics of this property
+     * @param parent
+     *            the parent node
+     * @param jclass
+     *            the Java class which should have this property added
      * @return the given jclass
      */
     @Override
@@ -246,8 +249,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         JMethod getter = c.method(JMod.PUBLIC, type, getGetterName(jsonPropertyName, field.type(), node));
 
         JBlock body = getter.body();
-        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) && !isRequired
-                && field.type().isReference()) {
+        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) && !isRequired && field.type().isReference()) {
             body._return(c.owner().ref("java.util.Optional").staticInvoke("ofNullable").arg(field));
         } else {
             body._return(field);
@@ -268,7 +270,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
     private JMethod addBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JMethod result = null;
-        if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+        if (ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
             result = addInnerBuilderMethod(c, field, jsonPropertyName, node);
         } else {
             result = addLegacyBuilder(c, field, jsonPropertyName, node);
@@ -287,7 +289,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         return builder;
     }
 
-    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
+    private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
         JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
         JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), getBuilderName(jsonPropertyName, node));

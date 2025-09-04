@@ -24,12 +24,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class EmptyPackageNameIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void shouldAllowEmptyPackageName() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/emptyPackageName", "",
-                config("includes", new String[] {}, "excludes", new String[] {}));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/emptyPackageName", "", config("includes", new String[] {}, "excludes", new String[] {}));
 
         resultsClassLoader.loadClass("LevelZeroType");
         resultsClassLoader.loadClass("levelOne.LevelOneType");

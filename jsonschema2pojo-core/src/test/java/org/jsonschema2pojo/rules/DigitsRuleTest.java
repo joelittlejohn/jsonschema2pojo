@@ -75,19 +75,8 @@ public class DigitsRuleTest {
     private JAnnotationUse annotation;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { true, BigDecimal.class },
-                { true, BigInteger.class },
-                { true, String.class },
-                { true, Byte.class },
-                { true, Short.class },
-                { true, Integer.class },
-                { true, Long.class },
-                { false, Float.class },
-                { false, Double.class },
-        }).stream()
-                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
-                .collect(Collectors.toList());
+        return asList(new Object[][] { { true, BigDecimal.class }, { true, BigInteger.class }, { true, String.class }, { true, Byte.class }, { true, Short.class }, { true, Integer.class }, { true, Long.class }, { false, Float.class }, { false, Double.class },
+        }).stream().flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray())).collect(Collectors.toList());
     }
 
     public DigitsRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {

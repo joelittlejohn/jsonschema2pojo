@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * Copied verbatim from http://dzone.com/snippets/java-inflections, used 
+ *
+ * Copied verbatim from http://dzone.com/snippets/java-inflections, used
  * and licensed with express permission from the author Chu Yeow Cheah.
  */
 
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Transforms words (from singular to plural, from camelCase to under_score,
  * etc.). I got bored of doing Real Work...
- * 
+ *
  * @author chuyeow
  */
 public class Inflector {
@@ -37,7 +37,7 @@ public class Inflector {
     private final List<RuleAndReplacement> singulars;
     private final List<String> uncountables;
 
-    private static Inflector instance  = createDefaultBuilder().build();
+    private static Inflector instance = createDefaultBuilder().build();
 
     private Inflector(Builder builder) {
         plurals = Collections.unmodifiableList(builder.plurals);
@@ -45,71 +45,14 @@ public class Inflector {
         uncountables = Collections.unmodifiableList(builder.uncountables);
     }
 
-    public static Inflector.Builder createDefaultBuilder()
-    {
+    public static Inflector.Builder createDefaultBuilder() {
         Builder builder = builder();
 
-        builder.plural("$", "s")
-            .plural("s$", "s")
-            .plural("(ax|test)is$", "$1es")
-            .plural("(octop|vir)us$", "$1i")
-            .plural("(alias|status)$", "$1es")
-            .plural("(bu)s$", "$1es")
-            .plural("(buffal|tomat)o$", "$1oes")
-            .plural("([ti])um$", "$1a")
-            .plural("sis$", "ses")
-            .plural("(?:([^f])fe|([lr])f)$", "$1$2ves")
-            .plural("(database|hive)$", "$1s")
-            .plural("([^aeiouy]|qu)y$", "$1ies")
-            .plural("([^aeiouy]|qu)ies$", "$1y")
-            .plural("(x|ch|ss|sh)$", "$1es")
-            .plural("(matr|vert|ind)ix|ex$", "$1ices")
-            .plural("([m|l])ouse$", "$1ice")
-            .plural("(ox)$", "$1en")
-            .plural("man$", "men")
-            .plural("(quiz)$", "$1zes")
-            .plural("specimen", "specimens");
+        builder.plural("$", "s").plural("s$", "s").plural("(ax|test)is$", "$1es").plural("(octop|vir)us$", "$1i").plural("(alias|status)$", "$1es").plural("(bu)s$", "$1es").plural("(buffal|tomat)o$", "$1oes").plural("([ti])um$", "$1a").plural("sis$", "ses").plural("(?:([^f])fe|([lr])f)$", "$1$2ves").plural("(database|hive)$", "$1s").plural("([^aeiouy]|qu)y$", "$1ies").plural("([^aeiouy]|qu)ies$", "$1y").plural("(x|ch|ss|sh)$", "$1es").plural("(matr|vert|ind)ix|ex$", "$1ices").plural("([m|l])ouse$", "$1ice").plural("(ox)$", "$1en").plural("man$", "men").plural("(quiz)$", "$1zes").plural("specimen", "specimens");
 
-        builder.singular("s$", "")
-             .singular("(n)ews$", "$1ews")
-            .singular("ia$", "ium")
-            .singular("ata$", "atum")
-            .singular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis")
-            .singular("(^analy)ses$", "$1sis")
-            .singular("([^f])ves$", "$1fe")
-            .singular("(database|hive)s$", "$1")
-            .singular("(tive)s$", "$1")
-            .singular("([lr])ves$", "$1f")
-            .singular("([^aeiouy]|qu)ies$", "$1y")
-            .singular("(s)eries$", "$1eries")
-            .singular("(m)ovies$", "$1ovie")
-            .singular("(x|ch|ss|sh)es$", "$1")
-            .singular("([m|l])ice$", "$1ouse")
-            .singular("(bus)es$", "$1")
-            .singular("(o)es$", "$1")
-            .singular("(shoe)s$", "$1")
-            .singular("(cris|ax|test)es$", "$1is")
-            .singular("(tax)es$", "$1")
-            .singular("([octop|vir])i$", "$1us")
-            .singular("(alias|status)es$", "$1")
-            .singular("^(ox)en", "$1")
-            .singular("(vert|ind)ices$", "$1ex")
-            .singular("(matr)ices$", "$1ix")
-            .singular("(quiz)zes$", "$1")
-            .singular("(ess)$", "$1")
-            .singular("men$", "man")
-            .singular("(.+)list$", "$1")
-            .singular("specimen", "specimen")
-            .singular("status$", "status")
-            .singular("(slave)s$", "$1");
+        builder.singular("s$", "").singular("(n)ews$", "$1ews").singular("ia$", "ium").singular("ata$", "atum").singular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis").singular("(^analy)ses$", "$1sis").singular("([^f])ves$", "$1fe").singular("(database|hive)s$", "$1").singular("(tive)s$", "$1").singular("([lr])ves$", "$1f").singular("([^aeiouy]|qu)ies$", "$1y").singular("(s)eries$", "$1eries").singular("(m)ovies$", "$1ovie").singular("(x|ch|ss|sh)es$", "$1").singular("([m|l])ice$", "$1ouse").singular("(bus)es$", "$1").singular("(o)es$", "$1").singular("(shoe)s$", "$1").singular("(cris|ax|test)es$", "$1is").singular("(tax)es$", "$1").singular("([octop|vir])i$", "$1us").singular("(alias|status)es$", "$1").singular("^(ox)en", "$1").singular("(vert|ind)ices$", "$1ex").singular("(matr)ices$", "$1ix").singular("(quiz)zes$", "$1").singular("(ess)$", "$1").singular("men$", "man").singular("(.+)list$", "$1").singular("specimen", "specimen").singular("status$", "status").singular("(slave)s$", "$1");
 
-        builder.irregular("curve", "curves")
-            .irregular("leaf", "leaves")
-            .irregular("roof", "rooves")
-            .irregular("person", "people")
-            .irregular("child", "children")
-            .irregular("sex", "sexes")
-            .irregular("move", "moves");
+        builder.irregular("curve", "curves").irregular("leaf", "leaves").irregular("roof", "rooves").irregular("person", "people").irregular("child", "children").irregular("sex", "sexes").irregular("move", "moves");
 
         builder.uncountable(new String[] { "equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "s" });
 
@@ -148,8 +91,7 @@ public class Inflector {
         return word;
     }
 
-    public static Builder builder()
-    {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -172,8 +114,7 @@ public class Inflector {
         }
     }
 
-    public static class Builder
-    {
+    public static class Builder {
         private List<RuleAndReplacement> plurals = new ArrayList<>();
         private List<RuleAndReplacement> singulars = new ArrayList<>();
         private List<String> uncountables = new ArrayList<>();
@@ -201,8 +142,7 @@ public class Inflector {
             return this;
         }
 
-        public Inflector build()
-        {
+        public Inflector build() {
             return new Inflector(this);
         }
     }

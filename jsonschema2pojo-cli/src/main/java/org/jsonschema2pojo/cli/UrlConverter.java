@@ -25,7 +25,6 @@ import org.jsonschema2pojo.util.URLUtil;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.BaseConverter;
 
-
 /**
  * Convert a string into a url.
  *

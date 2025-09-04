@@ -22,15 +22,15 @@ package org.jsonschema2pojo;
 public enum SourceType {
 
     /**
-     * JSON-schema documents, that contain formal rules about the kind of JSON
-     * data that the generated Java types will be mapped to (<a
-     * href="http://json-schema.org/">http://json-schema.org/</a>)).
+     * JSON-schema documents, that contain formal rules about the kind of JSON data
+     * that the generated Java types will be mapped to
+     * (<a href="http://json-schema.org/">http://json-schema.org/</a>)).
      */
     JSONSCHEMA,
 
     /**
-     * JSON documents, that represent an example of the kind of JSON data that
-     * the generated Java types will be mapped to.
+     * JSON documents, that represent an example of the kind of JSON data that the
+     * generated Java types will be mapped to.
      */
     JSON,
 
@@ -40,8 +40,8 @@ public enum SourceType {
     YAMLSCHEMA,
 
     /**
-     * YAML documents, that represent an example of the kind of YAML (or JSON) data that
-     * the generated Java types will be mapped to.
+     * YAML documents, that represent an example of the kind of YAML (or JSON) data
+     * that the generated Java types will be mapped to.
      */
     YAML
 }

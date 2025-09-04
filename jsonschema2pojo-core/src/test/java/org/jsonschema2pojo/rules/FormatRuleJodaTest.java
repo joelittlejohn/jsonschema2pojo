@@ -49,10 +49,7 @@ public class FormatRuleJodaTest {
     private final Class<?> expectedType;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { "date-time", DateTime.class },
-                { "date", LocalDate.class },
-                { "time", LocalTime.class }});
+        return asList(new Object[][] { { "date-time", DateTime.class }, { "date", LocalDate.class }, { "time", LocalTime.class } });
     }
 
     public FormatRuleJodaTest(String formatValue, Class<?> expectedType) {

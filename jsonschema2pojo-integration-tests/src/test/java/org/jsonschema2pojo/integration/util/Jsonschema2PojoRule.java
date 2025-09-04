@@ -128,8 +128,8 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
         final String displayName = StringUtils.removeEnd(contextDisplayName, "()");
         String methodName = context.getRequiredTestMethod().getName();
         if (!StringUtils.equals(displayName, methodName)
-               // displayName may differ from methodName in case of nested test classes, e.g. when using @Nested
-               && !StringUtils.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
+                // displayName may differ from methodName in case of nested test classes, e.g. when using @Nested
+                && !StringUtils.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
             methodName = methodName + "[" + displayName + "]";
         }
         setUp(context.getRequiredTestClass().getName(), methodName);
@@ -291,9 +291,7 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     }
 
     static String classNameToPath(String className) {
-        return className
-                .replaceAll("\\A(?:.*\\.)?([^.]*)\\Z", "$1")
-                .replaceAll("\\$", Pattern.quote(File.separator));
+        return className.replaceAll("\\A(?:.*\\.)?([^.]*)\\Z", "$1").replaceAll("\\$", Pattern.quote(File.separator));
     }
 
 }

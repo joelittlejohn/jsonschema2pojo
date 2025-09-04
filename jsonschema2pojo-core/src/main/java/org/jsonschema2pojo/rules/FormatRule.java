@@ -40,8 +40,8 @@ import com.sun.codemodel.JType;
 /**
  * Applies the "format" schema rule.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.23</a>
  */
 public class FormatRule implements Rule<JType, JType> {
 
@@ -62,9 +62,12 @@ public class FormatRule implements Rule<JType, JType> {
      * <p>
      * This rule maps format values to Java types. By default:
      * <ul>
-     * <li>"format":"date-time" =&gt; {@link java.util.Date} or {@link org.joda.time.DateTime} (if config useJodaDates is set)
-     * <li>"format":"date" =&gt; {@link String} or {@link org.joda.time.LocalDate} (if config useJodaLocalDates is set)
-     * <li>"format":"time" =&gt; {@link String} or {@link org.joda.time.LocalTime} (if config useJodaLocalTimes is set)
+     * <li>"format":"date-time" =&gt; {@link java.util.Date} or
+     * {@link org.joda.time.DateTime} (if config useJodaDates is set)
+     * <li>"format":"date" =&gt; {@link String} or {@link org.joda.time.LocalDate}
+     * (if config useJodaLocalDates is set)
+     * <li>"format":"time" =&gt; {@link String} or {@link org.joda.time.LocalTime}
+     * (if config useJodaLocalTimes is set)
      * <li>"format":"utc-millisec" =&gt; <code>long</code>
      * <li>"format":"regex" =&gt; {@link java.util.regex.Pattern}
      * <li>"format":"color" =&gt; {@link String}
@@ -87,8 +90,8 @@ public class FormatRule implements Rule<JType, JType> {
      *            the parent node
      * @param baseType
      *            the type which which is being formatted e.g. for
-     *            <code>{ "type" : "string", "format" : "uri" }</code> the
-     *            baseType would be java.lang.String
+     *            <code>{ "type" : "string", "format" : "uri" }</code> the baseType
+     *            would be java.lang.String
      * @return the Java type that is appropriate for the format value
      */
     @Override
@@ -167,8 +170,7 @@ public class FormatRule implements Rule<JType, JType> {
         if (StringUtils.isNotEmpty(typeName)) {
             try {
                 return ClassUtils.getClass(Thread.currentThread().getContextClassLoader(), typeName);
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 throw new GenerationException(format("could not load java type %s for %s", typeName, format), e);
             }
         }

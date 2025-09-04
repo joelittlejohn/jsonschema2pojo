@@ -38,8 +38,8 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Applies the "required" JSON schema rule.
  *
- * @see <a
- * href="http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3">http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3">http://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.4.3</a>
  */
 public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -57,7 +57,7 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
 
         JsonNode properties = schema.getContent().get("properties");
 
-        for (Iterator<JsonNode> iterator = node.elements(); iterator.hasNext(); ) {
+        for (Iterator<JsonNode> iterator = node.elements(); iterator.hasNext();) {
             String requiredArrayItem = iterator.next().asText();
             if (requiredArrayItem.isEmpty()) {
                 continue;
@@ -105,10 +105,7 @@ public class RequiredArrayRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private void addNotNullAnnotation(JFieldVar field) {
-        final Class<? extends Annotation> notNullClass
-                = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                ? NotNull.class
-                : javax.validation.constraints.NotNull.class;
+        final Class<? extends Annotation> notNullClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? NotNull.class : javax.validation.constraints.NotNull.class;
         field.annotate(notNullClass);
     }
 

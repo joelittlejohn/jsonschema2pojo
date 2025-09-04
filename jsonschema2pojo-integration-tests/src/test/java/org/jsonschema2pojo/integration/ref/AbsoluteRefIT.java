@@ -31,15 +31,15 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class AbsoluteRefIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void absoluteRefIsReadSuccessfully() throws ClassNotFoundException, NoSuchMethodException, IOException {
 
         File schemaWithAbsoluteRef = createSchemaWithAbsoluteRef();
 
-        Class<?> absoluteRefClass = schemaRule.generateAndCompile(schemaWithAbsoluteRef.toURI().toURL(), "com.example")
-                .loadClass("com.example.AbsoluteRef");
+        Class<?> absoluteRefClass = schemaRule.generateAndCompile(schemaWithAbsoluteRef.toURI().toURL(), "com.example").loadClass("com.example.AbsoluteRef");
 
         Class<?> addressClass = absoluteRefClass.getMethod("getAddress").getReturnType();
 

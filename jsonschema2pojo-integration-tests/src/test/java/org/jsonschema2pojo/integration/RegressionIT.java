@@ -32,8 +32,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RegressionIT {
-    
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void pathWithSpacesInTheNameDoesNotFail() throws ClassNotFoundException {
@@ -79,10 +80,7 @@ public class RegressionIT {
 
     @Test
     public void extendsIsSupportedInArrayItemType() throws ReflectiveOperationException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/regression/extends_in_array",
-                "com.example",
-                Collections.emptyMap());
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/regression/extends_in_array", "com.example", Collections.emptyMap());
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.Flowerarray");
         Class<?> parent = resultsClassLoader.loadClass("com.example.Flower");

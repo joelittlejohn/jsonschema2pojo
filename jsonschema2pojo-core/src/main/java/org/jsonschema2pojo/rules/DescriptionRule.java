@@ -26,8 +26,8 @@ import com.sun.codemodel.JDocCommentable;
 /**
  * Applies the "description" schema property.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.22</a>
  */
 public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
 
@@ -37,8 +37,8 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * When a description node is found and applied with this rule, the value of
-     * the description is added as a class level JavaDoc comment.
+     * When a description node is found and applied with this rule, the value of the
+     * description is added as a class level JavaDoc comment.
      *
      * @param nodeName
      *            the name of the object to which this description applies
@@ -57,11 +57,11 @@ public class DescriptionRule implements Rule<JDocCommentable, JDocComment> {
 
         String descriptionText = node.asText();
 
-        if(StringUtils.isNotBlank(descriptionText)) {
+        if (StringUtils.isNotBlank(descriptionText)) {
 
             String[] lines = node.asText().split("/\r?\n/");
 
-            for(String line : lines) {
+            for (String line : lines) {
                 javadoc.append(line);
             }
         }

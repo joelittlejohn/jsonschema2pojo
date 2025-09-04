@@ -40,12 +40,7 @@ public class JsonAssert {
                 if (failureMessage != null) {
                     failureMessage = failureMessage.replaceAll(" ; ", "\n");
                 }
-                failureMessage = "\n================ Expected JSON ================"
-                        + new JSONObject(expectedJson).toString(4)
-                        + "\n================= Actual JSON ================="
-                        + new JSONObject(actualJson).toString(4)
-                        + "\n================= Error List ==================\n"
-                        + failureMessage + "\n\n";
+                failureMessage = "\n================ Expected JSON ================" + new JSONObject(expectedJson).toString(4) + "\n================= Actual JSON =================" + new JSONObject(actualJson).toString(4) + "\n================= Error List ==================\n" + failureMessage + "\n\n";
                 fail(failureMessage);
             }
         } catch (JSONException e) {

@@ -45,9 +45,7 @@ public class SchemaGenerator {
     }
 
     public SchemaGenerator(JsonFactory jsonFactory) {
-        this.objectMapper = new ObjectMapper(jsonFactory)
-                .enable(JsonParser.Feature.ALLOW_COMMENTS)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+        this.objectMapper = new ObjectMapper(jsonFactory).enable(JsonParser.Feature.ALLOW_COMMENTS).enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
 
     public ObjectNode schemaFromExample(URL example) {

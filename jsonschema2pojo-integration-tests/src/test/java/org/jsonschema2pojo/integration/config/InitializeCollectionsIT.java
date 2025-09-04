@@ -33,28 +33,24 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@ParameterizedClass(name="{0}")
+@ParameterizedClass(name = "{0}")
 @MethodSource("parameters")
 public class InitializeCollectionsIT {
-    
+
     public static Collection<Object[]> parameters() {
         Map<String, Object> withOptionFalse = config("initializeCollections", false);
         Map<String, Object> withOptionAbsent = config();
-        return Arrays.asList(new Object[][] {
-            {"defaultValueForCollectionsIsEmptyCollection", withOptionAbsent, "getList", notNullValue()},
-            {"defaultValueForListIsNullWithProperty", withOptionFalse, "getList", nullValue()},
-            {"defaultValueForSetIsNullWithProperty", withOptionFalse, "getSet", nullValue()},
-            {"defaultValueForListWithValuesIsNotNullWithProperty", withOptionFalse, "getListWithValues", notNullValue()},
-            {"defaultValueForSetWithValuesIsNotNullWithProperty", withOptionFalse, "getSetWithValues", notNullValue()}
+        return Arrays.asList(new Object[][] { { "defaultValueForCollectionsIsEmptyCollection", withOptionAbsent, "getList", notNullValue() }, { "defaultValueForListIsNullWithProperty", withOptionFalse, "getList", nullValue() }, { "defaultValueForSetIsNullWithProperty", withOptionFalse, "getSet", nullValue() }, { "defaultValueForListWithValuesIsNotNullWithProperty", withOptionFalse, "getListWithValues", notNullValue() }, { "defaultValueForSetWithValuesIsNotNullWithProperty", withOptionFalse, "getSetWithValues", notNullValue() }
         });
     }
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Map<String, Object> config;
     private Matcher<Object> resultMatcher;
     private String getterName;
-    
+
     public InitializeCollectionsIT(String label, Map<String, Object> config, String getterName, Matcher<Object> resultMatcher) {
         this.config = config;
         this.getterName = getterName;

@@ -32,14 +32,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-@ParameterizedClass(name="{0}")
+@ParameterizedClass(name = "{0}")
 @MethodSource("data")
 public class RealJsonExamplesIT {
 
     public static List<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "json", new ObjectMapper() },
-                { "yaml", new ObjectMapper(new YAMLFactory()) }
+        return Arrays.asList(new Object[][] { { "json", new ObjectMapper() }, { "yaml", new ObjectMapper(new YAMLFactory()) }
         });
     }
 
@@ -62,8 +60,7 @@ public class RealJsonExamplesIT {
     public void getUserDataProducesValidTypes() throws Exception {
 
         final String filePath = filePath("examples/GetUserData");
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example",
-                config("sourceType", format, "useLongIntegers", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example", config("sourceType", format, "useLongIntegers", true));
 
         Class<?> userDataType = resultsClassLoader.loadClass("com.example.GetUserData");
 
@@ -85,9 +82,7 @@ public class RealJsonExamplesIT {
     public void torrentProducesValidTypes() throws Exception {
 
         final String filePath = filePath("examples/torrent");
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example",
-                config("sourceType", format,
-                        "propertyWordDelimiters", "_"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example", config("sourceType", format, "propertyWordDelimiters", "_"));
 
         Class<?> torrentType = resultsClassLoader.loadClass("com.example.Torrent");
 

@@ -34,8 +34,9 @@ public enum EnumDefinitionExtensionType {
     JAVA_ENUMS,
 
     /**
-     * Enum defined by JSON Schema and a custom jsonschema2pojo extension,
-     * defined by custom {@link org.jsonschema2pojo.rules.EnumRule} implementation provided by custom {@link org.jsonschema2pojo.rules.RuleFactory}.
+     * Enum defined by JSON Schema and a custom jsonschema2pojo extension, defined
+     * by custom {@link org.jsonschema2pojo.rules.EnumRule} implementation provided
+     * by custom {@link org.jsonschema2pojo.rules.RuleFactory}.
      */
     CUSTOM
 }

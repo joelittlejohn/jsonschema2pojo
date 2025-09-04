@@ -40,14 +40,14 @@ import com.sun.codemodel.JMethod;
 
 public class CustomAnnotatorIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void defaultCustomAnnotatorIsNoop() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "none")); // turn off core annotations
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "none")); // turn off core annotations
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -61,9 +61,8 @@ public class CustomAnnotatorIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void customAnnotatorIsAbleToAddCustomAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "none", // turn off core annotations
-                        "customAnnotator", DeprecatingAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "none", // turn off core annotations
+                "customAnnotator", DeprecatingAnnotator.class.getName()));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -78,8 +77,7 @@ public class CustomAnnotatorIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void customAnnotatorCanBeAppliedAlongsideCoreAnnotator() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("customAnnotator", DeprecatingAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("customAnnotator", DeprecatingAnnotator.class.getName()));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -98,9 +96,7 @@ public class CustomAnnotatorIT {
     public void invalidCustomAnnotatorClassCausesMojoException() {
         final String schema = "/schema/properties/primitiveProperties.json";
 
-        final RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> schemaRule.generate(schema, "com.example", config("customAnnotator", "java.lang.String")));
+        final RuntimeException exception = assertThrows(RuntimeException.class, () -> schemaRule.generate(schema, "com.example", config("customAnnotator", "java.lang.String")));
         assertThat(exception.getCause(), is(instanceOf(MojoExecutionException.class)));
         assertThat(exception.getCause().getMessage(), is(containsString("annotator")));
     }
@@ -170,8 +166,7 @@ public class CustomAnnotatorIT {
         }
 
         @Override
-        public void additionalPropertiesField(JFieldVar field,
-                JDefinedClass clazz, String propertyName) {
+        public void additionalPropertiesField(JFieldVar field, JDefinedClass clazz, String propertyName) {
             field.annotate(Deprecated.class);
 
         }

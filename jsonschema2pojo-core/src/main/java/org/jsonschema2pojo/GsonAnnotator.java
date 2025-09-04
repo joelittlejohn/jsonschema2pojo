@@ -34,8 +34,8 @@ import com.sun.codemodel.JFieldVar;
  * {@link GenerationConfig#getPropertyWordDelimiters} to filter out underscores
  * or other unwanted delimiters but still marshal/unmarshal the same content.
  *
- * @see <a
- *      href="https://code.google.com/p/google-gson/">https://code.google.com/p/google-gson/</a>
+ * @see <a href=
+ *      "https://code.google.com/p/google-gson/">https://code.google.com/p/google-gson/</a>
  */
 public class GsonAnnotator extends AbstractAnnotator {
 

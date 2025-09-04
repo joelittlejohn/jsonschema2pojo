@@ -25,8 +25,8 @@ import org.jsonschema2pojo.Schema;
 /**
  * Applies the "$comment" schema property from json-schema-07.
  *
- * @see <a
- *      href="https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9">https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9</a>
+ * @see <a href=
+ *      "https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9">https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9</a>
  */
 public class CommentRule implements Rule<JDocCommentable, JDocComment> {
 
@@ -36,8 +36,8 @@ public class CommentRule implements Rule<JDocCommentable, JDocComment> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * When a $comment node is found and applied with this rule, the value of
-     * the $comment is added as a method and field level JavaDoc comment.
+     * When a $comment node is found and applied with this rule, the value of the
+     * $comment is added as a method and field level JavaDoc comment.
      *
      * @param nodeName
      *            the name of the object to which this description applies
@@ -56,11 +56,11 @@ public class CommentRule implements Rule<JDocCommentable, JDocComment> {
 
         String descriptionText = node.asText();
 
-        if(StringUtils.isNotBlank(descriptionText)) {
+        if (StringUtils.isNotBlank(descriptionText)) {
 
             String[] lines = node.asText().split("/\r?\n/");
 
-            for(String line : lines) {
+            for (String line : lines) {
                 javadoc.append(line);
             }
         }

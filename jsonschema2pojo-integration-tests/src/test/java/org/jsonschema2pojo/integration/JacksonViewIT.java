@@ -31,7 +31,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 public class JacksonViewIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void javaJsonViewWithJackson2x() throws Exception {
@@ -41,10 +42,7 @@ public class JacksonViewIT {
     }
 
     private Annotation jsonViewTest(String annotationStyle, Class<? extends Annotation> annotationType) throws ClassNotFoundException, NoSuchFieldException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/views/views.json",
-                "com.example",
-                config("annotationStyle", annotationStyle));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/views/views.json", "com.example", config("annotationStyle", annotationStyle));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.Views");
         Field fieldInView = generatedType.getDeclaredField("inView");

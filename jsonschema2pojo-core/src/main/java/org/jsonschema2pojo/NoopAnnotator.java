@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo;
 
-
 /**
  * No-op annotator that produces no annotations. Useful for producing truly
  * <em>plain old</em> Java types that have no mapping annotations at all.

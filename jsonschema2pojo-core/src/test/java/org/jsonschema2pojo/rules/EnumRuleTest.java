@@ -74,8 +74,7 @@ public class EnumRuleTest {
         enumNode.set("enum", arrayNode);
 
         // We're always a string for the purposes of this test
-        when(typeRule.apply("status", enumNode, null, jpackage, schema))
-        .thenReturn(jpackage.owner()._ref(String.class));
+        when(typeRule.apply("status", enumNode, null, jpackage, schema)).thenReturn(jpackage.owner()._ref(String.class));
 
         JType result1 = rule.apply("status", enumNode, null, jpackage, schema);
         JType result2 = rule.apply("status", enumNode, null, jpackage, schema);

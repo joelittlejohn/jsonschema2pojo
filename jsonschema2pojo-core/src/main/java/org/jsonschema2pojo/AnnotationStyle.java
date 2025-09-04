@@ -25,17 +25,17 @@ public enum AnnotationStyle {
 
     /**
      * Jackson 2.x (alias of {@link #JACKSON2})
-     * 
-     * @see <a
-     *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+     *
+     * @see <a href=
+     *      "https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
     JACKSON,
 
     /**
      * Jackson 2.x
-     * 
-     * @see <a
-     *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+     *
+     * @see <a href=
+     *      "https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
      */
     JACKSON2,
 
@@ -51,8 +51,8 @@ public enum AnnotationStyle {
     /**
      * Moshi 1.x
      *
-     * @see <a
-     *      href="https://github.com/square/moshi">https://github.com/square/moshi</a>
+     * @see <a href=
+     *      "https://github.com/square/moshi">https://github.com/square/moshi</a>
      */
     MOSHI1,
 

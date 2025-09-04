@@ -53,14 +53,10 @@ public class Moshi1IT {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleMoshi1ProducesMoshi1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
-                config("annotationStyle", "moshi1",
-                        "propertyWordDelimiters", "_",
-                        "sourceType", "json"))
-                .loadClass("com.example.Torrent");
+        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example", config("annotationStyle", "moshi1", "propertyWordDelimiters", "_", "sourceType", "json")).loadClass("com.example.Torrent");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("jakarta.json.bind.annotation")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("javax.json.bind.annotation")));
@@ -81,23 +77,17 @@ public class Moshi1IT {
     @Test
     public void annotationStyleMoshi1MakesTypesThatWorkWithMoshi1() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
-                config("annotationStyle", "moshi1",
-                        "propertyWordDelimiters", "_",
-                        "sourceType", "json",
-                        "useLongIntegers", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example", config("annotationStyle", "moshi1", "propertyWordDelimiters", "_", "sourceType", "json", "useLongIntegers", true));
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
-                config("annotationStyle", "moshi1",
-                        "propertyWordDelimiters", "_"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("annotationStyle", "moshi1", "propertyWordDelimiters", "_"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
@@ -113,7 +103,7 @@ public class Moshi1IT {
         assertThat(jsonAsMap.get("enum_Property"), is("4 ! 1"));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 

@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ContentResolver {
 
     private static final Set<String> CLASSPATH_SCHEMES = new HashSet<>(asList("classpath", "resource", "java"));
-    
+
     private final ObjectMapper objectMapper;
 
     public ContentResolver() {
@@ -46,9 +46,7 @@ public class ContentResolver {
     }
 
     public ContentResolver(JsonFactory jsonFactory) {
-        this.objectMapper = new ObjectMapper(jsonFactory)
-                .enable(JsonParser.Feature.ALLOW_COMMENTS)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+        this.objectMapper = new ObjectMapper(jsonFactory).enable(JsonParser.Feature.ALLOW_COMMENTS).enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
 
     /**
@@ -58,8 +56,8 @@ public class ContentResolver {
      * <ul>
      * <li>http/https
      * <li>file
-     * <li>classpath/resource/java (all synonymous, used to resolve a schema
-     * from the classpath)
+     * <li>classpath/resource/java (all synonymous, used to resolve a schema from
+     * the classpath)
      * </ul>
      *
      * @param uri

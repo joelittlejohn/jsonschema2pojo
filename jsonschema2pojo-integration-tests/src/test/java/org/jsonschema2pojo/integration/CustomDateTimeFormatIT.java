@@ -42,29 +42,11 @@ public class CustomDateTimeFormatIT {
 
     @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
-                "dateType", "java.util.Date",
-                "timeType", "java.util.Date",
-                "formatDateTimes", Boolean.TRUE,
-                "formatDates", Boolean.TRUE,
-                "formatTimes", Boolean.TRUE));
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config("dateType", "java.util.Date", "timeType", "java.util.Date", "formatDateTimes", Boolean.TRUE, "formatDates", Boolean.TRUE, "formatTimes", Boolean.TRUE));
 
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config(
-                "dateType", "java.util.Date",
-                "timeType", "java.util.Date",
-                "formatDateTimes", Boolean.FALSE,
-                "formatDates", Boolean.FALSE,
-                "formatDates", Boolean.FALSE));
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_false", config("dateType", "java.util.Date", "timeType", "java.util.Date", "formatDateTimes", Boolean.FALSE, "formatDates", Boolean.FALSE, "formatDates", Boolean.FALSE));
 
-        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config(
-                "dateType", "java.util.Date",
-                "timeType", "java.util.Date",
-                "customDatePattern", "yyyy",
-                "customTimePattern", "H:mm a",
-                "customDateTimePattern", "yyyy-MM-dd HH:mm X",
-                "formatDateTimes", Boolean.TRUE,
-                "formatDates", Boolean.TRUE,
-                "formatTimes", Boolean.TRUE));
+        classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_custom", config("dateType", "java.util.Date", "timeType", "java.util.Date", "customDatePattern", "yyyy", "customTimePattern", "H:mm a", "customDateTimePattern", "yyyy-MM-dd HH:mm X", "formatDateTimes", Boolean.TRUE, "formatDates", Boolean.TRUE, "formatTimes", Boolean.TRUE));
 
         ClassLoader loader = classSchemaRule.compile();
 
@@ -128,7 +110,7 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
-    public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
+    public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
         final Object instance = classWhenFormatDatesTrue.newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
@@ -138,7 +120,7 @@ public class CustomDateTimeFormatIT {
     }
 
     @Test
-    public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception{
+    public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception {
         final Object instance = classWhenFormatDatesFalse.newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 

@@ -33,13 +33,10 @@ public class SourceSortOrderIT {
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void generatedClassesInCorrectPackageForFilesFirstSort() throws ClassNotFoundException, SecurityException,
-            NoSuchMethodException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void generatedClassesInCorrectPackageForFilesFirstSort() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.FILES_FIRST
-                        .toString()));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.FILES_FIRST.toString()));
 
         Class generatedTypeA = resultsClassLoader.loadClass("com.example.A");
         Class generatedTypeZ = resultsClassLoader.loadClass("com.example.Z");
@@ -57,13 +54,10 @@ public class SourceSortOrderIT {
     }
 
     @Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void generatedClassesInCorrectPackageForDirectoriesFirstSort() throws ClassNotFoundException,
-            SecurityException, NoSuchMethodException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void generatedClassesInCorrectPackageForDirectoriesFirstSort() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                "/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.SUBDIRS_FIRST
-                        .toString()));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/sourceSortOrder/", "com.example", config("sourceSortOrder", SourceSortOrder.SUBDIRS_FIRST.toString()));
 
         Class generatedTypeA = resultsClassLoader.loadClass("com.example.A");
         Class generatedTypeZ = resultsClassLoader.loadClass("com.example.Z");

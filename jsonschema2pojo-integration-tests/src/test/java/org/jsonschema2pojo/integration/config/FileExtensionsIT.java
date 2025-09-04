@@ -26,7 +26,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class FileExtensionsIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void extensionsCanBeRemovedFromNames() throws ClassNotFoundException {
@@ -34,8 +35,8 @@ public class FileExtensionsIT {
         URL schema1 = getClass().getResource("/schema/fileExtensions/nameWithExtension.schema.json");
         URL schema2 = getClass().getResource("/schema/fileExtensions/nameWithNoExtension");
 
-        schemaRule.generate(schema1, "com.example", config("fileExtensions", new String[] {".schema.json"}));
-        schemaRule.generate(schema2, "com.example", config("fileExtensions", new String[] {".schema.json"}));
+        schemaRule.generate(schema1, "com.example", config("fileExtensions", new String[] { ".schema.json" }));
+        schemaRule.generate(schema2, "com.example", config("fileExtensions", new String[] { ".schema.json" }));
 
         ClassLoader loader = schemaRule.compile();
         loader.loadClass("com.example.NameWithExtension");

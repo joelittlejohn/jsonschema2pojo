@@ -78,17 +78,16 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * A Java {@link Enum} is created, with constants for each of the enum
-     * values present in the schema. The enum name is derived from the nodeName,
-     * and the enum type itself is created as an inner class of the owning type.
-     * In the rare case that no owning type exists (the enum is the root of the
-     * schema), then the enum becomes a public class in its own right.
+     * A Java {@link Enum} is created, with constants for each of the enum values
+     * present in the schema. The enum name is derived from the nodeName, and the
+     * enum type itself is created as an inner class of the owning type. In the rare
+     * case that no owning type exists (the enum is the root of the schema), then
+     * the enum becomes a public class in its own right.
      * <p>
      * The actual JSON value for each enum constant is held in a property called
      * "value" in the generated type. A static factory method
      * <code>fromValue(String)</code> is added to the generated enum, and the
-     * methods are annotated to allow Jackson to marshal/unmarshal values
-     * correctly.
+     * methods are annotated to allow Jackson to marshal/unmarshal values correctly.
      *
      * @param nodeName
      *            the name of the property which is an "enum"
@@ -97,10 +96,10 @@ public class EnumRule implements Rule<JClassContainer, JType> {
      * @param parent
      *            the parent node
      * @param container
-     *            the class container (class or package) to which this enum
-     *            should be added
-     * @return the newly generated Java type that was created to represent the
-     *         given enum
+     *            the class container (class or package) to which this enum should
+     *            be added
+     * @return the newly generated Java type that was created to represent the given
+     *         enum
      */
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JClassContainer container, Schema schema) {
@@ -138,25 +137,23 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         }
 
         // copy our node; remove the javaType as it will throw off the TypeRule for our case
-        ObjectNode typeNode = (ObjectNode)node.deepCopy();
+        ObjectNode typeNode = (ObjectNode) node.deepCopy();
         typeNode.remove("javaType");
 
         // If type is specified on the enum, get a type rule for it.  Otherwise, we're a string.
         // (This is different from the default of Object, which is why we don't do this for every case.)
-        JType backingType = node.has("type") ?
-                ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) :
-                    container.owner().ref(String.class);
+        JType backingType = node.has("type") ? ruleFactory.getTypeRule().apply(nodeName, typeNode, parent, container, schema) : container.owner().ref(String.class);
 
         EnumDefinition enumDefinition = buildEnumDefinition(nodeName, node, backingType);
 
-        if(ruleFactory.getGenerationConfig() != null && ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
+        if (ruleFactory.getGenerationConfig() != null && ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
             AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), _enum);
         }
 
         JFieldVar valueField = addConstructorAndFields(enumDefinition, _enum);
 
         // override toString only if we have a sensible string to return
-        if(isString(backingType)){
+        if (isString(backingType)) {
             addToString(_enum, valueField);
         }
 
@@ -176,7 +173,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         String nodeName = enumDefinition.getNodeName();
         JsonNode parentNode = enumDefinition.getEnumNode();
 
-        for(EnumValueDefinition enumValueDefinition : enumDefinition.values()) {
+        for (EnumValueDefinition enumValueDefinition : enumDefinition.values()) {
 
             JEnumConstant constant = _enum.enumConstant(enumValueDefinition.getName());
             String value = enumValueDefinition.getValue();
@@ -187,12 +184,12 @@ public class EnumRule implements Rule<JClassContainer, JType> {
 
             String enumNodeName = nodeName + "#" + value;
 
-            if(enumValueDefinition.hasTitle()) {
+            if (enumValueDefinition.hasTitle()) {
                 JsonNode titleNode = enumValueDefinition.getTitleNode();
                 ruleFactory.getTitleRule().apply(enumNodeName, titleNode, parentNode, constant, schema);
             }
 
-            if(enumValueDefinition.hasDescription()) {
+            if (enumValueDefinition.hasDescription()) {
                 JsonNode descriptionNode = enumValueDefinition.getDescriptionNode();
                 ruleFactory.getDescriptionRule().apply(enumNodeName, descriptionNode, parentNode, constant, schema);
             }
@@ -200,37 +197,46 @@ public class EnumRule implements Rule<JClassContainer, JType> {
     }
 
     /**
-     * Allows a custom {@link EnumRule} implementation to extend {@link EnumRule} and do some custom behaviors.
+     * Allows a custom {@link EnumRule} implementation to extend {@link EnumRule}
+     * and do some custom behaviors.
      * <p>
-     * This method is specifically added so that custom enum rule developers do not need to override the apply method.
+     * This method is specifically added so that custom enum rule developers do not
+     * need to override the apply method.
      *
-     * @param enumDefinition the enum definition.
-     * @param _enum          the generated class model
+     * @param enumDefinition
+     *            the enum definition.
+     * @param _enum
+     *            the generated class model
      */
     protected void applyCustomizations(EnumDefinition enumDefinition, JDefinedClass _enum) {
         // Default Implementation does not have any customizations, this is for custom enum rule implementations.
     }
 
     /**
-     * Builds the effective definition of an enumeration is based on what schema elements are provided.
+     * Builds the effective definition of an enumeration is based on what schema
+     * elements are provided.
      * <p>
-     * This function determines which method it should delegate creating of the definition to:
+     * This function determines which method it should delegate creating of the
+     * definition to:
      *
-     * For "enum" handled by {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnums" handled by {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
-     * For "enum" and "javaEnumNames" handled by {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" handled by
+     * {@link #buildEnumDefinitionWithNoExtensions(String, JsonNode, JsonNode, JType)}
+     * For "enum" and "javaEnums" handled by
+     * {@link #buildEnumDefinitionWithJavaEnumsExtension(String, JsonNode, JsonNode, JsonNode, JType)}
+     * For "enum" and "javaEnumNames" handled by
+     * {@link #buildEnumDefinitionWithJavaEnumNamesExtension(String, JsonNode, JsonNode, JsonNode, JType)}
      *
      * @param nodeName
      *            the name of the property which is an "enum"
      * @param node
      *            the enum node
      * @param backingType
-     *            the object backing the value of enum, most commonly this is a string
+     *            the object backing the value of enum, most commonly this is a
+     *            string
      *
      * @return the effective definition for enumeration
      */
-    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType)
-    {
+    protected EnumDefinition buildEnumDefinition(String nodeName, JsonNode node, JType backingType) {
 
         JsonNode enums = node.path("enum");
         JsonNode javaEnumNames = node.path("javaEnumNames");
@@ -311,7 +317,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
             if (!value.isNull()) {
                 JsonNode javaEnumNode = javaEnums.path(i);
 
-                if(javaEnumNode.isMissingNode()) {
+                if (javaEnumNode.isMissingNode()) {
                     ruleFactory.getLogger().error("javaEnum entry for " + value.asText() + " was not found.");
                 }
 
@@ -396,7 +402,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JExpression expr = valueParam;
 
         // if string no need to add ""
-        if(!isString(backingType)){
+        if (!isString(backingType)) {
             expr = expr.plus(JExpr.lit(""));
         }
 
@@ -439,7 +445,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         JBlock body = toString.body();
 
         JExpression toReturn = JExpr._this().ref(valueField);
-        if(!isString(valueField.type())){
+        if (!isString(valueField.type())) {
             toReturn = toReturn.plus(JExpr.lit(""));
         }
 
@@ -448,7 +454,7 @@ public class EnumRule implements Rule<JClassContainer, JType> {
         toString.annotate(Override.class);
     }
 
-    protected boolean isString(JType type){
+    protected boolean isString(JType type) {
         return type.fullName().equals(String.class.getName());
     }
 

@@ -17,13 +17,7 @@
 package org.jsonschema2pojo;
 
 public enum URLProtocol {
-    FILE("file"),
-    RESOURCE("resource"),
-    JAVA("java"),
-    CLASSPATH("classpath"),
-    HTTP("http"),
-    HTTPS("https"),
-    NO_PROTOCOL("");
+    FILE("file"), RESOURCE("resource"), JAVA("java"), CLASSPATH("classpath"), HTTP("http"), HTTPS("https"), NO_PROTOCOL("");
 
     private String protocol;
 

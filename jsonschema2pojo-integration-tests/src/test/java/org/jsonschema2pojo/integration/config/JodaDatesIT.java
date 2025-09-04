@@ -36,7 +36,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class JodaDatesIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void defaultTypesAreNotJoda() throws ClassNotFoundException, IntrospectionException {
@@ -44,11 +45,7 @@ public class JodaDatesIT {
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
-        List<String[]> nonJodaTypes = Arrays.asList(
-            new String[] {"stringAsDateTime", "java.util.Date"},
-            new String[] {"stringAsDate", "java.lang.String"},
-            new String[] {"stringAsTime", "java.lang.String"}
-        );
+        List<String[]> nonJodaTypes = Arrays.asList(new String[] { "stringAsDateTime", "java.util.Date" }, new String[] { "stringAsDate", "java.lang.String" }, new String[] { "stringAsTime", "java.lang.String" });
 
         for (String[] nonJodaType : nonJodaTypes) {
             assertTypeIsExpected(classWithDate, nonJodaType[0], nonJodaType[1]);
@@ -57,8 +54,7 @@ public class JodaDatesIT {
 
     @Test
     public void useJodaDatesCausesJodaDateTimeDates() throws IntrospectionException, ClassNotFoundException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("useJodaDates", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaDates", true));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -67,8 +63,7 @@ public class JodaDatesIT {
 
     @Test
     public void disablingJodaDatesCausesJavaUtilDates() throws ClassNotFoundException, IntrospectionException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("useJodaDates", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaDates", false));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -77,8 +72,7 @@ public class JodaDatesIT {
 
     @Test
     public void useJodaLocalDatesCausesJodaLocalDateDates() throws IntrospectionException, ClassNotFoundException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config
-                ("useJodaLocalDates", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaLocalDates", true));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -87,8 +81,7 @@ public class JodaDatesIT {
 
     @Test
     public void disablingJodaLocalDatesCausesStrings() throws ClassNotFoundException, IntrospectionException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("useJodaLocalDates", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaLocalDates", false));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -97,8 +90,7 @@ public class JodaDatesIT {
 
     @Test
     public void useJodaLocalTimesCausesJodaLocalTimeDates() throws IntrospectionException, ClassNotFoundException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("useJodaLocalTimes", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaLocalTimes", true));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -107,8 +99,7 @@ public class JodaDatesIT {
 
     @Test
     public void disablingJodaLocalTimesCausesStrings() throws ClassNotFoundException, IntrospectionException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("useJodaLocalTimes", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("useJodaLocalTimes", false));
 
         Class<?> classWithDate = classLoader.loadClass("com.example.FormattedProperties");
 
@@ -117,8 +108,7 @@ public class JodaDatesIT {
 
     @Test
     public void useJodaDatesCausesDateTimeDefaultValues() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
-                config("useJodaDates", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useJodaDates", true));
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
@@ -130,10 +120,8 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaDatesCausesDateTimeAsStringDefaultValues() throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
-                config("useJodaDates", true));
+    public void useJodaDatesCausesDateTimeAsStringDefaultValues() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useJodaDates", true));
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
@@ -145,10 +133,8 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaLocalDatesCausesLocalDateDefaultValues() throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
-                config("useJodaLocalDates", true));
+    public void useJodaLocalDatesCausesLocalDateDefaultValues() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useJodaLocalDates", true));
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
@@ -160,10 +146,8 @@ public class JodaDatesIT {
     }
 
     @Test
-    public void useJodaLocalTimesCausesLocalTimeDefaultValues() throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example",
-                config("useJodaLocalTimes", true));
+    public void useJodaLocalTimesCausesLocalTimeDefaultValues() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useJodaLocalTimes", true));
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
@@ -174,8 +158,7 @@ public class JodaDatesIT {
         assertThat((LocalTime) getter.invoke(instance), is(equalTo(new LocalTime("16:15:00"))));
     }
 
-    private void assertTypeIsExpected(Class<?> classInstance, String propertyName, String expectedType)
-            throws IntrospectionException {
+    private void assertTypeIsExpected(Class<?> classInstance, String propertyName, String expectedType) throws IntrospectionException {
         Method getter = new PropertyDescriptor(propertyName, classInstance).getReadMethod();
         assertThat(getter.getReturnType().getName(), is(expectedType));
     }

@@ -44,14 +44,15 @@ public class SchemaStore {
     }
 
     /**
-     * Create or look up a new schema which has the given ID and read the
-     * contents of the given ID as a URL. If a schema with the given ID is
-     * already known, then a reference to the original schema will be returned.
+     * Create or look up a new schema which has the given ID and read the contents
+     * of the given ID as a URL. If a schema with the given ID is already known,
+     * then a reference to the original schema will be returned.
      *
      * @param id
      *            the id of the schema being created
-     * @param refFragmentPathDelimiters A string containing any characters
-     *                                  that should act as path delimiters when resolving $ref fragments.
+     * @param refFragmentPathDelimiters
+     *            A string containing any characters that should act as path
+     *            delimiters when resolving $ref fragments.
      * @return a schema object containing the contents of the given path
      */
     public synchronized Schema create(URI id, String refFragmentPathDelimiters) {
@@ -83,18 +84,19 @@ public class SchemaStore {
 
     /**
      * Create or look up a new schema using the given schema as a parent and the
-     * path as a relative reference. If a schema with the given parent and
-     * relative path is already known, then a reference to the original schema
-     * will be returned.
+     * path as a relative reference. If a schema with the given parent and relative
+     * path is already known, then a reference to the original schema will be
+     * returned.
      *
      * @param parent
      *            the schema which is the parent of the schema to be created.
      * @param path
      *            the relative path of this schema (will be used to create a
-     *            complete URI by resolving this path against the parent
-     *            schema's id)
-     * @param refFragmentPathDelimiters A string containing any characters
-     *                                  that should act as path delimiters when resolving $ref fragments.
+     *            complete URI by resolving this path against the parent schema's
+     *            id)
+     * @param refFragmentPathDelimiters
+     *            A string containing any characters that should act as path
+     *            delimiters when resolving $ref fragments.
      * @return a schema object containing the contents of the given path
      */
     @SuppressWarnings("PMD.UselessParentheses")

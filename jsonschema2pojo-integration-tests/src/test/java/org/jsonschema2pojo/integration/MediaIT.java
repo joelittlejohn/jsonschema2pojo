@@ -55,7 +55,8 @@ import com.sun.codemodel.JFieldVar;
 
 public class MediaIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
     private static Class<?> classWithMediaProperties;
     private static Class<byte[]> BYTE_ARRAY = byte[].class;
 
@@ -146,10 +147,9 @@ public class MediaIT {
         Method getter = classWithMediaProperties.getDeclaredMethod("getUnencodedWithDefault");
 
         Object object = new ObjectMapper().readValue("{}", classWithMediaProperties);
-        String value = (String)getter.invoke(object);
+        String value = (String) getter.invoke(object);
 
-        assertThat("unencodedWithDefault has the default value",
-                value, equalTo("default value"));
+        assertThat("unencodedWithDefault has the default value", value, equalTo("default value"));
     }
 
     @Test
@@ -158,43 +158,27 @@ public class MediaIT {
         Method getter = classWithMediaProperties.getDeclaredMethod("getBase64WithDefault");
 
         Object object = new ObjectMapper().readValue("{}", classWithMediaProperties);
-        byte[] value = (byte[])getter.invoke(object);
+        byte[] value = (byte[]) getter.invoke(object);
 
         // if we got here, then at least defaults do not blow up the code.  Make sure
         // we get null or the default.  Users should not depend on the functionality in
         // this situation, as it is unsupported.
-        assertThat("base64WithDefault is null or the default value",
-                value,
-                anyOf(
-                        nullValue(),
-                        equalTo(new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00})));
+        assertThat("base64WithDefault is null or the default value", value, anyOf(nullValue(), equalTo(new byte[] { (byte) 0xFF, (byte) 0xF0, (byte) 0x0F, (byte) 0x00 })));
     }
 
     @Test
     public void shouldRoundTripBase64Field() throws Exception {
-        roundTripAssertions(
-                new ObjectMapper(),
-                "minimalBinary",
-                "//APAA==",
-                new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00});
+        roundTripAssertions(new ObjectMapper(), "minimalBinary", "//APAA==", new byte[] { (byte) 0xFF, (byte) 0xF0, (byte) 0x0F, (byte) 0x00 });
     }
 
     @Test
     public void shouldRoundTripUnencodedField() throws Exception {
-        roundTripAssertions(
-                new ObjectMapper(),
-                "unencoded",
-                "some text",
-                "some text");
+        roundTripAssertions(new ObjectMapper(), "unencoded", "some text", "some text");
     }
 
     @Test
     public void shouldRoundTripQuotedPrintableField() throws Exception {
-        roundTripAssertions(
-                new ObjectMapper(),
-                "anyBinaryEncoding",
-                "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"",
-                "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes(StandardCharsets.UTF_8));
+        roundTripAssertions(new ObjectMapper(), "anyBinaryEncoding", "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"", "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -202,23 +186,21 @@ public class MediaIT {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(mapper.getVisibilityChecker().withFieldVisibility(Visibility.NONE));
 
-        roundTripAssertions(
-                new ObjectMapper(),
-                "anyBinaryEncoding",
-                "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"",
-                "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes(StandardCharsets.UTF_8));
+        roundTripAssertions(new ObjectMapper(), "anyBinaryEncoding", "\"=E3=82=A8=E3=83=B3=E3=82=B3=E3=83=BC=E3=83=89=E3=81=95=E3=82=8C=E3=81=9F=E6=96=87=E5=AD=97=E5=88=97\" is Japanese for \"encoded string\"", "\"エンコードされた文字列\" is Japanese for \"encoded string\"".getBytes(StandardCharsets.UTF_8));
     }
 
     /**
      * Returns a matcher that tests for equality to the specified type.
-     * @param type the type to check.
+     *
+     * @param type
+     *            the type to check.
      * @return a matcher that tests for equality to the specified type.
      */
-    public static Matcher<Class<?>> equalToType( Class<?> type ) {
+    public static Matcher<Class<?>> equalToType(Class<?> type) {
         return equalTo(type);
     }
 
-    public static void roundTripAssertions( ObjectMapper objectMapper, String propertyName, String jsonValue, Object javaValue) throws Exception {
+    public static void roundTripAssertions(ObjectMapper objectMapper, String propertyName, String jsonValue, Object javaValue) throws Exception {
 
         ObjectNode node = objectMapper.createObjectNode();
         node.put(propertyName, jsonValue);
@@ -235,10 +217,14 @@ public class MediaIT {
     }
 
     /**
-     * An example annotator that supports the quoted printable encoding, from RFC 2045.
+     * An example annotator that supports the quoted printable encoding, from RFC
+     * 2045.
      *
      * @author Christian Trimble
-     * @see <a href="http://tools.ietf.org/html/rfc2045#section-6.7">Quoted-Printable Content-Transfer-Encoding, Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</a>
+     * @see <a href=
+     *      "http://tools.ietf.org/html/rfc2045#section-6.7">Quoted-Printable
+     *      Content-Transfer-Encoding, Multipurpose Internet Mail Extensions (MIME)
+     *      Part One: Format of Internet Message Bodies</a>
      */
     public static class QuotedPrintableAnnotator extends AbstractAnnotator {
         public static final String TYPE = "type";
@@ -248,33 +234,28 @@ public class MediaIT {
         public static final String QUOTED_PRINTABLE = "quoted-printable";
         public static final String USING = "using";
         public static final String INCLUDE = "include";
+
         @Override
         public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
-            if( isQuotedPrintableProperty(propertyNode) ) {
+            if (isQuotedPrintableProperty(propertyNode)) {
                 field.annotate(JsonSerialize.class).param(USING, QuotedPrintableSerializer.class);
                 field.annotate(JsonInclude.class).param("value", JsonInclude.Include.NON_NULL);
                 field.annotate(JsonDeserialize.class).param(USING, QuotedPrintableDeserializer.class);
             }
         }
 
-        private static boolean isQuotedPrintableProperty( JsonNode propertyNode ) {
-            return propertyNode.has(TYPE) &&
-                    STRING.equals(propertyNode.get(TYPE).asText()) &&
-                    propertyNode.has(MEDIA) &&
-                    isQuotedPrintable(propertyNode.get(MEDIA));
+        private static boolean isQuotedPrintableProperty(JsonNode propertyNode) {
+            return propertyNode.has(TYPE) && STRING.equals(propertyNode.get(TYPE).asText()) && propertyNode.has(MEDIA) && isQuotedPrintable(propertyNode.get(MEDIA));
 
         }
 
-        private static boolean isQuotedPrintable( JsonNode mediaNode ) {
-            return mediaNode.has(BINARY_ENCODING) &&
-                    QUOTED_PRINTABLE.equalsIgnoreCase(mediaNode.get(BINARY_ENCODING).asText());
+        private static boolean isQuotedPrintable(JsonNode mediaNode) {
+            return mediaNode.has(BINARY_ENCODING) && QUOTED_PRINTABLE.equalsIgnoreCase(mediaNode.get(BINARY_ENCODING).asText());
         }
 
     }
 
-    public static class QuotedPrintableSerializer
-    extends StdSerializer<byte[]>
-    {
+    public static class QuotedPrintableSerializer extends StdSerializer<byte[]> {
         private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableSerializer() {
@@ -288,9 +269,7 @@ public class MediaIT {
 
     }
 
-    public static class QuotedPrintableDeserializer
-    extends StdDeserializer<byte[]>
-    {
+    public static class QuotedPrintableDeserializer extends StdDeserializer<byte[]> {
         private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableDeserializer() {

@@ -30,24 +30,19 @@ import com.sun.codemodel.JFieldVar;
 import jakarta.validation.constraints.Size;
 
 public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
-    
+
     private final RuleFactory ruleFactory;
-    
+
     protected MinLengthMaxLengthRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
-    
+
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
-        
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-                && (node.has("minLength") || node.has("maxLength"))
-                && isApplicableType(field)) {
 
-            final Class<? extends Annotation> sizeClass
-                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                    ? Size.class
-                    : javax.validation.constraints.Size.class;
+        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && (node.has("minLength") || node.has("maxLength")) && isApplicableType(field)) {
+
+            final Class<? extends Annotation> sizeClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? Size.class : javax.validation.constraints.Size.class;
             JAnnotationUse annotation = field.annotate(sizeClass);
 
             if (node.has("minLength")) {
@@ -73,11 +68,7 @@ public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
             }
 
             Class<?> fieldClass = Class.forName(typeName);
-            return String.class.isAssignableFrom(fieldClass)
-                    || Collection.class.isAssignableFrom(fieldClass)
-                    || Map.class.isAssignableFrom(fieldClass)
-                    || Array.class.isAssignableFrom(fieldClass)
-                    || field.type().isArray();
+            return String.class.isAssignableFrom(fieldClass) || Collection.class.isAssignableFrom(fieldClass) || Map.class.isAssignableFrom(fieldClass) || Array.class.isAssignableFrom(fieldClass) || field.type().isArray();
         } catch (ClassNotFoundException ignore) {
             return false;
         }

@@ -35,8 +35,10 @@ import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> selfRefsClass;
 
@@ -100,15 +102,15 @@ public class SelfRefIT {
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
 
         codeModel.build(schemaRule.getGenerateDir());
-        
+
         ClassLoader classLoader = schemaRule.compile();
-        
+
         Class<?> nestedSelfRefs = classLoader.loadClass("com.example.NestedSelfRefsInString");
         assertThat(nestedSelfRefs.getMethod("getThings").getReturnType().getSimpleName(), equalTo("List"));
-        
-        Class<?> listEntryType = (Class<?>) ((ParameterizedType)nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
+
+        Class<?> listEntryType = (Class<?>) ((ParameterizedType) nestedSelfRefs.getMethod("getThings").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(listEntryType.getName(), equalTo("com.example.Thing"));
-        
+
         Class<?> thingClass = classLoader.loadClass("com.example.Thing");
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));

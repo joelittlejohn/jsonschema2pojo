@@ -20,69 +20,69 @@ import org.apache.maven.plugin.logging.Log;
 import org.jsonschema2pojo.AbstractRuleLogger;
 
 public class MojoRuleLogger extends AbstractRuleLogger {
-  private final Log log;
+    private final Log log;
 
-  public MojoRuleLogger(Log log) {
-    super();
-    this.log = log;
-  }
-
-  @Override
-  protected void doDebug(String msg) {
-    log.debug(msg);
-  }
-
-  @Override
-  protected void doError(String msg, Throwable e) {
-    if(e != null) {
-      log.error(msg, e);
-    } else {
-      log.error(msg);
+    public MojoRuleLogger(Log log) {
+        super();
+        this.log = log;
     }
-  }
 
-  @Override
-  protected void doInfo(String msg) {
-    log.info(msg);
-  }
-
-  @Override
-  protected void doTrace(String msg) {
-    log.debug(msg); // No trace level for Mojo Logger
-  }
-
-  @Override
-  protected void doWarn(String msg, Throwable e) {
-    if(e != null) {
-      log.warn(msg, e);
-    } else {
-      log.warn(msg);
+    @Override
+    protected void doDebug(String msg) {
+        log.debug(msg);
     }
-  }
 
-  @Override
-  public boolean isDebugEnabled() {
-    return log.isDebugEnabled();
-  }
+    @Override
+    protected void doError(String msg, Throwable e) {
+        if (e != null) {
+            log.error(msg, e);
+        } else {
+            log.error(msg);
+        }
+    }
 
-  @Override
-  public boolean isErrorEnabled() {
-    return log.isErrorEnabled();
-  }
+    @Override
+    protected void doInfo(String msg) {
+        log.info(msg);
+    }
 
-  @Override
-  public boolean isInfoEnabled() {
-    return log.isInfoEnabled();
-  }
+    @Override
+    protected void doTrace(String msg) {
+        log.debug(msg); // No trace level for Mojo Logger
+    }
 
-  @Override
-  public boolean isTraceEnabled() {
-    return log.isDebugEnabled(); // No trace level for Mojo Logger
-  }
+    @Override
+    protected void doWarn(String msg, Throwable e) {
+        if (e != null) {
+            log.warn(msg, e);
+        } else {
+            log.warn(msg);
+        }
+    }
 
-  @Override
-  public boolean isWarnEnabled() {
-    return log.isWarnEnabled();
-  }
+    @Override
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return log.isErrorEnabled();
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return log.isInfoEnabled();
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return log.isDebugEnabled(); // No trace level for Mojo Logger
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return log.isWarnEnabled();
+    }
 
 }

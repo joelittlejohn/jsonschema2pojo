@@ -38,59 +38,34 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldIncludeAllIfEmpty() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
-        assertThat("all of the files were found.", asList(files),
-                hasItems(
-                        equalTo(file("sub1")),
-                        equalTo(file("excluded")),
-                        equalTo(file("example.json")),
-                        equalTo(file("README.md"))));
+        assertThat("all of the files were found.", asList(files), hasItems(equalTo(file("sub1")), equalTo(file("excluded")), equalTo(file("example.json")), equalTo(file("README.md"))));
     }
 
     @Test
     public void shouldIncludeMatchesAndDirectoriesWhenIncluding() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addIncludes(asList("**/*.json"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addIncludes(asList("**/*.json")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
-        assertThat("all of the files were found.", asList(files),
-                hasItems(
-                        equalTo(file("sub1")),
-                        equalTo(file("excluded")),
-                        equalTo(file("example.json"))));
+        assertThat("all of the files were found.", asList(files), hasItems(equalTo(file("sub1")), equalTo(file("excluded")), equalTo(file("example.json"))));
     }
 
     @Test
     public void shouldIncludeMatchesAndDirectoriesWhenIncludingAndDefaultExcludes() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addIncludes(asList("**/*.json"))
-                .addDefaultExcludes()
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addIncludes(asList("**/*.json")).addDefaultExcludes().withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
-        assertThat("all of the files were found.", asList(files),
-                hasItems(
-                        equalTo(file("sub1")),
-                        equalTo(file("excluded")),
-                        equalTo(file("example.json"))));
+        assertThat("all of the files were found.", asList(files), hasItems(equalTo(file("sub1")), equalTo(file("excluded")), equalTo(file("example.json"))));
     }
 
     @Test
     public void shouldNoIncludedUnmatchedFiles() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addIncludes(asList("**/*.json"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addIncludes(asList("**/*.json")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
@@ -99,10 +74,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldNoIncludedNestedUnmatchedFiles() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addIncludes(asList("**/*.json"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addIncludes(asList("**/*.json")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = new File(basedir, "sub1").listFiles(fileFilter);
 
@@ -111,10 +83,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldExcludeNested() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addExcludes(asList("**/*.md"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addExcludes(asList("**/*.md")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = new File(basedir, "sub1").listFiles(fileFilter);
 
@@ -123,10 +92,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldExcludeDirectories() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addExcludes(asList("**/excluded/**"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addExcludes(asList("**/excluded/**")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
@@ -135,11 +101,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void ahouldNotExcludeRegularDirectoriesWithDefaultExcludes() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addDefaultExcludes()
-                .addIncludes(asList("**"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addDefaultExcludes().addIncludes(asList("**")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
@@ -148,11 +110,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldExcludeSvnDirectoriesWithDefaultExcludes() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addDefaultExcludes()
-                .addIncludes(asList("**"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addDefaultExcludes().addIncludes(asList("**")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = basedir.listFiles(fileFilter);
 
@@ -161,11 +119,7 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldExcludeFilesInSvnDirectoriesWithDefaultExcludes() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addDefaultExcludes()
-                .addIncludes(asList("**/*.json"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addDefaultExcludes().addIncludes(asList("**/*.json")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = new File(basedir, ".svn").listFiles(fileFilter);
 
@@ -174,17 +128,13 @@ public class MatchPatternsFileFilterTest {
 
     @Test
     public void shouldExcludeNestedFilesInSvnDirectoriesWithDefaultExcludes() throws IOException {
-        fileFilter = new MatchPatternsFileFilter.Builder()
-                .addDefaultExcludes()
-                .addIncludes(asList("**/*.json"))
-                .withSourceDirectory(basedir.getCanonicalPath())
-                .build();
+        fileFilter = new MatchPatternsFileFilter.Builder().addDefaultExcludes().addIncludes(asList("**/*.json")).withSourceDirectory(basedir.getCanonicalPath()).build();
 
         File[] files = new File(basedir, ".svn/sub").listFiles(fileFilter);
 
         assertThat("the files in .svn directory were excluded.", asList(files), not(hasItems(file("sub-svn-file.json"))));
     }
-    
+
     private File file(String relativePath) {
         return new File(basedir, relativePath);
     }

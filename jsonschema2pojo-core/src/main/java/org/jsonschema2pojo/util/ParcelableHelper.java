@@ -40,7 +40,7 @@ public class ParcelableHelper {
             method.body().directStatement("super.writeToParcel(dest, flags);");
         }
         for (JFieldVar f : jclass.fields().values()) {
-            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
+            if ((f.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
                 continue;
             }
             if (f.type().erasure().name().equals("List")) {
@@ -77,27 +77,17 @@ public class ParcelableHelper {
             ctorFromParcel.body().directStatement("super(in);");
         }
         for (JFieldVar f : jclass.fields().values()) {
-            if( (f.mods().getValue() & JMod.STATIC) == JMod.STATIC ) {
+            if ((f.mods().getValue() & JMod.STATIC) == JMod.STATIC) {
                 continue;
             }
             if (f.type().erasure().name().equals("List")) {
-                ctorFromParcel.body()
-                .invoke(in, "readList")
-                .arg(JExpr._this().ref(f))
-                .arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
+                ctorFromParcel.body().invoke(in, "readList").arg(JExpr._this().ref(f)).arg(JExpr.direct(getListType(f.type()) + ".class.getClassLoader()"));
             } else {
-                ctorFromParcel.body().assign(
-                        JExpr._this().ref(f),
-                        JExpr.cast(
-                                f.type(),
-                                in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))
-                                )
-                        );
+                ctorFromParcel.body().assign(JExpr._this().ref(f), JExpr.cast(f.type(), in.invoke("readValue").arg(JExpr.direct(f.type().erasure().name() + ".class.getClassLoader()"))));
             }
 
         }
     }
-
 
     private void addNewArray(JDefinedClass jclass, JDefinedClass creatorClass) {
         JMethod newArray = creatorClass.method(JMod.PUBLIC, jclass.array(), "newArray");

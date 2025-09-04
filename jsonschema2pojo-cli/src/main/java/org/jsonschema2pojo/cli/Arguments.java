@@ -112,7 +112,7 @@ public class Arguments implements GenerationConfig {
 
     @Parameter(names = { "-S", "--omit-tostring" }, description = "Omit the toString method in the generated Java types")
     private boolean omitToString = false;
-    
+
     @Parameter(names = { "-tse", "--tostring-excludes" }, description = "The fields that should be excluded from generated toString methods")
     private String toStringExcludes = "";
 
@@ -122,7 +122,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-ut", "--use-title-as-classname", "When set class names are generated from title attributes rather than property names." })
     private boolean useTitleAsClassname = false;
 
-    @Parameter(names = {"-il", "--inclusion-level"})
+    @Parameter(names = { "-il", "--inclusion-level" })
     private InclusionLevel inclusionLevel = InclusionLevel.NON_NULL;
 
     @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " + "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none", converter = ClassConverter.class)
@@ -137,7 +137,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-305", "--jsr305-annotations" }, description = "Add JSR-305 annotations to generated Java types.")
     private boolean includeJsr305Annotations = false;
 
-    @Parameter(names = { "-o", "--use-optional-for-getters"}, description = "Use Optional for getters of non-required fields.")
+    @Parameter(names = { "-o", "--use-optional-for-getters" }, description = "Use Optional for getters of non-required fields.")
     private boolean useOptionalForGetters = false;
 
     @Parameter(names = { "-T", "--source-type" })
@@ -230,7 +230,7 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-dtp", "--date-time-pattern" }, description = "A custom pattern to use when formatting date-time fields during serialization")
     private String customDateTimePattern;
 
-    @Parameter(names = {"-rpd", "--ref-fragment-path-delimiters"}, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
+    @Parameter(names = { "-rpd", "--ref-fragment-path-delimiters" }, description = "A string containing any characters that should act as path delimiters when resolving $ref fragments. By default, #, / and . are used in an attempt to support JSON Pointer and JSON Path.")
     private String refFragmentPathDelimiters = "#/.";
 
     @Parameter(names = { "-sso", "--source-sort-order" }, description = "The sort order to be applied to the source files.  Available options are: OS, FILES_FIRST or SUBDIRS_FIRST")
@@ -239,19 +239,19 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-ftm", "--format-type-mapping" }, description = "Mapping from format identifier to type: <format>:<fully.qualified.Type>.", variableArity = true)
     private List<String> formatTypeMapping = new ArrayList<>();
 
-    @Parameter(names = { "-log" }, description = "Configure log level. Defaults to info. Available options are: off, error, warn, info, debug, trace", validateWith = LogLevelValidator.class )
+    @Parameter(names = { "-log" }, description = "Configure log level. Defaults to info. Available options are: off, error, warn, info, debug, trace", validateWith = LogLevelValidator.class)
     private String logLevel = CommandLineLogger.DEFAULT_LOG_LEVEL;
 
-    @Parameter(names = {"--print-log-levels"}, description = "Prints available log levels and exit.")
+    @Parameter(names = { "--print-log-levels" }, description = "Prints available log levels and exit.")
     private boolean printLogLevels = false;
 
-    @Parameter(names = {"--omit-generated-annotation"}, description = "Omit @Generated annotation on generated types")
+    @Parameter(names = { "--omit-generated-annotation" }, description = "Omit @Generated annotation on generated types")
     private boolean omitGeneratedAnnotation = false;
 
     @Parameter(names = { "--useJakartaValidation" }, description = "Whether to use annotations from jakarta.validation package instead of javax.validation package when adding JSR-303/349 annotations to generated Java types")
     private boolean useJakartaValidation = false;
 
-    @Parameter(names = { "-v", "--version"}, description = "Print version information", help = true)
+    @Parameter(names = { "-v", "--version" }, description = "Print version information", help = true)
     private boolean printVersion = false;
 
     private static final int EXIT_OKAY = 0;
@@ -261,8 +261,8 @@ public class Arguments implements GenerationConfig {
      * Parses command line arguments and populates this command line instance.
      * <p>
      * If the command line arguments include the "help" argument, or if the
-     * arguments have incorrect values or order, then usage information is
-     * printed to {@link System#out} and the program terminates.
+     * arguments have incorrect values or order, then usage information is printed
+     * to {@link System#out} and the program terminates.
      *
      * @param args
      *            the command line arguments
@@ -315,8 +315,7 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isIncludeTypeInfo()
-    {
+    public boolean isIncludeTypeInfo() {
         return includeTypeInfo;
     }
 
@@ -368,7 +367,7 @@ public class Arguments implements GenerationConfig {
     public String[] getToStringExcludes() {
         return defaultString(toStringExcludes).split(" ");
     }
-    
+
     @Override
     public AnnotationStyle getAnnotationStyle() {
         return annotationStyle;
@@ -405,7 +404,9 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isUseOptionalForGetters() { return useOptionalForGetters; }
+    public boolean isUseOptionalForGetters() {
+        return useOptionalForGetters;
+    }
 
     @Override
     public SourceType getSourceType() {
@@ -495,13 +496,19 @@ public class Arguments implements GenerationConfig {
     }
 
     @Override
-    public boolean isIncludeRequiredPropertiesConstructor() { return includeRequiredPropertiesConstructor; }
+    public boolean isIncludeRequiredPropertiesConstructor() {
+        return includeRequiredPropertiesConstructor;
+    }
 
     @Override
-    public boolean isIncludeAllPropertiesConstructor() { return includeAllPropertiesConstructor; }
+    public boolean isIncludeAllPropertiesConstructor() {
+        return includeAllPropertiesConstructor;
+    }
 
     @Override
-    public boolean isIncludeCopyConstructor() { return includeCopyConstructor; }
+    public boolean isIncludeCopyConstructor() {
+        return includeCopyConstructor;
+    }
 
     @Override
     public boolean isIncludeAdditionalProperties() {
@@ -610,9 +617,7 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public Map<String, String> getFormatTypeMapping() {
-        return formatTypeMapping
-                .stream()
-                .collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
+        return formatTypeMapping.stream().collect(Collectors.toMap(m -> m.split(":")[0], m -> m.split(":")[1]));
     }
 
     @Override

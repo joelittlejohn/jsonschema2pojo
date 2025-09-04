@@ -36,7 +36,8 @@ import com.thoughtworks.qdox.model.JavaClass;
  */
 public class TitleEnumIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithTitle;
 

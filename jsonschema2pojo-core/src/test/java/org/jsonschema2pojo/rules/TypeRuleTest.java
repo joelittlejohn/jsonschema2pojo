@@ -191,7 +191,6 @@ public class TypeRuleTest {
         assertThat(result.fullName(), is(BigDecimal.class.getName()));
     }
 
-
     @Test
     public void applyGeneratesIntegerUsingJavaTypeInteger() {
 

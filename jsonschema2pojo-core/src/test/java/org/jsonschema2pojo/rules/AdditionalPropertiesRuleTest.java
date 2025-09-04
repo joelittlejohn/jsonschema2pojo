@@ -35,10 +35,8 @@ public class AdditionalPropertiesRuleTest {
     @Test
     public void testSchemaWithNullURI() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode node = (ObjectNode) mapper
-                .readTree("{\"type\":\"integer\",\"maximum\":9}");
-        ObjectNode parent = (ObjectNode) mapper
-                .readTree("{\"type\":\"object\",\"additionalProperties\":{\"type\":\"integer\",\"maximum\":9}}");
+        ObjectNode node = (ObjectNode) mapper.readTree("{\"type\":\"integer\",\"maximum\":9}");
+        ObjectNode parent = (ObjectNode) mapper.readTree("{\"type\":\"object\",\"additionalProperties\":{\"type\":\"integer\",\"maximum\":9}}");
         Schema schema = new Schema(null, parent, null);
 
         JDefinedClass jclass = new JCodeModel()._class("org.jsonschema2pojo.rules.ExampleClass");

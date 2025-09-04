@@ -49,8 +49,8 @@ import com.sun.codemodel.JType;
 /**
  * Applies the "default" schema rule.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.20</a>
  */
 public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
@@ -63,9 +63,9 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * Default values are implemented by assigning an expression to the given
-     * field (so when instances of the generated POJO are created, its fields
-     * will then contain their default values).
+     * Default values are implemented by assigning an expression to the given field
+     * (so when instances of the generated POJO are created, its fields will then
+     * contain their default values).
      * <p>
      * Collections (Lists and Sets) are initialized to an empty collection, even
      * when no default value is present in the schema (node is null).
@@ -73,8 +73,8 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * @param nodeName
      *            the name of the property which has (or may have) a default
      * @param node
-     *            the default node (may be null if no default node was present
-     *            for this property)
+     *            the default node (may be null if no default node was present for
+     *            this property)
      * @param field
      *            the Java field that has added to a generated type to represent
      *            this property
@@ -93,7 +93,7 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
             field.init(getDefaultList(field.type(), node));
         } else if (fieldType.startsWith(Set.class.getName())) {
             field.init(getDefaultSet(field.type(), node));
-        } else if (fieldType.startsWith(String.class.getName()) && node != null ) {
+        } else if (fieldType.startsWith(String.class.getName()) && node != null) {
             field.init(getDefaultValue(field.type(), node));
         } else if (defaultPresent) {
             field.init(getDefaultValue(field.type(), node));
@@ -168,17 +168,17 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * Creates a default value for a list property by:
      * <ol>
      * <li>Creating a new {@link ArrayList} with the correct generic type
-     * <li>Using {@link Arrays#asList(Object...)} to initialize the list with
-     * the correct default values
+     * <li>Using {@link Arrays#asList(Object...)} to initialize the list with the
+     * correct default values
      * </ol>
      *
      * @param fieldType
-     *            the java type that applies for this field ({@link List} with
-     *            some generic type argument)
+     *            the java type that applies for this field ({@link List} with some
+     *            generic type argument)
      * @param node
      *            the node containing default values for this list
-     * @return an expression that creates a default value that can be assigned
-     *         to this field
+     * @return an expression that creates a default value that can be assigned to
+     *         this field
      */
     private JExpression getDefaultList(JType fieldType, JsonNode node) {
 
@@ -212,12 +212,12 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
      * </ol>
      *
      * @param fieldType
-     *            the java type that applies for this field ({@link Set} with
-     *            some generic type argument)
+     *            the java type that applies for this field ({@link Set} with some
+     *            generic type argument)
      * @param node
      *            the node containing default values for this set
-     * @return an expression that creates a default value that can be assigned
-     *         to this field
+     * @return an expression that creates a default value that can be assigned to
+     *         this field
      */
     private JExpression getDefaultSet(JType fieldType, JsonNode node) {
 

@@ -49,21 +49,7 @@ public class FormatRuleTest {
     private final Class<?> expectedType;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { "date-time", Date.class },
-                { "date", String.class },
-                { "time", String.class },
-                { "utc-millisec", Long.class },
-                { "regex", Pattern.class },
-                { "color", String.class },
-                { "style", String.class },
-                { "phone", String.class },
-                { "uri", URI.class },
-                { "email", String.class },
-                { "ip-address", String.class },
-                { "ipv6", String.class },
-                { "host-name", String.class },
-                { "uuid", UUID.class }});
+        return asList(new Object[][] { { "date-time", Date.class }, { "date", String.class }, { "time", String.class }, { "utc-millisec", Long.class }, { "regex", Pattern.class }, { "color", String.class }, { "style", String.class }, { "phone", String.class }, { "uri", URI.class }, { "email", String.class }, { "ip-address", String.class }, { "ipv6", String.class }, { "host-name", String.class }, { "uuid", UUID.class } });
     }
 
     public FormatRuleTest(String formatValue, Class<?> expectedType) {

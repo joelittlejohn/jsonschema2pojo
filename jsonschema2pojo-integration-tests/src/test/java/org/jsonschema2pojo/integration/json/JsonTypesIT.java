@@ -40,14 +40,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-@ParameterizedClass(name="{0}")
+@ParameterizedClass(name = "{0}")
 @MethodSource("data")
 public class JsonTypesIT {
 
     public static List<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "json", new ObjectMapper()},
-                { "yaml", new ObjectMapper(new YAMLFactory()) }
+        return Arrays.asList(new Object[][] { { "json", new ObjectMapper() }, { "yaml", new ObjectMapper(new YAMLFactory()) }
         });
     }
 
@@ -215,9 +213,7 @@ public class JsonTypesIT {
         // we don't support union types, so we have to pick one
         assertThat(genType.getMethod("getScalar").getReturnType(), is(equalTo(Integer.class)));
 
-        final InvalidFormatException exception = assertThrows(
-                InvalidFormatException.class,
-                () -> objectMapper.readValue(this.getClass().getResourceAsStream(filePath), Array.newInstance(genType, 0).getClass()));
+        final InvalidFormatException exception = assertThrows(InvalidFormatException.class, () -> objectMapper.readValue(this.getClass().getResourceAsStream(filePath), Array.newInstance(genType, 0).getClass()));
         assertThat(exception.getMessage(), startsWith("Cannot deserialize value of type `java.lang.Integer` from String \"what\": not a valid `java.lang.Integer` value"));
     }
 

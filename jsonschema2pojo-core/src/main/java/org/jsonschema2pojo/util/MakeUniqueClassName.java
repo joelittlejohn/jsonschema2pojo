@@ -22,15 +22,15 @@ import java.util.regex.Pattern;
 public class MakeUniqueClassName {
 
     private static final Pattern UNIQUE_NAMING_PATTERN = Pattern.compile("(^.+__)(\\d+)$");
-    
+
     /**
-     * When the class name is not unique we will use two underscore '__' and a digit representing the number of time
-     * this class was found
+     * When the class name is not unique we will use two underscore '__' and a digit
+     * representing the number of time this class was found
      */
     public static String makeUnique(String className) {
-        
+
         final Matcher m = UNIQUE_NAMING_PATTERN.matcher(className);
-        
+
         if (m.matches()) {
             // get the current number
             final Integer number = Integer.parseInt(m.group(2));

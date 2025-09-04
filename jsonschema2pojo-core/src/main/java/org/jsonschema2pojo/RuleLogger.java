@@ -16,8 +16,7 @@
 
 package org.jsonschema2pojo;
 
-public interface RuleLogger
-{
+public interface RuleLogger {
     void debug(String msg);
 
     void error(String msg);

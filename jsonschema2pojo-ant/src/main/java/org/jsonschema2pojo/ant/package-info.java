@@ -15,7 +15,7 @@
  */
 
 /**
- * Provides the classes specifically associated with the Ant task for 
- * jsonschema2pojo 
+ * Provides the classes specifically associated with the Ant task for
+ * jsonschema2pojo
  */
 package org.jsonschema2pojo.ant;

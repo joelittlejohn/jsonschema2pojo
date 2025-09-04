@@ -43,7 +43,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 public class PolymorphicIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void extendsWithPolymorphicDeserializationWithDefaultAnnotationStyle() throws ClassNotFoundException {
@@ -59,8 +60,7 @@ public class PolymorphicIT {
     @Test
     public void extendsWithPolymorphicDeserializationWithJackson2() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example",
-                                                                       config("annotationStyle", "JACKSON2"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/polymorphic/extendsSchema.json", "com.example", config("annotationStyle", "JACKSON2"));
 
         Class<?> subtype = resultsClassLoader.loadClass("com.example.ExtendsSchema");
         Class<?> supertype = subtype.getSuperclass();

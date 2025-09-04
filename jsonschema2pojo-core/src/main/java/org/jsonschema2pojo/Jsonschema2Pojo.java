@@ -45,11 +45,11 @@ public class Jsonschema2Pojo {
      * Reads the contents of the given source and initiates schema generation.
      *
      * @param config
-     *            the configuration options (including source and target paths,
-     *            and other behavioural options) that will control code
-     *            generation
+     *            the configuration options (including source and target paths, and
+     *            other behavioural options) that will control code generation
      * @param logger
-     *            a logger appropriate to the current context, usually a wrapper around the build platform logger
+     *            a logger appropriate to the current context, usually a wrapper
+     *            around the build platform logger
      * @throws FileNotFoundException
      *             if the source path is not found
      * @throws IOException
@@ -90,7 +90,7 @@ public class Jsonschema2Pojo {
             throw new GenerationException("Could not create or access target directory " + config.getTargetDirectory().getAbsolutePath());
         }
     }
-    
+
     private static ContentResolver createContentResolver(GenerationConfig config) {
         if (config.getSourceType() == SourceType.YAMLSCHEMA || config.getSourceType() == SourceType.YAML) {
             return new ContentResolver(new YAMLFactory());
@@ -176,7 +176,7 @@ public class Jsonschema2Pojo {
         try {
             String fileName = FilenameUtils.getName(URLDecoder.decode(filePath, StandardCharsets.UTF_8.toString()));
             String[] extensions = config.getFileExtensions() == null ? new String[] {} : config.getFileExtensions();
-            
+
             boolean extensionRemoved = false;
             for (int i = 0; i < extensions.length; i++) {
                 String extension = extensions[i];
@@ -200,5 +200,5 @@ public class Jsonschema2Pojo {
             throw new IllegalArgumentException(String.format("Unable to generate node name from URL: %s", filePath), e);
         }
     }
-    
+
 }

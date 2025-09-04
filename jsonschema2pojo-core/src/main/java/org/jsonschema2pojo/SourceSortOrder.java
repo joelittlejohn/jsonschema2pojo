@@ -24,7 +24,8 @@ import java.util.Comparator;
  */
 public enum SourceSortOrder {
     /**
-     * <code>OS</code> Let the OS influence the order that the source files are processed.
+     * <code>OS</code> Let the OS influence the order that the source files are
+     * processed.
      */
     OS {
         @Override
@@ -34,8 +35,8 @@ public enum SourceSortOrder {
     },
 
     /**
-     * <code>FILES_FIRST</code> Case sensitive sort, visit the files first.  The source files are processed in a
-     * breadth first sort order.
+     * <code>FILES_FIRST</code> Case sensitive sort, visit the files first. The
+     * source files are processed in a breadth first sort order.
      */
     FILES_FIRST {
         @Override
@@ -57,8 +58,8 @@ public enum SourceSortOrder {
     },
 
     /**
-     * <code>SUBDIRS_FIRST</code> Case sensitive sort, visit the sub-directories before the files.  The source files
-     * are processed in a depth first sort order.
+     * <code>SUBDIRS_FIRST</code> Case sensitive sort, visit the sub-directories
+     * before the files. The source files are processed in a depth first sort order.
      */
     SUBDIRS_FIRST {
         @Override

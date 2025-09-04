@@ -30,13 +30,13 @@ public class ClassAlreadyExistsException extends Exception {
     private final JType existingClass;
 
     /**
-     * Creates a new exception where the given existing class was found to
-     * conflict with an attempt to create a new class.
+     * Creates a new exception where the given existing class was found to conflict
+     * with an attempt to create a new class.
      *
      * @param existingClass
      *            the class already present on the classpath (or in the map of
-     *            classes to be generated) when attempt to create a new class
-     *            was made.
+     *            classes to be generated) when attempt to create a new class was
+     *            made.
      */
     public ClassAlreadyExistsException(JType existingClass) {
         super(existingClass.fullName());
@@ -46,9 +46,8 @@ public class ClassAlreadyExistsException extends Exception {
     /**
      * Gets the corresponding existing class that caused this exception.
      *
-     * @return the class already present on the classpath (or in the map of
-     *         classes to be generated) when attempt to create a new class was
-     *         made.
+     * @return the class already present on the classpath (or in the map of classes
+     *         to be generated) when attempt to create a new class was made.
      */
     public JType getExistingClass() {
         return existingClass;

@@ -64,17 +64,15 @@ public class AnnotatorFactoryTest {
     }
 
     /**
-     * Test uses reflection to get passed the generic type constraints and
-     * invoke as if invoked through typical configuration.
+     * Test uses reflection to get passed the generic type constraints and invoke as
+     * if invoked through typical configuration.
      */
     @Test
     public void attemptToCreateAnnotatorFromIncompatibleClassCausesIllegalArgumentException() throws Throwable {
         Method factoryMethod = AnnotatorFactory.class.getMethod("getAnnotator", Class.class);
         InvocationTargetException exception = assertThrows(InvocationTargetException.class, () -> factoryMethod.invoke(factory, String.class));
         assertThat(exception.getTargetException(), is(instanceOf(IllegalArgumentException.class)));
-        assertThat(
-                exception.getTargetException().getMessage(),
-                is(equalTo("The class name given as a custom annotator (java.lang.String) does not refer to a class that implements org.jsonschema2pojo.Annotator")));
+        assertThat(exception.getTargetException().getMessage(), is(equalTo("The class name given as a custom annotator (java.lang.String) does not refer to a class that implements org.jsonschema2pojo.Annotator")));
     }
 
 }

@@ -34,18 +34,20 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         @Override
         public void debug(CharSequence content) {
         }
+
         @Override
         public void debug(Throwable error) {
         }
+
         @Override
         public void debug(CharSequence content, Throwable error) {
         }
     };
 
     public TestableJsonschema2PojoMojo configure(Map<String, Object> configValues) {
-        
+
         // this could be done with reflection, if the plugin used real annotations.
-        setPrivateField("sourcePaths", new String[]{});
+        setPrivateField("sourcePaths", new String[] {});
 
         for (Entry<String, Object> value : configValues.entrySet()) {
             setPrivateField(value.getKey(), value.getValue());

@@ -29,8 +29,8 @@ import com.sun.codemodel.JFieldVar;
 /**
  * Applies the "required" schema rule.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
 public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
 
@@ -48,7 +48,8 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
     /**
      * Applies this schema rule to take the not required code generation steps.
      * <p>
-     * The not required rule adds a Nullable annotation if JSR-305 annotations are desired.
+     * The not required rule adds a Nullable annotation if JSR-305 annotations are
+     * desired.
      *
      * @param nodeName
      *            the name of the schema node for which this "required" rule has
@@ -61,8 +62,8 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
      * @param generatableType
      *            the class or method which may be marked as "not required"
      * @return the JavaDoc comment attached to the generatableType, which
-     *         <em>may</em> have an added not to mark this construct as
-     *         not required.
+     *         <em>may</em> have an added not to mark this construct as not
+     *         required.
      */
     @Override
     public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
@@ -72,7 +73,7 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
         JsonNode requiredArray = schema.getContent().get("required");
 
         if (requiredArray != null) {
-            for (Iterator<JsonNode> iterator = requiredArray.elements(); iterator.hasNext(); ) {
+            for (Iterator<JsonNode> iterator = requiredArray.elements(); iterator.hasNext();) {
                 String requiredArrayItem = iterator.next().asText();
                 if (nodeName.equals(requiredArrayItem)) {
                     return generatableType;
@@ -80,8 +81,7 @@ public class NotRequiredRule implements Rule<JDocCommentable, JDocCommentable> {
             }
         }
 
-        if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
-                && generatableType instanceof JFieldVar) {
+        if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations() && generatableType instanceof JFieldVar) {
             generatableType.javadoc().append(NOT_REQUIRED_COMMENT_TEXT);
             ((JFieldVar) generatableType).annotate(Nullable.class);
         }

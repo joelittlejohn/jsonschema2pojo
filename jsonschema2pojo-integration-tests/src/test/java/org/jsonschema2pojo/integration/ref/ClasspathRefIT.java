@@ -26,7 +26,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ClasspathRefIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classpathRefsClass;
 
