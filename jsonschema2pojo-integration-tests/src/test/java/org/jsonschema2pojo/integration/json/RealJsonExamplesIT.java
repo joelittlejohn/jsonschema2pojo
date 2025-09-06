@@ -16,34 +16,34 @@
 
 package org.jsonschema2pojo.integration.json;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{0}")
+@MethodSource("data")
 public class RealJsonExamplesIT {
 
-    @Parameterized.Parameters(name="{0}")
     public static List<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "json", new ObjectMapper()},
+                { "json", new ObjectMapper() },
                 { "yaml", new ObjectMapper(new YAMLFactory()) }
         });
     }
 
-    @Rule 
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final String format;

@@ -16,24 +16,24 @@
 
 package org.jsonschema2pojo.integration.ref;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RelativeRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> relativeRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader relativeRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refsToA.json", "com.example");

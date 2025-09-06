@@ -17,7 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 import java.lang.annotation.Annotation;
@@ -31,10 +31,10 @@ import java.util.stream.Stream;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -51,7 +51,8 @@ import jakarta.validation.constraints.Size;
 /**
  * Tests {@link MinimumMaximumRuleTest}
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class MinimumMaximumRuleTest {
 
     private final boolean isApplicable;
@@ -74,7 +75,6 @@ public class MinimumMaximumRuleTest {
     @Mock
     private JAnnotationUse annotationMin;
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { true, BigDecimal.class },
@@ -106,7 +106,7 @@ public class MinimumMaximumRuleTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         rule = new MinimumMaximumRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));

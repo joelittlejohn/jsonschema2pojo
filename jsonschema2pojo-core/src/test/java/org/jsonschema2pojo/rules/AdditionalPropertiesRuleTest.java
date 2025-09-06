@@ -16,10 +16,11 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import org.jsonschema2pojo.Schema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,7 +47,7 @@ public class AdditionalPropertiesRuleTest {
         JDefinedClass result = rule.apply("node", node, parent, jclass, schema);
         JMethod method = result.getMethod("getAdditionalProperties", new JType[0]);
         JClass returnType = (JClass) method.type();
-        assertEquals("Map<String,Integer>", returnType.name());
+        assertThat(returnType.name(), is(equalTo("Map<String,Integer>")));
     }
 
 }

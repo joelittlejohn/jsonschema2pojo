@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration.util;
 
 import static org.apache.commons.io.FileUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.Compiler.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -246,7 +246,7 @@ public class CodeGenerationHelper {
     }
 
     private static List<File> classpathToFileArray( String classpath ) {
-        List<File> files = new ArrayList();
+        List<File> files = new ArrayList<>();
         
         if (StringUtils.isEmpty(classpath)) return files;
         

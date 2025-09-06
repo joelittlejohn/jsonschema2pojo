@@ -67,7 +67,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -87,7 +87,28 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.5.3</version>
+                    <configuration>
+                        <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                            <disable>false</disable>
+                            <version>3.5.3</version>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        </statelessTestsetReporter>
+                        <consoleOutputReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5ConsoleOutputReporter">
+                            <disable>false</disable>
+                            <encoding>UTF-8</encoding>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                        </consoleOutputReporter>
+                        <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoReporter">
+                            <disable>false</disable>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+                            <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+                        </statelessTestsetInfoReporter>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -138,7 +159,28 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.5.3</version>
+                    <configuration>
+                        <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                            <disable>false</disable>
+                            <version>3.5.3</version>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        </statelessTestsetReporter>
+                        <consoleOutputReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5ConsoleOutputReporter">
+                            <disable>false</disable>
+                            <encoding>UTF-8</encoding>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                        </consoleOutputReporter>
+                        <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoReporter">
+                            <disable>false</disable>
+                            <usePhrasedFileName>false</usePhrasedFileName>
+                            <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+                            <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+                        </statelessTestsetInfoReporter>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.bluetrainsoftware.maven</groupId>
@@ -158,6 +200,18 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>define-root</id>
+                        <goals>
+                            <goal>rootlocation</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -190,7 +244,7 @@
                     <failIfMissing>true</failIfMissing>
                     <header>NOTICE</header>
                     <headerDefinitions>
-                        <headerDefinition>license-plugin-definition.xml</headerDefinition>
+                        <headerDefinition>${rootlocation}/license-plugin-definition.xml</headerDefinition>
                     </headerDefinitions>
                     <includes>
                         <include>**/src/main/java/**</include>
@@ -290,6 +344,48 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>java-8-profile</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!--
+                          Version 3.25.0 is the last version supporting Java 8.
+                          Starting at 3.26.0, the Eclipse Compiler is looking for MODULE_SOURCE_PATH (Part of Jigsaw).
+                          -->
+                        <version>3.25.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
+        <profile>
+            <id>java-11-profile</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <!-- 
+                          Version 3.33.0 is the last version supporting Java 11.
+                          Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
+                          -->
+                        <version>3.33.0</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+
     </profiles>
 
     <dependencies>
@@ -318,17 +414,6 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson2x.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-rules</artifactId>
-                <version>1.19.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.android</groupId>
-                <artifactId>android</artifactId>
-                <version>4.1.1.4</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -367,11 +452,6 @@
                 <version>2.17.0</version>
             </dependency>
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
                 <version>1.12.0</version>
@@ -379,7 +459,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.17.0</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>javax.annotation</groupId>
@@ -402,9 +482,9 @@
                 <version>2.13.0</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.13.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -415,8 +495,8 @@
             </dependency>
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock</artifactId>
-                <version>2.27.2</version>
+                <artifactId>wiremock-jre8</artifactId>
+                <version>2.35.2</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -461,6 +541,12 @@
                 <artifactId>maven-project</artifactId>
                 <version>2.2.1</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
@@ -468,15 +554,15 @@
                 <version>3.3.4</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jdt.core.compiler</groupId>
+                <groupId>org.eclipse.jdt</groupId>
                 <artifactId>ecj</artifactId>
-                <version>4.6.1</version>
+                <version>3.42.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-all</artifactId>
-                <version>1.3</version>
+                <artifactId>hamcrest</artifactId>
+                <version>3.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -493,8 +579,8 @@
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>3.12.4</version>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>4.11.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -506,8 +592,28 @@
             <dependency>
                <groupId>org.robolectric</groupId>
                <artifactId>robolectric</artifactId>
-               <version>3.8</version>
+               <version>4.4</version>
+               <exclusions>
+                   <exclusion>
+                       <groupId>junit</groupId>
+                       <artifactId>junit</artifactId>
+                   </exclusion>
+                   <exclusion>
+                      <groupId>androidx.test</groupId>
+                      <artifactId>monitor</artifactId>
+                   </exclusion>
+                   <exclusion>
+                     <groupId>androidx.annotation</groupId>
+                     <artifactId>annotation</artifactId>
+                   </exclusion>
+               </exclusions>
                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.robolectric</groupId>
+                <artifactId>android-all-instrumented</artifactId>
+                <version>9-robolectric-4913185-2-i1</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>

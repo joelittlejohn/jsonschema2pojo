@@ -17,9 +17,10 @@
 package org.jsonschema2pojo.integration;
 
 import static java.lang.reflect.Modifier.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -30,10 +31,9 @@ import java.math.BigInteger;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.core.IsInstanceOf;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -43,16 +43,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("rawtypes")
 public class EnumIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> parentClass;
     private static Class<Enum<?>> enumClass;
 
-    @BeforeClass
+    @BeforeAll
     @SuppressWarnings("unchecked")
     public static void generateAndCompileEnum() throws ClassNotFoundException {
-
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("propertyWordDelimiters", "_"));
 
         parentClass = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
@@ -110,13 +109,10 @@ public class EnumIT {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
 
-        try {
-            fromValue.invoke(enumClass, "something invalid");
-            fail();
-        } catch (InvocationTargetException e) {
-            assertThat(e.getCause(), is(instanceOf(IllegalArgumentException.class)));
-        }
-
+        final InvocationTargetException exception = assertThrows(
+                InvocationTargetException.class,
+                () -> fromValue.invoke(enumClass, "something invalid"));
+        assertThat(exception.getCause(), is(instanceOf(IllegalArgumentException.class)));
     }
 
     @Test

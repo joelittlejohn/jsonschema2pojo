@@ -85,7 +85,7 @@ class GenerateJsonSchemaJavaTask extends DefaultTask {
   void setTargetVersion(JsonSchemaExtension configuration) {
     if (!configuration.targetVersion) {
       def compileJavaTask = project.getTasksByName("compileJava", false).first()
-      configuration.targetVersion = compileJavaTask.getProperties().get("sourceCompatibility")
+      configuration.targetVersion = compileJavaTask.sourceCompatibility
       logger.info 'Using Gradle sourceCompatibility as targetVersion for jsonschema2pojo: ' + configuration.targetVersion
     }
   }

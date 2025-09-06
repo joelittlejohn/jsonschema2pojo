@@ -16,17 +16,18 @@
 
 package org.jsonschema2pojo.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jsonschema2pojo.Annotator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.beust.jcommander.ParameterException;
 
 public class ClassConverterTest {
 
-    private ClassConverter converter = new ClassConverter("--custom-annotator");
+    private final ClassConverter converter = new ClassConverter("--custom-annotator");
 
     @Test
     @SuppressWarnings("unchecked")
@@ -36,14 +37,14 @@ public class ClassConverterTest {
         assertThat(clazz, is(equalTo(Annotator.class)));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void invalidClassNameThrowsParameterException() {
-        converter.convert("some garbage.name");
+        assertThrows(ParameterException.class, () -> converter.convert("some garbage.name"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void nullValueThrowsParameterException() {
-        converter.convert(null);
+        assertThrows(ParameterException.class, () -> converter.convert(null));
     }
 
 }

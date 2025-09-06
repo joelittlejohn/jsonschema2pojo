@@ -19,7 +19,7 @@ package org.jsonschema2pojo.rules;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -32,7 +32,7 @@ public class DescriptionRuleTest {
 
     private static final String TARGET_CLASS_NAME = DescriptionRuleTest.class.getName() + ".DummyClass";
 
-    private DescriptionRule rule = new DescriptionRule();
+    private final DescriptionRule rule = new DescriptionRule();
 
     @Test
     public void applyAddsDescriptionToJavadoc() throws JClassAlreadyExistsException {

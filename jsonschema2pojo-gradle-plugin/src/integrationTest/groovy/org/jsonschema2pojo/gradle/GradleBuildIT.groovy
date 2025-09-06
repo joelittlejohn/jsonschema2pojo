@@ -18,7 +18,7 @@ package org.jsonschema2pojo.gradle
 import org.gradle.tooling.BuildLauncher
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class GradleBuildIT {
 
