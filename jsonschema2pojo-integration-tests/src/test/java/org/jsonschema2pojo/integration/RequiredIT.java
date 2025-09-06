@@ -38,7 +38,8 @@ import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class RequiredIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithRequired;
 

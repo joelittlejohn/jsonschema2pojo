@@ -26,25 +26,22 @@ import com.sun.codemodel.JFieldVar;
 import jakarta.validation.Valid;
 
 public class ValidRule implements Rule<JFieldVar, JFieldVar> {
-    
+
     private final RuleFactory ruleFactory;
-    
+
     public ValidRule(RuleFactory ruleFactory) {
         this.ruleFactory = ruleFactory;
     }
 
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
-        
+
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
-            final Class<? extends Annotation> validClass
-                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                    ? Valid.class
-                    : javax.validation.Valid.class;
+            final Class<? extends Annotation> validClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? Valid.class : javax.validation.Valid.class;
             field.annotate(validClass);
         }
-        
+
         return field;
     }
-    
+
 }

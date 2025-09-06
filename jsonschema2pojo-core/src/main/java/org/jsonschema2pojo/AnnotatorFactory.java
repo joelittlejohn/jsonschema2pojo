@@ -32,12 +32,12 @@ public class AnnotatorFactory {
     }
 
     /**
-     * Create a new {@link Annotator} that can create annotations according to
-     * the given style.
+     * Create a new {@link Annotator} that can create annotations according to the
+     * given style.
      *
      * @param style
-     *            the annotation style that dictates what kind of annotations
-     *            are required.
+     *            the annotation style that dictates what kind of annotations are
+     *            required.
      * @return an annotator matching to given style
      */
     public Annotator getAnnotator(AnnotationStyle style) {
@@ -90,7 +90,7 @@ public class AnnotatorFactory {
 
     }
 
-    public CompositeAnnotator getAnnotator( Annotator... annotators ) {
+    public CompositeAnnotator getAnnotator(Annotator... annotators) {
         return new CompositeAnnotator(annotators);
     }
 

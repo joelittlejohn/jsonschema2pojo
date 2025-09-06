@@ -26,11 +26,11 @@ public final class ParcelUtils {
 
     private ParcelUtils() {
     }
-    
+
     public static Parcel writeToParcel(Parcelable instance, String key) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(key, instance);
-        
+
         Parcel parcel = Parcel.obtain();
         parcel.writeBundle(bundle);
         return parcel;
@@ -41,7 +41,7 @@ public final class ParcelUtils {
         instance.writeToParcel(parcel, 0);
         return parcel;
     }
-    
+
     public static Parcelable readFromParcel(Parcel parcel, Class<?> parcelableType, String key) {
         parcel.setDataPosition(0);
 
@@ -55,7 +55,6 @@ public final class ParcelUtils {
         parcel.setDataPosition(0);
         return createFromParcelFromParcelable(parcel, parcelable);
     }
-
 
     private static Parcelable createFromParcelFromParcelable(Parcel in, Parcelable parcelable) {
         try {

@@ -49,8 +49,8 @@ import com.sun.codemodel.JMethod;
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
  *
- * @see <a
- *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+ * @see <a href=
+ *      "https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
 public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
 
@@ -106,8 +106,7 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
         }
 
         if (propertyNode.has("javaJsonView")) {
-            field.annotate(JsonView.class).param(
-                    "value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
+            field.annotate(JsonView.class).param("value", field.type().owner().ref(propertyNode.get("javaJsonView").asText()));
         }
 
         if (propertyNode.has("description")) {

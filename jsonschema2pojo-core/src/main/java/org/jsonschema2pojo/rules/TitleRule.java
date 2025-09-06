@@ -24,9 +24,9 @@ import com.sun.codemodel.JDocCommentable;
 
 /**
  * Applies the "title" property property.
- * 
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21</a>
+ *
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.21</a>
  */
 public class TitleRule implements Rule<JDocCommentable, JDocComment> {
 
@@ -36,13 +36,12 @@ public class TitleRule implements Rule<JDocCommentable, JDocComment> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * When a title node is found and applied with this rule, the value of the
-     * title is added as a JavaDoc comment. This rule is typically applied to
-     * the generated field, generated getter and generated setter for the
-     * property.
+     * When a title node is found and applied with this rule, the value of the title
+     * is added as a JavaDoc comment. This rule is typically applied to the
+     * generated field, generated getter and generated setter for the property.
      * <p>
      * Note that the title is always inserted at the top of the JavaDoc comment.
-     * 
+     *
      * @param nodeName
      *            the name of the property to which this title applies
      * @param node
@@ -50,8 +49,8 @@ public class TitleRule implements Rule<JDocCommentable, JDocComment> {
      * @param parent
      *            the parent node
      * @param generatableType
-     *            comment-able code generation construct, usually a field or
-     *            method, which should have this title applied
+     *            comment-able code generation construct, usually a field or method,
+     *            which should have this title applied
      * @return the JavaDoc comment created to contain the title
      */
     @Override

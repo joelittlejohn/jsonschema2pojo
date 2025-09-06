@@ -42,7 +42,8 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 public class AdditionalPropertiesIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -65,7 +66,6 @@ public class AdditionalPropertiesIT {
         assertThat((Integer) ((Map<String, Object>) getter.invoke(deserialized)).get("b"), is(2));
 
     }
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -184,10 +184,7 @@ public class AdditionalPropertiesIT {
         Class<?> propertyValueType = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObjectProperty");
 
         // builder with these types should not exist:
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType),
-                "additional properties builder found when not requested");
+        assertThrows(NoSuchMethodException.class, () -> classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType), "additional properties builder found when not requested");
     }
 
     @Test

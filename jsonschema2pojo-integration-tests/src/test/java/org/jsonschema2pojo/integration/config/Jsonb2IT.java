@@ -53,9 +53,7 @@ public class Jsonb2IT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJsonb2ProducesJsonb2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jsonb2"))
-            .loadClass("com.example.PrimitiveProperties");
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jsonb2")).loadClass("com.example.PrimitiveProperties");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
@@ -70,12 +68,10 @@ public class Jsonb2IT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes"})
+    @SuppressWarnings({ "rawtypes" })
     public void annotationStyleJsonb2ProducesDateFormatAnnotation() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/format/customDateTimeFormat.json", "com.example",
-                config("annotationStyle", "jsonb2"))
-            .loadClass("com.example.CustomDateTimeFormat");
+        Class generatedType = schemaRule.generateAndCompile("/schema/format/customDateTimeFormat.json", "com.example", config("annotationStyle", "jsonb2")).loadClass("com.example.CustomDateTimeFormat");
 
         assertThat(generatedType.getDeclaredField("defaultFormat").getAnnotation(JsonbDateFormat.class), is(notNullValue()));
     }
@@ -83,17 +79,13 @@ public class Jsonb2IT {
     @Test
     public void annotationStyleJsonb2MakesTypesThatWorkWithJsonb2() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
-            config("annotationStyle", "jsonb2",
-                "propertyWordDelimiters", "_",
-                "sourceType", "json",
-                "useLongIntegers", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example", config("annotationStyle", "jsonb2", "propertyWordDelimiters", "_", "sourceType", "json", "useLongIntegers", true));
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 

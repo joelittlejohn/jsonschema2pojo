@@ -21,7 +21,7 @@ import java.io.FileFilter;
 
 /**
  * A file filter that accepts all files.
- * 
+ *
  * @author Christian Trimble
  *
  */

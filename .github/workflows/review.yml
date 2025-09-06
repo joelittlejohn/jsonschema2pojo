@@ -1,0 +1,20 @@
+name: analyze and review code
+on: [ push, pull_request ]
+
+jobs:
+  style-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 8
+          cache: maven
+
+      - name: Check code style
+        run: ./mvnw spotless:check

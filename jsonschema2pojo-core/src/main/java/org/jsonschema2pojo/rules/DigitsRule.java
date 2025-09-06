@@ -37,14 +37,9 @@ public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
     @Override
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-            && node.has("integerDigits") && node.has("fractionalDigits")
-            && isApplicableType(field)) {
+        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && node.has("integerDigits") && node.has("fractionalDigits") && isApplicableType(field)) {
 
-            final Class<? extends Annotation> digitsClass
-                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                    ? Digits.class
-                    : javax.validation.constraints.Digits.class;
+            final Class<? extends Annotation> digitsClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? Digits.class : javax.validation.constraints.Digits.class;
             JAnnotationUse annotation = field.annotate(digitsClass);
 
             annotation.param("integer", node.get("integerDigits").asInt());
@@ -58,9 +53,7 @@ public class DigitsRule implements Rule<JFieldVar, JFieldVar> {
         try {
             Class<?> fieldClass = Class.forName(field.type().boxify().fullName());
             // Support Strings and most number types except Double and Float, per docs on Digits annotations
-            return String.class.isAssignableFrom(fieldClass) ||
-                    (Number.class.isAssignableFrom(fieldClass) &&
-                            !Float.class.isAssignableFrom(fieldClass) && !Double.class.isAssignableFrom(fieldClass));
+            return String.class.isAssignableFrom(fieldClass) || (Number.class.isAssignableFrom(fieldClass) && !Float.class.isAssignableFrom(fieldClass) && !Double.class.isAssignableFrom(fieldClass));
         } catch (ClassNotFoundException ignore) {
             return false;
         }

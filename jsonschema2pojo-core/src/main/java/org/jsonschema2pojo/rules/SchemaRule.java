@@ -32,8 +32,8 @@ import com.sun.codemodel.JType;
 /**
  * Applies a JSON schema.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5</a>
  */
 public class SchemaRule implements Rule<JClassContainer, JType> {
 
@@ -49,13 +49,13 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
      * At the root of a schema document this rule should be applied (schema
      * documents contain a schema), but also in many places within the document.
      * Each property of type "object" is itself defined by a schema, the items
-     * attribute of an array is a schema, the additionalProperties attribute of
-     * a schema is also a schema.
+     * attribute of an array is a schema, the additionalProperties attribute of a
+     * schema is also a schema.
      * <p>
-     * Where the schema value is a $ref, the ref URI is assumed to be applicable
-     * as a URL (from which content will be read). Where the ref URI has been
-     * encountered before, the root Java type created by that schema will be
-     * re-used (generation steps won't be repeated).
+     * Where the schema value is a $ref, the ref URI is assumed to be applicable as
+     * a URL (from which content will be read). Where the ref URI has been
+     * encountered before, the root Java type created by that schema will be re-used
+     * (generation steps won't be repeated).
      *
      * @param schema
      *            the schema within which this schema rule is being applied

@@ -53,9 +53,7 @@ public class Jsonschema2PojoRuleTest {
         @Test
         public void compilationProblemsStdErr() {
             rule.captureDiagnostics();
-            assertThrows(
-                    AssertionError.class,
-                    () -> rule.generateAndCompile("/schema/default/default.json", "com.example", config("customRuleFactory", BrokenRuleFactory.class.getName())));
+            assertThrows(AssertionError.class, () -> rule.generateAndCompile("/schema/default/default.json", "com.example", config("customRuleFactory", BrokenRuleFactory.class.getName())));
             assertThat(rule.getDiagnostics(), hasSize(1));
             assertThat(rule.getDiagnostics().get(0).toString(), containsString("error: missing return statement"));
         }
@@ -89,8 +87,8 @@ public class Jsonschema2PojoRuleTest {
                 @Override
                 public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
                     JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
-                    if( objectType instanceof JDefinedClass ) {
-                        JDefinedClass jclass = (JDefinedClass)objectType;
+                    if (objectType instanceof JDefinedClass) {
+                        JDefinedClass jclass = (JDefinedClass) objectType;
                         jclass.method(JMod.PUBLIC, jclass.owner().BOOLEAN, "brokenMethod").body();
                     }
                     return objectType;

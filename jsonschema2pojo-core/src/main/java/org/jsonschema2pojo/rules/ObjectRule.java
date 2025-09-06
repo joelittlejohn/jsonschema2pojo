@@ -77,8 +77,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * When this rule is applied for schemas of type object, the properties of
-     * the schema are used to generate a new Java class and determine its
+     * When this rule is applied for schemas of type object, the properties of the
+     * schema are used to generate a new Java class and determine its
      * characteristics. See other implementers of {@link Rule} for details.
      */
     @Override
@@ -113,7 +113,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
 
         // Creates the class definition for the builder
-        if(ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()){
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
             ruleFactory.getBuilderRule().apply(nodeName, node, parent, jclass, schema);
         }
 
@@ -130,7 +130,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         if (node.has("required")) {
             ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
         }
-       
+
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
             AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
@@ -174,26 +174,23 @@ public class ObjectRule implements Rule<JPackage, JType> {
         }
     }
 
-
-
     /**
      * Creates a new Java class that will be generated.
      *
      * @param nodeName
      *            the node name which may be used to dictate the new class name
      * @param node
-     *            the node representing the schema that caused the need for a
-     *            new class. This node may include a 'javaType' property which
-     *            if present will override the fully qualified name of the newly
+     *            the node representing the schema that caused the need for a new
+     *            class. This node may include a 'javaType' property which if
+     *            present will override the fully qualified name of the newly
      *            generated class.
      * @param _package
-     *            the package which may contain a new class after this method
-     *            call
+     *            the package which may contain a new class after this method call
      * @return a reference to a newly created class
      * @throws ClassAlreadyExistsException
-     *             if the given arguments cause an attempt to create a class
-     *             that already exists, either on the classpath or in the
-     *             current map of classes to be generated.
+     *             if the given arguments cause an attempt to create a class that
+     *             already exists, either on the classpath or in the current map of
+     *             classes to be generated.
      */
     private JDefinedClass createClass(String nodeName, JsonNode node, JPackage _package) throws ClassAlreadyExistsException {
 
@@ -275,13 +272,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
         JVar sb = body.decl(stringBuilderClass, "sb", JExpr._new(stringBuilderClass));
 
         // Write the header, e.g.: example.domain.MyClass@85e382a7[
-        body.add(sb
-                .invoke("append").arg(jclass.dotclass().invoke("getName"))
-                .invoke("append").arg(JExpr.lit('@'))
-                .invoke("append").arg(
-                        jclass.owner().ref(Integer.class).staticInvoke("toHexString").arg(
-                                jclass.owner().ref(System.class).staticInvoke("identityHashCode").arg(JExpr._this())))
-                .invoke("append").arg(JExpr.lit('[')));
+        body.add(sb.invoke("append").arg(jclass.dotclass().invoke("getName")).invoke("append").arg(JExpr.lit('@')).invoke("append").arg(jclass.owner().ref(Integer.class).staticInvoke("toHexString").arg(jclass.owner().ref(System.class).staticInvoke("identityHashCode").arg(JExpr._this()))).invoke("append").arg(JExpr.lit('[')));
 
         // If this has a parent class, include its toString()
         if (!jclass._extends().fullName().equals(Object.class.getName())) {
@@ -292,26 +283,18 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
             // If super.toString() is in the Clazz@2ee6529d[field=10] format, extract the fields
             // from the wrapper
-            JVar contentStart = superToStringBlock.decl(jclass.owner().INT, "contentStart",
-                    superString.invoke("indexOf").arg(JExpr.lit('[')));
-            JVar contentEnd = superToStringBlock.decl(jclass.owner().INT, "contentEnd",
-                    superString.invoke("lastIndexOf").arg(JExpr.lit(']')));
+            JVar contentStart = superToStringBlock.decl(jclass.owner().INT, "contentStart", superString.invoke("indexOf").arg(JExpr.lit('[')));
+            JVar contentEnd = superToStringBlock.decl(jclass.owner().INT, "contentEnd", superString.invoke("lastIndexOf").arg(JExpr.lit(']')));
 
-            JConditional superToStringInnerConditional = superToStringBlock._if(
-                    contentStart.gte(JExpr.lit(0)).cand(contentEnd.gt(contentStart)));
+            JConditional superToStringInnerConditional = superToStringBlock._if(contentStart.gte(JExpr.lit(0)).cand(contentEnd.gt(contentStart)));
 
-            superToStringInnerConditional._then().add(
-                    sb.invoke("append")
-                    .arg(superString)
-                    .arg(contentStart.plus(JExpr.lit(1)))
-                    .arg(contentEnd));
+            superToStringInnerConditional._then().add(sb.invoke("append").arg(superString).arg(contentStart.plus(JExpr.lit(1))).arg(contentEnd));
 
             // Otherwise, just append super.toString()
             superToStringInnerConditional._else().add(sb.invoke("append").arg(superString));
 
             // Append a comma if needed
-            body._if(sb.invoke("length").gt(baseLength))
-            ._then().add(sb.invoke("append").arg(JExpr.lit(',')));
+            body._if(sb.invoke("length").gt(baseLength))._then().add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
         // For each included instance field, add to the StringBuilder in the field=value format
@@ -332,39 +315,20 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
 
                 // Leverage Arrays.toString()
-                body.add(sb.invoke("append")
-                        .arg(JOp.cond(
-                                JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
-                                JExpr.lit("<null>"),
-                                jclass.owner().ref(Arrays.class).staticInvoke("toString")
-                                .arg(JExpr.refthis(fieldVar.name()))
-                                .invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{'))
-                                .invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}'))
-                                .invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
+                body.add(sb.invoke("append").arg(JOp.cond(JExpr.refthis(fieldVar.name()).eq(JExpr._null()), JExpr.lit("<null>"), jclass.owner().ref(Arrays.class).staticInvoke("toString").arg(JExpr.refthis(fieldVar.name())).invoke("replace").arg(JExpr.lit('[')).arg(JExpr.lit('{')).invoke("replace").arg(JExpr.lit(']')).arg(JExpr.lit('}')).invoke("replace").arg(JExpr.lit(", ")).arg(JExpr.lit(",")))));
             } else {
-                body.add(sb.invoke("append")
-                        .arg(JOp.cond(
-                                JExpr.refthis(fieldVar.name()).eq(JExpr._null()),
-                                JExpr.lit("<null>"),
-                                JExpr.refthis(fieldVar.name()))));
+                body.add(sb.invoke("append").arg(JOp.cond(JExpr.refthis(fieldVar.name()).eq(JExpr._null()), JExpr.lit("<null>"), JExpr.refthis(fieldVar.name()))));
             }
 
             body.add(sb.invoke("append").arg(JExpr.lit(',')));
         }
 
         // Add the trailer
-        JConditional trailerConditional = body._if(
-                sb.invoke("charAt").arg(sb.invoke("length").minus(JExpr.lit(1)))
-                .eq(JExpr.lit(',')));
+        JConditional trailerConditional = body._if(sb.invoke("charAt").arg(sb.invoke("length").minus(JExpr.lit(1))).eq(JExpr.lit(',')));
 
-        trailerConditional._then().add(
-                sb.invoke("setCharAt")
-                .arg(sb.invoke("length").minus(JExpr.lit(1)))
-                .arg(JExpr.lit(']')));
+        trailerConditional._then().add(sb.invoke("setCharAt").arg(sb.invoke("length").minus(JExpr.lit(1))).arg(JExpr.lit(']')));
 
-        trailerConditional._else().add(
-                sb.invoke("append").arg(JExpr.lit(']')));
-
+        trailerConditional._else().add(sb.invoke("append").arg(JExpr.lit(']')));
 
         body._return(sb.invoke("toString"));
 
@@ -397,8 +361,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 } else if ("double".equals(fieldVar.type().name())) {
                     JClass doubleClass = jclass.owner().ref(Double.class);
                     JExpression longField = doubleClass.staticInvoke("doubleToLongBits").arg(fieldRef);
-                    fieldHash = JExpr.cast(jclass.owner().INT,
-                            longField.xor(longField.shrz(JExpr.lit(32))));
+                    fieldHash = JExpr.cast(jclass.owner().INT, longField.xor(longField.shrz(JExpr.lit(32))));
                 } else if ("float".equals(fieldVar.type().name())) {
                     fieldHash = jclass.owner().ref(Float.class).staticInvoke("floatToIntBits").arg(fieldRef);
                 } else {
@@ -435,20 +398,19 @@ public class ObjectRule implements Rule<JPackage, JType> {
             if (node.has("excludedFromEqualsAndHashCode")) {
                 JsonNode excludedArray = node.get("excludedFromEqualsAndHashCode");
 
-                for (Iterator<JsonNode> iterator = excludedArray.elements(); iterator.hasNext(); ) {
+                for (Iterator<JsonNode> iterator = excludedArray.elements(); iterator.hasNext();) {
                     String excludedPropertyName = iterator.next().asText();
                     JsonNode excludedPropertyNode = properties.get(excludedPropertyName);
                     filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(excludedPropertyName, excludedPropertyNode));
                 }
             }
 
-            for (Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields(); iterator.hasNext(); ) {
+            for (Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields(); iterator.hasNext();) {
                 Map.Entry<String, JsonNode> entry = iterator.next();
                 String propertyName = entry.getKey();
                 JsonNode propertyNode = entry.getValue();
 
-                if (propertyNode.has("excludedFromEqualsAndHashCode") &&
-                        propertyNode.get("excludedFromEqualsAndHashCode").asBoolean()) {
+                if (propertyNode.has("excludedFromEqualsAndHashCode") && propertyNode.get("excludedFromEqualsAndHashCode").asBoolean()) {
                     filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(propertyName, propertyNode));
                 }
             }
@@ -490,12 +452,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
             if (fieldVar.type().isPrimitive()) {
                 if ("double".equals(fieldVar.type().name())) {
                     JClass doubleClass = jclass.owner().ref(Double.class);
-                    fieldEquals = doubleClass.staticInvoke("doubleToLongBits").arg(thisFieldRef).eq(
-                            doubleClass.staticInvoke("doubleToLongBits").arg(otherFieldRef));
+                    fieldEquals = doubleClass.staticInvoke("doubleToLongBits").arg(thisFieldRef).eq(doubleClass.staticInvoke("doubleToLongBits").arg(otherFieldRef));
                 } else if ("float".equals(fieldVar.type().name())) {
                     JClass floatClass = jclass.owner().ref(Float.class);
-                    fieldEquals = floatClass.staticInvoke("floatToIntBits").arg(thisFieldRef).eq(
-                            floatClass.staticInvoke("floatToIntBits").arg(otherFieldRef));
+                    fieldEquals = floatClass.staticInvoke("floatToIntBits").arg(thisFieldRef).eq(floatClass.staticInvoke("floatToIntBits").arg(otherFieldRef));
                 } else {
                     fieldEquals = thisFieldRef.eq(otherFieldRef);
                 }
@@ -506,9 +466,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
                 fieldEquals = jclass.owner().ref(Arrays.class).staticInvoke("equals").arg(thisFieldRef).arg(otherFieldRef);
             } else {
-                fieldEquals = thisFieldRef.eq(otherFieldRef).cor(
-                        thisFieldRef.ne(JExpr._null())
-                        .cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
+                fieldEquals = thisFieldRef.eq(otherFieldRef).cor(thisFieldRef.ne(JExpr._null()).cand(thisFieldRef.invoke("equals").arg(otherFieldRef)));
             }
 
             // Chain the equality of this field with the previous comparisons
@@ -530,8 +488,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
 
-        if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON2) {
+        if (annotationStyle == AnnotationStyle.JACKSON || annotationStyle == AnnotationStyle.JACKSON2) {
             return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }
 

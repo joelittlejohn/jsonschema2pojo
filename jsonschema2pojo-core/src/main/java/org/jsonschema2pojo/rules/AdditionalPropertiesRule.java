@@ -56,30 +56,29 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
      * Applies this schema rule to take the required code generation steps.
      * <p>
      * If additionalProperties is specified and set to the boolean value
-     * <code>false</code>, this rule does not make any change to the generated
-     * Java type (the type does not allow additional properties).
+     * <code>false</code>, this rule does not make any change to the generated Java
+     * type (the type does not allow additional properties).
      * <p>
-     * If the additionalProperties node is <code>null</code> (not specified in
-     * the schema) or empty, then a new bean property named
-     * "additionalProperties", of type {@link Map}{@literal <String,Object>} is
-     * added to the generated type (with appropriate accessors). The accessors
-     * are annotated to allow unrecognised (additional) properties found in JSON
-     * data to be marshalled/unmarshalled from/to this map.
+     * If the additionalProperties node is <code>null</code> (not specified in the
+     * schema) or empty, then a new bean property named "additionalProperties", of
+     * type {@link Map}{@literal <String,Object>} is added to the generated type
+     * (with appropriate accessors). The accessors are annotated to allow
+     * unrecognised (additional) properties found in JSON data to be
+     * marshalled/unmarshalled from/to this map.
      * <p>
-     * If the additionalProperties node is present and specifies a schema, then
-     * an "additionalProperties" map is added to the generated type. This time
-     * the map values will be restricted and must be instances of a newly
-     * generated Java type that will be created based on the
-     * additionalProperties schema provided. If the schema does not specify the
-     * javaType property, the name of the newly generated type will be derived
-     * from the nodeName and the suffix 'Property'.
+     * If the additionalProperties node is present and specifies a schema, then an
+     * "additionalProperties" map is added to the generated type. This time the map
+     * values will be restricted and must be instances of a newly generated Java
+     * type that will be created based on the additionalProperties schema provided.
+     * If the schema does not specify the javaType property, the name of the newly
+     * generated type will be derived from the nodeName and the suffix 'Property'.
      *
      * @param nodeName
      *            the name of the schema node for which the additionalProperties
      *            node applies
      * @param node
-     *            the additionalProperties node itself, found in the schema (may
-     *            be null if not specified in the schema)
+     *            the additionalProperties node itself, found in the schema (may be
+     *            null if not specified in the schema)
      * @param jclass
      *            the Java type that is being generated to represent this schema
      * @return the given Java type jclass
@@ -175,7 +174,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     private JMethod addBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
 
         JMethod result = null;
-        if(ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+        if (ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
             result = addInnerBuilder(jclass, propertyType, field);
         } else {
             result = addLegacyBuilder(jclass, propertyType, field);
@@ -200,10 +199,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
     }
 
     private JMethod addInnerBuilder(JDefinedClass jclass, JType propertyType, JFieldVar field) {
-        Optional<JDefinedClass> builderClass = StreamSupport
-                .stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false)
-                .filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass)))
-                .findFirst();
+        Optional<JDefinedClass> builderClass = StreamSupport.stream(Spliterators.spliteratorUnknownSize(jclass.classes(), Spliterator.ORDERED), false).filter(definedClass -> definedClass.name().equals(getBuilderClassName(jclass))).findFirst();
 
         JMethod builder = builderClass.get().method(JMod.PUBLIC, builderClass.get(), "withAdditionalProperty");
 

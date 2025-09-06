@@ -40,7 +40,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Checks general properties of includeAccessors and different configurations.
- * 
+ *
  * @author Christian Trimble
  *
  */
@@ -54,14 +54,12 @@ public class IncludeAccessorsPropertiesIT {
     public static final String PRIMITIVE_TYPE = "com.example.PrimitiveProperties";
 
     public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][] {
-            { PRIMITIVE_JSON, PRIMITIVE_TYPE, config() },
-            { PRIMITIVE_JSON, PRIMITIVE_TYPE, config("useJodaDates", true) },
-            { PRIMITIVE_JSON, PRIMITIVE_TYPE, config("includeAdditionalProperties", false) }
+        return Arrays.asList(new Object[][] { { PRIMITIVE_JSON, PRIMITIVE_TYPE, config() }, { PRIMITIVE_JSON, PRIMITIVE_TYPE, config("useJodaDates", true) }, { PRIMITIVE_JSON, PRIMITIVE_TYPE, config("includeAdditionalProperties", false) }
         });
     }
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private String path;
     private String typeName;

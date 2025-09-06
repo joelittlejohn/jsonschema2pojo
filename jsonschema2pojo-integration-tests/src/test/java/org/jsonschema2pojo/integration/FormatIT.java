@@ -49,30 +49,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @MethodSource("data")
 public class FormatIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithFormattedProperties;
 
     public static List<Object[]> data() {
         return asList(new Object[][] {
-            /* { propertyName, expectedType, jsonValue, javaValue } */
-            { "integerAsDateTime", Date.class, 123, new Date(123) },
-            { "stringAsDateTime", Date.class, "54321", new Date(54321L) },
-            { "stringAsTime", String.class, "12:30", "12:30" },
-            { "stringAsDate", String.class, "1950-10-10", "1950-10-10" },
-            { "numberAsUtcMillisec", Long.class, 555, 555L },
-            { "stringAsUtcMillisec", Long.class, "999", 999L },
-            { "customFormattedNumber", Double.class, "6.512", 6.512d },
-            { "stringAsRegex", Pattern.class, "^.*[0-9]+.*$", Pattern.compile("^.*[0-9]+.*$") },
-            { "stringAsHostname", String.class, "somehost", "somehost" },
-            { "stringAsIpAddress", String.class, "192.168.1.666", "192.168.1.666" },
-            { "stringAsIpv6", String.class, "2001:0db8:85a3:0000", "2001:0db8:85a3:0000" },
-            { "stringAsColor", String.class, "#fefefe", "#fefefe" },
-            { "stringAsStyle", String.class, "border: 1px solid red", "border: 1px solid red" },
-            { "stringAsPhone", String.class, "1-800-STARWARS", "1-800-STARWARS" },
-            { "stringAsUri", URI.class, "http://some/uri?q=abc", "http://some/uri?q=abc" },
-            { "stringAsUuid", UUID.class, "15a2a782-81b3-48ef-b35f-c2b9847b617e", "15a2a782-81b3-48ef-b35f-c2b9847b617e" },
-            { "stringAsEmail", String.class, "a@b.com", "a@b.com" } });
+                /* { propertyName, expectedType, jsonValue, javaValue } */
+                { "integerAsDateTime", Date.class, 123, new Date(123) }, { "stringAsDateTime", Date.class, "54321", new Date(54321L) }, { "stringAsTime", String.class, "12:30", "12:30" }, { "stringAsDate", String.class, "1950-10-10", "1950-10-10" }, { "numberAsUtcMillisec", Long.class, 555, 555L }, { "stringAsUtcMillisec", Long.class, "999", 999L }, { "customFormattedNumber", Double.class, "6.512", 6.512d }, { "stringAsRegex", Pattern.class, "^.*[0-9]+.*$", Pattern.compile("^.*[0-9]+.*$") }, { "stringAsHostname", String.class, "somehost", "somehost" }, { "stringAsIpAddress", String.class, "192.168.1.666", "192.168.1.666" }, { "stringAsIpv6", String.class, "2001:0db8:85a3:0000", "2001:0db8:85a3:0000" }, { "stringAsColor", String.class, "#fefefe", "#fefefe" }, { "stringAsStyle", String.class, "border: 1px solid red", "border: 1px solid red" }, { "stringAsPhone", String.class, "1-800-STARWARS", "1-800-STARWARS" }, { "stringAsUri", URI.class, "http://some/uri?q=abc", "http://some/uri?q=abc" }, { "stringAsUuid", UUID.class, "15a2a782-81b3-48ef-b35f-c2b9847b617e", "15a2a782-81b3-48ef-b35f-c2b9847b617e" }, { "stringAsEmail", String.class, "a@b.com", "a@b.com" } });
     }
 
     private String propertyName;
@@ -89,9 +74,11 @@ public class FormatIT {
 
     @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-        Map<String,String> formatMapping = new HashMap<String,String>() {{
-            put("int32", "int");
-        }};
+        Map<String, String> formatMapping = new HashMap<String, String>() {
+            {
+                put("int32", "int");
+            }
+        };
 
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("formatTypeMapping", formatMapping));
 

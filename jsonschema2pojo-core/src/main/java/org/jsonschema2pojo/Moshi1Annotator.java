@@ -23,13 +23,13 @@ import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 
 /**
- * Annotates generated Java types using Moshi. The annotations used here are most
- * useful when the JSON fields have characters (like underscores) that are
- * poorly suited for beans. By using the Moshi 'Json' annotation, we
- * are able to preserve the original format.
+ * Annotates generated Java types using Moshi. The annotations used here are
+ * most useful when the JSON fields have characters (like underscores) that are
+ * poorly suited for beans. By using the Moshi 'Json' annotation, we are able to
+ * preserve the original format.
  *
- * @see <a
- *      href="https://github.com/square/moshi#custom-field-names-with-json">https://github.com/square/moshi#custom-field-names-with-json</a>
+ * @see <a href=
+ *      "https://github.com/square/moshi#custom-field-names-with-json">https://github.com/square/moshi#custom-field-names-with-json</a>
  */
 public class Moshi1Annotator extends AbstractAnnotator {
 

@@ -43,8 +43,7 @@ import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 public class SerializableHelper {
-    private static final Comparator<JClass> INTERFACE_COMPARATOR =
-            new Comparator<JClass>() {
+    private static final Comparator<JClass> INTERFACE_COMPARATOR = new Comparator<JClass>() {
         @Override
         public int compare(JClass object1, JClass object2) {
             if (object1 == null && object2 == null) {
@@ -70,7 +69,6 @@ public class SerializableHelper {
             return name1.compareTo(name2);
         }
     };
-
 
     private static void processMethodCollectionForSerializableSupport(Iterator<JMethod> methods, DataOutputStream dataOutputStream) throws IOException {
         TreeMap<String, JMethod> sortedMethods = new TreeMap<>();
@@ -144,7 +142,6 @@ public class SerializableHelper {
         processMethodCollectionForSerializableSupport(jclass.constructors(), dataOutputStream);
     }
 
-
     private static void processFieldVarForSerializableSupport(JFieldVar fieldVar, DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeUTF(fieldVar.name());
         dataOutputStream.writeInt(fieldVar.mods().getValue());
@@ -172,7 +169,7 @@ public class SerializableHelper {
                 serialVersionUID = serialVersionUID << 8 | digestBytes[i] & 0xff;
             }
 
-            JFieldVar  serialUIDField = jclass.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, long.class, "serialVersionUID");
+            JFieldVar serialUIDField = jclass.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, long.class, "serialVersionUID");
             serialUIDField.init(JExpr.lit(serialVersionUID));
 
         } catch (IOException exception) {

@@ -38,7 +38,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AnnotationStyleIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -59,8 +60,7 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJacksonProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -75,9 +75,7 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJackson2ProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2"))
-                .loadClass("com.example.PrimitiveProperties");
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.PrimitiveProperties");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
@@ -101,8 +99,7 @@ public class AnnotationStyleIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleNoneProducesNoAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "none"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "none"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
@@ -118,9 +115,7 @@ public class AnnotationStyleIT {
     public void invalidAnnotationStyleCausesMojoException() {
         final String schema = "/schema/properties/primitiveProperties.json";
 
-        final RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> schemaRule.generate(schema, "com.example", config("annotationStyle", "invalidstyle")));
+        final RuntimeException exception = assertThrows(RuntimeException.class, () -> schemaRule.generate(schema, "com.example", config("annotationStyle", "invalidstyle")));
 
         assertThat(exception.getCause(), is(instanceOf(MojoExecutionException.class)));
         assertThat(exception.getCause().getMessage(), is(containsString("invalidstyle")));

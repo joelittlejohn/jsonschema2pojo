@@ -34,8 +34,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class YamlPropertiesIT {
- 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -77,8 +78,7 @@ public class YamlPropertiesIT {
     @SuppressWarnings("rawtypes")
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example",
-                config("usePrimitives", true, "propertyWordDelimiters", "_ -", "sourceType", "yamlschema"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example", config("usePrimitives", true, "propertyWordDelimiters", "_ -", "sourceType", "yamlschema"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 

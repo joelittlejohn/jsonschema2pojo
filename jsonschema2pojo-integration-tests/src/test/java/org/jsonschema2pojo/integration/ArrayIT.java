@@ -36,8 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ArrayIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithArrayProperties;
 
@@ -162,8 +164,8 @@ public class ArrayIT {
     }
 
     /**
-     * @see <a
-     *      href="http://code.google.com/p/jsonschema2pojo/issues/detail?id=76">issue
+     * @see <a href=
+     *      "http://code.google.com/p/jsonschema2pojo/issues/detail?id=76">issue
      *      76</a>
      */
     @Test
@@ -202,10 +204,7 @@ public class ArrayIT {
         }
 
         public void test() throws Exception {
-            ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
-                    "/schema/array/typeWithArrayProperties.json",
-                    "com.example",
-                    config("annotationStyle", annotationStyle));
+            ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/array/typeWithArrayProperties.json", "com.example", config("annotationStyle", annotationStyle));
 
             Class<?> jacksonClass = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 

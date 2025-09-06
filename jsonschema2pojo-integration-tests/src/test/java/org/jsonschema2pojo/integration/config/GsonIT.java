@@ -39,17 +39,14 @@ import com.google.gson.Gson;
 
 public class GsonIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleGsonProducesGsonAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example",
-                config("annotationStyle", "gson",
-                        "propertyWordDelimiters", "_",
-                        "sourceType", "json"))
-                .loadClass("com.example.Torrent");
+        Class generatedType = schemaRule.generateAndCompile("/json/examples/torrent.json", "com.example", config("annotationStyle", "gson", "propertyWordDelimiters", "_", "sourceType", "json")).loadClass("com.example.Torrent");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
@@ -68,11 +65,7 @@ public class GsonIT {
     @Test
     public void annotationStyleGsonMakesTypesThatWorkWithGson() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
-                config("annotationStyle", "gson",
-                        "propertyWordDelimiters", "_",
-                        "sourceType", "json",
-                        "useLongIntegers", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example", config("annotationStyle", "gson", "propertyWordDelimiters", "_", "sourceType", "json", "useLongIntegers", true));
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
@@ -82,9 +75,7 @@ public class GsonIT {
     @Test
     public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
-                config("annotationStyle", "gson",
-                        "propertyWordDelimiters", "_"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example", config("annotationStyle", "gson", "propertyWordDelimiters", "_"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");

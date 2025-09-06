@@ -37,7 +37,8 @@ import com.sun.codemodel.JPackage;
 
 public class CyclicalRefIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -67,7 +68,7 @@ public class CyclicalRefIT {
         Class<?> childrenType = clazz.getMethod("getChildren").getReturnType();
         assertThat(childrenType.getName(), is("java.util.List"));
 
-        Type childType = ((ParameterizedType)clazz.getMethod("getChildren").getGenericReturnType()).getActualTypeArguments()[0];
+        Type childType = ((ParameterizedType) clazz.getMethod("getChildren").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(childType.getTypeName(), is("com.example.RecursiveTreeNode"));
 
     }
@@ -98,7 +99,7 @@ public class CyclicalRefIT {
         Class<?> childrenType = nodeType.getMethod("getNodes").getReturnType();
         assertThat(childrenType.getName(), is("java.util.List"));
 
-        Type childType = ((ParameterizedType)nodeType.getMethod("getNodes").getGenericReturnType()).getActualTypeArguments()[0];
+        Type childType = ((ParameterizedType) nodeType.getMethod("getNodes").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(childType.getTypeName(), is("com.example.Node"));
 
     }

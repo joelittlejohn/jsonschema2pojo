@@ -37,7 +37,8 @@ import com.sun.codemodel.JPackage;
 
 public class FragmentRefIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> fragmentRefsClass;
 
@@ -89,27 +90,7 @@ public class FragmentRefIT {
     @Test
     public void refToInnerFragmentThatHasRefToOuterFragmentWithoutParentFile() throws IOException {
         JCodeModel codeModel = new JCodeModel();
-        JsonNode schema = new ObjectMapper().readTree("{\n" +
-                "    \"type\": \"object\",\n" +
-                "    \"definitions\": {\n" +
-                "        \"location\": {\n" +
-                "            \"type\": \"object\",\n" +
-                "            \"properties\": {\n" +
-                "                \"cat\": {\n" +
-                "                    \"$ref\": \"#/definitions/cat\"\n" +
-                "                }\n" +
-                "            }\n" +
-                "        },\n" +
-                "        \"cat\": {\n" +
-                "            \"type\": \"number\"\n" +
-                "        }\n" +
-                "    },\n" +
-                "    \"properties\": {\n" +
-                "        \"location\": {\n" +
-                "            \"$ref\": \"#/definitions/location\"\n" +
-                "        }\n" +
-                "    }\n" +
-                "}");
+        JsonNode schema = new ObjectMapper().readTree("{\n" + "    \"type\": \"object\",\n" + "    \"definitions\": {\n" + "        \"location\": {\n" + "            \"type\": \"object\",\n" + "            \"properties\": {\n" + "                \"cat\": {\n" + "                    \"$ref\": \"#/definitions/cat\"\n" + "                }\n" + "            }\n" + "        },\n" + "        \"cat\": {\n" + "            \"type\": \"number\"\n" + "        }\n" + "    },\n" + "    \"properties\": {\n" + "        \"location\": {\n" + "            \"$ref\": \"#/definitions/location\"\n" + "        }\n" + "    }\n" + "}");
 
         JPackage p = codeModel._package("com.example");
         new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
@@ -118,46 +99,11 @@ public class FragmentRefIT {
     @Test
     public void refToInnerFragmentThatHasRefToAnotherFragmentWithoutParentFile() throws IOException {
         JCodeModel codeModel = new JCodeModel();
-        JsonNode schema = new ObjectMapper().readTree("{\n"
-                + "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n"
-                + "    \"title\": \"Inbox Item Datalake DTO\",\n"
-                + "    \"definitions\": {\n"
-                + "        \"PropertyA\": {\n"
-                + "            \"type\": \"object\",\n"
-                + "            \"properties\": {\n"
-                + "                \"value\": {\n"
-                + "                    \"type\": \"string\"\n"
-                + "                }\n"
-                + "            }\n"
-                + "        },\n"
-                + "        \"PropertyB\": {\n"
-                + "            \"type\": \"object\",\n"
-                + "            \"properties\": {\n"
-                + "                \"data\": {\n"
-                + "                    \"type\": \"array\",\n"
-                + "                    \"items\": {\n"
-                + "                        \"$ref\": \"#/definitions/PropertyA\"\n"
-                + "                    },\n"
-                + "                    \"default\": []\n"
-                + "                }\n"
-                + "            }\n"
-                + "        }\n"
-                + "    },\n"
-                + "    \"properties\": {\n"
-                + "        \"FinalProperty\": {\n"
-                + "            \"type\": \"array\",\n"
-                + "            \"items\": {\n"
-                + "                \"$ref\": \"#/definitions/PropertyB\"\n"
-                + "            },\n"
-                + "            \"default\": []\n"
-                + "        }\n"
-                + "    }\n"
-                + "}");
+        JsonNode schema = new ObjectMapper().readTree("{\n" + "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n" + "    \"title\": \"Inbox Item Datalake DTO\",\n" + "    \"definitions\": {\n" + "        \"PropertyA\": {\n" + "            \"type\": \"object\",\n" + "            \"properties\": {\n" + "                \"value\": {\n" + "                    \"type\": \"string\"\n" + "                }\n" + "            }\n" + "        },\n" + "        \"PropertyB\": {\n" + "            \"type\": \"object\",\n" + "            \"properties\": {\n" + "                \"data\": {\n" + "                    \"type\": \"array\",\n" + "                    \"items\": {\n" + "                        \"$ref\": \"#/definitions/PropertyA\"\n" + "                    },\n" + "                    \"default\": []\n" + "                }\n" + "            }\n" + "        }\n" + "    },\n" + "    \"properties\": {\n" + "        \"FinalProperty\": {\n" + "            \"type\": \"array\",\n" + "            \"items\": {\n" + "                \"$ref\": \"#/definitions/PropertyB\"\n" + "            },\n" + "            \"default\": []\n" + "        }\n" + "    }\n" + "}");
 
         JPackage p = codeModel._package("com.example");
         new RuleFactory().getSchemaRule().apply("Example", schema, null, p, new Schema(null, schema, null));
     }
-
 
     @Test
     public void refToInnerFragmentThatHasRefToAnotherFragment() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
@@ -168,7 +114,7 @@ public class FragmentRefIT {
         Class<?> finalPropertyType = finalPropertyClass.getMethod("getFinalProperty").getReturnType();
         assertThat(finalPropertyType.getName(), is("java.util.List"));
 
-        Type finalPropertyItemType = ((ParameterizedType)finalPropertyClass.getMethod("getFinalProperty").getGenericReturnType()).getActualTypeArguments()[0];
+        Type finalPropertyItemType = ((ParameterizedType) finalPropertyClass.getMethod("getFinalProperty").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(finalPropertyItemType.getTypeName(), is("com.example.PropertyB"));
 
         final Class<?> propertyBClass = fragmentRefsClassLoader.loadClass("com.example.PropertyB");
@@ -176,7 +122,7 @@ public class FragmentRefIT {
         Class<?> dataType = propertyBClass.getMethod("getData").getReturnType();
         assertThat(dataType.getName(), is("java.util.List"));
 
-        Type dataItemType = ((ParameterizedType)propertyBClass.getMethod("getData").getGenericReturnType()).getActualTypeArguments()[0];
+        Type dataItemType = ((ParameterizedType) propertyBClass.getMethod("getData").getGenericReturnType()).getActualTypeArguments()[0];
         assertThat(dataItemType.getTypeName(), is("com.example.PropertyA"));
 
         final Class<?> propertyAClass = fragmentRefsClassLoader.loadClass("com.example.PropertyA");

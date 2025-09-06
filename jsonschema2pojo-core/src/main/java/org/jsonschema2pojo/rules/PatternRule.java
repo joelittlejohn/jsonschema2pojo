@@ -38,10 +38,7 @@ public class PatternRule implements Rule<JFieldVar, JFieldVar> {
     public JFieldVar apply(String nodeName, JsonNode node, JsonNode parent, JFieldVar field, Schema currentSchema) {
 
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && isApplicableType(field)) {
-            final Class<? extends Annotation> patternClass
-                    = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                    ? Pattern.class
-                    : javax.validation.constraints.Pattern.class;
+            final Class<? extends Annotation> patternClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? Pattern.class : javax.validation.constraints.Pattern.class;
             JAnnotationUse annotation = field.annotate(patternClass);
             annotation.param("regexp", node.asText());
         }

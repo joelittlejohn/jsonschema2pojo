@@ -67,21 +67,8 @@ public class PatternRuleTest {
     private JAnnotationUse annotation;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { true, String.class },
-                { false, UUID.class },
-                { false, Collection.class },
-                { false, Map.class },
-                { false, Array.class },
-                { false, Byte.class },
-                { false, Short.class },
-                { false, Integer.class },
-                { false, Long.class },
-                { false, Float.class },
-                { false, Double.class },
-        }).stream()
-                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
-                .collect(Collectors.toList());
+        return asList(new Object[][] { { true, String.class }, { false, UUID.class }, { false, Collection.class }, { false, Map.class }, { false, Array.class }, { false, Byte.class }, { false, Short.class }, { false, Integer.class }, { false, Long.class }, { false, Float.class }, { false, Double.class },
+        }).stream().flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray())).collect(Collectors.toList());
     }
 
     public PatternRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {

@@ -34,29 +34,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class ContentResolverTest {
 
     private final ContentResolver resolver = new ContentResolver();
-    
+
     @Test
     public void wrongProtocolCausesIllegalArgumentException() {
-        URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json"); 
+        URI uriWithUnrecognisedProtocol = URI.create("foobar://schema/address.json");
         assertThrows(IllegalArgumentException.class, () -> resolver.resolve(uriWithUnrecognisedProtocol));
     }
 
     @Test
     public void fileLinkIsResolvedToContent() throws IOException {
-        
+
         URI schemaFile = createSchemaFile();
-        
+
         JsonNode uriContent = resolver.resolve(schemaFile);
-        
+
         assertThat(uriContent.path("type").asText(), is(equalTo("string")));
     }
 
     @Test
     public void classpathLinkIsResolvedToContent() {
-        
+
         URI schemaFile;
         JsonNode uriContent;
-        
+
         schemaFile = URI.create("classpath:schema/address.json");
         uriContent = resolver.resolve(schemaFile);
         assertThat(uriContent.path("description").asText().length(), is(greaterThan(0)));
@@ -82,8 +82,8 @@ public class ContentResolverTest {
         try (OutputStream outputStream = new FileOutputStream(tempFile)) {
             outputStream.write("{\"type\" : \"string\"}".getBytes(StandardCharsets.UTF_8));
         }
-        
+
         return tempFile.toURI();
     }
-    
+
 }

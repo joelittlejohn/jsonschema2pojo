@@ -30,26 +30,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 
 /**
-  * @author <a href="https://github.com/s13o">s13o</a>
-  * @since 3/17/2017
-  */
+ * @author <a href="https://github.com/s13o">s13o</a>
+ * @since 3/17/2017
+ */
 public class ContentResolverNetworkTest {
 
     private static final String ADDRESS = "localhost";
 
     @RegisterExtension
-    private static final WireMockExtension server = WireMockExtension.newInstance()
-            .options(options().dynamicPort().bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock"))
-            .build();
+    private static final WireMockExtension server = WireMockExtension.newInstance().options(options().dynamicPort().bindAddress(ADDRESS).usingFilesUnderClasspath("wiremock")).build();
 
     private final ContentResolver resolver = new ContentResolver();
-    
+
     @Test
     public void brokenLinkCausesIllegalArgumentException() {
         URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.getPort() + "/address404.json");
         assertThrows(IllegalArgumentException.class, () -> resolver.resolve(brokenHttpUri));
     }
-    
+
     @Test
     public void serverErrorCausesIllegalArgumentException() {
         URI brokenHttpUri = URI.create("http://" + ADDRESS + ":" + server.getPort() + "/address500.json");

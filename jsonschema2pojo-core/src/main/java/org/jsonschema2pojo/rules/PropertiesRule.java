@@ -32,8 +32,8 @@ import com.sun.codemodel.JVar;
 /**
  * Applies the "properties" schema rule.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.2</a>
  */
 public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
 
@@ -46,8 +46,8 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
     /**
      * Applies this schema rule to take the required code generation steps.
      * <p>
-     * For each property present within the properties node, this rule will
-     * invoke the 'property' rule provided by the given schema mapper.
+     * For each property present within the properties node, this rule will invoke
+     * the 'property' rule provided by the given schema mapper.
      *
      * @param nodeName
      *            the name of the node for which properties are being added
@@ -64,7 +64,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
             node = JsonNodeFactory.instance.objectNode();
         }
 
-        for (Iterator<String> properties = node.fieldNames(); properties.hasNext(); ) {
+        for (Iterator<String> properties = node.fieldNames(); properties.hasNext();) {
             String property = properties.next();
 
             ruleFactory.getPropertyRule().apply(property, node.get(property), node, jclass, schema);
@@ -94,7 +94,7 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
     private void addOverrideBuilder(JDefinedClass thisJDefinedClass, JMethod parentBuilder, JVar parentParam) {
 
         // Confirm that this class doesn't already have a builder method matching the same name as the parentBuilder
-        if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
+        if (thisJDefinedClass.getMethod(parentBuilder.name(), new JType[] { parentParam.type() }) == null) {
 
             JMethod builder = thisJDefinedClass.method(parentBuilder.mods().getValue(), thisJDefinedClass, parentBuilder.name());
             builder.annotate(Override.class);

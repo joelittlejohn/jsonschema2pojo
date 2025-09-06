@@ -58,8 +58,7 @@ public class SchemaMapper {
     }
 
     /**
-     * Create a schema mapper with the default {@link RuleFactory}
-     * implementation.
+     * Create a schema mapper with the default {@link RuleFactory} implementation.
      *
      * @see RuleFactory
      */
@@ -71,8 +70,8 @@ public class SchemaMapper {
      * Reads a schema and adds generated types to the given code model.
      *
      * @param codeModel
-     *            the java code-generation context that should be used to
-     *            generated new types
+     *            the java code-generation context that should be used to generated
+     *            new types
      * @param className
      *            the name of the parent class the represented by this schema
      * @param packageName
@@ -108,15 +107,13 @@ public class SchemaMapper {
 
     }
 
-    public JType generate(JCodeModel codeModel, String className, String packageName, String json,
-            URI schemaLocation) throws IOException {
+    public JType generate(JCodeModel codeModel, String className, String packageName, String json, URI schemaLocation) throws IOException {
 
         JPackage jpackage = codeModel._package(packageName);
 
         JsonNode schemaNode = objectMapper().readTree(json);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage,
-                new Schema(schemaLocation, schemaNode, null));
+        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(schemaLocation, schemaNode, null));
     }
 
     public JType generate(JCodeModel codeModel, String className, String packageName, String json) throws IOException {
@@ -124,8 +121,7 @@ public class SchemaMapper {
         JPackage jpackage = codeModel._package(packageName);
 
         JsonNode schemaNode = null;
-        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON
-                || ruleFactory.getGenerationConfig().getSourceType() == SourceType.YAML) {
+        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON || ruleFactory.getGenerationConfig().getSourceType() == SourceType.YAML) {
             JsonNode jsonNode = objectMapper().readTree(json);
             schemaNode = schemaGenerator.schemaFromExample(jsonNode);
         } else {
@@ -136,9 +132,7 @@ public class SchemaMapper {
     }
 
     private ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .enable(JsonParser.Feature.ALLOW_COMMENTS)
-                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+        return new ObjectMapper().enable(JsonParser.Feature.ALLOW_COMMENTS).enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
     }
 
     public RuleFactory getRuleFactory() {

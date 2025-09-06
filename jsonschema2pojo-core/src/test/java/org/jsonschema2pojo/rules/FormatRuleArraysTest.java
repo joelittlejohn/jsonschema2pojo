@@ -45,9 +45,7 @@ public class FormatRuleArraysTest {
     private final Class<?> expectedType;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { "byte[]", byte[].class },
-                { "java.lang.String[]", String[].class }});
+        return asList(new Object[][] { { "byte[]", byte[].class }, { "java.lang.String[]", String[].class } });
     }
 
     public FormatRuleArraysTest(String formatValue, Class<?> expectedType) {

@@ -24,13 +24,13 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class RefFragmentPathDelimitersIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void refFragmentPathDelimitersUsedInAPropertyIsReadSuccessfully() throws ClassNotFoundException, SecurityException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nonStandardRef.json", "com.example",
-                config("refFragmentPathDelimiters", "#/"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nonStandardRef.json", "com.example", config("refFragmentPathDelimiters", "#/"));
 
         resultsClassLoader.loadClass("com.example.NonStandardRef");
     }

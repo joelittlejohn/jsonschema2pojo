@@ -41,19 +41,13 @@ public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
         if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && isApplicableType(field)) {
 
             if (node.has("minimum")) {
-                final Class<? extends Annotation> decimalMinClass
-                        = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                        ? DecimalMin.class
-                        : javax.validation.constraints.DecimalMin.class;
+                final Class<? extends Annotation> decimalMinClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? DecimalMin.class : javax.validation.constraints.DecimalMin.class;
                 JAnnotationUse annotation = field.annotate(decimalMinClass);
                 annotation.param("value", node.get("minimum").asText());
             }
 
             if (node.has("maximum")) {
-                final Class<? extends Annotation> decimalMaxClass
-                        = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                        ? DecimalMax.class
-                        : javax.validation.constraints.DecimalMax.class;
+                final Class<? extends Annotation> decimalMaxClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? DecimalMax.class : javax.validation.constraints.DecimalMax.class;
                 JAnnotationUse annotation = field.annotate(decimalMaxClass);
                 annotation.param("value", node.get("maximum").asText());
             }
@@ -67,9 +61,7 @@ public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
         try {
             Class<?> fieldClass = Class.forName(field.type().boxify().fullName());
             // Support Strings and most number types except Double and Float, per docs on DecimalMax/Min annotations
-            return String.class.isAssignableFrom(fieldClass) ||
-                    (Number.class.isAssignableFrom(fieldClass) &&
-                            !Float.class.isAssignableFrom(fieldClass) && !Double.class.isAssignableFrom(fieldClass));
+            return String.class.isAssignableFrom(fieldClass) || (Number.class.isAssignableFrom(fieldClass) && !Float.class.isAssignableFrom(fieldClass) && !Double.class.isAssignableFrom(fieldClass));
         } catch (ClassNotFoundException ignore) {
             return false;
         }

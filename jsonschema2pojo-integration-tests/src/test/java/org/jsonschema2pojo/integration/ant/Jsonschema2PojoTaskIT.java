@@ -36,8 +36,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class Jsonschema2PojoTaskIT {
-    
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void antTaskExecutesSuccessfullyWithValidSchemas() throws URISyntaxException, ClassNotFoundException {
@@ -52,10 +53,10 @@ public class Jsonschema2PojoTaskIT {
     }
 
     /**
-     * This test uses the ant 'classpath' config and the schemas refer to a
-     * class from a custom classpath element. This should result in the custom
-     * classpath element being read and no new type being generated. To test the
-     * result, we need to compile with the same custom classpath.
+     * This test uses the ant 'classpath' config and the schemas refer to a class
+     * from a custom classpath element. This should result in the custom classpath
+     * element being read and no new type being generated. To test the result, we
+     * need to compile with the same custom classpath.
      */
     private List<File> buildCustomClasspath() {
         return Collections.singletonList(new File("target/custom-libs/de.flapdoodle.embedmongo-1.18.jar"));
@@ -67,7 +68,7 @@ public class Jsonschema2PojoTaskIT {
         String documentation = FileUtils.readFileToString(new File("../jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html"), UTF_8);
 
         for (Field f : Jsonschema2PojoTask.class.getDeclaredFields()) {
-            assertThat(documentation, containsString(">"+f.getName()+"<"));
+            assertThat(documentation, containsString(">" + f.getName() + "<"));
         }
 
     }

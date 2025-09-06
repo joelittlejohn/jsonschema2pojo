@@ -62,9 +62,7 @@ public class ConstructorsJavadocIT {
 
         @Test
         public void requiredPropertiesConstructor_hasJavadocForDocumentedProperties() throws IOException {
-            JavaClass javaClass = buildJavadocClass(
-                    schemaRule,
-                    config("includeConstructors", true, "includeAllPropertiesConstructor", false, configuration, true));
+            JavaClass javaClass = buildJavadocClass(schemaRule, config("includeConstructors", true, "includeAllPropertiesConstructor", false, configuration, true));
 
             assertThat(javaClass.getConstructors().size(), is(2));
             assertNoArgConstructor(javaClass.getConstructor(Collections.emptyList()));
@@ -91,8 +89,7 @@ public class ConstructorsJavadocIT {
 
             assertThat(javaClass.getConstructors().size(), is(2));
             assertNoArgConstructor(javaClass.getConstructor(Collections.emptyList()));
-            final List<String> paramTagValues = getParamTagValues(javaClass.getConstructor(
-                            asList(cString, cString, cString, cString, cString, cString, cString, cString, cDouble, cDouble, cDouble)));
+            final List<String> paramTagValues = getParamTagValues(javaClass.getConstructor(asList(cString, cString, cString, cString, cString, cString, cString, cString, cDouble, cDouble, cDouble)));
             // 6 documented properties in sub class and 2 documented from super class
             assertThat(paramTagValues.size(), is(8));
             assertThat(paramTagValues, hasItemContaining("descriptionOnly", "A description_only description."));

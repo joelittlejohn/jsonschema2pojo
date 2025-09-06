@@ -29,10 +29,11 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeToStringExcludesIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void testConfig(Map<String,Object> config, String expectedResultTemplate) throws ReflectiveOperationException {
+    private void testConfig(Map<String, Object> config, String expectedResultTemplate) throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config);
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
@@ -41,21 +42,17 @@ public class IncludeToStringExcludesIT {
         Method toString = generatedType.getDeclaredMethod("toString");
         Object primitiveProperties = generatedType.newInstance();
         Object result = toString.invoke(primitiveProperties);
-        assertThat(
-                result,
-                is(equalTo(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))))));
+        assertThat(result, is(equalTo(String.format(expectedResultTemplate, Integer.toHexString(System.identityHashCode(primitiveProperties))))));
     }
 
     @Test
     public void beansIncludeAllToStringPropertiesByDefault() throws ReflectiveOperationException {
-        testConfig(config(),
-                "com.example.PrimitiveProperties@%s[a=<null>,b=<null>,c=<null>,additionalProperties={}]");
+        testConfig(config(), "com.example.PrimitiveProperties@%s[a=<null>,b=<null>,c=<null>,additionalProperties={}]");
     }
 
     @Test
     public void beansOmitToStringProperties() throws ReflectiveOperationException {
-        testConfig(config("toStringExcludes", new String[] {"b","c"}),
-                "com.example.PrimitiveProperties@%s[a=<null>,additionalProperties={}]");
+        testConfig(config("toStringExcludes", new String[] { "b", "c" }), "com.example.PrimitiveProperties@%s[a=<null>,additionalProperties={}]");
     }
 
 }

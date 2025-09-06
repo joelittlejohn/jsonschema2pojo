@@ -44,8 +44,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isIncludeTypeInfo()
-    {
+    public boolean isIncludeTypeInfo() {
         return false;
     }
 
@@ -120,7 +119,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public boolean isIncludeToString() {
         return true;
     }
-    
+
     /**
      * @return no exclusions
      */
@@ -180,7 +179,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
     }
 
     @Override
-    public boolean isUseOptionalForGetters() { return false; }
+    public boolean isUseOptionalForGetters() {
+        return false;
+    }
 
     /**
      * @return {@link SourceType#JSONSCHEMA}
@@ -310,19 +311,25 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isIncludeRequiredPropertiesConstructor(){ return false; }
+    public boolean isIncludeRequiredPropertiesConstructor() {
+        return false;
+    }
 
     /**
      * @return <code>true</code>
      */
     @Override
-    public boolean isIncludeAllPropertiesConstructor() { return true; }
+    public boolean isIncludeAllPropertiesConstructor() {
+        return true;
+    }
 
     /**
      * @return <code>false</code>
      */
     @Override
-    public boolean isIncludeCopyConstructor() { return false; }
+    public boolean isIncludeCopyConstructor() {
+        return false;
+    }
 
     /**
      * @return <code>true</code>
@@ -457,7 +464,7 @@ public class DefaultGenerationConfig implements GenerationConfig {
     public SourceSortOrder getSourceSortOrder() {
         return SourceSortOrder.OS;
     }
-    
+
     /**
      * @return {@link Collections#emptyMap}
      */
@@ -470,7 +477,9 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return <code>false</code>
      */
     @Override
-    public boolean isUseInnerClassBuilders() { return false; }
+    public boolean isUseInnerClassBuilders() {
+        return false;
+    }
 
     /**
      * @return <code>false</code>

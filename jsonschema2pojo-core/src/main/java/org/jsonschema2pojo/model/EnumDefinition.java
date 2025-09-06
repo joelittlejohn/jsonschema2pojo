@@ -26,71 +26,62 @@ import com.sun.codemodel.JType;
 /**
  * Holds an enum types effective definition.
  * <p>
- * The definition of the enum can be decided by:
- *    "enum" (JSON-Schema)
- *    "enum" and "javaEnums" (JSON-Schema + jsonschema2pojo extension)
- *    "enum" and "javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
+ * The definition of the enum can be decided by: "enum" (JSON-Schema) "enum" and
+ * "javaEnums" (JSON-Schema + jsonschema2pojo extension) "enum" and
+ * "javaEnumNames" (JSON-Schema + jsonschema2pojo extension)
  */
 public class EnumDefinition {
-  private final JType backingType;
-  private final ArrayList<EnumValueDefinition> enumValues;
-  private final String nodeName;
-  private final JsonNode enumNode;
-  private final EnumDefinitionExtensionType type;
+    private final JType backingType;
+    private final ArrayList<EnumValueDefinition> enumValues;
+    private final String nodeName;
+    private final JsonNode enumNode;
+    private final EnumDefinitionExtensionType type;
 
-  public EnumDefinition(String nodeName,
-                        JsonNode enumNode,
-                        JType backingType,
-                        ArrayList<EnumValueDefinition> enumValues,
-                        EnumDefinitionExtensionType type) {
-    this.nodeName = nodeName;
-    this.enumNode = enumNode;
-    this.backingType = backingType;
-    this.enumValues = enumValues;
-    this.type = type;
-  }
-
-  public EnumDefinition(EnumDefinition enumDefinition) {
-    this(enumDefinition, enumDefinition.enumValues);
-  }
-
-  public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
-    this(enumDefinition.nodeName,
-         enumDefinition.enumNode,
-         enumDefinition.backingType,
-         enumValueDefinitions,
-         enumDefinition.type);
-  }
-
-  public JType getBackingType() {
-    return backingType;
-  }
-
-  public JsonNode getEnumNode() {
-    return enumNode;
-  }
-
-  public String getNodeName() {
-    return nodeName;
-  }
-
-  public EnumDefinitionExtensionType getType() {
-    return type;
-  }
-
-  public int size() {
-    if (enumValues != null) {
-      return enumValues.size();
-    } else {
-      return 0;
+    public EnumDefinition(String nodeName, JsonNode enumNode, JType backingType, ArrayList<EnumValueDefinition> enumValues, EnumDefinitionExtensionType type) {
+        this.nodeName = nodeName;
+        this.enumNode = enumNode;
+        this.backingType = backingType;
+        this.enumValues = enumValues;
+        this.type = type;
     }
-  }
 
-  public Collection<EnumValueDefinition> values() {
-    if (enumValues != null) {
-      return Collections.unmodifiableCollection(enumValues);
-    } else {
-      return Collections.emptyList();
+    public EnumDefinition(EnumDefinition enumDefinition) {
+        this(enumDefinition, enumDefinition.enumValues);
     }
-  }
+
+    public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
+        this(enumDefinition.nodeName, enumDefinition.enumNode, enumDefinition.backingType, enumValueDefinitions, enumDefinition.type);
+    }
+
+    public JType getBackingType() {
+        return backingType;
+    }
+
+    public JsonNode getEnumNode() {
+        return enumNode;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public EnumDefinitionExtensionType getType() {
+        return type;
+    }
+
+    public int size() {
+        if (enumValues != null) {
+            return enumValues.size();
+        } else {
+            return 0;
+        }
+    }
+
+    public Collection<EnumValueDefinition> values() {
+        if (enumValues != null) {
+            return Collections.unmodifiableCollection(enumValues);
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }

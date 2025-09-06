@@ -16,4 +16,5 @@
 
 package com.example;
 
-public class MyJsonViewClass {}
+public class MyJsonViewClass {
+}

@@ -36,13 +36,13 @@ import com.sun.codemodel.JType;
 
 public class CustomRuleFactoryIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void customAnnotatorIsAbleToAddCustomAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example",
-                config("customRuleFactory", TestRuleFactory.class.getName()));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("customRuleFactory", TestRuleFactory.class.getName()));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.FormattedProperties");
 

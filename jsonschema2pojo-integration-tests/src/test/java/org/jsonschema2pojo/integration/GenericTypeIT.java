@@ -32,7 +32,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class GenericTypeIT {
 
-    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithGenericTypes;
 
@@ -52,8 +53,8 @@ public class GenericTypeIT {
         assertThat(getterMethod.getGenericReturnType(), is(instanceOf(ParameterizedType.class)));
 
         Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
-        assertThat(typeArguments[0], is(equalTo((Type)String.class)));
-        assertThat(typeArguments[1], is(equalTo((Type)Integer.class)));
+        assertThat(typeArguments[0], is(equalTo((Type) String.class)));
+        assertThat(typeArguments[1], is(equalTo((Type) Integer.class)));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -69,7 +70,7 @@ public class GenericTypeIT {
         assertThat(typeArguments[1], is(equalTo((Type) Double.class)));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void genericTypeInJavaTypeCanBeNested() throws NoSuchMethodException, SecurityException {
 
@@ -79,15 +80,15 @@ public class GenericTypeIT {
 
         Type[] typeArguments = ((ParameterizedType) getterMethod.getGenericReturnType()).getActualTypeArguments();
         assertThat(typeArguments[0], is(instanceOf(ParameterizedType.class)));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments().length, is(2));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[0], is((Type)String.class));
-        assertThat(((ParameterizedType)typeArguments[0]).getActualTypeArguments()[1], is((Type)Integer.class));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments().length, is(2));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments()[0], is((Type) String.class));
+        assertThat(((ParameterizedType) typeArguments[0]).getActualTypeArguments()[1], is((Type) Integer.class));
         assertThat(typeArguments[1], is(instanceOf(ParameterizedType.class)));
-        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments().length, is(1));
-        assertThat(((ParameterizedType)typeArguments[1]).getActualTypeArguments()[0], is(instanceOf(ParameterizedType.class)));
+        assertThat(((ParameterizedType) typeArguments[1]).getActualTypeArguments().length, is(1));
+        assertThat(((ParameterizedType) typeArguments[1]).getActualTypeArguments()[0], is(instanceOf(ParameterizedType.class)));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void genericTypeInJavaTypeCanIncludeArrays() throws NoSuchMethodException, SecurityException {
 

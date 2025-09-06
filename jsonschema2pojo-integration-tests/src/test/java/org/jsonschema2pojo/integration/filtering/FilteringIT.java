@@ -30,16 +30,17 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests the filtering of files in the source directory.
- * 
+ *
  * @author Christian Trimble
  */
 public class FilteringIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     URL filteredSchemaUrl;
     URL subSchemaUrl;
-    
+
     @BeforeEach
     public void setUp() throws MalformedURLException {
         filteredSchemaUrl = new File("./src/test/resources/schema/filtering").toURI().toURL();
@@ -48,32 +49,28 @@ public class FilteringIT {
 
     @Test
     public void shouldFilterFiles() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example",
-                config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
 
         resultsClassLoader.loadClass("com.example.Included");
     }
-    
+
     @Test
     public void shouldNotProcessExcludedFiles() {
-        ClassLoader resultsClassLoader =schemaRule. generateAndCompile(filteredSchemaUrl, "com.example",
-                config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
 
         assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.Excluded"));
     }
 
     @Test
     public void shouldIncludeNestedFilesWithFiltering() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example",
-                config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filteredSchemaUrl, "com.example", config("includes", new String[] { "**/*.json" }, "excludes", new String[] { "excluded.json" }));
 
         resultsClassLoader.loadClass("com.example.sub.Sub");
     }
 
     @Test
     public void shouldUseDefaultExcludesWithoutIncludesAndExcludes() throws ClassNotFoundException {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(subSchemaUrl, "com.example.sub",
-                config("includes", new String[] {}, "excludes", new String[] {}));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(subSchemaUrl, "com.example.sub", config("includes", new String[] {}, "excludes", new String[] {}));
 
         resultsClassLoader.loadClass("com.example.sub.Sub");
         resultsClassLoader.loadClass("com.example.sub.sub2.Sub");

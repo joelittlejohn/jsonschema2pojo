@@ -42,7 +42,8 @@ import com.thoughtworks.qdox.model.JavaField;
  */
 public class JavaNameIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -235,6 +236,6 @@ public class JavaNameIT {
 
         classWithJavaTypePackage.newInstance();
 
-        assertThat((Class<?>)((ParameterizedType)classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
+        assertThat((Class<?>) ((ParameterizedType) classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
     }
 }

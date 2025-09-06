@@ -26,14 +26,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class IncludeTypeInfoIT
-{
+public class IncludeTypeInfoIT {
     @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void defaultConfig() throws ClassNotFoundException
-    {
+    public void defaultConfig() throws ClassNotFoundException {
 
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example");
 
@@ -43,8 +41,7 @@ public class IncludeTypeInfoIT
     }
 
     @Test
-    public void defaultWithSchemaProperty() throws ClassNotFoundException
-    {
+    public void defaultWithSchemaProperty() throws ClassNotFoundException {
 
         ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example");
 
@@ -59,11 +56,9 @@ public class IncludeTypeInfoIT
     }
 
     @Test
-    public void disabled() throws ClassNotFoundException
-    {
+    public void disabled() throws ClassNotFoundException {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-                                                                config("includeTypeInfo", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example", config("includeTypeInfo", false));
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -71,11 +66,9 @@ public class IncludeTypeInfoIT
     }
 
     @Test
-    public void disabledWithSchemaProperty() throws ClassNotFoundException
-    {
+    public void disabledWithSchemaProperty() throws ClassNotFoundException {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-                                                                config("includeTypeInfo", false));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example", config("includeTypeInfo", false));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
         assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));
@@ -87,11 +80,9 @@ public class IncludeTypeInfoIT
     }
 
     @Test
-    public void enabled() throws ClassNotFoundException
-    {
+    public void enabled() throws ClassNotFoundException {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example",
-                                                                config("includeTypeInfo", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfo.json", "com.example", config("includeTypeInfo", true));
 
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfo");
 
@@ -104,11 +95,9 @@ public class IncludeTypeInfoIT
     }
 
     @Test
-    public void enabledWithSchemaProperty() throws ClassNotFoundException
-    {
+    public void enabledWithSchemaProperty() throws ClassNotFoundException {
 
-        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example",
-                                                                config("includeTypeInfo", true));
+        ClassLoader classLoader = schemaRule.generateAndCompile("/schema/typeInfo/typeInfoWithSchemaProperty.json", "com.example", config("includeTypeInfo", true));
         Class<?> classWithTypeInfo = classLoader.loadClass("com.example.TypeInfoWithSchemaProperty");
 
         assertThat(classWithTypeInfo.getAnnotation(JsonTypeInfo.class), is(notNullValue()));

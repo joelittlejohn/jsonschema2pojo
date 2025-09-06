@@ -25,7 +25,7 @@ public class Models {
     public static void suppressWarnings(JMethod method, String... values) {
         JAnnotationUse annotation = method.annotate(SuppressWarnings.class);
         JAnnotationArrayMember member = annotation.paramArray("value");
-        for( String value : values ) {
+        for (String value : values) {
             member.param(value);
         }
     }

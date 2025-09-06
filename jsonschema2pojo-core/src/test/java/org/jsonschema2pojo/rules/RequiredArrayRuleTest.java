@@ -53,9 +53,7 @@ public class RequiredArrayRuleTest {
     private final Class<? extends Annotation> notNullClass;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { false, javax.validation.constraints.NotNull.class },
-                { true, NotNull.class }
+        return asList(new Object[][] { { false, javax.validation.constraints.NotNull.class }, { true, NotNull.class }
         });
     }
 

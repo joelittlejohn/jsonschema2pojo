@@ -28,7 +28,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class UseTitleAsClassnameIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -45,8 +46,7 @@ public class UseTitleAsClassnameIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void useTitleAsClassnameWorksForObjects() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example",
-                config("useTitleAsClassname", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example", config("useTitleAsClassname", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FooObject");
 
@@ -59,8 +59,7 @@ public class UseTitleAsClassnameIT {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void useTitleAsClassnameWorksForEnums() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithTitle.json", "com.example",
-                config("useTitleAsClassname", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithTitle.json", "com.example", config("useTitleAsClassname", true));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.FooEnum");
         assertThat(generatedType, is(notNullValue()));

@@ -25,7 +25,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeToStringIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -47,10 +48,7 @@ public class IncludeToStringIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> generatedType.getDeclaredMethod("toString"),
-                ".toString method is present, it should have been omitted");
+        assertThrows(NoSuchMethodException.class, () -> generatedType.getDeclaredMethod("toString"), ".toString method is present, it should have been omitted");
     }
 
 }

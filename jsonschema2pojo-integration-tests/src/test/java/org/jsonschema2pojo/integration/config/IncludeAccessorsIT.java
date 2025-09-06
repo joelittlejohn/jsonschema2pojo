@@ -33,7 +33,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class IncludeAccessorsIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void beansIncludeGettersAndSettersByDefault() throws ClassNotFoundException, SecurityException, NoSuchMethodException, NoSuchFieldException {
@@ -55,14 +56,8 @@ public class IncludeAccessorsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> generatedType.getDeclaredMethod("getA"),
-                "Disabled accessors but getter was generated");
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> generatedType.getDeclaredMethod("setA", Integer.class),
-                "Disabled accessors but setter was generated");
+        assertThrows(NoSuchMethodException.class, () -> generatedType.getDeclaredMethod("getA"), "Disabled accessors but getter was generated");
+        assertThrows(NoSuchMethodException.class, () -> generatedType.getDeclaredMethod("setA", Integer.class), "Disabled accessors but setter was generated");
 
         assertThat(generatedType.getDeclaredField("a").getModifiers(), is(Modifier.PUBLIC));
 

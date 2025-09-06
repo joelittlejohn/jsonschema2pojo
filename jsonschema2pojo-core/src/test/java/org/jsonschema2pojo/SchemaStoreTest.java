@@ -72,7 +72,7 @@ public class SchemaStoreTest {
         Path basePath = Paths.get(getClass().getResource("/schema/person.json").toURI()).getParent().getParent().getParent().getParent();
 
         //Now load the resource with a relative path segment
-        File relativePath = new File(Paths.get(basePath.toString(),"target", "..", "src", "test", "resources", "schema", "person.json").toString());
+        File relativePath = new File(Paths.get(basePath.toString(), "target", "..", "src", "test", "resources", "schema", "person.json").toString());
         //Now load the resource with the same path minus the relative segment
         File nonRelativePath = new File(Paths.get(basePath.toString(), "src", "test", "resources", "schema", "person.json").toString());
 

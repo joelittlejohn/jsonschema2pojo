@@ -29,143 +29,76 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class DynamicPropertiesIT {
-    
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     public void shouldSetStringField() throws Throwable {
-        setDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                String.class,
-                "stringValue",
-                "getStringValue",
-                "value");
+        setDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", String.class, "stringValue", "getStringValue", "value");
     }
 
     @Test
     public void shouldSetStringFieldJava7() throws Throwable {
-        setDeclaredPropertyTest(
-                config("includeDynamicAccessors", true, "includeDynamicGetters", true,
-                    "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.7"),
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                String.class,
-                "stringValue",
-                "getStringValue",
-                "value");
+        setDeclaredPropertyTest(config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.7"), "/schema/dynamic/parentType.json", "ParentType", String.class, "stringValue", "getStringValue", "value");
     }
 
     @Test
     public void shouldSetNumericField() throws Throwable {
-        setDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                Double.class,
-                "numberValue",
-                "getNumberValue",
-                1D);
+        setDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", Double.class, "numberValue", "getNumberValue", 1D);
     }
 
     @Test
     public void shouldSetIntegerField() throws Throwable {
-        setDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                Integer.class,
-                "integerValue",
-                "getIntegerValue",
-                1);
+        setDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", Integer.class, "integerValue", "getIntegerValue", 1);
     }
 
     @Test
     public void shouldSetStringFieldOnParent() throws Throwable {
-        setDeclaredPropertyTest(
-                "/schema/dynamic/childType.json",
-                "ChildType",
-                String.class,
-                "stringValue",
-                "getStringValue",
-                "value");
+        setDeclaredPropertyTest("/schema/dynamic/childType.json", "ChildType", String.class, "stringValue", "getStringValue", "value");
     }
 
     @Test
     public void shouldThrowExceptionWhenSettingWrongType() {
         final String schemaLocation = "/schema/dynamic/childType.json";
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> setDeclaredPropertyTest(schemaLocation, "ChildType", String.class, "stringValue", "getStringValue", 1L));
+        assertThrows(IllegalArgumentException.class, () -> setDeclaredPropertyTest(schemaLocation, "ChildType", String.class, "stringValue", "getStringValue", 1L));
     }
 
     @Test
     public void shouldThrowExceptionWhenSettingUnknownField() {
         final String schemaLocation = "/schema/dynamic/noAdditionalProperties.json";
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> setPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField", 1L));
+        assertThrows(IllegalArgumentException.class, () -> setPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField", 1L));
     }
 
     @Test
     public void shouldThrowExceptionWhenGettingUnknownField() throws Throwable {
         final String schemaLocation = "/schema/dynamic/noAdditionalProperties.json";
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> getPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField"));
+        assertThrows(IllegalArgumentException.class, () -> getPropertyTest(schemaLocation, "NoAdditionalProperties", "unknownField"));
     }
 
     @Test
     public void shouldGetStringField() throws Throwable {
-        getDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                String.class,
-                "stringValue",
-                "setStringValue",
-                "value");
+        getDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", String.class, "stringValue", "setStringValue", "value");
     }
 
     @Test
     public void shouldGetNumericField() throws Throwable {
-        getDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                Double.class,
-                "numberValue",
-                "setNumberValue",
-                1D);
+        getDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", Double.class, "numberValue", "setNumberValue", 1D);
     }
 
     @Test
     public void shouldGetIntegerField() throws Throwable {
-        getDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                Integer.class,
-                "integerValue",
-                "setIntegerValue",
-                1);
+        getDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", Integer.class, "integerValue", "setIntegerValue", 1);
     }
 
     @Test
     public void shouldGetStringFieldOnParent() throws Throwable {
-        getDeclaredPropertyTest(
-                "/schema/dynamic/childType.json",
-                "ChildType",
-                String.class,
-                "stringValue",
-                "setStringValue",
-                "value");
+        getDeclaredPropertyTest("/schema/dynamic/childType.json", "ChildType", String.class, "stringValue", "setStringValue", "value");
     }
 
     @Test
     public void shouldBuildStringField() throws Throwable {
-        withDeclaredPropertyTest(
-                "/schema/dynamic/parentType.json",
-                "ParentType",
-                String.class,
-                "stringValue",
-                "getStringValue",
-                "value");
+        withDeclaredPropertyTest("/schema/dynamic/parentType.json", "ParentType", String.class, "stringValue", "getStringValue", "value");
     }
 
     @Test
@@ -176,16 +109,11 @@ public class DynamicPropertiesIT {
         Object instance = parentType.newInstance();
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> additionalProperties =
-                (Map<String, Object>) parentType.getMethod("getAdditionalProperties")
-                        .invoke(instance);
+        Map<String, Object> additionalProperties = (Map<String, Object>) parentType.getMethod("getAdditionalProperties").invoke(instance);
 
-        parentType.getMethod("set", String.class, Object.class)
-                .invoke(instance, "unknownValue", "value");
+        parentType.getMethod("set", String.class, Object.class).invoke(instance, "unknownValue", "value");
 
-        assertThat("the string value was set",
-                (String) additionalProperties.get("unknownValue"),
-                equalTo("value"));
+        assertThat("the string value was set", (String) additionalProperties.get("unknownValue"), equalTo("value"));
     }
 
     @Test
@@ -196,23 +124,16 @@ public class DynamicPropertiesIT {
         Object instance = parentType.newInstance();
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> additionalProperties =
-                (Map<String, Object>) parentType.getMethod("getAdditionalProperties")
-                        .invoke(instance);
+        Map<String, Object> additionalProperties = (Map<String, Object>) parentType.getMethod("getAdditionalProperties").invoke(instance);
 
         additionalProperties.put("unknownValue", "value");
-        parentType.getMethod("set", String.class, Object.class)
-                .invoke(instance, "unknownValue", "value");
+        parentType.getMethod("set", String.class, Object.class).invoke(instance, "unknownValue", "value");
 
-        assertThat("the string value was set",
-                (String) parentType.getMethod("get", String.class)
-                        .invoke(instance, "unknownValue"),
-                equalTo("value"));
+        assertThat("the string value was set", (String) parentType.getMethod("get", String.class).invoke(instance, "unknownValue"), equalTo("value"));
     }
 
     public void setDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
-        setDeclaredPropertyTest(config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true),
-            schemaLocation, typeName, fieldType, fieldName, fieldGetter, value);
+        setDeclaredPropertyTest(config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true), schemaLocation, typeName, fieldType, fieldName, fieldGetter, value);
     }
 
     public void setDeclaredPropertyTest(Map<String, Object> config, String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
@@ -222,39 +143,30 @@ public class DynamicPropertiesIT {
         Object instance = type.newInstance();
 
         try {
-            type.getMethod("set", String.class, Object.class)
-                    .invoke(instance, fieldName, value);
+            type.getMethod("set", String.class, Object.class).invoke(instance, fieldName, value);
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
 
-        assertThat("set for field " + fieldName + " of type " + fieldType + " works.",
-                fieldType.cast(type.getMethod(fieldGetter)
-                        .invoke(instance)),
-                equalTo(value));
+        assertThat("set for field " + fieldName + " of type " + fieldType + " works.", fieldType.cast(type.getMethod(fieldGetter).invoke(instance)), equalTo(value));
 
     }
 
     public void withDeclaredPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, String fieldGetter, Object value) throws Throwable {
-        ClassLoader resultsClassLoader =
-                schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true, "generateBuilders", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true, "generateBuilders", true));
 
         Class<?> type = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = type.newInstance();
 
         try {
-            Object result = type.getMethod("with", String.class, Object.class)
-                    .invoke(instance, fieldName, value);
+            Object result = type.getMethod("with", String.class, Object.class).invoke(instance, fieldName, value);
 
             assertThat("returns object being build", result, equalTo(instance));
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
 
-        assertThat("with for field " + fieldName + " of type " + fieldType + " works.",
-                fieldType.cast(type.getMethod(fieldGetter)
-                        .invoke(instance)),
-                equalTo(value));
+        assertThat("with for field " + fieldName + " of type " + fieldType + " works.", fieldType.cast(type.getMethod(fieldGetter).invoke(instance)), equalTo(value));
 
     }
 
@@ -264,14 +176,10 @@ public class DynamicPropertiesIT {
         Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
         Object instance = parentType.newInstance();
 
-        parentType.getMethod(fieldSetter, fieldType)
-                .invoke(instance, value);
+        parentType.getMethod(fieldSetter, fieldType).invoke(instance, value);
 
         try {
-            assertThat("the string value was set",
-                    fieldType.cast(parentType.getMethod("get", String.class)
-                            .invoke(instance, fieldName)),
-                    equalTo(value));
+            assertThat("the string value was set", fieldType.cast(parentType.getMethod("get", String.class).invoke(instance, fieldName)), equalTo(value));
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
@@ -284,20 +192,15 @@ public class DynamicPropertiesIT {
         Object instance = parentType.newInstance();
 
         try {
-            parentType.getMethod("set", String.class, Object.class)
-                    .invoke(instance, fieldName, value);
+            parentType.getMethod("set", String.class, Object.class).invoke(instance, fieldName, value);
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> additionalProperties =
-                (Map<String, Object>) parentType.getMethod("getAdditionalProperties")
-                        .invoke(instance);
+        Map<String, Object> additionalProperties = (Map<String, Object>) parentType.getMethod("getAdditionalProperties").invoke(instance);
 
-        assertThat("the value was set",
-                (String) additionalProperties.get("unknownValue"),
-                equalTo("value"));
+        assertThat("the value was set", (String) additionalProperties.get("unknownValue"), equalTo("value"));
     }
 
     public void setPropertyTest(String schemaLocation, String typeName, String fieldName, Object value) throws Throwable {
@@ -307,8 +210,7 @@ public class DynamicPropertiesIT {
         Object instance = type.newInstance();
 
         try {
-            type.getMethod("set", String.class, Object.class)
-                    .invoke(instance, fieldName, value);
+            type.getMethod("set", String.class, Object.class).invoke(instance, fieldName, value);
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
@@ -321,8 +223,7 @@ public class DynamicPropertiesIT {
         Object instance = type.newInstance();
 
         try {
-            type.getMethod("get", String.class)
-                    .invoke(instance, fieldName);
+            type.getMethod("get", String.class).invoke(instance, fieldName);
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }

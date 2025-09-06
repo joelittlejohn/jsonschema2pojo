@@ -36,7 +36,7 @@ public class FileSearchMatcher extends BaseMatcher<File> {
 
     /**
      * Create a new matcher with the given search text.
-     * 
+     *
      * @param searchText
      *            text that the matched file should contain
      */

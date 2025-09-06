@@ -70,20 +70,8 @@ public class MinLengthMaxLengthRuleTest {
     private JAnnotationUse annotation;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { true, String.class },
-                { true, Collection.class },
-                { true, Map.class },
-                { true, Array.class },
-                { false, Byte.class },
-                { false, Short.class },
-                { false, Integer.class },
-                { false, Long.class },
-                { false, Float.class },
-                { false, Double.class },
-        }).stream()
-                .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
-                .collect(Collectors.toList());
+        return asList(new Object[][] { { true, String.class }, { true, Collection.class }, { true, Map.class }, { true, Array.class }, { false, Byte.class }, { false, Short.class }, { false, Integer.class }, { false, Long.class }, { false, Float.class }, { false, Double.class },
+        }).stream().flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray())).collect(Collectors.toList());
     }
 
     public MinLengthMaxLengthRuleTest(boolean isApplicable, Class<?> fieldClass, boolean useJakartaValidation) {

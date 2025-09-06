@@ -102,8 +102,7 @@ public class PropertiesIT {
     @SuppressWarnings("rawtypes")
     public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example",
-                config("usePrimitives", true, "propertyWordDelimiters", "_ -"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example", config("usePrimitives", true, "propertyWordDelimiters", "_ -"));
 
         Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 
@@ -123,8 +122,7 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
-                config("propertyWordDelimiters", " -"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example", config("propertyWordDelimiters", " -"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 

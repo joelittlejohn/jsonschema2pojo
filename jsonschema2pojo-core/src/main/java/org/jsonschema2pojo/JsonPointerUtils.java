@@ -24,22 +24,24 @@ import java.util.Collections;
 
 public class JsonPointerUtils {
 
-    private static Map<String,String> SUBSTITUTIONS = new LinkedHashMap<String, String>() {{
-        put("~", "~0");
-        put("/", "~1");
-        put("#", "~2");
-        put(".", "~3");
-        put("?", "~4");
-    }};
+    private static Map<String, String> SUBSTITUTIONS = new LinkedHashMap<String, String>() {
+        {
+            put("~", "~0");
+            put("/", "~1");
+            put("#", "~2");
+            put(".", "~3");
+            put("?", "~4");
+        }
+    };
 
     public static String encodeReferenceToken(final String s) {
         String encoded = s;
-        for (Map.Entry<String,String> sub : SUBSTITUTIONS.entrySet()) {
+        for (Map.Entry<String, String> sub : SUBSTITUTIONS.entrySet()) {
             encoded = encoded.replace(sub.getKey(), sub.getValue());
         }
         return encoded;
     }
-    
+
     public static String decodeReferenceToken(final String s) {
         String decoded = s;
 

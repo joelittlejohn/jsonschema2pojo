@@ -61,14 +61,8 @@ public class IncludeHashCodeAndEqualsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> generatedType.getDeclaredMethod("equals", java.lang.Object.class),
-                ".equals method is present, it should have been omitted");
-        assertThrows(
-                NoSuchMethodException.class,
-                () -> generatedType.getDeclaredMethod("hashCode"),
-                ".hashCode method is present, it should have been omitted");
+        assertThrows(NoSuchMethodException.class, () -> generatedType.getDeclaredMethod("equals", java.lang.Object.class), ".equals method is present, it should have been omitted");
+        assertThrows(NoSuchMethodException.class, () -> generatedType.getDeclaredMethod("hashCode"), ".hashCode method is present, it should have been omitted");
     }
 
     @Test
@@ -90,10 +84,7 @@ public class IncludeHashCodeAndEqualsIT {
         assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertThat(
-                "Should use super.equals() because parent is not Object; parent uses Object.equals()",
-                genType.newInstance(),
-                is(not(equalTo(genType.newInstance()))));
+        assertThat("Should use super.equals() because parent is not Object; parent uses Object.equals()", genType.newInstance(), is(not(equalTo(genType.newInstance()))));
     }
 
     @Test
@@ -115,10 +106,7 @@ public class IncludeHashCodeAndEqualsIT {
         assertThat(genType.getSuperclass(), is(equalTo(Object.class)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertThat(
-                "Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()",
-                genType.newInstance(),
-                is(not(equalTo(genType.newInstance()))));
+        assertThat("Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()", genType.newInstance(), is(not(equalTo(genType.newInstance()))));
     }
 
     @Test

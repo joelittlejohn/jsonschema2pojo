@@ -40,7 +40,8 @@ import java.nio.charset.StandardCharsets;
 
 public class Jsonb1IT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Jsonb jsonb;
 
@@ -52,9 +53,7 @@ public class Jsonb1IT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void annotationStyleJsonb1ProducesJsonb1Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jsonb1"))
-            .loadClass("com.example.PrimitiveProperties");
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("annotationStyle", "jsonb1")).loadClass("com.example.PrimitiveProperties");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
@@ -69,12 +68,10 @@ public class Jsonb1IT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes"})
+    @SuppressWarnings({ "rawtypes" })
     public void annotationStyleJsonb1ProducesDateFormatAnnotation() throws ClassNotFoundException, SecurityException, NoSuchFieldException {
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/format/customDateTimeFormat.json", "com.example",
-            config("annotationStyle", "jsonb1"))
-            .loadClass("com.example.CustomDateTimeFormat");
+        Class generatedType = schemaRule.generateAndCompile("/schema/format/customDateTimeFormat.json", "com.example", config("annotationStyle", "jsonb1")).loadClass("com.example.CustomDateTimeFormat");
 
         assertThat(generatedType.getDeclaredField("defaultFormat").getAnnotation(JsonbDateFormat.class), is(notNullValue()));
     }
@@ -82,17 +79,13 @@ public class Jsonb1IT {
     @Test
     public void annotationStyleJsonb1MakesTypesThatWorkWithJsonb1() throws ClassNotFoundException, SecurityException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example",
-            config("annotationStyle", "jsonb1",
-                "propertyWordDelimiters", "_",
-                "sourceType", "json",
-                "useLongIntegers", true));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/json/examples/", "com.example", config("annotationStyle", "jsonb1", "propertyWordDelimiters", "_", "sourceType", "json", "useLongIntegers", true));
 
         assertJsonRoundTrip(resultsClassLoader, "com.example.Torrent", "/json/examples/torrent.json");
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 

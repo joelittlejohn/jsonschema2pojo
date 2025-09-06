@@ -122,7 +122,7 @@ public class SchemaRuleTest {
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());
 
-        JType result = rule.apply(NODE_NAME, schemaNode, null,null, schema);
+        JType result = rule.apply(NODE_NAME, schemaNode, null, null, schema);
 
         assertThat(result, is(sameInstance(previouslyGeneratedType)));
 

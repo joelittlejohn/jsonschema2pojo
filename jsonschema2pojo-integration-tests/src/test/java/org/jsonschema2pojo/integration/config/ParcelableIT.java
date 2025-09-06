@@ -78,10 +78,7 @@ public class ParcelableIT {
 
     @Test
     public void parcelableTreeIsParcelable() throws ClassNotFoundException, IOException {
-        Class<? extends Parcelable> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-schema.json", "com.example",
-                                                                config("parcelable", true))
-                .loadClass("com.example.ParcelableSchema")
-                .asSubclass(Parcelable.class);
+        Class<? extends Parcelable> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-schema.json", "com.example", config("parcelable", true)).loadClass("com.example.ParcelableSchema").asSubclass(Parcelable.class);
         Parcelable instance = new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-data.json"), parcelableType);
         String key = "example";
         Parcel parcel = writeToParcel(instance, key);
@@ -106,10 +103,7 @@ public class ParcelableIT {
     @Test
     public void parcelableSuperclassIsUnparceled() throws ClassNotFoundException, IOException {
         // Explicitly set includeConstructors to false if default value changes in the future
-        Class<? extends Parcelable> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example",
-                config("parcelable", true, "includeConstructors", false))
-                .loadClass("com.example.ParcelableSuperclassSchema")
-                .asSubclass(Parcelable.class);
+        Class<? extends Parcelable> parcelableType = schemaRule.generateAndCompile("/schema/parcelable/parcelable-superclass-schema.json", "com.example", config("parcelable", true, "includeConstructors", false)).loadClass("com.example.ParcelableSuperclassSchema").asSubclass(Parcelable.class);
 
         Parcelable instance = new ObjectMapper().readValue(ParcelableIT.class.getResourceAsStream("/schema/parcelable/parcelable-superclass-data.json"), parcelableType);
         Parcel parcel = parcelableWriteToParcel(instance);
@@ -120,8 +114,7 @@ public class ParcelableIT {
 
     @Test
     public void parcelableDefaultConstructorDoesNotConflict() {
-        schemaRule.generate("/schema/parcelable/parcelable-superclass-schema.json", "com.example",
-                                      config("parcelable", true, "includeConstructors", true));
+        schemaRule.generate("/schema/parcelable/parcelable-superclass-schema.json", "com.example", config("parcelable", true, "includeConstructors", true));
         // Compilation would if there are multiple constructors with the same signature
         assertDoesNotThrow(() -> schemaRule.compile());
     }

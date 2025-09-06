@@ -31,7 +31,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ExtendsIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings("rawtypes")
@@ -128,10 +129,10 @@ public class ExtendsIT {
 
         Field chieldField = type.getDeclaredField("childProperty");
         chieldField.setAccessible(true);
-        String childProp = (String)chieldField.get(typeInstance);
+        String childProp = (String) chieldField.get(typeInstance);
         Field parentField = supertype.getDeclaredField("parentProperty");
         parentField.setAccessible(true);
-        String parentProp = (String)parentField.get(typeInstance);
+        String parentProp = (String) parentField.get(typeInstance);
 
         assertThat(childProp, is(equalTo("String1")));
         assertThat(parentProp, is(equalTo("String2")));
@@ -156,13 +157,13 @@ public class ExtendsIT {
 
         Field chieldChildField = type.getDeclaredField("childChildProperty");
         chieldChildField.setAccessible(true);
-        String childChildProp = (String)chieldChildField.get(typeInstance);
+        String childChildProp = (String) chieldChildField.get(typeInstance);
         Field chieldField = supertype.getDeclaredField("childProperty");
         chieldField.setAccessible(true);
-        String childProp = (String)chieldField.get(typeInstance);
+        String childProp = (String) chieldField.get(typeInstance);
         Field parentField = superSupertype.getDeclaredField("parentProperty");
         parentField.setAccessible(true);
-        String parentProp = (String)parentField.get(typeInstance);
+        String parentProp = (String) parentField.get(typeInstance);
 
         assertThat(childChildProp, is(equalTo("String1")));
         assertThat(childProp, is(equalTo("String2")));
@@ -188,13 +189,13 @@ public class ExtendsIT {
 
         Field chieldChildField = type.getDeclaredField("childChildProperty");
         chieldChildField.setAccessible(true);
-        int childChildProp = (Integer)chieldChildField.get(typeInstance);
+        int childChildProp = (Integer) chieldChildField.get(typeInstance);
         Field chieldField = supertype.getDeclaredField("childProperty");
         chieldField.setAccessible(true);
-        String childProp = (String)chieldField.get(typeInstance);
+        String childProp = (String) chieldField.get(typeInstance);
         Field parentField = superSupertype.getDeclaredField("parentProperty");
         parentField.setAccessible(true);
-        String parentProp = (String)parentField.get(typeInstance);
+        String parentProp = (String) parentField.get(typeInstance);
 
         assertThat(childChildProp, is(equalTo(5)));
         assertThat(childProp, is(equalTo("String2")));
@@ -218,20 +219,18 @@ public class ExtendsIT {
 
         Field chieldChildField = type.getDeclaredField("duplicatedProp");
         chieldChildField.setAccessible(true);
-        String childChildProp = (String)chieldChildField.get(typeInstance);
+        String childChildProp = (String) chieldChildField.get(typeInstance);
         Field chieldField = supertype.getDeclaredField("duplicatedProp");
         chieldField.setAccessible(true);
-        String childProp = (String)chieldField.get(typeInstance);
+        String childProp = (String) chieldField.get(typeInstance);
         Field parentField = superSupertype.getDeclaredField("duplicatedProp");
         parentField.setAccessible(true);
-        String parentProp = (String)parentField.get(typeInstance);
+        String parentProp = (String) parentField.get(typeInstance);
 
         assertThat(childChildProp, is(equalTo("String1")));
         assertThat(childProp, is(equalTo("String1")));
         assertThat(parentProp, is(equalTo("String1")));
     }
-
-
 
     @Test
     @SuppressWarnings("rawtypes")

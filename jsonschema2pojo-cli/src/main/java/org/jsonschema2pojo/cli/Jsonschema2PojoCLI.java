@@ -31,9 +31,8 @@ public final class Jsonschema2PojoCLI {
 
     /**
      * Main method, entry point for the application when invoked via the command
-     * line. Arguments are expected in POSIX format, invoke with --help for
-     * details.
-     * 
+     * line. Arguments are expected in POSIX format, invoke with --help for details.
+     *
      * @param args
      *            Incoming arguments from the command line
      * @throws FileNotFoundException

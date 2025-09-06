@@ -32,8 +32,8 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Applies the "required" schema rule.
  *
- * @see <a
- *      href="http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
+ * @see <a href=
+ *      "http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7">http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7</a>
  */
 public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
 
@@ -60,8 +60,7 @@ public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
      * @param generatableType
      *            the class or method which may be marked as "required"
      * @return the JavaDoc comment attached to the generatableType, which
-     *         <em>may</em> have an added not to mark this construct as
-     *         required.
+     *         <em>may</em> have an added not to mark this construct as required.
      */
     @Override
     public JDocCommentable apply(String nodeName, JsonNode node, JsonNode parent, JDocCommentable generatableType, Schema schema) {
@@ -69,22 +68,16 @@ public class RequiredRule implements Rule<JDocCommentable, JDocCommentable> {
         if (node.asBoolean()) {
             generatableType.javadoc().append("\n(Required)");
 
-            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-                    && generatableType instanceof JFieldVar) {
-                final Class<? extends Annotation> notNullClass
-                        = ruleFactory.getGenerationConfig().isUseJakartaValidation()
-                        ? NotNull.class
-                        : javax.validation.constraints.NotNull.class;
+            if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && generatableType instanceof JFieldVar) {
+                final Class<? extends Annotation> notNullClass = ruleFactory.getGenerationConfig().isUseJakartaValidation() ? NotNull.class : javax.validation.constraints.NotNull.class;
                 ((JFieldVar) generatableType).annotate(notNullClass);
             }
 
-            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
-                    && generatableType instanceof JFieldVar) {
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations() && generatableType instanceof JFieldVar) {
                 ((JFieldVar) generatableType).annotate(Nonnull.class);
             }
         } else {
-            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations()
-                    && generatableType instanceof JFieldVar) {
+            if (ruleFactory.getGenerationConfig().isIncludeJsr305Annotations() && generatableType instanceof JFieldVar) {
                 ((JFieldVar) generatableType).annotate(Nullable.class);
             }
         }

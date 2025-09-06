@@ -39,157 +39,149 @@ import com.sun.codemodel.JType;
 
 public class ReflectionHelper {
 
-  private RuleFactory ruleFactory;
+    private RuleFactory ruleFactory;
 
-  public ReflectionHelper(RuleFactory ruleFactory) {
-    this.ruleFactory = ruleFactory;
-  }
-
-  public JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
-    if (node.has("extends") && node.has("extendsJavaClass")) {
-      throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
+    public ReflectionHelper(RuleFactory ruleFactory) {
+        this.ruleFactory = ruleFactory;
     }
 
-    JType superType = jPackage.owner().ref(Object.class);
-    Schema superTypeSchema = getSuperSchema(node, schema, false);
-    if (superTypeSchema != null) {
-      superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
-    } else if (node.has("extendsJavaClass")) {
-      superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
+    public JType getSuperType(String nodeName, JsonNode node, JPackage jPackage, Schema schema) {
+        if (node.has("extends") && node.has("extendsJavaClass")) {
+            throw new IllegalStateException("'extends' and 'extendsJavaClass' defined simultaneously");
+        }
+
+        JType superType = jPackage.owner().ref(Object.class);
+        Schema superTypeSchema = getSuperSchema(node, schema, false);
+        if (superTypeSchema != null) {
+            superType = ruleFactory.getSchemaRule().apply(nodeName + "Parent", node.get("extends"), node, jPackage, superTypeSchema);
+        } else if (node.has("extendsJavaClass")) {
+            superType = resolveType(jPackage, node.get("extendsJavaClass").asText());
+        }
+
+        return superType;
     }
 
-    return superType;
-  }
+    public Schema getSuperSchema(JsonNode node, Schema schema, boolean followRefs) {
+        if (node.has("extends")) {
+            String path;
+            if (schema.getId().getFragment() == null) {
+                path = "#/extends";
+            } else {
+                path = "#" + schema.getId().getFragment() + "/extends";
+            }
 
-  public Schema getSuperSchema(JsonNode node, Schema schema, boolean followRefs) {
-    if (node.has("extends")) {
-      String path;
-      if (schema.getId().getFragment() == null) {
-        path = "#/extends";
-      } else {
-        path = "#" + schema.getId().getFragment() + "/extends";
-      }
+            Schema superSchema = ruleFactory.getSchemaStore().create(schema, path, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
 
-      Schema superSchema = ruleFactory.getSchemaStore().create(schema, path, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            if (followRefs) {
+                superSchema = resolveSchemaRefsRecursive(superSchema);
+            }
 
-      if (followRefs) {
-        superSchema = resolveSchemaRefsRecursive(superSchema);
-      }
-
-      return superSchema;
+            return superSchema;
+        }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * Mutually recursive with searchClassAndSuperClassesForField
-   */
-  public JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
-    JClass superClass = jclass._extends();
-    JDefinedClass definedSuperClass = definedClassOrNullFromType(superClass);
-    if (definedSuperClass == null) {
-      return null;
+    /**
+     * Mutually recursive with searchClassAndSuperClassesForField
+     */
+    public JFieldVar searchSuperClassesForField(String property, JDefinedClass jclass) {
+        JClass superClass = jclass._extends();
+        JDefinedClass definedSuperClass = definedClassOrNullFromType(superClass);
+        if (definedSuperClass == null) {
+            return null;
+        }
+        return searchClassAndSuperClassesForField(property, definedSuperClass);
     }
-    return searchClassAndSuperClassesForField(property, definedSuperClass);
-  }
 
-  public JDefinedClass getConcreteBuilderClass(JDefinedClass instanceClass) {
-    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(instanceClass);
+    public JDefinedClass getConcreteBuilderClass(JDefinedClass instanceClass) {
+        String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(instanceClass);
 
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instanceClass.classes(), Spliterator.ORDERED), false)
-            .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
-  }
-
-  public JDefinedClass getConcreteBuilderClass(JClass target) {
-    String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
-    return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
-            .orElse(null);
-  }
-
-  public JDefinedClass getBaseBuilderClass(JDefinedClass target) {
-    String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
-
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes(), Spliterator.ORDERED), false)
-        .filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
-  }
-
-  public JDefinedClass getBaseBuilderClass(JClass target) {
-    String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
-    return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst()
-        .orElse(null);
-  }
-
-  public boolean isFinal(JType superType) {
-    try {
-      Class<?> javaClass = Class.forName(superType.fullName());
-      return Modifier.isFinal(javaClass.getModifiers());
-    } catch (ClassNotFoundException e) {
-      return false;
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instanceClass.classes(), Spliterator.ORDERED), false).filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
     }
-  }
 
-  /**
-   * Mutually recursive with searchSuperClassesForField
-   */
-  public JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
-    Map<String, JFieldVar> fields = jclass.fields();
-    JFieldVar field = fields.get(property);
-    if (field == null) {
-      return searchSuperClassesForField(property, jclass);
+    public JDefinedClass getConcreteBuilderClass(JClass target) {
+        String builderClassname = ruleFactory.getNameHelper().getBuilderClassName(target);
+        return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
     }
-    return field;
-  }
 
-  private JDefinedClass definedClassOrNullFromType(JType type) {
-    if (type == null || type.isPrimitive()) {
-      return null;
+    public JDefinedClass getBaseBuilderClass(JDefinedClass target) {
+        String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
+
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(target.classes(), Spliterator.ORDERED), false).filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
     }
-    JClass fieldClass = type.boxify();
-    JPackage jPackage = fieldClass._package();
-    try
-    {
-      return this._getClass(fieldClass.name(), jPackage);
-    } catch (NoClassDefFoundError error) {
-      String name = fieldClass.name();
-      String erasureName = fieldClass.erasure().name();
 
-      if(!Objects.equals(name, erasureName)) {
-        ruleFactory.getLogger().debug("Could not get class for type with name: " + name + " trying " + erasureName + " instead.");
-        return this._getClass(erasureName, jPackage);
-      } else {
-        throw error;
-      }
+    public JDefinedClass getBaseBuilderClass(JClass target) {
+        String builderClassname = ruleFactory.getNameHelper().getBaseBuilderClassName(target);
+        return getAllPackageClasses(target._package()).stream().filter(definedClass -> definedClass.name().equals(builderClassname)).findFirst().orElse(null);
     }
-  }
 
-  private JDefinedClass _getClass(String name, JPackage _package) {
-    return getAllPackageClasses(_package).stream().filter(definedClass -> definedClass.name().equals(name)).findFirst()
-        .orElseThrow(() -> new NoClassDefFoundError(name));
-  }
-
-  private Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
-    StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false)
-        .forEach(_class -> result.addAll(getAllClassClasses(_class)));
-    return result;
-  }
-
-  private Collection<JDefinedClass> getAllClassClasses(JDefinedClass _class) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
-    result.add(_class);
-
-    _class.classes().forEachRemaining(result::add);
-    return result;
-  }
-
-  private Schema resolveSchemaRefsRecursive(Schema schema) {
-    JsonNode schemaNode = schema.getContent();
-    if (schemaNode.has("$ref")) {
-      schema = ruleFactory.getSchemaStore()
-          .create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-      return resolveSchemaRefsRecursive(schema);
+    public boolean isFinal(JType superType) {
+        try {
+            Class<?> javaClass = Class.forName(superType.fullName());
+            return Modifier.isFinal(javaClass.getModifiers());
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
-    return schema;
-  }
+
+    /**
+     * Mutually recursive with searchSuperClassesForField
+     */
+    public JFieldVar searchClassAndSuperClassesForField(String property, JDefinedClass jclass) {
+        Map<String, JFieldVar> fields = jclass.fields();
+        JFieldVar field = fields.get(property);
+        if (field == null) {
+            return searchSuperClassesForField(property, jclass);
+        }
+        return field;
+    }
+
+    private JDefinedClass definedClassOrNullFromType(JType type) {
+        if (type == null || type.isPrimitive()) {
+            return null;
+        }
+        JClass fieldClass = type.boxify();
+        JPackage jPackage = fieldClass._package();
+        try {
+            return this._getClass(fieldClass.name(), jPackage);
+        } catch (NoClassDefFoundError error) {
+            String name = fieldClass.name();
+            String erasureName = fieldClass.erasure().name();
+
+            if (!Objects.equals(name, erasureName)) {
+                ruleFactory.getLogger().debug("Could not get class for type with name: " + name + " trying " + erasureName + " instead.");
+                return this._getClass(erasureName, jPackage);
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    private JDefinedClass _getClass(String name, JPackage _package) {
+        return getAllPackageClasses(_package).stream().filter(definedClass -> definedClass.name().equals(name)).findFirst().orElseThrow(() -> new NoClassDefFoundError(name));
+    }
+
+    private Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
+        LinkedList<JDefinedClass> result = new LinkedList<>();
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false).forEach(_class -> result.addAll(getAllClassClasses(_class)));
+        return result;
+    }
+
+    private Collection<JDefinedClass> getAllClassClasses(JDefinedClass _class) {
+        LinkedList<JDefinedClass> result = new LinkedList<>();
+        result.add(_class);
+
+        _class.classes().forEachRemaining(result::add);
+        return result;
+    }
+
+    private Schema resolveSchemaRefsRecursive(Schema schema) {
+        JsonNode schemaNode = schema.getContent();
+        if (schemaNode.has("$ref")) {
+            schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            return resolveSchemaRefsRecursive(schema);
+        }
+        return schema;
+    }
 
 }

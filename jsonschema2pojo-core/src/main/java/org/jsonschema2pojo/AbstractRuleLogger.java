@@ -17,62 +17,62 @@
 package org.jsonschema2pojo;
 
 public abstract class AbstractRuleLogger implements RuleLogger {
-  @Override
-  public void debug(String msg) {
-    if (isDebugEnabled()) {
-      doDebug(msg);
+    @Override
+    public void debug(String msg) {
+        if (isDebugEnabled()) {
+            doDebug(msg);
+        }
     }
-  }
 
-  @Override
-  public void error(String msg) {
-    if (isErrorEnabled()) {
-      doError(msg, null);
+    @Override
+    public void error(String msg) {
+        if (isErrorEnabled()) {
+            doError(msg, null);
+        }
     }
-  }
 
-  @Override
-  public void error(String msg, Throwable e) {
-    if (isErrorEnabled()) {
-      doError(msg, e);
+    @Override
+    public void error(String msg, Throwable e) {
+        if (isErrorEnabled()) {
+            doError(msg, e);
+        }
     }
-  }
 
-  @Override
-  public void info(String msg) {
-    if (isInfoEnabled()) {
-      doInfo(msg);
+    @Override
+    public void info(String msg) {
+        if (isInfoEnabled()) {
+            doInfo(msg);
+        }
     }
-  }
 
-  @Override
-  public void trace(String msg) {
-    if (isTraceEnabled()) {
-      doTrace(msg);
+    @Override
+    public void trace(String msg) {
+        if (isTraceEnabled()) {
+            doTrace(msg);
+        }
     }
-  }
 
-  @Override
-  public void warn(String msg) {
-    if (isWarnEnabled()) {
-      doWarn(msg, null);
+    @Override
+    public void warn(String msg) {
+        if (isWarnEnabled()) {
+            doWarn(msg, null);
+        }
     }
-  }
 
-  @Override
-  public void warn(String msg, Throwable e) {
-    if (isWarnEnabled()) {
-      doWarn(msg, e);
+    @Override
+    public void warn(String msg, Throwable e) {
+        if (isWarnEnabled()) {
+            doWarn(msg, e);
+        }
     }
-  }
 
-  abstract protected void doDebug(String msg);
+    abstract protected void doDebug(String msg);
 
-  abstract protected void doError(String msg, Throwable e);
+    abstract protected void doError(String msg, Throwable e);
 
-  abstract protected void doInfo(String msg);
+    abstract protected void doInfo(String msg);
 
-  abstract protected void doTrace(String msg);
+    abstract protected void doTrace(String msg);
 
-  abstract protected void doWarn(String msg, Throwable e);
+    abstract protected void doWarn(String msg, Throwable e);
 }

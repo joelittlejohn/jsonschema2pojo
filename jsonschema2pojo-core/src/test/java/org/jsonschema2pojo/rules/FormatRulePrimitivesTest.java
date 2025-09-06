@@ -47,18 +47,7 @@ public class FormatRulePrimitivesTest {
     private final Class<?> wrapper;
 
     public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { boolean.class, Boolean.class },
-                { byte.class, Byte.class },
-                { char.class, Character.class },
-                { double.class, Double.class },
-                { float.class, Float.class },
-                { int.class, Integer.class },
-                { long.class, Long.class },
-                { short.class, Short.class },
-                { void.class, Void.class },
-                { null, BigDecimal.class },
-                { null, String.class }});
+        return asList(new Object[][] { { boolean.class, Boolean.class }, { byte.class, Byte.class }, { char.class, Character.class }, { double.class, Double.class }, { float.class, Float.class }, { int.class, Integer.class }, { long.class, Long.class }, { short.class, Short.class }, { void.class, Void.class }, { null, BigDecimal.class }, { null, String.class } });
     }
 
     public FormatRulePrimitivesTest(Class<?> primitive, Class<?> wrapper) {

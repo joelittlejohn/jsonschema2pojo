@@ -34,8 +34,8 @@ import jakarta.json.bind.annotation.JsonbPropertyOrder;
 import jakarta.json.bind.annotation.JsonbTransient;
 
 /**
- * Annotates generated Java types using the JSON-B 2 mapping annotations. Implementation inspired by
- * Jackson2Annotator.
+ * Annotates generated Java types using the JSON-B 2 mapping annotations.
+ * Implementation inspired by Jackson2Annotator.
  */
 public class Jsonb2Annotator extends AbstractAnnotator {
 
@@ -91,7 +91,7 @@ public class Jsonb2Annotator extends AbstractAnnotator {
         }
 
         if (!field.type().fullName().equals("java.lang.String")) {
-            pattern = pattern != null? pattern : FormatRule.ISO_8601_DATE_FORMAT;
+            pattern = pattern != null ? pattern : FormatRule.ISO_8601_DATE_FORMAT;
             field.annotate(JsonbDateFormat.class).param("value", pattern);
         }
     }
@@ -110,7 +110,7 @@ public class Jsonb2Annotator extends AbstractAnnotator {
         }
 
         if (!field.type().fullName().equals("java.lang.String")) {
-            pattern = pattern != null? pattern : FormatRule.ISO_8601_TIME_FORMAT;
+            pattern = pattern != null ? pattern : FormatRule.ISO_8601_TIME_FORMAT;
             field.annotate(JsonbDateFormat.class).param("value", pattern);
         }
     }
@@ -129,7 +129,7 @@ public class Jsonb2Annotator extends AbstractAnnotator {
         }
 
         if (!field.type().fullName().equals("java.lang.String")) {
-            pattern = pattern != null? pattern : FormatRule.ISO_8601_DATETIME_FORMAT;
+            pattern = pattern != null ? pattern : FormatRule.ISO_8601_DATETIME_FORMAT;
             field.annotate(JsonbDateFormat.class).param("value", pattern);
         }
     }

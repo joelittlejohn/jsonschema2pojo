@@ -30,8 +30,10 @@ import org.apache.maven.shared.utils.io.DirectoryScanner;
 import org.apache.maven.shared.utils.io.MatchPatterns;
 
 /**
- * <p>A file filter that supports include and exclude patterns.</p>
- * 
+ * <p>
+ * A file filter that supports include and exclude patterns.
+ * </p>
+ *
  * @author Christian Trimble
  * @since 0.4.3
  */
@@ -42,7 +44,9 @@ public class MatchPatternsFileFilter implements FileFilter {
     boolean caseSensitive;
 
     /**
-     * <p>Builder for MatchPatternFileFilter instances.</p>
+     * <p>
+     * Builder for MatchPatternFileFilter instances.
+     * </p>
      */
     public static class Builder {
         List<String> includes = new ArrayList<>();
@@ -93,11 +97,7 @@ public class MatchPatternsFileFilter implements FileFilter {
             if (includes.isEmpty()) {
                 includes.add(processPattern("**/*"));
             }
-            return new MatchPatternsFileFilter(
-                    MatchPatterns.from(includes.toArray(new String[] {})),
-                    MatchPatterns.from(excludes.toArray(new String[] {})),
-                    sourceDirectory,
-                    caseSensitive);
+            return new MatchPatternsFileFilter(MatchPatterns.from(includes.toArray(new String[] {})), MatchPatterns.from(excludes.toArray(new String[] {})), sourceDirectory, caseSensitive);
         }
     }
 
@@ -112,9 +112,7 @@ public class MatchPatternsFileFilter implements FileFilter {
     public boolean accept(File file) {
         try {
             String path = relativePath(file);
-            return file.isDirectory() ?
-                    includePatterns.matchesPatternStart(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive) :
-                    includePatterns.matches(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive);
+            return file.isDirectory() ? includePatterns.matchesPatternStart(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive) : includePatterns.matches(path, caseSensitive) && !excludePatterns.matches(path, caseSensitive);
         } catch (IOException e) {
             return false;
         }
@@ -137,13 +135,9 @@ public class MatchPatternsFileFilter implements FileFilter {
         }
         return processed;
     }
-    
+
     static String processPattern(String pattern) {
-        return pattern
-                .trim()
-                .replace('/', File.separatorChar)
-                .replace('\\', File.separatorChar)
-                .replaceAll(quote(File.separator) + "$", File.separator + "**");
+        return pattern.trim().replace('/', File.separatorChar).replace('\\', File.separatorChar).replaceAll(quote(File.separator) + "$", File.separator + "**");
     }
 
 }

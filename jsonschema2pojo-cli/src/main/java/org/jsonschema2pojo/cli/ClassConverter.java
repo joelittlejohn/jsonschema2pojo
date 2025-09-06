@@ -32,7 +32,7 @@ public class ClassConverter extends BaseConverter<Class> {
 
     /**
      * Create a new class converter.
-     * 
+     *
      * @param optionName
      *            The name of the option that will be using this converter.
      */

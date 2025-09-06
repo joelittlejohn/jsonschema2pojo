@@ -31,8 +31,7 @@ public class CompositeAnnotator implements Annotator {
     final Annotator[] annotators;
 
     /**
-     * Create a new composite annotator, made up of a given set of child
-     * annotators.
+     * Create a new composite annotator, made up of a given set of child annotators.
      *
      * @param annotators
      *            The annotators that will be called whenever this annotator is
@@ -148,18 +147,18 @@ public class CompositeAnnotator implements Annotator {
     }
 
     @Override
-   public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
-      for (Annotator annotator : annotators) {
+    public void dateTimeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
+        for (Annotator annotator : annotators) {
             annotator.dateTimeField(field, clazz, propertyNode);
         }
-   }
+    }
 
-   @Override
-   public void dateField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
-      for (Annotator annotator : annotators) {
+    @Override
+    public void dateField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
+        for (Annotator annotator : annotators) {
             annotator.dateField(field, clazz, propertyNode);
         }
-   }
+    }
 
     @Override
     public void timeField(JFieldVar field, JDefinedClass clazz, JsonNode propertyNode) {
