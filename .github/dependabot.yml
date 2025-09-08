@@ -3,15 +3,27 @@
 
 version: 2
 updates:
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "jsonschema2pojo-gradle-plugin/example/android"
-    schedule:
-      interval: "monthly"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
   - package-ecosystem: "maven"
     directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gradle"
+    directory: "/jsonschema2pojo-gradle-plugin"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gradle"
+    directory: "/jsonschema2pojo-gradle-plugin/example/android"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gradle"
+    directory: "/jsonschema2pojo-gradle-plugin/example/java"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "maven"
+    directory: "/jsonschema2pojo-maven-plugin/example"
     schedule:
       interval: "monthly"

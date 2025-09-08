@@ -2,8 +2,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jsonschema2pojo</groupId>
-    <artifactId>jsonschema2pojo-test</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>maven-jsonschema2pojo-example</artifactId>
+    <version>1.2.3-SNAPSHOT</version>
 
     <build>
         <plugins>
