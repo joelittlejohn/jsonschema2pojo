@@ -32,6 +32,9 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Iterator;
+import java.util.stream.StreamSupport;
+
 /**
  * Applies the schema rules that represent a property definition.
  *
@@ -221,11 +224,25 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private boolean isObject(JsonNode node) {
-        return node.path("type").asText().equals("object");
+        return checkType(node, "object");
     }
 
     private boolean isArray(JsonNode node) {
-        return node.path("type").asText().equals("array");
+        return checkType(node, "array");
+    }
+
+    private boolean checkType(JsonNode node, String type) {
+        return checkSimpleType(node, type) || checkArrayOfTypes(node, type);
+    }
+
+    private static boolean checkArrayOfTypes(JsonNode node, String type) {
+        return StreamSupport.stream(node.path("type").spliterator(), false)
+                            .map(JsonNode::asText)
+                            .anyMatch(type::equals);
+    }
+
+    private static boolean checkSimpleType(JsonNode node, String type) {
+        return node.path("type").asText().equals(type);
     }
 
     private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
