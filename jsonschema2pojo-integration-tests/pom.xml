@@ -196,6 +196,12 @@
             <version>2.0.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>${jackson2x.databind.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
