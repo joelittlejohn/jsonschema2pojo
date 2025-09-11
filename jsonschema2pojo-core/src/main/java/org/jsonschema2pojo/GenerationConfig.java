@@ -252,6 +252,14 @@ public interface GenerationConfig {
   boolean isIncludeJsr305Annotations();
 
   /**
+   * Gets the 'includeDeprecatedAnnotations' configuration option.
+   *
+   * @return Whether to include {@code @Deprecated} annotations on fields
+   *         that are marked as deprecated in the JSON Schema.
+   */
+  boolean isIncludeDeprecatedAnnotations();
+
+  /**
    * Gets the 'useOptionalForGetters' configuration option.
    *
    * @return Whether to use {@link java.util.Optional} as return type for

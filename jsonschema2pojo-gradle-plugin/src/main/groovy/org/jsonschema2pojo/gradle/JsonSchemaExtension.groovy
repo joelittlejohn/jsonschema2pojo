@@ -63,6 +63,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeHashcodeAndEquals
   boolean includeJsr303Annotations
   boolean includeJsr305Annotations
+  boolean includeDeprecatedAnnotations
   boolean useOptionalForGetters
   boolean includeToString
   String[] toStringExcludes
@@ -126,6 +127,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     customRuleFactory = RuleFactory.class
     includeJsr303Annotations = false
     includeJsr305Annotations = false
+    includeDeprecatedAnnotations = false
     useOptionalForGetters = false
     sourceType = SourceType.JSONSCHEMA
     outputEncoding = 'UTF-8'
@@ -256,6 +258,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |customRuleFactory = ${customRuleFactory.getName()}
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |includeJsr305Annotations = ${includeJsr305Annotations}
+       |includeDeprecatedAnnotations = ${includeDeprecatedAnnotations}
        |useOptionalForGetters = ${useOptionalForGetters}
        |sourceType = ${sourceType.toString().toLowerCase()}
        |removeOldOutput = ${removeOldOutput}
