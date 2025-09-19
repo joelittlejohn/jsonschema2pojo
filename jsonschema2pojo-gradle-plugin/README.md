@@ -315,6 +315,9 @@ jsonSchema2Pojo {
   // Whether to use annotations from jakarta.validation package instead of javax.validation package
   // when adding JSR-303 annotations to generated Java types
   useJakartaValidation = false
+
+  // Deduplicates Java classes and enums if they have identical schemas.
+  useDeduplication = false
 }
 ```
 

@@ -779,6 +779,12 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useJakartaValidation = false;
 
     /**
+     * Whether to deduplicate generated types for identical schemas.
+     */
+    @Parameter(property = "jsonschema2pojo.useDeduplication", defaultValue = "false")
+    private boolean useDeduplication = false;
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1274,5 +1280,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public boolean isUseDeduplication() {
+        return useDeduplication;
     }
 }

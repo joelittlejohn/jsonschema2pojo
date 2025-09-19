@@ -17,6 +17,11 @@
 package org.jsonschema2pojo;
 
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
@@ -75,4 +80,13 @@ public class Schema {
         return javaType != null;
     }
 
+    public String calculateHash() {
+        try {
+            return Base64.getEncoder()
+                    .encodeToString(MessageDigest.getInstance("SHA-256")
+                            .digest(content.toString().getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException("SHA-256 not available, disable de-duplication to avoid", ex);
+        }
+    }
 }
