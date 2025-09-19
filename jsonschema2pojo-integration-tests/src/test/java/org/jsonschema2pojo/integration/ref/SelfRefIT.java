@@ -127,4 +127,12 @@ public class SelfRefIT {
         assertThat(listEntryClass.getName(), is("com.example.SelfReferencingArrayItem"));
     }
 
+    @Test
+    public void selfRefRootReadSuccessfully() throws ReflectiveOperationException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/selfRefRoot.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SelfRefRoot");
+        assertThat(generatedType.getMethod("getUser").getReturnType().getSimpleName(), equalTo("String"));
+    }
+
 }
