@@ -1,0 +1,16 @@
+{
+  "oneOf": [
+    { 
+      "type": "object",
+      "properties": {
+        "a": "string"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "b": "string"
+      }
+    }
+  ]
+}
