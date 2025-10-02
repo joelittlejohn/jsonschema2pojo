@@ -446,4 +446,16 @@ public class RuleFactory {
         return new JavaNameRule();
     }
 
+    public Rule<JClassContainer, JType> getAllOfRule() {
+        return new UnimplementedTypeRule("allOf", this);
+    }
+
+    public Rule<JClassContainer, JType> getAnyOfRule() {
+        return new UnimplementedTypeRule("anyOf", this);
+    }
+
+    public Rule<JClassContainer, JType> getOneOfRule() {
+        return new UnimplementedTypeRule("oneOf", this);
+    }
+
 }

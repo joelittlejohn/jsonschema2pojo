@@ -84,7 +84,17 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         JType javaType;
         if (schemaNode.has("enum")) {
             javaType = ruleFactory.getEnumRule().apply(nodeName, schemaNode, parent, generatableType, schema);
-        } else {
+        } 
+        else if (schemaNode.has("allOf")) {
+            javaType = ruleFactory.getAllOfRule().apply(nodeName, schemaNode, parent, generatableType, schema);
+        }
+        else if (schemaNode.has("anyOf")) {
+            javaType = ruleFactory.getAnyOfRule().apply(nodeName, schemaNode, parent, generatableType, schema);
+        }
+        else if (schemaNode.has("oneOf")) {
+            javaType = ruleFactory.getOneOfRule().apply(nodeName, schemaNode, parent, generatableType, schema);
+        }
+        else {
             javaType = ruleFactory.getTypeRule().apply(nodeName, schemaNode, parent, generatableType.getPackage(), schema);
         }
         schema.setJavaTypeIfEmpty(javaType);
