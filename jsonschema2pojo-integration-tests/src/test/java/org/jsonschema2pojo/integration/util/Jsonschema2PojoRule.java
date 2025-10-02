@@ -39,6 +39,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -57,13 +58,20 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     private File compileDir;
     private boolean active = false;
     private boolean captureDiagnostics = false;
+    private boolean captureLogs = false;
     private boolean sourceDirInitialized = false;
     private boolean classesDirInitialized = false;
     private boolean isStatic = false;
     private List<Diagnostic<? extends JavaFileObject>> diagnostics;
+    private List<LogEvent> logs;
 
     public Jsonschema2PojoRule captureDiagnostics() {
         this.captureDiagnostics = true;
+        return this;
+    }
+
+    public Jsonschema2PojoRule captureLoggingOutput() {
+        this.captureLogs = true;
         return this;
     }
 
@@ -94,11 +102,18 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
         return diagnostics;
     }
 
+    public List<LogEvent> getLogs() {
+        checkActive();
+        return logs;
+    }
+
     private void setUp(String className, String methodName) {
         active = true;
         diagnostics = new ArrayList<>();
+        logs = new ArrayList<>();
 
         final File testRoot = methodNameDir(classNameDir(rootDirectory(), className), methodName);
+        final String absPath = testRoot.getAbsolutePath();
         generateDir = new File(testRoot, "generate");
         compileDir = new File(testRoot, "compile");
     }
@@ -109,6 +124,7 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
         sourceDirInitialized = false;
         classesDirInitialized = false;
         diagnostics = null;
+        logs = null;
         active = false;
     }
 
@@ -161,7 +177,8 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     }
 
     public File generate(final URL schema, final String targetPackage, final Map<String, Object> configValues) {
-        CodeGenerationHelper.generate(schema, targetPackage, configValues, getGenerateDir());
+        Log log = captureLogs ? new CapturingLogger(logs) : null;
+        CodeGenerationHelper.generate(schema, targetPackage, configValues, getGenerateDir(), log);
         return generateDir;
     }
 

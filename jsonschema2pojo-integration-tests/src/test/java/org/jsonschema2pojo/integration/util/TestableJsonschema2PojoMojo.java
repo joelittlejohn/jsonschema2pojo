@@ -42,7 +42,7 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
         }
     };
 
-    public TestableJsonschema2PojoMojo configure(Map<String, Object> configValues) {
+    public TestableJsonschema2PojoMojo configure(Map<String, Object> configValues, Log log) {
         
         // this could be done with reflection, if the plugin used real annotations.
         setPrivateField("sourcePaths", new String[]{});
@@ -51,7 +51,11 @@ public class TestableJsonschema2PojoMojo extends Jsonschema2PojoMojo {
             setPrivateField(value.getKey(), value.getValue());
         }
 
-        this.setLog(LOGGER_NO_DEBUG);
+        if( log != null ) {
+            this.setLog(log);
+        } else {
+            this.setLog(LOGGER_NO_DEBUG);
+        }
 
         return this;
     }

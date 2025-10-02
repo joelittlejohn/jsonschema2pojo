@@ -43,6 +43,7 @@ import javax.tools.JavaFileObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.maven.Jsonschema2PojoMojo;
 import org.jsonschema2pojo.util.URLUtil;
@@ -87,6 +88,10 @@ public class CodeGenerationHelper {
     }
 
     public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
+        generate(schema, targetPackage, configValues, outputDirectory, null);
+    }
+
+    public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory, Log log) {
 
         try {
             @SuppressWarnings("serial")
@@ -98,7 +103,7 @@ public class CodeGenerationHelper {
                     put("targetPackage", targetPackage);
                     putAll(configValues);
                 }
-            });
+            }, log);
 
             pluginMojo.execute();
         } catch (MojoExecutionException | DependencyResolutionRequiredException e) {
