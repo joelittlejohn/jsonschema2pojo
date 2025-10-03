@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -34,19 +35,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-//Look into the extension.  This should work.
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OfIT {
 
     @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule().captureLoggingOutput();
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     public static String ALL_OF = "allOf";
     public static String ANY_OF = "anyOf";
     public static String ONE_OF = "oneOf";
+    public static String NOT    = "not";
 
     @ParameterizedTest(name="{0} at {1} warning count")
     @MethodSource("warningCountArgs")
@@ -61,14 +57,34 @@ public class OfIT {
 
     public static Stream<Object[]> warningCountArgs() {
       return Arrays.stream(new Object[][] {
-        { "allOf", "root" , 1},
-        { "allOf", "child", 1},
-        { "anyOf", "root" , 1},
-        { "anyOf", "child", 1},
-        { "oneOf", "root" , 1},
-        { "oneOf", "child", 1},
+        { "allOf", "root,child" , 1},
+        { "anyOf", "root,child" , 1},
+        { "oneOf", "root,child" , 1},
+        { "not"  , "root,child" , 1},
       })
-      .map(row->new Object[] {row[0], row[1], filePath((String)row[0], (String)row[1]), row[2]});
+      .flatMap(flatten(1))
+      .map(derive(2, OfIT::filePath, 0, 1));
+    }
+
+    public static Function<Object[], Stream<Object[]>> flatten(int flattenIndex) {
+      return row->{
+        return Arrays.stream(row[flattenIndex].toString().split(","))
+          .map(flattened->{
+            Object[] result = row.clone();
+            result[flattenIndex] = flattened;
+            return result;
+          });
+      };
+    }
+
+    public static <T, U, R> Function<Object[], Object[]> derive(int insertIndex, BiFunction<T, U, R> create, int arg1, int arg2) {
+      return row->{
+        Object[] result = new Object[row.length+1];
+        System.arraycopy(row, 0, result, 0, insertIndex);
+        result[insertIndex] = create.apply((T)row[arg1], (U)row[arg2]);
+        System.arraycopy(row, insertIndex, result, insertIndex+1, row.length-insertIndex);
+        return result;
+      };
     }
 
     @ParameterizedTest(name="{0} at {1} file count")
@@ -94,6 +110,8 @@ public class OfIT {
         { "anyOf", "child", 2},
         { "oneOf", "root" , 0},
         { "oneOf", "child", 2},
+        { "not"  , "root" , 0},
+        { "not"  , "child", 2},
       })
       .map(row->new Object[] {row[0], row[1], filePath((String)row[0], (String)row[1]), row[2]});
     }

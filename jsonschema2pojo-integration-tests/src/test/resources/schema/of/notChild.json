@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "first": {
+      "not": { 
+        "type": "object",
+        "properties": {
+          "a": "string"
+        }
+      }
+    },
+    "second": { 
+      "type": "object",
+      "properties": {
+        "a": "string"
+      }
+    }
+  }
+}

@@ -458,4 +458,8 @@ public class RuleFactory {
         return new UnimplementedTypeRule("oneOf", this);
     }
 
+    public Rule<JClassContainer, JType> getNotRule() {
+        return new UnimplementedTypeRule("not", this);
+    }
+
 }

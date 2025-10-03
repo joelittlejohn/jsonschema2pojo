@@ -1,0 +1,8 @@
+{
+  "not": { 
+    "type": "object",
+    "properties": {
+      "a": "string"
+    }
+  }
+}
