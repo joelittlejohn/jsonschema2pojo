@@ -18,28 +18,33 @@ package org.jsonschema2pojo.transform;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jsonschema2pojo.ContentResolver;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import net.karneim.pojobuilder.GeneratePojoBuilder;
 
 @GeneratePojoBuilder(excludeProperties = "inputSchemas")
-public class SchemaReducer {
+public class SchemaTransformer {
 
   List<MutablePair<URI, ObjectNode>> inputSchemas = new ArrayList<>();
-  BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> reducer;
+  BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> transform;
+  ContentResolver resolver;
 
-  public SchemaReducer add(URI uri, ObjectNode node) {
+  public SchemaTransformer add(URI uri, ObjectNode node) {
     inputSchemas.add(MutablePair.of(uri, node));
     return this;
   }
@@ -47,14 +52,13 @@ public class SchemaReducer {
   /**
    * Applies transform the the input Schemas until 
    */
-  public List<Pair<Integer, ReductionResult>> approach(
-    BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> transform,
-    int maxSteps
+  public List<Pair<Integer, ReductionResult>> applyUntil(
+    BiPredicate<Integer, Duration> until
   )
   {
-
+    Instant startTime = Instant.now();
     LinkedList<Pair<Integer, ReductionResult>> results = new LinkedList<>();
-    for( int i = 0; i < maxSteps; i++ ) {
+    for( int i = 0; !until.test(i, Duration.between(startTime, Instant.now())); i++ ) {
       ReductionResult result = gatherScatter();
 
       results.add(Pair.of(i, result));
@@ -76,12 +80,15 @@ public class SchemaReducer {
   public ReductionResult gatherScatter() {
     // create a context for the cycle
 
-    Context context = new Context();
+    Context context = new ContextBuilder()
+      .withInputSchemas(inputSchemas)
+      .withResolver(resolver)
+      .build();
 
     // go over the pairs.
     List<Triple<Pair<URI, ObjectNode>, Boolean, Optional<Throwable>>> results = inputSchemas.stream()
       // apply the reducer
-      .map(pair->applyReducer(reducer, context, pair))
+      .map(pair->applyTransform(transform, context, pair))
       .collect(Collectors.toList());
     
     Integer updates = (int)results.stream().filter(e->e.getMiddle()).count();
@@ -109,7 +116,7 @@ public class SchemaReducer {
       .build();
   }
 
-  public Triple<Pair<URI, ObjectNode>, Boolean, Optional<Throwable>> applyReducer(BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> reducer, Context context, Pair<URI, ObjectNode> value) {
+  public Triple<Pair<URI, ObjectNode>, Boolean, Optional<Throwable>> applyTransform(BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> reducer, Context context, Pair<URI, ObjectNode> value) {
     Optional<ObjectNode> result = Optional.empty();
     Optional<Throwable> exception = Optional.empty();
     try {
@@ -127,7 +134,8 @@ public class SchemaReducer {
 
   @GeneratePojoBuilder
   public static class Context {
-    List<Pair<URI, ObjectNode>> inputSchemas;
+    List<MutablePair<URI, ObjectNode>> inputSchemas;
+    ContentResolver resolver;
     public Optional<ObjectNode> findByURI(URI uri) throws URISyntaxException {
       URI documentUri = new URI(
         uri.getScheme(),
@@ -143,11 +151,8 @@ public class SchemaReducer {
         .findFirst()
         .map(Pair::getRight);
     }
-    public List<Pair<URI, ObjectNode>> getInputSchemas() {
+    public List<MutablePair<URI, ObjectNode>> getInputSchemas() {
       return inputSchemas;
-    }
-    void setInputSchemas(List<Pair<URI, ObjectNode>> inputSchemas) {
-      this.inputSchemas = inputSchemas;
     }
   }
 

@@ -44,17 +44,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jsonschema2pojo.transform.SchemaReducer.Context;
-import org.jsonschema2pojo.transform.SchemaReducer.ReductionResult;
+import org.jsonschema2pojo.transform.SchemaTransformer.Context;
+import org.jsonschema2pojo.transform.SchemaTransformer.ReductionResult;
 
 
-public class SchemaReducerTest {
+public class SchemaTransformTest {
   ObjectMapper mapper = new ObjectMapper();
 
   @Test
   public void firstTest() throws JsonMappingException, JsonProcessingException {
-    SchemaReducer reducer = new SchemaReducerBuilder()
-      .withReducer(this::transform)
+    SchemaTransformer transformer = new SchemaTransformerBuilder()
+      .withTransform(this::transform)
       .build()
       .add(
         URI.create("http://example.com/schema"),
@@ -81,12 +81,12 @@ public class SchemaReducerTest {
         })
       );
 
-    List<Pair<Integer, ReductionResult>> results = reducer
-        .approach(this::transform, 5);
+    List<Pair<Integer, ReductionResult>> results = transformer
+        .applyUntil((steps, duration)->steps > 10);
 
     assertThat(results.size(), equalTo(2));
 
-    ObjectNode finalState = reducer.inputSchemas.get(0).getRight();
+    ObjectNode finalState = transformer.inputSchemas.get(0).getRight();
     ObjectNode finalStateProperties = (ObjectNode)finalState.get("properties");
     assertThat(finalStateProperties, hasProperty("first"));
     assertThat(finalStateProperties, hasProperty("second"));
