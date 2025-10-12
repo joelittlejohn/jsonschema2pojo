@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "./reference.json"
+    }
+  ]
+}

@@ -98,6 +98,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>hamcrest-jackson</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.karneim</groupId>
             <artifactId>pojobuilder</artifactId>
             <version>4.3.0</version>

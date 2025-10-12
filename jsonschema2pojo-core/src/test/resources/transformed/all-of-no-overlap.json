@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "first": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "second": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "properties": {
+        "third": {
+          "type": "string"
+        }
+      }
+    }
+
+  ]
+}
