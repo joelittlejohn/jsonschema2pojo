@@ -17,110 +17,113 @@
 package org.jsonschema2pojo.transform;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jsonschema2pojo.ContentResolver;
+import org.jsonschema2pojo.FragmentResolver;
+import org.jsonschema2pojo.util.URIUtil;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import net.karneim.pojobuilder.GeneratePojoBuilder;
 
-@GeneratePojoBuilder(excludeProperties = "inputSchemas")
+@GeneratePojoBuilder
 public class SchemaTransformer {
+  protected final FragmentResolver fragmentResolver = new FragmentResolver();
+  BiFunction<Context, Pair<URI, JsonNode>, JsonNode> transform;
+  BiPredicate<Integer, Duration> processUntil;
 
-  List<MutablePair<URI, ObjectNode>> inputSchemas = new ArrayList<>();
-  BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> transform;
-  ContentResolver resolver;
-
-  public SchemaTransformer add(URI uri, ObjectNode node) {
-    inputSchemas.add(MutablePair.of(uri, node));
-    return this;
+  public SchemaTransformer(
+    BiFunction<Context, Pair<URI, JsonNode>, JsonNode> transform,
+    BiPredicate<Integer, Duration> until
+  ) {
+    Objects.requireNonNull(transform);
+    Objects.requireNonNull(until);
+    this.transform = transform;
+    this.processUntil = until;
   }
 
   /**
-   * Applies transform the the input Schemas until 
+   * Transforms all schemas in the schema map, updating them
+   * if they change during the transformation process.
    */
-  public List<Pair<Integer, ReductionResult>> applyUntil(
-    BiPredicate<Integer, Duration> until
+  public void transform(
+    Map<URI, JsonNode> schemaMap, 
+    ContentResolver resolver,
+    String refFragmentPathDelimiters
   )
   {
     Instant startTime = Instant.now();
-    LinkedList<Pair<Integer, ReductionResult>> results = new LinkedList<>();
-    for( int i = 0; !until.test(i, Duration.between(startTime, Instant.now())); i++ ) {
-      ReductionResult result = gatherScatter();
 
-      results.add(Pair.of(i, result));
+    Context context = new ContextBuilder()
+      .withInputSchemas(schemaMap)
+      .withFragmentResolver(fragmentResolver)
+      .build();
+    for( int i = 0; !processUntil.test(i, Duration.between(startTime, Instant.now())); i++ ) {
+      TransformStepResult result = transformStep(context);
 
       if ( result.getErrors().size() > 0 ) {
-        Pair<Pair<URI, ObjectNode>, Throwable> toThrow = result.getErrors().get(0);
+        Pair<Pair<URI, JsonNode>, Throwable> toThrow = result.getErrors().get(0);
 
         throw new RuntimeException("Error: "+toThrow.getLeft().getLeft(), toThrow.getRight());
       }
 
       if ( result.getUpdates() == 0 ) {
-        return results;
+        return;
       }
     }
 
-    return results;
+    throw new RuntimeException("Could not complete transforms in the time or steps allotted.");
   }
 
-  public ReductionResult gatherScatter() {
-    // create a context for the cycle
-
-    Context context = new ContextBuilder()
-      .withInputSchemas(inputSchemas)
-      .withResolver(resolver)
-      .build();
-
+  protected TransformStepResult transformStep(Context context) {
     // go over the pairs.
-    List<Triple<Pair<URI, ObjectNode>, Boolean, Optional<Throwable>>> results = inputSchemas.stream()
-      // apply the reducer
-      .map(pair->applyTransform(transform, context, pair))
+    List<Triple<Pair<URI, JsonNode>, Boolean, Optional<Throwable>>> results = context.getInputSchemas().entrySet().parallelStream()
+      .map(entry->Pair.<URI, JsonNode>of(entry.getKey(), entry.getValue()))
+      .map(pair->applyTransform(context, pair))
       .collect(Collectors.toList());
     
-    Integer updates = (int)results.stream().filter(e->e.getMiddle()).count();
+    Integer updates = (int)results.stream()
+      .filter(e->e.getMiddle())
+      .count();
     
-    List<Pair<Pair<URI, ObjectNode>, Throwable>> errors = results.stream()
+    List<Pair<Pair<URI, JsonNode>, Throwable>> errors = results.stream()
       .filter(t->t.getRight().isPresent())
       .map(e->Pair.of(e.getLeft(), e.getRight().get()))
       .collect(Collectors.toList());
 
     // scatter the results
-    results.stream()
+    results.parallelStream()
       .filter(e->e.getMiddle())
-      .forEach(result->{
-        inputSchemas.stream()
-          .filter(e->e.getLeft().equals(result.getLeft().getLeft()))
-          .findFirst()
-          .ifPresent(
-            e->e.setRight(result.getLeft().getRight())
-          );
-      });
+      .map(Triple::getLeft)
+      .forEach(result->
+        context.getInputSchemas().put(result.getLeft(), result.getRight())
+      );
 
-    return new ReductionResultBuilder()
+    return new TransformStepResultBuilder()
       .withUpdates(updates)
       .withErrors(errors)
       .build();
   }
 
-  public Triple<Pair<URI, ObjectNode>, Boolean, Optional<Throwable>> applyTransform(BiFunction<Context, Pair<URI, ObjectNode>, ObjectNode> reducer, Context context, Pair<URI, ObjectNode> value) {
-    Optional<ObjectNode> result = Optional.empty();
+  public Triple<Pair<URI, JsonNode>, Boolean, Optional<Throwable>> applyTransform(Context context, Pair<URI, JsonNode> value) {
+    Optional<JsonNode> result = Optional.empty();
     Optional<Throwable> exception = Optional.empty();
     try {
-      result = Optional.of(reducer.apply(context, value));
+      result = Optional.of(transform.apply(context, value));
     } catch ( Throwable t ) {
       exception = Optional.of(t);
     }
@@ -132,38 +135,56 @@ public class SchemaTransformer {
     return Triple.of(Pair.of(value.getLeft(), result.orElse(value.getRight())), changed, exception);
   }
 
-  @GeneratePojoBuilder
+  @GeneratePojoBuilder(excludeProperties = "needsContent")
   public static class Context {
-    List<MutablePair<URI, ObjectNode>> inputSchemas;
-    ContentResolver resolver;
-    public Optional<ObjectNode> findByURI(URI uri) throws URISyntaxException {
-      URI documentUri = new URI(
-        uri.getScheme(),
-        uri.getUserInfo(),
-        uri.getHost(),
-        uri.getPort(),
-        uri.getPath(),
-        null,
-        null);
+    Map<URI, JsonNode> inputSchemas;
+    Set<URI> needsContent = Collections.synchronizedSet(new HashSet<>());
+    FragmentResolver fragmentResolver;
+    String refFragmentPathDelimiters;
+
+    public Optional<JsonNode> get(URI id) {
+      URI normalizedId = id.normalize();
+      boolean isFragment = normalizedId.toString().contains("#");
+      URI baseId = isFragment
+        ? URIUtil.removeFragment(id).normalize()
+        : normalizedId;
       
-      return inputSchemas.stream()
-        .filter(p->p.getLeft().equals(documentUri))
-        .findFirst()
-        .map(Pair::getRight);
+      if ( !inputSchemas.containsKey(baseId) ) {
+        needsContent.add(baseId);
+        return Optional.empty();
+      }
+
+      JsonNode baseNode = inputSchemas.get(baseId);
+      if ( !isFragment ) {
+        return Optional.of(baseNode);
+      }
+      else {
+        JsonNode childNode = fragmentResolver.resolve(baseNode, '#' + id.getFragment(), refFragmentPathDelimiters);
+        return Optional.of(childNode);
+      }
     }
-    public List<MutablePair<URI, ObjectNode>> getInputSchemas() {
-      return inputSchemas;
-    }
+
+      public Map<URI, JsonNode> getInputSchemas() {
+          return inputSchemas;
+      }
+
+      public FragmentResolver getFragmentResolver() {
+          return fragmentResolver;
+      }
+
+      public String getRefFragmentPathDelimiters() {
+          return refFragmentPathDelimiters;
+      }
   }
 
   @GeneratePojoBuilder
-  public static class ReductionResult {
+  public static class TransformStepResult {
     Integer updates;
-    List<Pair<Pair<URI, ObjectNode>, Throwable>> errors;
+    List<Pair<Pair<URI, JsonNode>, Throwable>> errors;
     public Integer getUpdates() {
       return updates;
     }
-    public List<Pair<Pair<URI, ObjectNode>, Throwable>> getErrors() {
+    public List<Pair<Pair<URI, JsonNode>, Throwable>> getErrors() {
       return errors;
     }
   }

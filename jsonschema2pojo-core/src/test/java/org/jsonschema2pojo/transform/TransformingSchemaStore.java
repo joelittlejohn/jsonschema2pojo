@@ -20,8 +20,13 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiPredicate;
 
 import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.NoopRuleLogger;
@@ -34,88 +39,107 @@ import com.fasterxml.jackson.databind.JsonNode;
 // This would be better with composition instead of extension, but
 // we don't have an interface to work with.
 public class TransformingSchemaStore extends SchemaStore {
-    protected final Map<URI, Schema> transformedSchemas = new HashMap<>();
+    protected final Map<URI, JsonNode> schemaContent = new HashMap<>();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock readLock = readWriteLock.readLock();
+    private final Lock writeLock = readWriteLock.writeLock();
 
-    public TransformingSchemaStore() {
+    protected SchemaTransformer transformer;
+
+    public TransformingSchemaStore(SchemaTransformer transformer) {
         super(new ContentResolver(), new NoopRuleLogger());
+        this.transformer = transformer;
     }
 
-    public TransformingSchemaStore(ContentResolver contentResolver, RuleLogger logger) {
+    public TransformingSchemaStore(SchemaTransformer transformer, ContentResolver contentResolver, RuleLogger logger) {
       super(contentResolver, logger);
+      this.transformer = transformer;
     }
 
     @Override
-    public synchronized Schema create(URI id, String refFragmentPathDelimiters) {
+    public Schema create(URI id, String refFragmentPathDelimiters) {
       URI normalizedId = id.normalize();
-      if( !transformedSchemas.containsKey(normalizedId) ) {
-          URI baseId = removeFragment(id).normalize();
-          if (!transformedSchemas.containsKey(baseId)) {
-            Schema baseSchema = super.create(baseId, refFragmentPathDelimiters);
-            
-            // transforming code goes here, possibly loading other schemas along the way.
+      boolean isFragment = normalizedId.toString().contains("#");
+      URI baseId = isFragment
+        ? removeFragment(id).normalize()
+        : normalizedId;
 
-            Schema transformedBaseSchema = baseSchema;
-            transformedSchemas.put(baseId, transformedBaseSchema);
-          }
-
-          final Schema baseSchema = transformedSchemas.get(baseId);
-          if (normalizedId.toString().contains("#")) {
-              JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
-              transformedSchemas.put(normalizedId, new Schema(normalizedId, childContent, baseSchema));
-          }
+      // return the schema if we have it cached.
+      readLock.lock();
+      try {
+        if( schemas.containsKey(normalizedId)) return schemas.get(normalizedId);
+      } finally {
+        readLock.unlock();
       }
-      return schemas.get(normalizedId);
+
+      // some kind of cache update needs to happen.
+      writeLock.lock();
+      try {
+        // make sure we realy still need the update.
+        if( schemas.containsKey(normalizedId)) return schemas.get(normalizedId);
+
+        // make sure we don't have the content and are just missing the schema entry.
+        if( schemaContent.containsKey(normalizedId) ) {
+          Schema schema = new Schema(normalizedId, schemaContent.get(normalizedId), null);
+          schemas.put(normalizedId, schema);
+          return schema;
+        }
+
+        // determine if this is a fragement and we already have the content.
+        if( isFragment ) {
+          if( schemas.containsKey(baseId) ) {
+            Schema baseSchema = schemas.get(baseId);
+            JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
+            Schema childSchema = new Schema(normalizedId, childContent, baseSchema);
+            schemas.put(normalizedId, childSchema);
+            return childSchema;
+          } else if ( schemaContent.containsKey(baseId) ) {
+            Schema baseSchema = new Schema(baseId, schemaContent.get(baseId), null);
+            schemas.put(baseId, baseSchema);
+            JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
+            Schema childSchema = new Schema(normalizedId, childContent, baseSchema);
+            schemas.put(normalizedId, childSchema);
+            return childSchema;            
+          }
+        }
+
+        // We do not have the base content, so load it.
+        JsonNode baseContent = contentResolver.resolve(baseId);
+        schemaContent.put(baseId, baseContent);
+
+        // process the schema content map.
+        transformer.transform(schemaContent, contentResolver, refFragmentPathDelimiters);
+
+        // populate the schema.
+        Schema baseSchema = new Schema(baseId, schemaContent.get(baseId), null);
+        schemas.put(baseId, baseSchema);
+
+        if( isFragment ) {
+          JsonNode childContent = fragmentResolver.resolve(baseSchema.getContent(), '#' + id.getFragment(), refFragmentPathDelimiters);
+          Schema childSchema = new Schema(normalizedId, childContent, baseSchema);
+          schemas.put(normalizedId, childSchema);
+          return childSchema;
+        } else {
+          return baseSchema;
+        }
+      } finally {
+        writeLock.unlock();
+      }
     }
 
     @Override
-    public synchronized Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
-        if (!path.equals("#")) {
-            // if path is an empty string then resolving it below results in jumping up a level. e.g. "/path/to/file.json" becomes "/path/to"
-            path = stripEnd(path, "#?&/");
-        }
-
-        // encode the fragment for any funny characters
-        if (path.contains("#")) {
-            String pathExcludingFragment = substringBefore(path, "#");
-            String fragment = substringAfter(path, "#");
-            URI fragmentURI;
-            try {
-                fragmentURI = new URI(null, null, fragment);
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException("Invalid fragment: " + fragment + " in path: " + path);
-            }
-            path = pathExcludingFragment + "#" + fragmentURI.getRawFragment();
-        }
-
-        URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
-
-        String stringId = id.toString();
-        if (stringId.endsWith("#")) {
-            try {
-                id = new URI(stripEnd(stringId, "#"));
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException("Bad path: " + stringId);
-            }
-        }
-
-        if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
-            JsonNode parentContent = parent.getGrandParent().getContent();
-
-            if (transformedSchemas.containsKey(id)) {
-                return transformedSchemas.get(id);
-            } else {
-                Schema schema = new Schema(id, fragmentResolver.resolve(parentContent, path, refFragmentPathDelimiters), parent.getGrandParent());
-                transformedSchemas.put(id, schema);
-                return schema;
-            }
-        }
-
-        return create(id, refFragmentPathDelimiters);
+    public Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
+      throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public synchronized void clearCache() {
-      transformedSchemas.clear();
-      super.clearCache();
+    public void clearCache() {
+      writeLock.lock();
+      try {
+        schemas.clear();
+        schemaContent.clear();
+      } finally {
+        writeLock.unlock();
+      }
     }
 }

@@ -81,6 +81,30 @@ public class SchemaStore {
         return URI.create(substringBefore(id.toString(), "#"));
     }
 
+    protected URI resolveWithoutFragment( Schema parent, String path) {
+        if (!path.equals("#")) {
+            // if path is an empty string then resolving it below results in jumping up a level. e.g. "/path/to/file.json" becomes "/path/to"
+            path = stripEnd(path, "#?&/");
+        }
+
+        // encode the fragment for any funny characters
+        if (path.contains("#")) {
+            String pathExcludingFragment = substringBefore(path, "#");
+            String fragment = substringAfter(path, "#");
+            URI fragmentURI;
+            try {
+                fragmentURI = new URI(null, null, fragment);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid fragment: " + fragment + " in path: " + path);
+            }
+            path = pathExcludingFragment + "#" + fragmentURI.getRawFragment();
+        }
+
+        URI id = (parent == null || parent.getId() == null) ? URI.create(path) : parent.getId().resolve(path);
+
+        return id;
+    }
+
     /**
      * Create or look up a new schema using the given schema as a parent and the
      * path as a relative reference. If a schema with the given parent and
@@ -129,6 +153,8 @@ public class SchemaStore {
             }
         }
 
+        // POSSIBLE BUG: should the containing method be synchronized?  This block of
+        // code is interacting with the schemas map without a guard.
         if (selfReferenceWithoutParentFile(parent, path) || substringBefore(stringId, "#").isEmpty()) {
             JsonNode parentContent = parent.getGrandParent().getContent();
 
