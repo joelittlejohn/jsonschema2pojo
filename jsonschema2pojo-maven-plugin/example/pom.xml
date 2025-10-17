@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jsonschema2pojo</groupId>
-    <artifactId>jsonschema2pojo-test</artifactId>
+    <artifactId>maven-jsonschema2pojo-example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <build>
@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>1.2.1</version>
                 <configuration>
                     <sourceDirectory>${basedir}/schema</sourceDirectory>
                     <targetPackage>com.example.types</targetPackage>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.14.2</version>
+            <version>2.20.0</version>
         </dependency>
     </dependencies>
 
