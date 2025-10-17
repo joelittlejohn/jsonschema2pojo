@@ -47,7 +47,7 @@ public class DynamicPropertiesIT {
 
     @Test
     // jdk21 cannot build 1.7 target
-    @DisabledForJreRange(max = JAVA_21)
+    @DisabledForJreRange(min = JAVA_21)
     public void shouldSetStringFieldJava7() throws Throwable {
         setDeclaredPropertyTest(
                 config("includeDynamicAccessors", true, "includeDynamicGetters", true,

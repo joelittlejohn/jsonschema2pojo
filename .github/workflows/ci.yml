@@ -15,7 +15,7 @@ jobs:
     continue-on-error: true # allow jobs to complete even if some fail
     strategy:
       matrix:
-        java: [8, 11, 17, 21]
+        java: [8, 11, 17, 21, 25]
       max-parallel: 4
     name: JDK ${{ matrix.java }} | Project
     steps:
@@ -47,12 +47,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-java: [8, 11, 17, 21]
+        build-java: [8, 11, 17, 21, 25]
         run:
           - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
           - { java: 11, gradle: '7.6.4' }
-          - { java: 17, gradle: '8.9'  }
-          - { java: 21, gradle: '8.9'  }
+          - { java: 17, gradle: '8.9' }
+          - { java: 21, gradle: '8.9' }
+          - { java: 25, gradle: '9.1.0' }
     name: JDK ${{ matrix.build-java }} | Example Gradle (Android) | run on Java ${{ matrix.run.java }}
     steps:
       - uses: actions/checkout@v3
@@ -87,9 +88,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-java: [8, 11, 17, 21]
-        run-java: [8, 11, 17, 21]
-    name: JDK ${{ matrix.build-java }} | Example Gradle (Java) | run on Java ${{ matrix.run-java }}
+        build-java: [8, 11, 17, 21, 25]
+        run:
+          - { java: 8,  gradle: '8.9' }
+          - { java: 11, gradle: '8.9' }
+          - { java: 17, gradle: '8.9' }
+          - { java: 21, gradle: '8.9' }
+          - { java: 25, gradle: '9.1.0' }
+    name: JDK ${{ matrix.build-java }} | Example Gradle (Java) | run on Java ${{ matrix.run.java }}
     steps:
       - uses: actions/checkout@v3
 
@@ -102,12 +108,12 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.run-java }}
+          java-version: ${{ matrix.run.java }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.9
+          gradle-version: ${{ matrix.run.gradle }}
 
       - name: Build Gradle example (Java)
         working-directory: jsonschema2pojo-gradle-plugin/example/java
@@ -120,8 +126,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-java: [8]
-        run-java: [8, 11, 17, 21]
+        build-java: [8, 11, 17, 21, 25]
+        run-java: [8, 11, 17, 21, 25]
     name: JDK ${{ matrix.build-java }} | Example Maven | run on Java ${{ matrix.run-java }}
     steps:
       - uses: actions/checkout@v3
