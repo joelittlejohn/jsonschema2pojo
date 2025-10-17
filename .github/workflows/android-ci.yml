@@ -11,21 +11,27 @@ on:
 
 jobs:
   buildTest:
-    name: Build JDK ${{ matrix.java_version }}
+    name: JDK ${{ matrix.version.java }} | Example Gradle (Android)
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: [8]
+        version:
+          - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
     steps:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.18.0
         with:
           checkout-fetch-depth: 0
-          java-version: ${{ matrix.java_version }}
+          java-version: ${{ matrix.version.java }}
           java-distribution: temurin
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.1
       - name: Install latest jsonschema2pojo SNAPSHOT
         run: ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
-      - name: Build projects
-        run: cd jsonschema2pojo-gradle-plugin/example/android && ./gradlew --info assembleDebug
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ matrix.version.gradle }}
+      - name: Build Gradle example (Android)
+        working-directory: jsonschema2pojo-gradle-plugin/example/android
+        run: gradle --warning-mode all --info assembleDebug
