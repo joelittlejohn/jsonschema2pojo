@@ -20,16 +20,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.condition.JRE.JAVA_21;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class DynamicPropertiesIT {
-    
+
     @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
@@ -44,6 +46,8 @@ public class DynamicPropertiesIT {
     }
 
     @Test
+    // jdk21 cannot build 1.7 target
+    @DisabledForJreRange(min = JAVA_21)
     public void shouldSetStringFieldJava7() throws Throwable {
         setDeclaredPropertyTest(
                 config("includeDynamicAccessors", true, "includeDynamicGetters", true,
@@ -55,6 +59,19 @@ public class DynamicPropertiesIT {
                 "getStringValue",
                 "value");
     }
+
+    @Test
+    public void shouldSetStringFieldJava8() throws Throwable {
+        setDeclaredPropertyTest(
+                config("includeDynamicAccessors", true, "includeDynamicGetters", true,
+                    "includeDynamicSetters", true, "includeDynamicBuilders", true, "targetVersion", "1.8"),
+                "/schema/dynamic/parentType.json",
+                "ParentType",
+                String.class,
+                "stringValue",
+                "getStringValue",
+                "value");
+  }
 
     @Test
     public void shouldSetNumericField() throws Throwable {

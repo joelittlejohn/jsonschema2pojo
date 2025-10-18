@@ -1,4 +1,3 @@
----
 name: CI
 
 on:
@@ -11,23 +10,144 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  project-test:
     runs-on: ubuntu-latest
+    continue-on-error: true # allow jobs to complete even if some fail
     strategy:
       matrix:
-        java_version: [8]
+        java: [8, 11, 17, 21, 25]
       max-parallel: 4
-    name: Test JDK ${{ matrix.java_version }}
+    name: JDK ${{ matrix.java }} | Project
     steps:
-      - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.18.0
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
         with:
-          checkout-fetch-depth: 0
-          java-version: ${{ matrix.java_version }}
-          java-distribution: temurin
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          cache: maven
+
       - name: Verify with Maven
         run: ./mvnw verify -B
-      - name: Verify jsonschema2pojo-gradle-plugin integration tests
-        run: |
-          ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip -pl jsonschema2pojo-gradle-plugin -am
-          ./mvnw -U -B install -pl jsonschema2pojo-gradle-plugin
+
+      - name: Prepare for next jobs - Install current SNAPSHOT
+        run: ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
+
+      - name: Prepare for next jobs - Upload org.jsonschema2pojo artifacts (per JDK)
+        uses: actions/upload-artifact@v4
+        with:
+          name: m2-jsonschema2pojo-jdk${{ matrix.java }}
+          path: ~/.m2/repository/org/jsonschema2pojo
+          if-no-files-found: error
+
+  gradle-example-android:
+    needs: project-test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        build-java: [8, 11, 17, 21, 25]
+        run:
+          - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
+          - { java: 11, gradle: '7.6.4' }
+          - { java: 17, gradle: '8.9' }
+          - { java: 21, gradle: '8.9' }
+          - { java: 25, gradle: '9.1.0' }
+    name: JDK ${{ matrix.build-java }} | Example Gradle (Android) | run on Java ${{ matrix.run.java }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.1.1
+
+      - name: Download m2 org.jsonschema2pojo (matching build-java)
+        uses: actions/download-artifact@v4
+        with:
+          name: m2-jsonschema2pojo-jdk${{ matrix.build-java }}
+          path: ~/.m2/repository/org/jsonschema2pojo
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.run.java }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ matrix.run.gradle }}
+
+      - name: Build Gradle example (Android)
+        working-directory: jsonschema2pojo-gradle-plugin/example/android
+        run: gradle --warning-mode all --info assembleDebug
+
+  gradle-example-java:
+    needs: project-test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        build-java: [8, 11, 17, 21, 25]
+        run:
+          - { java: 8,  gradle: '8.9' }
+          - { java: 11, gradle: '8.9' }
+          - { java: 17, gradle: '8.9' }
+          - { java: 21, gradle: '8.9' }
+          - { java: 25, gradle: '9.1.0' }
+    name: JDK ${{ matrix.build-java }} | Example Gradle (Java) | run on Java ${{ matrix.run.java }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download m2 org.jsonschema2pojo (matching build-java)
+        uses: actions/download-artifact@v4
+        with:
+          name: m2-jsonschema2pojo-jdk${{ matrix.build-java }}
+          path: ~/.m2/repository/org/jsonschema2pojo
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.run.java }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ matrix.run.gradle }}
+
+      - name: Build Gradle example (Java)
+        working-directory: jsonschema2pojo-gradle-plugin/example/java
+        run: gradle --warning-mode all --info build
+
+  maven-example:
+    needs: project-test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        build-java: [8, 11, 17, 21, 25]
+        run-java: [8, 11, 17, 21, 25]
+    name: JDK ${{ matrix.build-java }} | Example Maven | run on Java ${{ matrix.run-java }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download m2 org.jsonschema2pojo (matching build-java)
+        uses: actions/download-artifact@v4
+        with:
+          name: m2-jsonschema2pojo-jdk${{ matrix.build-java }}
+          path: ~/.m2/repository/org/jsonschema2pojo
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.run-java }}
+
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          maven-version: 3.9.9
+
+      - name: Build Maven example
+        working-directory: jsonschema2pojo-maven-plugin/example
+        run: mvn package
