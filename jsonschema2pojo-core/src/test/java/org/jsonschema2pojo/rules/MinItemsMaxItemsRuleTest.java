@@ -81,6 +81,8 @@ public class MinItemsMaxItemsRuleTest {
                 { false, Long.class },
                 { false, Float.class },
                 { false, Double.class },
+                // For example, type string with media.binaryEncoding="base64"
+                { true, byte[].class }
         }).stream()
                 .flatMap(o -> Stream.of(true, false).map(b -> Stream.concat(stream(o), Stream.of(b)).toArray()))
                 .collect(Collectors.toList());
@@ -108,6 +110,7 @@ public class MinItemsMaxItemsRuleTest {
         when(node.get("minItems")).thenReturn(subNode);
         when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
+        when(fieldVar.type().isArray()).thenReturn(fieldClass.isArray());
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
@@ -126,6 +129,7 @@ public class MinItemsMaxItemsRuleTest {
         when(node.get("maxItems")).thenReturn(subNode);
         when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("maxItems")).thenReturn(true);
+        when(fieldVar.type().isArray()).thenReturn(fieldClass.isArray());
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
@@ -149,6 +153,7 @@ public class MinItemsMaxItemsRuleTest {
         when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
         when(node.has("maxItems")).thenReturn(true);
+        when(fieldVar.type().isArray()).thenReturn(fieldClass.isArray());
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName());
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
@@ -172,6 +177,7 @@ public class MinItemsMaxItemsRuleTest {
         when(fieldVar.annotate(sizeClass)).thenReturn(annotation);
         when(node.has("minItems")).thenReturn(true);
         when(node.has("maxItems")).thenReturn(true);
+        when(fieldVar.type().isArray()).thenReturn(fieldClass.isArray());
         when(fieldVar.type().boxify().fullName()).thenReturn(fieldClass.getTypeName() + "<String>");
 
         JFieldVar result = rule.apply("node", node, null, fieldVar, null);
