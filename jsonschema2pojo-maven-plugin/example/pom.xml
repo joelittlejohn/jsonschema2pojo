@@ -5,10 +5,15 @@
     <artifactId>maven-jsonschema2pojo-example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <properties>
+        <jsonschema2pojo.version>1.2.1</jsonschema2pojo.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -17,7 +22,7 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>${jsonschema2pojo.version}</version>
                 <configuration>
                     <sourceDirectory>${basedir}/schema</sourceDirectory>
                     <targetPackage>com.example.types</targetPackage>
