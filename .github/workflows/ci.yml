@@ -25,10 +25,9 @@ jobs:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java_version }}
           java-distribution: temurin
-          maven-version: 3.8.7
       - name: Verify with Maven
-        run: mvn verify -B
+        run: ./mvnw verify -B
       - name: Verify jsonschema2pojo-gradle-plugin integration tests
         run: |
-          mvn -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip -pl jsonschema2pojo-gradle-plugin -am
-          mvn -U -B install -pl jsonschema2pojo-gradle-plugin
+          ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip -pl jsonschema2pojo-gradle-plugin -am
+          ./mvnw -U -B install -pl jsonschema2pojo-gradle-plugin

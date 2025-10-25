@@ -90,16 +90,21 @@ public class CodeGenerationHelper {
 
         try {
             @SuppressWarnings("serial")
-        Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo().configure(new HashMap<String, Object>() {
-                {
-                    put("sourceDirectory", URLUtil.getFileFromURL(schema).getPath());
-                    put("outputDirectory", outputDirectory);
-                    put("project", getMockProject());
-                    put("targetPackage", targetPackage);
-                    putAll(configValues);
-                }
-            });
-
+            Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo()
+                .configure(new HashMap<String, Object>() {
+                    {
+                        if( !schema.toExternalForm().startsWith("http://") ) {
+                            put("sourceDirectory", URLUtil.getFileFromURL(schema).getPath());
+                        } else {
+                            put("sourcePaths", new String[] {schema.toExternalForm()});
+                        }
+                        put("outputDirectory", outputDirectory);
+                        put("project", getMockProject());
+                        put("targetPackage", targetPackage);
+                        putAll(configValues);
+                    }
+                });
+ 
             pluginMojo.execute();
         } catch (MojoExecutionException | DependencyResolutionRequiredException e) {
             throw new RuntimeException(e);

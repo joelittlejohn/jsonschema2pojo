@@ -8,7 +8,7 @@ Feature branches make pull requests easier as GitHub will keep your pull request
 
 To compile, unit test, package, and run the integration test suite (the typical full build), use:
 
-`mvn clean verify`
+`./mvnw clean verify`
 
 ## 3. Add integration tests
 
