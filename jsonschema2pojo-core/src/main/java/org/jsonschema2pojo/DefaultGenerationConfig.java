@@ -179,6 +179,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
         return false;
     }
 
+    /**
+     * @return {@code false}
+     */
+    @Override
+    public boolean isIncludeDeprecatedAnnotations() {
+        return false;
+    }
+
     @Override
     public boolean isUseOptionalForGetters() { return false; }
 

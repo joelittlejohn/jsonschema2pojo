@@ -191,6 +191,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         } else {
             ruleFactory.getNotRequiredRule().apply(nodeName, node.get("required"), node, generatedJavaConstruct, schema);
         }
+
+        if (node.has("deprecated")) {
+            ruleFactory.getDeprecatedRule().apply(nodeName, node.get("deprecated"), node, generatedJavaConstruct, schema);
+        }
     }
 
     private void formatAnnotation(JFieldVar field, JDefinedClass clazz, JsonNode node) {
