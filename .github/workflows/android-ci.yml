@@ -19,7 +19,7 @@ jobs:
           - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
     steps:
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.18.0
+        uses: s4u/setup-maven-action@v1.19.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.version.java }}
