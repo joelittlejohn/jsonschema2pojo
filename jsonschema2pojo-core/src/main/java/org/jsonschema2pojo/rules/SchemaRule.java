@@ -16,7 +16,8 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.contains;
+import static org.apache.commons.lang3.StringUtils.split;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -92,7 +93,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         return javaType;
     }
 
-    private String nameFromRef(String ref) {
+	private String nameFromRef(String ref) {
 
         if ("#".equals(ref)) {
             return null;
