@@ -825,7 +825,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         } else if (!isEmpty(sourcePaths)) {
             // verify individual source paths
             for (int i = 0; i < sourcePaths.length; i++) {
-                sourcePaths[i] = FilenameUtils.normalize(sourcePaths[i]);
+                sourcePaths[i] = URLUtil.isLocalUrl(sourcePaths[i]) ?
+                        FilenameUtils.normalize(sourcePaths[i]) : sourcePaths[i];
                 try {
                     URLUtil.parseURL(sourcePaths[i]);
                 } catch (IllegalArgumentException e) {
