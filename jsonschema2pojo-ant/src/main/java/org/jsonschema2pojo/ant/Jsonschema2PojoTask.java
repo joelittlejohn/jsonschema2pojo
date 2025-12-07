@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -147,11 +145,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean constructorsRequiredPropertiesOnly = false;
 
-    boolean includeRequiredPropertiesConstructor = false;
+    private boolean includeRequiredPropertiesConstructor = false;
 
-    boolean includeAllPropertiesConstructor = true;
+    private boolean includeAllPropertiesConstructor = true;
 
-    boolean includeCopyConstructor = false;
+    private boolean includeCopyConstructor = false;
 
     private boolean includeAdditionalProperties = true;
 
@@ -272,12 +270,7 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
         final ClassLoader parentClassloader = Thread.currentThread().getContextClassLoader();
 
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]), parentClassloader);
-            }
-        });
+        return new URLClassLoader(classpathUrls.toArray(new URL[0]), parentClassloader);
     }
 
     /**
