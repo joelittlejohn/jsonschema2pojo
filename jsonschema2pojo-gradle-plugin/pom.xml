@@ -24,8 +24,23 @@
         <dependency>
             <groupId>dev.gradleplugins</groupId>
             <artifactId>gradle-api</artifactId>
-            <version>${gradle.version}</version>
+            <version>${gradle-api.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- 8.11.1 depends on old versions that do not match the groovy compiler version, causing build to fail -->
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -103,12 +118,12 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.9.2-01</version>
+                        <version>3.9.1</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.5.14-01</version>
+                        <version>5.0.3-01</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -155,4 +170,10 @@
             </plugin>
         </plugins>
     </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>groovy-plugins-release</id>
+            <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

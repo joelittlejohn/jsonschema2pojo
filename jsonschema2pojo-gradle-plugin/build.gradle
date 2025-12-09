@@ -42,8 +42,10 @@ pluginBundle {
   }
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+java {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
 
 dependencies {
   implementation "org.jsonschema2pojo:jsonschema2pojo-core:${project.version}"
