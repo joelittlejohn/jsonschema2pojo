@@ -54,10 +54,10 @@
         <gradle-api.version>8.11.1</gradle-api.version>
         <gson.version>2.11.0</gson.version>
         <moshi.version>1.12.0</moshi.version>
-        <jackson.version>2.20.1</jackson.version>
+        <jackson.version>2.17.2</jackson.version>
         <ecj.version>3.43.0</ecj.version>
         <mockito.version>4.11.0</mockito.version>
-        <maven.plugin.plugin.version>3.15.2</maven.plugin.plugin.version>
+        <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
     </properties>
 
     <reporting>
@@ -73,7 +73,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -81,19 +81,19 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.1.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.3</version>
                     <configuration>
                         <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
                             <disable>false</disable>
-                            <version>3.5.4</version>
+                            <version>3.5.3</version>
                             <usePhrasedFileName>false</usePhrasedFileName>
                             <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
                             <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
@@ -114,19 +114,19 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.2.8</version>
+                    <version>1.6</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.1.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.12.0</version>
+                    <version>2.10.4</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-plugin-plugin</artifactId>
@@ -146,7 +146,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.3.0</version>
                     <configuration>
                         <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
                     </configuration>
@@ -157,7 +157,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -192,7 +192,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -280,7 +280,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <doclint>none</doclint>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
@@ -498,7 +498,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
-                <version>3.9.11</version>
+                <version>2.2.1</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -509,8 +509,8 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
-                <artifactId>maven-core</artifactId>
-                <version>3.9.11</version>
+                <artifactId>maven-project</artifactId>
+                <version>2.2.1</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
@@ -522,7 +522,7 @@
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>maven-shared-utils</artifactId>
-                <version>3.4.2</version>
+                <version>3.3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
