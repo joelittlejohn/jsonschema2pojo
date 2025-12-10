@@ -4,7 +4,7 @@ _jsonschema2pojo_ generates Java types from JSON Schema (or example JSON) and ca
 
 ### [Try jsonschema2pojo online](http://jsonschema2pojo.org/)<br>or `brew install jsonschema2pojo`
 
-You can use jsonschema2pojo as a Maven plugin, an Ant task, a command line utility, a Gradle plugin or embedded within your own Java app. The [Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started) guide will show you how.
+You can use jsonschema2pojo as a Maven plugin, a command line utility, a Gradle plugin or embedded within your own Java app. The [Getting Started](https://github.com/joelittlejohn/jsonschema2pojo/wiki/Getting-Started) guide will show you how.
 
 A very simple Maven example:
 ```xml
@@ -50,7 +50,6 @@ Useful pages:
   * [Latest Javadocs](https://joelittlejohn.github.io/jsonschema2pojo/javadocs/1.2.2/)
   * [Documentation for the Maven plugin](https://joelittlejohn.github.io/jsonschema2pojo/site/1.2.2/generate-mojo.html)
   * [Documentation for the Gradle plugin](https://github.com/joelittlejohn/jsonschema2pojo/tree/master/jsonschema2pojo-gradle-plugin#usage)
-  * [Documentation for the Ant task](https://joelittlejohn.github.io/jsonschema2pojo/site/1.2.2/Jsonschema2PojoTask.html)
 
 Project resources:
   * [Downloads](https://github.com/joelittlejohn/jsonschema2pojo/releases)
