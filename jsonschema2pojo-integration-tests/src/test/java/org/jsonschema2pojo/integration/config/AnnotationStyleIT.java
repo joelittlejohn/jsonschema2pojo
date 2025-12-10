@@ -90,6 +90,27 @@ public class AnnotationStyleIT {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void annotationStyleJackson3ProducesJackson3Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+
+        Class generatedType = schemaRule.generateAndCompile("/schema/properties/propertiesWithDifferentJackson3DatabindAnnotation.json", "com.example",
+                        config("annotationStyle", "jackson3"))
+                .loadClass("com.example.PropertiesWithDifferentJackson3DatabindAnnotation");
+
+        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
+
+        System.out.println("generated dir:" + schemaRule.getGenerateDir());
+        assertThat(schemaRule.getGenerateDir(), containsText("tools.jackson.databind.annotation"));
+
+        Method getter = generatedType.getMethod("getSet");
+
+        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+    }
+
+    @Test
     public void annotationStyleJackson2ProducesJsonPropertyDescription() throws Exception {
         Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
 

@@ -16,20 +16,23 @@
 
 package org.jsonschema2pojo;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import com.sun.codemodel.JFieldVar;
 
 import java.util.LinkedHashSet;
 
 /**
- * Annotates generated Java types using the Jackson 2.x mapping annotations.
+ * Annotates generated Java types using the Jackson 3.x mapping annotations (version 2.x of jackson-annotations
+ * are still used in Jackson 3.x, but annotations from jackson-databind are different)
  *
  * @see <a
  *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+ * @see <a
+ *      href="https://github.com/FasterXML/jackson-databind/tree/3.x">https://github.com/FasterXML/jackson-databind (3.x)</a>
  */
-public class Jackson2Annotator extends JacksonAnnotator {
+public class Jackson3Annotator extends JacksonAnnotator {
 
-    public Jackson2Annotator(GenerationConfig generationConfig) {
+    public Jackson3Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
     }
 
