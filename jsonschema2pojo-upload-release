@@ -82,13 +82,11 @@ pushd $WORKING_DIR
     popd
 
     wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-maven-plugin/$VERSION/jsonschema2pojo-maven-plugin-$VERSION-site.jar
-    wget https://raw.github.com/joelittlejohn/jsonschema2pojo/jsonschema2pojo-$VERSION/jsonschema2pojo-ant/src/site/Jsonschema2PojoTask.html
     pushd gh-pages
 
         # extract plugin docs
         mkdir -p site/$VERSION
         unzip $WORKING_DIR/jsonschema2pojo-maven-plugin-$VERSION-site.jar -d site/$VERSION/
-        mv $WORKING_DIR/Jsonschema2PojoTask.html site/$VERSION/
 
         # commit plugin docs and push
         git add .

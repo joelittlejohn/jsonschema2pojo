@@ -18,7 +18,6 @@
     <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
     <modules>
-        <module>jsonschema2pojo-ant</module>
         <module>jsonschema2pojo-cli</module>
         <module>jsonschema2pojo-core</module>
         <module>jsonschema2pojo-gradle-plugin</module>
@@ -483,11 +482,6 @@
                         <groupId>com.fasterxml.jackson.core</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.10.15</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.bval</groupId>
