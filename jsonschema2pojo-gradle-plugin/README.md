@@ -57,6 +57,8 @@ dependencies {
   implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
   // Required if generating Jackson 2 annotations
   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+  // Required if generating Jackson 3 annotations
+  implementation 'tools.jackson.core:jackson-databind:3.0.2'
   // Required if generating JodaTime data types
   implementation 'joda-time:joda-time:2.2'
 }
@@ -127,6 +129,7 @@ jsonSchema2Pojo {
   // The style of annotations to use in the generated Java types. Supported values:
   //  - jackson (alias of jackson2)
   //  - jackson2 (apply annotations from the Jackson 2.x library)
+  //  - jackson3 (apply annotations from the Jackson 3.x library)
   //  - jsonb (apply annotations from the JSON-B 1 library)
   //  - jsonb2 (apply annotations from the JSON-B 2 library)
   //  - gson (apply annotations from the Gson library)
