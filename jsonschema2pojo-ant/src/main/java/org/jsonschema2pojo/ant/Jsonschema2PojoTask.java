@@ -700,18 +700,6 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     }
 
     /**
-     * Sets the 'useCommonsLang3' property of this class
-     *
-     * @param useCommonsLang3
-     *            whether to use commons-lang 3.x imports instead of commons-lang 2.x imports when adding equals, hashCode and toString methods
-     * @deprecated no longer in use, please remove it from your config
-     */
-    @Deprecated
-    public void setUseCommonsLang3(boolean useCommonsLang3) {
-        super.log("useCommonsLang3 is deprecated. Please remove it from your config.", Project.MSG_WARN);
-    }
-
-    /**
      * Sets the 'parcelable' property of this class
      *
      * @param parcelable

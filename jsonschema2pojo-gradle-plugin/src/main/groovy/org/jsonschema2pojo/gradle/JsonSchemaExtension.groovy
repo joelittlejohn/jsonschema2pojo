@@ -74,7 +74,6 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean removeOldOutput
   SourceType sourceType
   String targetVersion
-  boolean useCommonsLang3
   boolean useDoubleNumbers
   boolean useBigDecimals
   boolean useJodaDates
@@ -135,7 +134,6 @@ public class JsonSchemaExtension implements GenerationConfig {
     dateTimeType = null
     dateType = null
     timeType = null
-    useCommonsLang3 = false
     parcelable = false
     serializable = false
     fileFilter = new AllFileFilter()

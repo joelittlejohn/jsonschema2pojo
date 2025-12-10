@@ -450,15 +450,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private String dateType = null;
 
     /**
-     * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
-     * imports when adding equals, hashCode and toString methods.
-     *
-     * @since 0.4.1
-     */
-    @Parameter(property = "jsonschema2pojo.useCommonsLang3", defaultValue = "false")
-    private boolean useCommonsLang3 = false;
-
-    /**
      * Whether to make the generated types 'parcelable' (for Android development).
      *
      * @since 0.4.11
@@ -848,10 +839,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             project.addCompileSourceRoot(outputDirectory.getPath());
         }
 
-        if (useCommonsLang3) {
-            getLog().warn("useCommonsLang3 is deprecated. Please remove it from your config.");
-        }
-
         RuleLogger logger = new MojoRuleLogger(getLog());
 
         try {
@@ -1036,11 +1023,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJodaLocalTimes() {
         return useJodaLocalTimes;
-    }
-
-    @Deprecated
-    public boolean isUseCommonsLang3() {
-        return useCommonsLang3;
     }
 
     @Override
