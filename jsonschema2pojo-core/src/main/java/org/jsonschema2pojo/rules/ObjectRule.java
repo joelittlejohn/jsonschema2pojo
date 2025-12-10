@@ -531,7 +531,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
         AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
 
         if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON2) {
+                || annotationStyle == AnnotationStyle.JACKSON2
+                || annotationStyle == AnnotationStyle.JACKSON3) {
             return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
         }
 
