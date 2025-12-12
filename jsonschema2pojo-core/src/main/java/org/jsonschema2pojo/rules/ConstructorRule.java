@@ -31,6 +31,7 @@ import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
@@ -238,10 +239,10 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     private String getJavadocForProperty(JsonNode propertyObj) {
         final StringJoiner stringJoiner = new StringJoiner(" ");
         if (propertyObj.has("title") && StringUtils.isNotBlank(propertyObj.get("title").textValue())) {
-            stringJoiner.add(StringUtils.appendIfMissing(propertyObj.get("title").asText(), "."));
+            stringJoiner.add(Strings.CS.appendIfMissing(propertyObj.get("title").asText(), "."));
         }
         if (propertyObj.has("description") && StringUtils.isNotBlank(propertyObj.get("description").textValue())) {
-            stringJoiner.add(StringUtils.appendIfMissing(propertyObj.get("description").asText(), "."));
+            stringJoiner.add(Strings.CS.appendIfMissing(propertyObj.get("description").asText(), "."));
         }
         return stringJoiner.toString();
     }

@@ -209,7 +209,7 @@ public class ArrayIT {
 
             Class<?> jacksonClass = resultsClassLoader.loadClass("com.example.TypeWithArrayProperties");
 
-            Object original = jacksonClass.newInstance();
+            Object original = jacksonClass.getDeclaredConstructor().newInstance();
 
             @SuppressWarnings("unchecked")
             Set<Integer> expected = (Set<Integer>) jacksonClass.getMethod("getUniqueIntegerArray").invoke(original);

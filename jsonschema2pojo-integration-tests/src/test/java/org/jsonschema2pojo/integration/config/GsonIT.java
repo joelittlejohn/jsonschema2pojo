@@ -23,8 +23,8 @@ import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.jsonschema2pojo.integration.util.JsonAssert.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -78,17 +78,17 @@ public class GsonIT {
         assertJsonRoundTrip(resultsClassLoader, "com.example.GetUserData", "/json/examples/GetUserData.json");
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     @Test
-    public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void enumValuesAreSerializedCorrectly() throws IllegalArgumentException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "gson",
                         "propertyWordDelimiters", "_"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
-        Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
-        Object instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
+        Class<?> enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = generatedType.getMethod("setEnumProperty", enumType);
         setter.invoke(instance, enumType.getEnumConstants()[3]);
@@ -103,7 +103,7 @@ public class GsonIT {
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 
-        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource));
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), StandardCharsets.UTF_8);
         Object javaInstance = new Gson().fromJson(expectedJson, generatedType);
         String actualJson = new Gson().toJson(javaInstance);
 
