@@ -137,6 +137,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-305", "--jsr305-annotations" }, description = "Add JSR-305 annotations to generated Java types.")
     private boolean includeJsr305Annotations = false;
 
+    @Parameter(names = { "--deprecated-annotations" }, description = "Add @Deprecated annotations to fields marked as deprecated in JSON Schema.")
+    private boolean includeDeprecatedAnnotations = false;
+
     @Parameter(names = { "-o", "--use-optional-for-getters"}, description = "Use Optional for getters of non-required fields.")
     private boolean useOptionalForGetters = false;
 
@@ -402,6 +405,11 @@ public class Arguments implements GenerationConfig {
     @Override
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
+    }
+
+    @Override
+    public boolean isIncludeDeprecatedAnnotations() {
+        return includeDeprecatedAnnotations;
     }
 
     @Override
