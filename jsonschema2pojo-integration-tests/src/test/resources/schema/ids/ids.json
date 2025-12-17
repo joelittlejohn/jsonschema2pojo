@@ -1,0 +1,10 @@
+{
+  "title" : "IdExample",
+  "type" : "object",
+  "$id" : "id://foobar\"",
+  "properties" : {
+    "property" : {
+      "type" : "string"
+    }
+  }
+}
