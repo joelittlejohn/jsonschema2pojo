@@ -61,14 +61,10 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
   }
 
   void setTargetVersion(JsonSchemaExtension configuration) {
-    if (!configuration.targetVersion) {
-      if (project.plugins.hasPlugin("com.android.application")) {
-        configuration.targetVersion = project.plugins.getPlugin("com.android.application").extension.compileOptions.sourceCompatibility
+    if (!configuration.targetVersion && (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library"))) {
+        configuration.targetVersion = project.android.compileOptions.sourceCompatibility
         logger.info 'Using android.compileOptions.sourceCompatibility as targetVersion for jsonschema2pojo: ' + configuration.targetVersion
-      } else if (project.plugins.hasPlugin("com.android.library")) {
-        configuration.targetVersion = project.plugins.getPlugin("com.android.library").extension.compileOptions.sourceCompatibility
-        logger.info 'Using android.compileOptions.sourceCompatibility as targetVersion for jsonschema2pojo: ' + configuration.targetVersion
-      }
     }
   }
+
 }

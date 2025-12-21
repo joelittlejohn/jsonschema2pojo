@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         version:
-          - { java: 8,  gradle: '7.6.4' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
+          - { java: 17,  gradle: '8.9' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
     steps:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.18.0

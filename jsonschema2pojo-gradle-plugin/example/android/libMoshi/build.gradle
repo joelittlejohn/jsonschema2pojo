@@ -3,6 +3,9 @@ apply plugin: 'jsonschema2pojo'
 
 
 android {
+
+    namespace "jsonschema2pojo.joelittlejohn.github.com.androidlibexample"
+
     compileSdkVersion 30
 
     defaultConfig {
@@ -112,15 +115,16 @@ jsonSchema2Pojo {
     // that have been generated previously. <strong>Be warned</strong>, when activated this option
     // will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target
     // directory (all files and folders)</strong> before it begins generating sources.
-    boolean removeOldOutput = true
+    removeOldOutput = true
 
     // The character encoding that should be used when writing the generated Java source files
-    String outputEncoding = 'UTF-8'
+    outputEncoding = 'UTF-8'
 
     // Whether to use {@link org.joda.time.DateTime} instead of {@link java.util.Date} when adding
     // date type fields to generated Java types.
-    boolean useJodaDates = false
+    useJodaDates = false
 
     // Whether to initialize Set and List fields as empty collections, or leave them as null.
-    boolean initializeCollections = true
+    initializeCollections = true
+
 }
