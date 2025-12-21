@@ -194,6 +194,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private boolean includeGeneratedAnnotation = true;
 
     private boolean useJakartaValidation = false;
+
+    private boolean generateDefinitions = false;
+
+    private String definitionsPath = "/$defs";
+
     /**
      * Execute this task (it's expected that all relevant setters will have been
      * called by Ant to provide task configuration <em>before</em> this method
@@ -970,6 +975,24 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.useJakartaValidation = useJakartaValidation;
     }
 
+    /**
+     * Sets the 'generateDefinitions' property of this class
+     *
+     * @param generateDefinitions Whether to generate POJO's from subschemas path defined by {@link #getDefinitionsPath()} configuration option
+     */
+    public void setGenerateDefinitions(boolean generateDefinitions) {
+        this.generateDefinitions = generateDefinitions;
+    }
+
+    /**
+     * Sets the 'definitionsPath' property of this class
+     *
+     * @param definitionsPath Path to subschemas that should be processed by jsonschema2pojo when {@link #isGenerateDefinitions()} is enabled
+     */
+    public void setDefinitionsPath(String definitionsPath) {
+        this.definitionsPath = definitionsPath;
+    }
+
     public void setFormatTypeMapping(Map<String, String> formatTypeMapping) {
         this.formatTypeMapping = formatTypeMapping;
     }
@@ -1330,5 +1353,15 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
+    }
+
+    @Override
+    public boolean isGenerateDefinitions() {
+        return generateDefinitions;
+    }
+
+    @Override
+    public String getDefinitionsPath() {
+        return definitionsPath;
     }
 }
