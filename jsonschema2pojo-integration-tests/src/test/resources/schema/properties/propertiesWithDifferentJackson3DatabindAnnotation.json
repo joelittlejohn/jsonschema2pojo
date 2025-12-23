@@ -1,0 +1,10 @@
+
+{
+    "type" : "object",
+    "properties" : {
+        "set" :{
+            "type" : "array",
+            "uniqueItems": true
+        }
+    }
+}
