@@ -21,13 +21,15 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.Strings;
+
 public class JavaVersion {
 
     private static final Pattern JAVA_VERSION_1_X = Pattern.compile("(^1.\\d+)");
     private static final Pattern JAVA_VERSION_X = Pattern.compile("(^\\d+)");
 
     public static String parse(String version) {
-        if (startsWith(version, "1.")) {
+        if (Strings.CS.startsWith(version, "1.")) {
             Matcher m = JAVA_VERSION_1_X.matcher(version);
             m.find();
             return m.group();
@@ -40,7 +42,7 @@ public class JavaVersion {
 
     public static boolean is9OrLater(final String targetVersion) {
         if (isNotBlank(targetVersion)) {
-            final Double v = Double.valueOf(targetVersion);
+            final double v = Double.parseDouble(targetVersion);
             return (v >= 9) || (v < 2 && v >= 1.9);
         } else {
             return false;

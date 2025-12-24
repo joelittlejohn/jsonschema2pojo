@@ -24,17 +24,11 @@ import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsonschema.SchemaAware;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
 public class SchemaGenerator {
 
@@ -79,7 +73,7 @@ public class SchemaGenerator {
         schema.put("type", "object");
 
         ObjectNode properties = this.objectMapper.createObjectNode();
-        for (Iterator<String> iter = exampleObject.fieldNames(); iter.hasNext();) {
+        for (Iterator<String> iter = exampleObject.fieldNames(); iter.hasNext(); ) {
             String property = iter.next();
             properties.set(property, schemaFromExample(exampleObject.get(property)));
         }
@@ -147,31 +141,24 @@ public class SchemaGenerator {
     }
 
     private ObjectNode simpleTypeSchema(JsonNode exampleValue) {
-
-        try {
-
-            Object valueAsJavaType = this.objectMapper.treeToValue(exampleValue, Object.class);
-
-            SerializerProvider serializerProvider = new DefaultSerializerProvider.Impl().createInstance(this.objectMapper.getSerializationConfig(), BeanSerializerFactory.instance);
-
-            if (valueAsJavaType == null) {
-                SchemaAware valueSerializer = NullSerializer.instance;
-                return (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
-            } else if (valueAsJavaType instanceof Long) {
-                // longs are 'integers' in schema terms
-                SchemaAware valueSerializer = (SchemaAware) serializerProvider.findValueSerializer(Integer.class, null);
-                ObjectNode schema = (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
-                schema.put("minimum", Long.MAX_VALUE);
-                return schema;
-            } else {
-                Class<? extends Object> javaTypeForValue = valueAsJavaType.getClass();
-                SchemaAware valueSerializer = (SchemaAware) serializerProvider.findValueSerializer(javaTypeForValue, null);
-                return (ObjectNode) valueSerializer.getSchema(serializerProvider, null);
-            }
-        } catch (JsonProcessingException e) {
-            throw new GenerationException("Unable to generate a schema for this json example: " + exampleValue, e);
+        if (exampleValue.isNull()) {
+            return objectMapper.createObjectNode().putNull("type");
+        } else if (exampleValue.isLong()) {
+            // longs are 'integers' in schema terms
+            return objectMapper.createObjectNode().put("type", "integer").put("minimum", Long.MAX_VALUE);
+        } else if (exampleValue.isInt()) {
+            return objectMapper.createObjectNode().put("type", "integer");
+        } else if (exampleValue.isTextual()) {
+            return objectMapper.createObjectNode().put("type", "string");
+        } else if (exampleValue.isNumber()) {
+            return objectMapper.createObjectNode().put("type", "number");
+        } else if (exampleValue.isBoolean()) {
+            return objectMapper.createObjectNode().put("type", "boolean");
+        } else {
+            final var message = "Unsupported node of type='%s', class='%s' having value='%s'"
+                    .formatted(exampleValue.getNodeType(), exampleValue.getClass().getSimpleName(), exampleValue);
+            throw new UnsupportedOperationException(message);
         }
-
     }
 
 }

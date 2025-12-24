@@ -67,7 +67,7 @@ public class InitializeCollectionsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/initializeCollectionProperties.json", "com.example", config);
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.InitializeCollectionProperties");
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method getter = generatedType.getMethod(getterName);
 

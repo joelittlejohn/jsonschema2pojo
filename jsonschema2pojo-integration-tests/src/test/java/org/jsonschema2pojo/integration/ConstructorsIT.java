@@ -25,20 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.sun.codemodel.JMod;
 
-// Using @TestInstance(TestInstance.Lifecycle.PER_CLASS) and 'public static Jsonschema2PojoRule classSchemaRule' on top level
-// as Java8 does not support static methods in nested classes
 public class ConstructorsIT {
-
-  @RegisterExtension
-  public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
   public static void assertHasModifier(int modifier, int modifiers, String modifierName) {
     assertThat(
@@ -68,7 +61,7 @@ public class ConstructorsIT {
 
   public static Object getInstance(Class<?> clazz, Object... args)
       throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-    Class<?>[] parameterTypes = new Class[args.length];
+    Class<?>[] parameterTypes = new Class<?>[args.length];
     for (int i = 0; i < args.length; i++) {
       parameterTypes[i] = args[i].getClass();
     }
@@ -85,13 +78,13 @@ public class ConstructorsIT {
 
   private static class ConstructorTestClasses {
 
-    protected Class<?> typeWithoutProperties;
-    protected Class<?> typeWithoutRequiredProperties;
-    protected Class<?> typeWithRequiredArray;
-    protected Class<?> typeWithRequired;
+    protected final Class<?> typeWithoutProperties;
+    protected final Class<?> typeWithoutRequiredProperties;
+    protected final Class<?> typeWithRequiredArray;
+    protected final Class<?> typeWithRequired;
 
 
-    public ConstructorTestClasses(Jsonschema2PojoRule classSchemaRule, Map<String, Object> config) throws ClassNotFoundException {
+    public ConstructorTestClasses(Jsonschema2PojoRule classSchemaRule, Map<String, Object> config) {
       classSchemaRule.generate("/schema/constructors/noPropertiesConstructor.json", "com.example", config);
 
       classSchemaRule.generate("/schema/constructors/noRequiredPropertiesConstructor.json", "com.example", config);
@@ -100,32 +93,30 @@ public class ConstructorsIT {
 
       classSchemaRule.generate("/schema/constructors/requiredPropertyConstructors.json", "com.example", config);
 
-      ClassLoader loader = classSchemaRule.compile();
-      typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
-      typeWithoutRequiredProperties = loader.loadClass("com.example.NoRequiredPropertiesConstructor");
-      typeWithRequiredArray = loader.loadClass("com.example.RequiredArrayPropertyConstructors");
-      typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
-
+        try {
+            ClassLoader loader = classSchemaRule.compile();
+            typeWithoutProperties = loader.loadClass("com.example.NoPropertiesConstructor");
+            typeWithoutRequiredProperties = loader.loadClass("com.example.NoRequiredPropertiesConstructor");
+            typeWithRequiredArray = loader.loadClass("com.example.RequiredArrayPropertyConstructors");
+            typeWithRequired = loader.loadClass("com.example.RequiredPropertyConstructors");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
+
   }
 
   /**
-   * Tests what happens when includeConstructors is set to true
-   */
+     * Tests what happens when includeConstructors is set to true
+     */
   @Nested
-  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
   class DefaultIncludeConstructorsIT {
 
-    private ConstructorTestClasses testClasses;
-
-    @BeforeAll
-    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule, config(
-          "propertyWordDelimiters", "_",
-          "includeConstructors", true));
-      // @formatter:on
-    }
+    @RegisterExtension
+    private static final Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private final ConstructorTestClasses testClasses = new ConstructorTestClasses(classSchemaRule, config(
+            "propertyWordDelimiters", "_",
+            "includeConstructors", true));
 
     @Test
     public void testGeneratesConstructorWithAllProperties() throws Exception {
@@ -147,21 +138,14 @@ public class ConstructorsIT {
    * Tests with constructorsRequiredPropertiesOnly set to true
    */
   @Nested
-  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
   class RequiredOnlyIT {
 
-    private ConstructorTestClasses testClasses = null;
-
-    @BeforeAll
-    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config(
-              "propertyWordDelimiters", "_",
-              "includeConstructors", true,
-              "constructorsRequiredPropertiesOnly", true));
-      // @formatter:on
-    }
+    @RegisterExtension
+    private static final Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private final ConstructorTestClasses testClasses = new ConstructorTestClasses(classSchemaRule, config(
+            "propertyWordDelimiters", "_",
+            "includeConstructors", true,
+            "constructorsRequiredPropertiesOnly", true));
 
     @Test
     public void testCreatesPublicNoArgsConstructor() throws Exception {
@@ -199,7 +183,7 @@ public class ConstructorsIT {
     }
 
     @Test
-    public void testDoesntGenerateConstructorsWithoutConfig() throws Exception {
+    public void testDoesntGenerateConstructorsWithoutConfig() {
       assertHasOnlyDefaultConstructor(testClasses.typeWithoutProperties);
     }
   }
@@ -208,21 +192,16 @@ public class ConstructorsIT {
    * Tests what happens when includeConstructors is set to true
    */
   @Nested
-  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
   class IncludeRequiredConstructorsIT {
 
-    private ConstructorTestClasses testClasses = null;
-
-    @BeforeAll
-    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config(
+    @RegisterExtension
+    private static final Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private final ConstructorTestClasses testClasses = new ConstructorTestClasses(
+            classSchemaRule,
+            config(
               "propertyWordDelimiters", "_",
               "includeConstructors", true,
               "includeRequiredPropertiesConstructor", true));
-      // @formatter:on
-    }
 
     @Test
     public void testGeneratesConstructorWithAllProperties() throws Exception {
@@ -298,20 +277,14 @@ public class ConstructorsIT {
    * Tests what happens when includeConstructors is set to true
    */
   @Nested
-  @TestInstance(TestInstance.Lifecycle.PER_CLASS)
   class IncludeCopyConstructorsIT {
 
-    private ConstructorTestClasses testClasses = null;
-
-    @BeforeAll
-    public void generateAndCompileConstructorClasses() throws ClassNotFoundException {
-      // @formatter:off
-      testClasses = new ConstructorTestClasses(classSchemaRule,
-          config("propertyWordDelimiters", "_",
-              "includeConstructors", true,
-              "includeCopyConstructor", true));
-      // @formatter:on
-    }
+    @RegisterExtension
+    private static final Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private final ConstructorTestClasses testClasses = new ConstructorTestClasses(classSchemaRule, config(
+            "propertyWordDelimiters", "_",
+            "includeConstructors", true,
+            "includeCopyConstructor", true));
 
     @Test
     public void testGeneratesConstructorWithAllProperties() throws Exception {

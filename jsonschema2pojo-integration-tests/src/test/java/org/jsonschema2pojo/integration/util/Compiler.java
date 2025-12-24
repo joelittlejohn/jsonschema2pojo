@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -105,7 +106,7 @@ public class Compiler {
 
         if (System.getProperty("debug") != null) {
             try {
-                System.out.println(readFileToString(file));
+                System.out.println(readFileToString(file, StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

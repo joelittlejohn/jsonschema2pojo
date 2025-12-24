@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
@@ -95,7 +96,7 @@ public class SelfRefIT {
     @Test
     public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
-        String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"));
+        String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"), StandardCharsets.UTF_8);
         JCodeModel codeModel = new JCodeModel();
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
 

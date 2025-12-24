@@ -122,7 +122,7 @@ public class JodaDatesIT {
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getDateTimeWithDefault");
 
@@ -137,7 +137,7 @@ public class JodaDatesIT {
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getDateTimeAsStringWithDefault");
 
@@ -152,7 +152,7 @@ public class JodaDatesIT {
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getDateAsStringWithDefault");
 
@@ -167,7 +167,7 @@ public class JodaDatesIT {
 
         Class<?> classWithDefaults = classLoader.loadClass("com.example.Default");
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getTimeAsStringWithDefault");
 

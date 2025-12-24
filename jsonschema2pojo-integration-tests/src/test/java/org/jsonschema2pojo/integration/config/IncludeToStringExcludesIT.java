@@ -31,15 +31,14 @@ public class IncludeToStringExcludesIT {
 
     @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void testConfig(Map<String,Object> config, String expectedResultTemplate) throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config);
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
         // throws NoSuchMethodException if method is not found
         Method toString = generatedType.getDeclaredMethod("toString");
-        Object primitiveProperties = generatedType.newInstance();
+        Object primitiveProperties = generatedType.getDeclaredConstructor().newInstance();
         Object result = toString.invoke(primitiveProperties);
         assertThat(
                 result,

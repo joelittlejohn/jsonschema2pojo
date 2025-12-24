@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -28,7 +27,7 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,8 +40,8 @@ import com.sun.codemodel.JMod;
 
 import jakarta.validation.constraints.NotNull;
 
-@ParameterizedClass
-@MethodSource("data")
+@ParameterizedClass(name = "useJakartaValidation={0}")
+@ValueSource(booleans = { true, false })
 public class RequiredArrayRuleTest {
 
     private static final String TARGET_CLASS_NAME = RequiredArrayRuleTest.class.getName() + ".DummyClass";
@@ -52,16 +51,9 @@ public class RequiredArrayRuleTest {
     private final boolean useJakartaValidation;
     private final Class<? extends Annotation> notNullClass;
 
-    public static Collection<Object[]> data() {
-        return asList(new Object[][] {
-                { false, javax.validation.constraints.NotNull.class },
-                { true, NotNull.class }
-        });
-    }
-
-    public RequiredArrayRuleTest(boolean useJakartaValidation, Class<? extends Annotation> notNullClass) {
+    public RequiredArrayRuleTest(boolean useJakartaValidation) {
         this.useJakartaValidation = useJakartaValidation;
-        this.notNullClass = notNullClass;
+        this.notNullClass = useJakartaValidation ? NotNull.class : javax.validation.constraints.NotNull.class;
     }
 
     @Test

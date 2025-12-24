@@ -23,8 +23,8 @@ import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.jsonschema2pojo.integration.util.JsonAssert.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -93,7 +93,7 @@ public class Moshi1IT {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
-    public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void enumValuesAreSerializedCorrectly() throws ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "moshi1",
@@ -101,7 +101,7 @@ public class Moshi1IT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = generatedType.getMethod("setEnumProperty", enumType);
         setter.invoke(instance, enumType.getEnumConstants()[3]);
@@ -117,7 +117,7 @@ public class Moshi1IT {
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 
-        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource));
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), StandardCharsets.UTF_8);
         JsonAdapter<Object> jsonAdapter = moshi.adapter(generatedType);
         Object javaInstance = jsonAdapter.fromJson(expectedJson);
         String actualJson = jsonAdapter.toJson(javaInstance);

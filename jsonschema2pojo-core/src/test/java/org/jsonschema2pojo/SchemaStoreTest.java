@@ -16,7 +16,6 @@
 
 package org.jsonschema2pojo;
 
-import static org.apache.commons.lang3.StringUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -27,6 +26,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JDefinedClass;
@@ -57,7 +57,7 @@ public class SchemaStoreTest {
         Schema addressSchema = schemaStore.create(addressSchemaUri, "#/.");
         Schema enumSchema = schemaStore.create(addressSchema, "enum.json", "#/.");
 
-        String expectedUri = removeEnd(addressSchemaUri.toString(), "address.json") + "enum.json";
+        String expectedUri = Strings.CS.removeEnd(addressSchemaUri.toString(), "address.json") + "enum.json";
 
         assertThat(enumSchema, is(notNullValue()));
         assertThat(enumSchema.getId(), is(equalTo(URI.create(expectedUri))));

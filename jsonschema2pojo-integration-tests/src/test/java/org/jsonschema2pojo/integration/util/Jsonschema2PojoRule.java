@@ -38,7 +38,7 @@ import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -125,11 +125,11 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
         }
 
         final String contextDisplayName = context.getParent().map(ExtensionContext::getDisplayName).orElse(context.getDisplayName());
-        final String displayName = StringUtils.removeEnd(contextDisplayName, "()");
+        final String displayName = Strings.CS.removeEnd(contextDisplayName, "()");
         String methodName = context.getRequiredTestMethod().getName();
-        if (!StringUtils.equals(displayName, methodName)
+        if (!Strings.CS.equals(displayName, methodName)
                // displayName may differ from methodName in case of nested test classes, e.g. when using @Nested
-               && !StringUtils.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
+               && !Strings.CS.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
             methodName = methodName + "[" + displayName + "]";
         }
         setUp(context.getRequiredTestClass().getName(), methodName);

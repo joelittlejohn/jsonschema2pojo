@@ -28,7 +28,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -370,16 +369,15 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(validArrayInstance, is(1));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void jsr303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void jsr303AnnotationsValidatedForAdditionalProperties() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
-        Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
-        Object parent = parentType.newInstance();
+        Class<?> parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
+        Object parent = parentType.getDeclaredConstructor().newInstance();
 
-        Class subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
+        Class<?> subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
         Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9);
         Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11);
 
@@ -398,9 +396,9 @@ public class IncludeJsr303AnnotationsIT {
         assertThat("Violations (" + validatorName + "): " + violationsForValidInstance.toString(), violationsForValidInstance.size(), matcher);
     }
 
-    private static Object createInstanceWithPropertyValue(Class type, String propertyName, Object propertyValue) {
+    private static Object createInstanceWithPropertyValue(Class<?> type, String propertyName, Object propertyValue) {
         try {
-            Object instance = type.newInstance();
+            Object instance = type.getDeclaredConstructor().newInstance();
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, type);
             propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
 

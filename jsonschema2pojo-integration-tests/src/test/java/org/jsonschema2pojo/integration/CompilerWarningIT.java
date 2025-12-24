@@ -33,7 +33,6 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
-import org.apache.commons.io.output.NullWriter;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;

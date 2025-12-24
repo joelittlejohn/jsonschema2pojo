@@ -78,8 +78,8 @@ public class IncludeHashCodeAndEqualsIT {
         assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertThat("Should not use super.equals()", genType.newInstance(), is(equalTo(genType.newInstance())));
-        assertThat(genType.newInstance().hashCode(), is(equalTo(genType.newInstance().hashCode())));
+        assertThat("Should not use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
+        assertThat(genType.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(genType.getDeclaredConstructor().newInstance().hashCode())));
     }
 
     @Test
@@ -92,8 +92,8 @@ public class IncludeHashCodeAndEqualsIT {
         genType.getDeclaredMethod("equals", java.lang.Object.class);
         assertThat(
                 "Should use super.equals() because parent is not Object; parent uses Object.equals()",
-                genType.newInstance(),
-                is(not(equalTo(genType.newInstance()))));
+                genType.getDeclaredConstructor().newInstance(),
+                is(not(equalTo(genType.getDeclaredConstructor().newInstance()))));
     }
 
     @Test
@@ -104,8 +104,8 @@ public class IncludeHashCodeAndEqualsIT {
         assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
-        assertThat("Should use super.equals()", genType.newInstance(), is(equalTo(genType.newInstance())));
-        assertThat(genType.newInstance().hashCode(), is(equalTo(genType.newInstance().hashCode())));
+        assertThat("Should use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
+        assertThat(genType.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(genType.getDeclaredConstructor().newInstance().hashCode())));
     }
 
     @Test
@@ -117,8 +117,8 @@ public class IncludeHashCodeAndEqualsIT {
         genType.getDeclaredMethod("equals", java.lang.Object.class);
         assertThat(
                 "Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()",
-                genType.newInstance(),
-                is(not(equalTo(genType.newInstance()))));
+                genType.getDeclaredConstructor().newInstance(),
+                is(not(equalTo(genType.getDeclaredConstructor().newInstance()))));
     }
 
     @Test
@@ -130,13 +130,13 @@ public class IncludeHashCodeAndEqualsIT {
 
         gen2Type.getDeclaredMethod("equals", java.lang.Object.class);
         gen2Type.getDeclaredMethod("hashCode");
-        assertThat(gen2Type.newInstance(), is(equalTo(gen2Type.newInstance())));
-        assertThat(gen2Type.newInstance().hashCode(), is(equalTo(gen2Type.newInstance().hashCode())));
+        assertThat(gen2Type.getDeclaredConstructor().newInstance(), is(equalTo(gen2Type.getDeclaredConstructor().newInstance())));
+        assertThat(gen2Type.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(gen2Type.getDeclaredConstructor().newInstance().hashCode())));
 
         gen1Type.getDeclaredMethod("equals", java.lang.Object.class);
         gen1Type.getDeclaredMethod("hashCode");
-        assertThat(gen1Type.newInstance(), is(equalTo(gen1Type.newInstance())));
-        assertThat(gen1Type.newInstance().hashCode(), is(equalTo(gen1Type.newInstance().hashCode())));
+        assertThat(gen1Type.getDeclaredConstructor().newInstance(), is(equalTo(gen1Type.getDeclaredConstructor().newInstance())));
+        assertThat(gen1Type.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(gen1Type.getDeclaredConstructor().newInstance().hashCode())));
     }
 
     public static class Object extends java.lang.Object {

@@ -18,14 +18,13 @@ package org.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import org.apache.commons.lang3.Strings;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClassContainer;
@@ -99,17 +98,13 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
 
         String nameFromRef;
-        if (!contains(ref, "#")) {
+        if (!Strings.CS.contains(ref, "#")) {
             nameFromRef = Jsonschema2Pojo.getNodeName(ref, ruleFactory.getGenerationConfig());
         } else {
             String[] nameParts = split(ref, "/\\#");
             nameFromRef = nameParts[nameParts.length - 1];
         }
 
-        try {
-            return URLDecoder.decode(nameFromRef, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new GenerationException("Failed to decode ref: " + ref, e);
-        }
+        return URLDecoder.decode(nameFromRef, StandardCharsets.UTF_8);
     }
 }
