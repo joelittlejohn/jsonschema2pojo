@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
                 <configuration>
                     <sourceDirectory>${basedir}/schema</sourceDirectory>
                     <targetPackage>com.example.types</targetPackage>
