@@ -24,7 +24,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -47,11 +46,11 @@ public class JavaNameIT {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void propertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void propertiesHaveCorrectNames() throws ReflectiveOperationException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
-        Object instance = classWithJavaNames.newInstance();
+        Object instance = classWithJavaNames.getDeclaredConstructor().newInstance();
 
         assertThat(instance, hasProperty("javaProperty"));
         assertThat(instance, hasProperty("propertyWithoutJavaName"));
@@ -63,12 +62,12 @@ public class JavaNameIT {
     }
 
     @Test
-    public void propertiesHaveCorrectTypes() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+    public void propertiesHaveCorrectTypes() throws ReflectiveOperationException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
 
-        classWithJavaNames.newInstance();
+        classWithJavaNames.getDeclaredConstructor().newInstance();
 
         assertThat(classWithJavaNames.getDeclaredField("javaEnum").getType(), typeCompatibleWith(javaNameClassLoader.loadClass("com.example.javaname.JavaName$JavaEnum")));
         assertThat(classWithJavaNames.getDeclaredField("enumWithoutJavaName").getType(), typeCompatibleWith(javaNameClassLoader.loadClass("com.example.javaname.JavaName$EnumWithoutJavaName")));
@@ -110,11 +109,11 @@ public class JavaNameIT {
     }
 
     @Test
-    public void serializedPropertiesHaveCorrectNames() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ClassNotFoundException {
+    public void serializedPropertiesHaveCorrectNames() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/javaName.json", "com.example.javaname");
         Class<?> classWithJavaNames = javaNameClassLoader.loadClass("com.example.javaname.JavaName");
-        Object instance = classWithJavaNames.newInstance();
+        Object instance = classWithJavaNames.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("javaProperty", classWithJavaNames).getWriteMethod().invoke(instance, "abc");
         new PropertyDescriptor("propertyWithoutJavaName", classWithJavaNames).getWriteMethod().invoke(instance, "abc");
@@ -213,27 +212,27 @@ public class JavaNameIT {
     }
 
     @Test
-    public void generateClassInTargetPackageReferencingClassInJavaTypePackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+    public void generateClassInTargetPackageReferencingClassInJavaTypePackage() throws ReflectiveOperationException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithTargetPackage = javaNameClassLoader.loadClass("com.example.javaname.AuthorizeRequestV1p02");
 
         assertThat(classWithTargetPackage.getName(), is(equalTo("com.example.javaname.AuthorizeRequestV1p02")));
 
-        classWithTargetPackage.newInstance();
+        classWithTargetPackage.getDeclaredConstructor().newInstance();
 
         assertThat(classWithTargetPackage.getDeclaredField("idToken").getType(), typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken")));
     }
 
     @Test
-    public void generateReferencedClassUsesParentClassPackage() throws IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+    public void generateReferencedClassUsesParentClassPackage() throws ReflectiveOperationException {
 
         ClassLoader javaNameClassLoader = schemaRule.generateAndCompile("/schema/javaName/AuthorizeRequest_v1p0_2.json", "com.example.javaname");
         Class<?> classWithJavaTypePackage = javaNameClassLoader.loadClass("com.apetecan.javaname.IdToken");
 
         assertThat(classWithJavaTypePackage.getName(), is(equalTo("com.apetecan.javaname.IdToken")));
 
-        classWithJavaTypePackage.newInstance();
+        classWithJavaTypePackage.getDeclaredConstructor().newInstance();
 
         assertThat((Class<?>)((ParameterizedType)classWithJavaTypePackage.getDeclaredField("additionalInfo").getGenericType()).getActualTypeArguments()[0], typeCompatibleWith(javaNameClassLoader.loadClass("com.apetecan.javaname.AdditionalInfo")));
     }

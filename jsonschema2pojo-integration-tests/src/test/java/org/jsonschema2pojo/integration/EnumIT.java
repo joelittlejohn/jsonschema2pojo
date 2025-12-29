@@ -259,7 +259,7 @@ public class EnumIT {
         Class<?> typeWithEnumProperty = resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames");
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.EnumWithCustomJavaNames$EnumProperty");
 
-        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Object valueWithEnumProperty = typeWithEnumProperty.getDeclaredConstructor().newInstance();
         Method enumSetter = typeWithEnumProperty.getMethod("setEnumProperty", enumClass);
         enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[2]);
         assertThat(enumClass.getEnumConstants()[0].name(), is("ONE"));
@@ -307,7 +307,7 @@ public class EnumIT {
             String expectedValue,
             ObjectMapper objectMapper)
             throws ReflectiveOperationException, IOException {
-        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Object valueWithEnumProperty = typeWithEnumProperty.getDeclaredConstructor().newInstance();
         Method enumSetter = typeWithEnumProperty.getMethod("set" + StringUtils.capitalize(propertyName), enumClass);
         enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[enumIndex]);
 
@@ -359,7 +359,7 @@ public class EnumIT {
         Class<Enum> enumClass = (Class<Enum>) resultsClassLoader.loadClass("com.example.enums.IntegerEnumToSerialize$TestEnum");
         
         // create an instance
-        Object valueWithEnumProperty = typeWithEnumProperty.newInstance();
+        Object valueWithEnumProperty = typeWithEnumProperty.getDeclaredConstructor().newInstance();
         Method enumSetter = typeWithEnumProperty.getMethod("setTestEnum", enumClass);
         
         // call setTestEnum(TestEnum.ONE)
@@ -382,7 +382,7 @@ public class EnumIT {
     @SuppressWarnings("unchecked")
     public void jacksonCanMarshalEnums() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
 
-        Object valueWithEnumProperty = parentClass.newInstance();
+        Object valueWithEnumProperty = parentClass.getDeclaredConstructor().newInstance();
         Method enumSetter = parentClass.getMethod("setEnumProperty", enumClass);
         enumSetter.invoke(valueWithEnumProperty, enumClass.getEnumConstants()[2]);
 

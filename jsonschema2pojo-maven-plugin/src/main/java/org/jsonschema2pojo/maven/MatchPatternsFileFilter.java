@@ -16,9 +16,8 @@
 
 package org.jsonschema2pojo.maven;
 
-import static java.lang.String.*;
-import static java.util.Arrays.*;
-import static java.util.regex.Pattern.*;
+import static java.util.Arrays.asList;
+import static java.util.regex.Pattern.quote;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -26,8 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.shared.utils.io.DirectoryScanner;
-import org.apache.maven.shared.utils.io.MatchPatterns;
+import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.MatchPatterns;
 
 /**
  * <p>A file filter that supports include and exclude patterns.</p>
@@ -36,19 +35,21 @@ import org.apache.maven.shared.utils.io.MatchPatterns;
  * @since 0.4.3
  */
 public class MatchPatternsFileFilter implements FileFilter {
-    MatchPatterns includePatterns;
-    MatchPatterns excludePatterns;
-    String sourceDirectory;
-    boolean caseSensitive;
+
+    private final MatchPatterns includePatterns;
+    private final MatchPatterns excludePatterns;
+    private final String sourceDirectory;
+    private final boolean caseSensitive;
 
     /**
      * <p>Builder for MatchPatternFileFilter instances.</p>
      */
     public static class Builder {
-        List<String> includes = new ArrayList<>();
-        List<String> excludes = new ArrayList<>();
-        String sourceDirectory;
-        boolean caseSensitive;
+
+        private final List<String> includes = new ArrayList<>();
+        private final List<String> excludes = new ArrayList<>();
+        private String sourceDirectory;
+        private boolean caseSensitive;
 
         public Builder addIncludes(List<String> includes) {
             this.includes.addAll(processPatterns(includes));
@@ -123,14 +124,15 @@ public class MatchPatternsFileFilter implements FileFilter {
     String relativePath(File file) throws IOException {
         String canonicalPath = file.getCanonicalPath();
         if (!canonicalPath.startsWith(sourceDirectory)) {
-            throw new IOException(format("the path %s is not a decendent of the basedir %s", canonicalPath, sourceDirectory));
+            throw new IOException("the path %s is not a descendant of the basedir %s".formatted(canonicalPath, sourceDirectory));
         }
         return canonicalPath.substring(sourceDirectory.length()).replaceAll("^" + quote(File.separator), "");
     }
 
     static List<String> processPatterns(List<String> patterns) {
-        if (patterns == null)
-            return null;
+        if (patterns == null) {
+            return List.of();
+        }
         List<String> processed = new ArrayList<>();
         for (String pattern : patterns) {
             processed.add(processPattern(pattern));

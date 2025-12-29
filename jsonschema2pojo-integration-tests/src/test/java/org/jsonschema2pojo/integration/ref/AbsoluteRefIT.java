@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -52,7 +53,7 @@ public class AbsoluteRefIT {
 
         URL absoluteUrlForAddressSchema = this.getClass().getResource("/schema/ref/address.json");
 
-        String absoluteRefSchemaTemplate = IOUtils.toString(this.getClass().getResourceAsStream("/schema/ref/absoluteRef.json.template"));
+        String absoluteRefSchemaTemplate = IOUtils.toString(this.getClass().getResourceAsStream("/schema/ref/absoluteRef.json.template"), StandardCharsets.UTF_8);
         String absoluteRefSchema = absoluteRefSchemaTemplate.replace("$ABSOLUTE_REF", absoluteUrlForAddressSchema.toString());
 
         File absoluteRefSchemaFile = File.createTempFile("absoluteRef", ".json");
@@ -60,7 +61,7 @@ public class AbsoluteRefIT {
         try {
             FileOutputStream outputStream = new FileOutputStream(absoluteRefSchemaFile);
             try {
-                IOUtils.write(absoluteRefSchema, outputStream);
+                IOUtils.write(absoluteRefSchema, outputStream, StandardCharsets.UTF_8);
             } finally {
                 IOUtils.closeQuietly(outputStream);
             }
