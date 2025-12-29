@@ -1,0 +1,29 @@
+{
+  "definitions": {
+    "unexpected": {
+      "type": "object"
+    }
+  },
+  "components": {
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "active",
+          "inactive"
+        ]
+      }
+    }
+  }
+}

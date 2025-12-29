@@ -20,6 +20,8 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.Strings;
@@ -76,8 +78,8 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
             }
 
             if (!Objects.equals(schema, parentSchema)) {
-                return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
-            }
+            return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
+        }
         }
 
         JType javaType;
@@ -88,7 +90,31 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
         schema.setJavaTypeIfEmpty(javaType);
 
+        processDefinitions(schemaNode, generatableType, schema);
+
         return javaType;
+    }
+
+    private void processDefinitions(JsonNode schemaNode, JClassContainer generatableType, Schema parent) {
+        final String definitionsNodePath = ruleFactory.getGenerationConfig().getDefinitionsPath();
+        if (!ruleFactory.getGenerationConfig().isGenerateDefinitions() || isBlank(definitionsNodePath)) {
+            return;
+        }
+
+        final Iterator<Map.Entry<String, JsonNode>> definitions = schemaNode.at(definitionsNodePath).fields();
+        while (definitions.hasNext()) {
+            final Map.Entry<String, JsonNode> definition = definitions.next();
+
+            final Schema schema = ruleFactory.getSchemaStore().create(
+                    parent,
+                    "#" + definitionsNodePath + "/" + definition.getKey(),
+                    ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+            if (schema.isGenerated()) {
+                continue;
+            }
+
+            apply(definition.getKey(), definition.getValue(), schemaNode, generatableType, schema);
+        }
     }
 
     private String nameFromRef(String ref) {
