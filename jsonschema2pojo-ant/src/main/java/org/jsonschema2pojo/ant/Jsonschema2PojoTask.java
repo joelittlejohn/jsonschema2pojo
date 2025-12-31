@@ -115,6 +115,8 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
 
     private boolean includeJsr305Annotations = false;
 
+    private boolean includeDeprecatedAnnotations = false;
+
     private boolean useOptionalForGetters;
 
     private SourceType sourceType = SourceType.JSONSCHEMA;
@@ -598,6 +600,16 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         this.includeJsr305Annotations = includeJsr305Annotations;
     }
 
+    /**
+     * Sets the 'includeDeprecatedAnnotations' property of this class
+     *
+     * @param includeDeprecatedAnnotations
+     *            Whether to include {@code @Deprecated} annotations on fields
+     *            that are marked as deprecated in the JSON Schema.
+     */
+    public void setIncludeDeprecatedAnnotations(boolean includeDeprecatedAnnotations) {
+        this.includeDeprecatedAnnotations = includeDeprecatedAnnotations;
+    }
 
     /**
      * Sets the 'useOptionalForGetters' property of this class
@@ -1070,6 +1082,11 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     @Override
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
+    }
+
+    @Override
+    public boolean isIncludeDeprecatedAnnotations() {
+        return includeDeprecatedAnnotations;
     }
 
     @Override

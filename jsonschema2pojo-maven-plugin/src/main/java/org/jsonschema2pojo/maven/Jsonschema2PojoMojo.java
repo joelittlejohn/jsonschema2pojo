@@ -342,6 +342,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Parameter(property = "jsonschema2pojo.includeJsr305Annotations", defaultValue = "false")
     private boolean includeJsr305Annotations = false;
 
+    @Parameter(property = "jsonschema2pojo.includeDeprecatedAnnotations", defaultValue = "false")
+    private boolean includeDeprecatedAnnotations = false;
+
     /**
      * Whether to use {@link java.util.Optional} as return type for
      * getters of non-required fields.
@@ -988,6 +991,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeJsr305Annotations() {
         return includeJsr305Annotations;
+    }
+
+    @Override
+    public boolean isIncludeDeprecatedAnnotations() {
+        return includeDeprecatedAnnotations;
     }
 
     @Override
