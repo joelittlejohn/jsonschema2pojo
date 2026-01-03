@@ -11,7 +11,7 @@ buildscript {
     classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
 
     // see src/main/resources/json/external_dependencies.json
-    classpath 'joda-time:joda-time:2.2'
+    classpath 'joda-time:joda-time:2.14.0'
   }
 }
 
@@ -25,7 +25,7 @@ dependencies {
   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
   // see src/main/resources/json/external_dependencies.json
-  implementation 'joda-time:joda-time:2.2'
+  implementation 'joda-time:joda-time:2.14.0'
 }
 
 jsonSchema2Pojo {
