@@ -1,12 +1,12 @@
 /**
  * Copyright © 2010-2020 Nokia
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,11 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,7 +30,6 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -38,59 +37,90 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AnnotationStyleIT {
 
-    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void defaultAnnotationStyeIsJackson2() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void defaultAnnotationStyleIsJackson2() throws ReflectiveOperationException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/type/types.json", "com.example");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Types");
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Method getter = generatedType.getMethod("getUniqueArrayProperty");
 
-        Method getter = generatedType.getMethod("getA");
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonInclude.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class), is(notNullValue()));
 
-        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
-        assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+        Field field = generatedType.getDeclaredField("uniqueArrayProperty");
+        assertThat(field.getAnnotation(com.fasterxml.jackson.databind.annotation.JsonDeserialize.class), is(notNullValue()));
+        assertThat(field.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class), is(nullValue()));
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleJacksonProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void annotationStyleJacksonProducesJackson2Annotations() throws ReflectiveOperationException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson"));
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/type/types.json",
+                "com.example", config("annotationStyle", "jackson"));
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Types");
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Method getter = generatedType.getMethod("getUniqueArrayProperty");
 
-        Method getter = generatedType.getMethod("getA");
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonInclude.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class), is(notNullValue()));
 
-        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
-        assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+        Field field = generatedType.getDeclaredField("uniqueArrayProperty");
+        assertThat(field.getAnnotation(com.fasterxml.jackson.databind.annotation.JsonDeserialize.class), is(notNullValue()));
+        assertThat(field.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class), is(nullValue()));
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleJackson2ProducesJackson2Annotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void annotationStyleJackson2ProducesJackson2Annotations() throws ReflectiveOperationException {
 
-        Class generatedType = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
-                config("annotationStyle", "jackson2"))
-                .loadClass("com.example.PrimitiveProperties");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/type/types.json",
+                "com.example", config("annotationStyle", "jackson2"));
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Types");
 
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("tools.jackson.databind.annotation")));
 
-        Method getter = generatedType.getMethod("getA");
+        Method getter = generatedType.getMethod("getUniqueArrayProperty");
 
-        assertThat(generatedType.getAnnotation(JsonPropertyOrder.class), is(notNullValue()));
-        assertThat(generatedType.getAnnotation(JsonInclude.class), is(notNullValue()));
-        assertThat(getter.getAnnotation(JsonProperty.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonInclude.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class), is(notNullValue()));
+
+        Field field = generatedType.getDeclaredField("uniqueArrayProperty");
+        assertThat(field.getAnnotation(com.fasterxml.jackson.databind.annotation.JsonDeserialize.class), is(notNullValue()));
+        assertThat(field.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class), is(nullValue()));
     }
 
     @Test
-    public void annotationStyleJackson2ProducesJsonPropertyDescription() throws Exception {
+    public void annotationStyleJackson3ProducesJackson3Annotations() throws ReflectiveOperationException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/type/types.json",
+                "com.example", config("annotationStyle", "jackson3"));
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.Types");
+
+        assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
+        assertThat(schemaRule.getGenerateDir(), containsText("com.fasterxml.jackson"));
+        assertThat(schemaRule.getGenerateDir(), containsText("tools.jackson.databind.annotation"));
+
+        Method getter = generatedType.getMethod("getUniqueArrayProperty");
+
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonPropertyOrder.class), is(notNullValue()));
+        assertThat(generatedType.getAnnotation(com.fasterxml.jackson.annotation.JsonInclude.class), is(notNullValue()));
+        assertThat(getter.getAnnotation(com.fasterxml.jackson.annotation.JsonProperty.class), is(notNullValue()));
+
+        Field field = generatedType.getDeclaredField("uniqueArrayProperty");
+        assertThat(field.getAnnotation(com.fasterxml.jackson.databind.annotation.JsonDeserialize.class), is(nullValue()));
+        assertThat(field.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class), is(notNullValue()));
+    }
+
+    @Test
+    public void annotationStyleJackson2ProducesJsonPropertyDescription() throws ReflectiveOperationException {
         Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
 
         Field field = generatedType.getDeclaredField("description");
@@ -98,13 +128,12 @@ public class AnnotationStyleIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void annotationStyleNoneProducesNoAnnotations() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void annotationStyleNoneProducesNoAnnotations() throws ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example",
                 config("annotationStyle", "none"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
         Method getter = generatedType.getMethod("getA");
 

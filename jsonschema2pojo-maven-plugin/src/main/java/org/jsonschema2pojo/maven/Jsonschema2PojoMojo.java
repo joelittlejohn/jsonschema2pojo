@@ -243,6 +243,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>jackson2</code> (apply annotations from the
      * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
      * 2.x</a> library)</li>
+     * <li><code>jackson3</code> (apply annotations from the
+     * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
+     * 2.x</a> library, and from <a href="https://github.com/FasterXML/jackson-databind">Jackson 3.x databind</a>
+     * for data-binding annotations)</li>
      * <li><code>jackson</code> (alias for jackson2)</li>
      * <li><code>jsonb</code> (apply annotations from the
      * JSON-B 1.x library)</li>

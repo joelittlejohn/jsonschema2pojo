@@ -57,6 +57,7 @@
         <jackson.version>2.17.2</jackson.version>
         <ecj.version>3.43.0</ecj.version>
         <mockito.version>5.21.0</mockito.version>
+        <jackson3.version>3.0.2</jackson3.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
     </properties>
 
@@ -356,6 +357,13 @@
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
                 <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
