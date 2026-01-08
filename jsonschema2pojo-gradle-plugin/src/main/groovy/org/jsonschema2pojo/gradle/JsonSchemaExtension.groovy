@@ -66,6 +66,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean useOptionalForGetters
   boolean includeToString
   String[] toStringExcludes
+  boolean excludeObjectHeaderFromToString
   boolean initializeCollections
   String outputEncoding
   boolean parcelable
@@ -118,6 +119,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeAllPropertiesConstructor = true
     includeToString = true
     toStringExcludes = [] as String[]
+    excludeObjectHeaderFromToString = false
     annotationStyle = AnnotationStyle.JACKSON
     useTitleAsClassname = false
     inclusionLevel = InclusionLevel.NON_NULL
@@ -247,6 +249,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeCopyConstructor = ${includeCopyConstructor}
        |includeToString = ${includeToString}
        |toStringExcludes = ${Arrays.toString(toStringExcludes)}
+       |excludeObjectHeaderFromToString = ${excludeObjectHeaderFromToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
        |useTitleAsClassname = ${useTitleAsClassname}
        |inclusionLevel = ${InclusionLevel.toString() }

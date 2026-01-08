@@ -167,6 +167,13 @@ public interface GenerationConfig {
   String[] getToStringExcludes();
 
   /**
+   * Gets the 'excludeObjectHeaderFromToString' configuration option.
+   *
+   * @return Whether to exclude the object header from the toString implementations of the generated Java types
+   */
+  boolean isExcludeObjectHeaderFromToString();
+
+  /**
    * Gets the 'annotationStyle' configuration option.
    *
    * @return The style of annotations to use in the generated Java types.

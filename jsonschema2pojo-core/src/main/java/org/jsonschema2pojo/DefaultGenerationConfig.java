@@ -133,6 +133,14 @@ public class DefaultGenerationConfig implements GenerationConfig {
      * @return {@code false}
      */
     @Override
+    public boolean isExcludeObjectHeaderFromToString() {
+        return false;
+    }
+
+    /**
+     * @return {@code false}
+     */
+    @Override
     public boolean isUseTitleAsClassname() {
         return false;
     }
