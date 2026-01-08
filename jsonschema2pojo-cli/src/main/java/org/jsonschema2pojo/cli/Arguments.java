@@ -89,6 +89,9 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "--constructors-include-copy-constructor" }, description = "Generate constructors with a copy oriented parameter")
     private boolean includeCopyConstructor = false;
 
+    @Parameter(names = { "--constructors-include-no-args-constructor" }, description = "Generate constructor with no arguments")
+    private boolean includeNoArgsConstructor = false;
+
     @Parameter(names = { "-P", "--use-primitives" }, description = "Use primitives instead of wrapper types for bean properties")
     private boolean usePrimitives = false;
 
@@ -495,6 +498,9 @@ public class Arguments implements GenerationConfig {
 
     @Override
     public boolean isIncludeCopyConstructor() { return includeCopyConstructor; }
+
+    @Override
+    public boolean isIncludeNoArgsConstructor() { return includeNoArgsConstructor; }
 
     @Override
     public boolean isIncludeAdditionalProperties() {

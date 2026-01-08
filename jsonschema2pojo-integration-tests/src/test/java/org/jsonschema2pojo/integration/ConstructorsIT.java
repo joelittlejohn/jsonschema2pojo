@@ -22,6 +22,7 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -38,6 +39,13 @@ public class ConstructorsIT {
             "Expected the bit " + modifierName + " (" + modifier + ")" + " to be set but got: " + modifiers,
             modifier & modifiers,
             is(equalTo(modifier)));
+  }
+
+  public static void assertHasNoNoArgsConstructor(Class<?> cls) {
+    Constructor<?>[] constructors = cls.getDeclaredConstructors();
+    assertFalse("Expected " + cls + " to have no default constructor", Arrays
+            .stream(constructors)
+            .anyMatch(params -> params.getParameterCount() == 0));
   }
 
   public static void assertHasOnlyDefaultConstructor(Class<?> cls) {
@@ -334,4 +342,205 @@ public class ConstructorsIT {
     }
   }
 
+  /**
+   * Tests what happens when includeConstructors is set to true but includeNoArgsConstructor is set to false
+   */
+  public static class ExcludeNoArgsConstructorConstructorWithIncludeConstructorsIT {
+    @ClassRule
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    private static ConstructorTestClasses testClasses = null;
+
+    @BeforeClass
+    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+      // @formatter:off
+      testClasses = new ConstructorTestClasses(classSchemaRule, config(
+              "propertyWordDelimiters", "_",
+              "includeConstructors", true,
+              "includeNoArgsConstructor", false));
+      // @formatter:on
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllProperties() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequiredArray);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
+    }
+
+    @Test
+    public void testNoConstructorWithoutProperties() {
+
+      // Has default constructor anyway since no other constructor is available
+      assertHasOnlyDefaultConstructor(testClasses.typeWithoutProperties);
+    }
+  }
+
+  /**
+   * Tests with constructorsRequiredPropertiesOnly set to true but includeNoArgsConstructor to false
+   */
+  public static class ExcludeNoArgsConstructorConstructorWithRequiredOnlyIT {
+
+    @ClassRule
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    private static ConstructorTestClasses testClasses = null;
+
+    @BeforeClass
+    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+      // @formatter:off
+      testClasses = new ConstructorTestClasses(classSchemaRule,
+              config(
+                      "propertyWordDelimiters", "_",
+                      "includeConstructors", true,
+                      "constructorsRequiredPropertiesOnly", true,
+                      "includeNoArgsConstructor", false));
+      // @formatter:on
+    }
+
+    @Test
+    public void testCreatesConstructorWithRequiredParamsButNotNoArgsConstructor() throws Exception {
+      Constructor<?> constructor = getRequiredPropertiesConstructor(testClasses.typeWithRequired);
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    }
+
+    @Test
+    public void testCreatesConstructorWithRequiredParamsArrayStyleButNotNoArgsConstructor() throws Exception {
+      Constructor<?> constructor = getRequiredPropertiesConstructor(testClasses.typeWithRequiredArray);
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    }
+
+    @Test
+    public void testNoConstructorWithoutRequiredParams() {
+      // Despite includeNoArgsConstructor being set to true, it will be present
+      // since we have no required properties but required properties only is enabled
+      assertHasOnlyDefaultConstructor(testClasses.typeWithoutRequiredProperties);
+    }
+
+    @Test
+    public void testDoesntGenerateConstructorsWithoutConfig() throws Exception {
+      // Despite includeNoArgsConstructor being set to true, it will be present because we have no properties
+      assertHasOnlyDefaultConstructor(testClasses.typeWithoutProperties);
+    }
+  }
+
+  /**
+   * Tests what happens when includeConstructors and includeRequiredPropertiesConstructor is set to true,
+   * but includeNoArgsConstructor is set to false
+   */
+  public static class ExcludeNoArgsConstructorWithIncludeRequiredConstructorsIT {
+
+    @ClassRule
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    private static ConstructorTestClasses testClasses = null;
+
+    @BeforeClass
+    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+      // @formatter:off
+      testClasses = new ConstructorTestClasses(classSchemaRule,
+              config(
+                      "propertyWordDelimiters", "_",
+                      "includeConstructors", true,
+                      "includeRequiredPropertiesConstructor", true,
+                      "includeNoArgsConstructor", false));
+      // @formatter:on
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllProperties() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequiredArray);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
+    }
+
+    @Test
+    public void testCreatesConstructorWithRequiredParams() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      Constructor<?> constructor = getAllPropertiesConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    }
+
+    @Test
+    public void testCreatesConstructorWithRequiredParamsArrayStyle() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequiredArray);
+      Constructor<?> constructor = getAllPropertiesConstructor(testClasses.typeWithRequiredArray);
+      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    }
+
+    /**
+     * Test that duplicate constructors are not generated (compile time error is not thrown) when:
+     * <ul>
+     *     <li>all properties are required</li>
+     *     <li>{@code includeAllPropertiesConstructor} configuration property is {@code true}</li>
+     *     <li>{@code includeRequiredPropertiesConstructor} configuration property is {@code true}</li>
+     */
+    @Test
+    public void testGeneratesConstructorWithAllPropertiesRequired() throws Exception {
+      classSchemaRule.generate(
+              "/schema/constructors/allPropertiesRequiredConstructor.json",
+              "com.example",
+              config("includeConstructors", true,
+                      "includeAllPropertiesConstructor", true,
+                      "includeRequiredPropertiesConstructor", true,
+                      "includeNoArgsConstructor", false));
+      Class<?> type = classSchemaRule.compile().loadClass("com.example.AllPropertiesRequiredConstructor");
+      assertHasNoNoArgsConstructor(type);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(type).getModifiers(), "public");
+    }
+  }
+
+  /**
+   * Tests what happens when includeConstructors and includeCopyConstructor is set to true,
+   * but includeNoArgsConstructor is set to false
+   */
+  public static class ExcludeNoArgsConstructorWithIncludeCopyConstructorsIT {
+
+    @ClassRule
+    public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    private static ConstructorTestClasses testClasses = null;
+
+    @BeforeClass
+    public static void generateAndCompileConstructorClasses() throws ClassNotFoundException {
+      // @formatter:off
+      testClasses = new ConstructorTestClasses(classSchemaRule,
+              config("propertyWordDelimiters", "_",
+                      "includeConstructors", true,
+                      "includeCopyConstructor", true,
+                      "includeNoArgsConstructor", false));
+      // @formatter:on
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllProperties() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequired).getModifiers(), "public");
+    }
+
+    @Test
+    public void testGeneratesConstructorWithAllPropertiesArrayStyle() throws Exception {
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequiredArray);
+      assertHasModifier(JMod.PUBLIC, getAllPropertiesConstructor(testClasses.typeWithRequiredArray).getModifiers(), "public");
+    }
+
+    @Test
+    public void testCreatesConstructorWithCopyParams() throws Exception {
+      Constructor<?> constructor = testClasses.typeWithRequired.getConstructor(testClasses.typeWithRequired);
+      assertHasNoNoArgsConstructor(testClasses.typeWithRequired);
+      assertHasModifier(JMod.PUBLIC, constructor.getModifiers(), "public");
+    }
+  }
 }
