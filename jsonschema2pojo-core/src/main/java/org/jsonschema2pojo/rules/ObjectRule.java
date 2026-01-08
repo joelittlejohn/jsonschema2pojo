@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -95,21 +94,23 @@ public class ObjectRule implements Rule<JPackage, JType> {
         } catch (ClassAlreadyExistsException e) {
             return e.getExistingClass();
         }
-
-        jclass._extends((JClass) superType);
-
+        
+        if (jclass._extends() == null) {
+            jclass._extends((JClass) superType);
+        }
+        JDefinedClass parentClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
         schema.setJavaTypeIfEmpty(jclass);
 
         if (node.has("title")) {
-            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, jclass, schema);
+            ruleFactory.getTitleRule().apply(nodeName, node.get("title"), node, parentClass, schema);
         }
 
         if (node.has("description")) {
-            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, jclass, schema);
+            ruleFactory.getDescriptionRule().apply(nodeName, node.get("description"), node, parentClass, schema);
         }
 
         if (node.has("$comment")) {
-            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, jclass, schema);
+            ruleFactory.getCommentRule().apply(nodeName, node.get("$comment"), node, parentClass, schema);
         }
 
         // Creates the class definition for the builder
@@ -120,40 +121,40 @@ public class ObjectRule implements Rule<JPackage, JType> {
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
         if (node.has("javaInterfaces")) {
-            addInterfaces(jclass, node.get("javaInterfaces"));
+            addInterfaces(parentClass, node.get("javaInterfaces"));
         }
 
         ruleFactory.getAdditionalPropertiesRule().apply(nodeName, node.get("additionalProperties"), node, jclass, schema);
 
-        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
+        ruleFactory.getDynamicPropertiesRule().apply(nodeName, node.get("properties"), node, parentClass, schema);
 
         if (node.has("required")) {
-            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, jclass, schema);
+            ruleFactory.getRequiredArrayRule().apply(nodeName, node.get("required"), node, parentClass, schema);
         }
        
         if (ruleFactory.getGenerationConfig().isIncludeGeneratedAnnotation()) {
-            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
+            AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), parentClass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
-            addToString(jclass);
+            addToString(parentClass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
-            addHashCode(jclass, node);
-            addEquals(jclass, node);
+            addHashCode(parentClass, node);
+            addEquals(parentClass, node);
         }
 
         if (ruleFactory.getGenerationConfig().isParcelable()) {
-            addParcelSupport(jclass);
+            addParcelSupport(parentClass);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeConstructors()) {
-            ruleFactory.getConstructorRule().apply(nodeName, node, parent, jclass, schema);
+            ruleFactory.getConstructorRule().apply(nodeName, node, parent, parentClass, schema);
 
         }
 
         if (ruleFactory.getGenerationConfig().isSerializable()) {
-            SerializableHelper.addSerializableSupport(jclass);
+            SerializableHelper.addSerializableSupport(parentClass);
         }
 
         return jclass;
@@ -239,9 +240,9 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 if (usePolymorphicDeserialization) {
                     newType = _package.owner()._class(JMod.PUBLIC, fqn, ClassType.CLASS);
                 } else {
-                    newType = _package.owner()._class(fqn);
+                    int className_pos = fqn.lastIndexOf(".") + 1;
+                    newType = _package.owner()._class(fqn)._extends(_package.owner()._class(JMod.PUBLIC + JMod.ABSTRACT,  fqn.substring(0, className_pos) + "_" + fqn.substring(className_pos), ClassType.CLASS));
                 }
-                ruleFactory.getLogger().debug("Adding " + newType.fullName());
             } else {
                 final String className = ruleFactory.getNameHelper().getUniqueClassName(nodeName, node, _package);
                 if (usePolymorphicDeserialization) {
@@ -249,14 +250,14 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 } else {
                     newType = _package._class(className);
                 }
-                ruleFactory.getLogger().debug("Adding " + newType.fullName());
             }
+            ruleFactory.getLogger().info("Adding " + newType.fullName() + (!newType._extends().fullName().equals("java.lang.Object") ? " extends " + newType._extends().fullName() : ""));
         } catch (JClassAlreadyExistsException e) {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
-
-        annotator.typeInfo(newType, node);
-        annotator.propertyInclusion(newType, node);
+        JDefinedClass parentClass = newType._extends() instanceof JDefinedClass ? (JDefinedClass) newType._extends(): newType;
+        annotator.typeInfo(parentClass, node);
+        annotator.propertyInclusion(parentClass, node);
 
         return newType;
 
@@ -525,17 +526,4 @@ public class ObjectRule implements Rule<JPackage, JType> {
             jclass._implements(resolveType(jclass._package(), i.asText()));
         }
     }
-
-    private boolean usesPolymorphicDeserialization(JsonNode node) {
-
-        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
-
-        if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON2) {
-            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
-        }
-
-        return false;
-    }
-
 }

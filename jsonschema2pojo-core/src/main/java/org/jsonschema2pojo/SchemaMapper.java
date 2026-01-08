@@ -19,6 +19,7 @@ package org.jsonschema2pojo;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
 
 import org.jsonschema2pojo.rules.RuleFactory;
 
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
@@ -87,8 +89,22 @@ public class SchemaMapper {
 
         ObjectNode schemaNode = readSchema(schemaUrl);
 
-        return ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
-
+        JType type = ruleFactory.getSchemaRule().apply(className, schemaNode, null, jpackage, new Schema(null, schemaNode, null));
+        if (ruleFactory.getGenerationConfig().isOnlyAbstractJavaTypeClasses()) {
+            Iterator<JPackage> packages = codeModel.packages();
+            while(packages.hasNext()) {
+                Iterator<JDefinedClass> classes = packages.next().classes();
+                while(classes.hasNext()) {
+                    JDefinedClass jclass = classes.next();
+                    if (jclass.name().startsWith("_")) {
+                        int className_pos = jclass.fullName().lastIndexOf(".") + 1;
+                        String subClassName = jclass.fullName().substring(0, className_pos) + jclass.fullName().substring(className_pos + 1, jclass.fullName().length());
+                        codeModel._getClass(subClassName).hide();
+                    }
+                }
+            }
+        }
+        return type;
     }
 
     private ObjectNode readSchema(URL schemaUrl) {

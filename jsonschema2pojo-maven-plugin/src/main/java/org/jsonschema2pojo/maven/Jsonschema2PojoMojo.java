@@ -768,6 +768,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     @Parameter(property = "jsonschema2pojo.useJakartaValidation", defaultValue = "false")
     private boolean useJakartaValidation = false;
+    
+    @Parameter(property = "jsonschema2pojo.onlyAbstractJavaTypeClasses", defaultValue = "false")
+    private boolean onlyAbstractJavaTypeClasses = false;
 
     /**
      * Executes the plugin, to read the given source and behavioural properties
@@ -1043,6 +1046,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isInitializeCollections() {
         return initializeCollections;
+    }
+    
+    @Override
+    public boolean isOnlyAbstractJavaTypeClasses() {
+        return onlyAbstractJavaTypeClasses;
     }
 
     boolean filteringEnabled() {

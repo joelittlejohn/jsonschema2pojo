@@ -67,6 +67,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
+        JDefinedClass parentClass = jclass._extends() instanceof JDefinedClass ? (JDefinedClass) jclass._extends(): jclass;
         String propertyName;
         if (StringUtils.isEmpty(nodeName)) {
             propertyName = "__EMPTY__";
@@ -82,7 +83,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, jclass, propertySchema);
+        JType propertyType = ruleFactory.getSchemaRule().apply(nodeName, node, parent, parentClass, propertySchema);
         propertySchema.setJavaTypeIfEmpty(propertyType);
 
         boolean isIncludeGetters = ruleFactory.getGenerationConfig().isIncludeGetters();
@@ -91,23 +92,23 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         node = resolveRefs(node, schema);
 
         int accessModifier = isIncludeGetters || isIncludeSetters ? JMod.PRIVATE : JMod.PUBLIC;
-        JFieldVar field = jclass.field(accessModifier, propertyType, propertyName);
+        JFieldVar field = parentClass.field(accessModifier, propertyType, propertyName);
 
         propertyAnnotations(nodeName, node, schema, field);
 
-        formatAnnotation(field, jclass, node);
+        formatAnnotation(field, parentClass, node);
 
-        ruleFactory.getAnnotator().propertyField(field, jclass, nodeName, node);
+        ruleFactory.getAnnotator().propertyField(field, parentClass, nodeName, node);
 
         if (isIncludeGetters) {
-            JMethod getter = addGetter(jclass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
-            ruleFactory.getAnnotator().propertyGetter(getter, jclass, nodeName);
+            JMethod getter = addGetter(parentClass, field, nodeName, node, isRequired(nodeName, node, schema), useOptional(nodeName, node, schema));
+            ruleFactory.getAnnotator().propertyGetter(getter, parentClass, nodeName);
             propertyAnnotations(nodeName, node, schema, getter);
         }
 
         if (isIncludeSetters) {
-            JMethod setter = addSetter(jclass, field, nodeName, node);
-            ruleFactory.getAnnotator().propertySetter(setter, jclass, nodeName);
+            JMethod setter = addSetter(parentClass, field, nodeName, node);
+            ruleFactory.getAnnotator().propertySetter(setter, parentClass, nodeName);
             propertyAnnotations(nodeName, node, schema, setter);
         }
 
@@ -135,7 +136,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         return jclass;
     }
-
+    
     private boolean hasEnumerated(Schema schema, String arrayFieldName, String nodeName) {
         JsonNode array = schema.getContent().get(arrayFieldName);
         if (array != null) {
@@ -277,12 +278,13 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private JMethod addLegacyBuilder(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node) {
-        JMethod builder = c.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
+        JDefinedClass parentClass = c._extends() instanceof JDefinedClass ? (JDefinedClass) c._extends(): c;
+        JMethod builder = parentClass.method(JMod.PUBLIC, c, getBuilderName(jsonPropertyName, node));
 
         JVar param = builder.param(field.type(), field.name());
         JBlock body = builder.body();
         body.assign(JExpr._this().ref(field), param);
-        body._return(JExpr._this());
+        body._return(JExpr.cast(c, JExpr._this()));
 
         return builder;
     }

@@ -18,11 +18,7 @@
     <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
     <modules>
-        <module>jsonschema2pojo-ant</module>
-        <module>jsonschema2pojo-cli</module>
-        <module>jsonschema2pojo-core</module>
-        <module>jsonschema2pojo-gradle-plugin</module>
-        <module>jsonschema2pojo-integration-tests</module>
+        <module>jsonschema2pojo-core</module>      
         <module>jsonschema2pojo-maven-plugin</module>
     </modules>
 
