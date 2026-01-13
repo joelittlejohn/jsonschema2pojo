@@ -23,7 +23,6 @@ import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -40,13 +39,12 @@ public class YamlPropertiesIT {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/nullProperties.yaml", "com.example", config("sourceType", "yamlschema"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
-        Object instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = new PropertyDescriptor("property", generatedType).getWriteMethod();
         setter.invoke(instance, "value");
@@ -74,15 +72,14 @@ public class YamlPropertiesIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void wordDelimitersCausesCamelCase() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example",
                 config("usePrimitives", true, "propertyWordDelimiters", "_ -", "sourceType", "yamlschema"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("propertyWithUnderscores", generatedType).getWriteMethod().invoke(instance, "a_b_c");
         new PropertyDescriptor("propertyWithHyphens", generatedType).getWriteMethod().invoke(instance, "a-b-c");
@@ -133,7 +130,7 @@ public class YamlPropertiesIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesAreUpperCamelCase.yaml", "com.example", config("sourceType", "yamlschema"));
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.UpperCase");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("property1", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("propertyTwo", generatedType).getWriteMethod().invoke(instance, 2);

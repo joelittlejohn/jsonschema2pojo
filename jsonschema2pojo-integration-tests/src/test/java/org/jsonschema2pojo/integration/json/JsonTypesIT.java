@@ -83,7 +83,7 @@ public class JsonTypesIT {
         assertThat((Boolean) generatedType.getMethod("getD").invoke(deserializedValue), is(true));
         assertThat(generatedType.getMethod("getE").invoke(deserializedValue), is(nullValue()));
         assertThat(generatedType.getMethod("getF").invoke(deserializedValue), is(21474836470L));
-
+        assertThat((Double) generatedType.getMethod("getG").invoke(deserializedValue), is(92233720368547758070d));
     }
 
     @Test
@@ -97,6 +97,7 @@ public class JsonTypesIT {
         Object deserializedValue = objectMapper.readValue(this.getClass().getResourceAsStream(filePath), generatedType);
 
         assertThat((BigInteger) generatedType.getMethod("getB").invoke(deserializedValue), is(new BigInteger("123")));
+        assertThat((BigInteger) generatedType.getMethod("getF").invoke(deserializedValue), is(new BigInteger("21474836470")));
     }
 
     @Test
@@ -110,6 +111,7 @@ public class JsonTypesIT {
         Object deserializedValue = objectMapper.readValue(this.getClass().getResourceAsStream(filePath), generatedType);
 
         assertThat((BigDecimal) generatedType.getMethod("getC").invoke(deserializedValue), is(new BigDecimal("12999999999999999999999.99")));
+        assertThat((BigDecimal) generatedType.getMethod("getG").invoke(deserializedValue), is(new BigDecimal("92233720368547758070")));
     }
 
     @Test

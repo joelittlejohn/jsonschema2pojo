@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.rules.RuleFactory;
@@ -94,7 +95,7 @@ public class SchemaMapperTest {
     @Test
     public void generateCreatesSchemaFromExampleJSONAsStringInput() throws IOException {
 
-        String jsonContent = IOUtils.toString(this.getClass().getResourceAsStream("/example-json/user.json"));
+        String jsonContent = IOUtils.toString(this.getClass().getResourceAsStream("/example-json/user.json"), StandardCharsets.UTF_8);
 
         ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
@@ -122,7 +123,7 @@ public class SchemaMapperTest {
     @Test
     public void generateCreatesSchemaFromSchemaAsStringInput() throws IOException {
 
-        String schemaContent = IOUtils.toString(this.getClass().getResourceAsStream("/schema/address.json"));
+        String schemaContent = IOUtils.toString(this.getClass().getResourceAsStream("/schema/address.json"), StandardCharsets.UTF_8);
 
         final SchemaRule mockSchemaRule = mock(SchemaRule.class);
 

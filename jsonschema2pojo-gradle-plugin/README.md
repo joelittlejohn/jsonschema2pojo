@@ -302,9 +302,6 @@ jsonSchema2Pojo {
     // which (if unset) itself defaults to the current JVM version
   targetVersion = "1.8"
 
-  // deprecated, since we no longer use commons-lang for equals, hashCode, toString
-  useCommonsLang3 = false
-
   // A customer file filter to allow input files to be filtered/ignored
   fileFilter = new AllFileFilter()
 

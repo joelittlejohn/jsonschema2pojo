@@ -79,13 +79,12 @@ public class ExtendsIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
     public void extendsEquals() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/extends/subtypeOfSubtypeOfA.json", "com.example2");
 
-        Class generatedType = resultsClassLoader.loadClass("com.example2.SubtypeOfSubtypeOfA");
-        Object instance = generatedType.newInstance();
-        Object instance2 = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example2.SubtypeOfSubtypeOfA");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
+        Object instance2 = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("parent", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("child", generatedType).getWriteMethod().invoke(instance, "2");
