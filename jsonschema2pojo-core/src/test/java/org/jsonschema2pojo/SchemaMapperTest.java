@@ -16,9 +16,15 @@
 
 package org.jsonschema2pojo;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URL;
@@ -141,5 +147,36 @@ public class SchemaMapperTest {
         assertThat(capturePackage.getValue().name(), is("com.example.package"));
         assertThat(captureNode.getValue(), is(notNullValue()));
 
+    }
+
+    @Test
+    void generateCreatesSchemaFromExampleJsonWithNullField() throws IOException {
+        // https://github.com/joelittlejohn/jsonschema2pojo/pull/1746
+        // null field values in array must not erase previous inner type lookup
+        // previous behavior: when a field value is null, previous inner type lookup are forgotten
+        // intended behavior: null value are just ignored; any previous lookup are kept
+        
+        // read a json and generate a schema
+        String jsonExample = IOUtils.toString(this.getClass().getResourceAsStream("/schema/array-null-field.json"), StandardCharsets.UTF_8);
+        final SchemaRule mockSchemaRule = mock(SchemaRule.class);
+        final RuleFactory mockRuleFactory = mock(RuleFactory.class);
+        when(mockRuleFactory.getSchemaRule()).thenReturn(mockSchemaRule);
+        DefaultGenerationConfig generationConfig = spy(new DefaultGenerationConfig());
+        when(generationConfig.getSourceType()).thenReturn(SourceType.JSON);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(generationConfig);
+        new SchemaMapper(mockRuleFactory, new SchemaGenerator()).generate(new JCodeModel(), "ArrayItem", "com.example.package", jsonExample);
+        
+        // check generated schema
+        // schema : array -> myfield: object -> subfield1: string, subfield2: string
+        ArgumentCaptor<JsonNode> captureNode = ArgumentCaptor.forClass(JsonNode.class);
+        verify(mockSchemaRule).apply(eq("ArrayItem"), captureNode.capture(), eq(null), any(), Mockito.isA(Schema.class));
+        assertThat(captureNode.getValue().get("items"), is(notNullValue()));
+        // array item has a myfield field
+        assertThat(captureNode.getValue().get("items").get("properties").get("myfield"), is(notNullValue()));
+        assertThat(captureNode.getValue().get("items").get("properties").get("myfield").get("type").asText(), is("object"));
+        // myfield is an object type, containing subfield1 and subfield2 that are string types
+        JsonNode myfieldProperties = captureNode.getValue().get("items").get("properties").get("myfield").get("properties");
+        assertThat(myfieldProperties.get("subfield1").get("type").asText(), is("string"));
+        assertThat(myfieldProperties.get("subfield2").get("type").asText(), is("string"));
     }
 }
