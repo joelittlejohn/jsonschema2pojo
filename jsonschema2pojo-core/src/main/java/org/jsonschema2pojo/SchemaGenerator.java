@@ -130,8 +130,8 @@ public class SchemaGenerator {
                 } else if (targetValue.isArray() && updateValue.isArray()) {
                     // Both values are arrays: concatenate them to be merged later
                     ((ArrayNode) targetValue).addAll((ArrayNode) updateValue);
-                } else {
-                    // Values have different types: use the one from the update node
+                } else if (!updateValue.isNull()) {
+                    // Values have different types and new value is not null: use the one from the update node
                     targetNode.set(fieldName, updateValue);
                 }
             }
