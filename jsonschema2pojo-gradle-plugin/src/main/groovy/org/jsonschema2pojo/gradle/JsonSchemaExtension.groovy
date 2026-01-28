@@ -302,4 +302,9 @@ public class JsonSchemaExtension implements GenerationConfig {
     return includeGeneratedAnnotation
   }
 
+  @Override
+  public boolean isIncludeRuntimeGeneratedAnnotation() {
+    return !includeGeneratedAnnotation;
+  }
+
 }

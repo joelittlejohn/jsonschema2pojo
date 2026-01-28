@@ -121,6 +121,8 @@ public class ArgumentsTest {
         assertThat(args.isIncludeToString(), is(true));
         assertThat(args.isIncludeGetters(), is(true));
         assertThat(args.isIncludeSetters(), is(true));
+        assertThat(args.isIncludeGeneratedAnnotation(), is(true));
+        assertThat(args.isIncludeRuntimeGeneratedAnnotation(), is(false));
         assertThat(args.isIncludeDynamicAccessors(), is(false));
         assertThat(args.isIncludeDynamicGetters(), is(false));
         assertThat(args.isIncludeDynamicSetters(), is(false));
@@ -135,6 +137,15 @@ public class ArgumentsTest {
         assertThat(new String(systemErrCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("--target")));
         assertThat(new String(systemErrCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("--source")));
         assertThat(new String(systemOutCapture.toByteArray(), StandardCharsets.UTF_8), is(containsString("Usage: jsonschema2pojo")));
+    }
+
+    @Test
+    public void generatedAnnotation() {
+        ArgsForTest args = (ArgsForTest) new ArgsForTest().parse(new String[] {"--omit-generated-annotation", "--use-generated-runtime-annotation"});
+
+        assertThat(args.didExit(), is(true));
+        assertThat(args.isIncludeGeneratedAnnotation(), is(false));
+        assertThat(args.isIncludeRuntimeGeneratedAnnotation(), is(true));
     }
 
     @Test

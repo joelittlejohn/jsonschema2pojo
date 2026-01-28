@@ -1258,4 +1258,9 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
     }
+
+	@Override
+	public boolean isIncludeRuntimeGeneratedAnnotation() {
+		return !includeGeneratedAnnotation;
+	}
 }
