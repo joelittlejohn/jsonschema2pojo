@@ -36,6 +36,9 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Provides factory/creation methods for the code generation rules.
  */
@@ -47,6 +50,7 @@ public class RuleFactory {
     private GenerationConfig generationConfig;
     private Annotator annotator;
     private SchemaStore schemaStore;
+    private Map<Class<?>, Map<String, JType>> dedupeCache;
 
     /**
      * Create a new rule factory with the given generation config options.
@@ -68,6 +72,7 @@ public class RuleFactory {
         this.nameHelper = new NameHelper(generationConfig);
         this.reflectionHelper = new ReflectionHelper(this);
         this.logger = new NoopRuleLogger();
+        this.dedupeCache = new HashMap<>();
     }
 
     /**
@@ -116,7 +121,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "enum" declaration.
      */
     public Rule<JClassContainer, JType> getEnumRule() {
-        return new EnumRule(this);
+        return deduplicate(new EnumRule(this));
     }
 
     /**
@@ -136,7 +141,7 @@ public class RuleFactory {
      * @return a schema rule that can handle the "object" declaration.
      */
     public Rule<JPackage, JType> getObjectRule() {
-        return new ObjectRule(this, new ParcelableHelper(), reflectionHelper);
+        return deduplicate(new ObjectRule(this, new ParcelableHelper(), reflectionHelper));
     }
 
     /**
@@ -238,7 +243,7 @@ public class RuleFactory {
      * @return a schema rule that can handle a schema declaration.
      */
     public Rule<JClassContainer, JType> getSchemaRule() {
-        return new SchemaRule(this);
+        return deduplicate(new SchemaRule(this));
     }
 
     /**
@@ -444,6 +449,13 @@ public class RuleFactory {
 
     public Rule<JDocCommentable, JDocComment> getJavaNameRule() {
         return new JavaNameRule();
+    }
+
+    private <T> Rule<T, JType> deduplicate(Rule<T, JType> rule) {
+        if (generationConfig.isUseDeduplication()) {
+            rule = new DeduplicateRule<>(this, dedupeCache, rule);
+        }
+        return rule;
     }
 
 }

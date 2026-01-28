@@ -635,4 +635,11 @@ public interface GenerationConfig {
    */
   boolean isUseJakartaValidation();
 
+  /**
+   * Deduplicates Java classes and enums if they have identical schemas.
+   *
+   * @return Whether to perform deduplication.
+   */
+  boolean isUseDeduplication();
+
 }
