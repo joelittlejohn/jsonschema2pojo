@@ -82,10 +82,14 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // Only generate the constructors if there are actually properties to put in them
     if (!requiredClassProperties.isEmpty() || !requiredCombinedSuperProperties.isEmpty()) {
+      final GenerationConfig generationConfig = ruleFactory.getGenerationConfig();
 
-      // Generate the no arguments constructor - we'll need this even if there is a property
-      // constructor available, because it is used by the serialization and deserialization
-      generateNoArgsConstructor(instanceClass);
+      // If there are no properties to put on the constructor than we don't need
+      // the no-args constructor as java infers it, so we can make this computation
+      // only if the required properties constructor is being generated
+      if (generationConfig.isIncludeNoArgsConstructor()) {
+        generateNoArgsConstructor(instanceClass);
+      }
 
       // Generate the actual constructor taking in only the required properties
       addFieldsConstructor(instanceClass, requiredClassProperties, requiredCombinedSuperProperties);
@@ -126,9 +130,12 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
 
     // Only generate the constructors if there are actually properties to put in them
     if (requiresConstructors) {
-      // Generate the no arguments constructor - we'll need this even if there is a property
-      // constructor available, because it is used by the serialization and deserialization
-      generateNoArgsConstructor(instanceClass);
+      // If there are no other constructors to generate then the no-args constructor is
+      // not needed as java infers it, so we can make this computation only if the required
+      // properties constructor is being generated
+      if (generationConfig.isIncludeNoArgsConstructor()) {
+        generateNoArgsConstructor(instanceClass);
+      }
 
       if (includeCopyConstructor) {
         addCopyConstructor(instanceClass, classProperties, combinedSuperProperties);

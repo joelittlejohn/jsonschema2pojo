@@ -286,6 +286,19 @@
     <td align="center" valign="top">No (default <code>false</code>)</td>
   </tr>
   <tr>
+    <td valign="top">includeNoArgsConstructor</td>
+    <td valign="top">The 'includeNoArgsConstructor' configuration option
+      works in collaboration with the {@link #isIncludeConstructors()} configuration option and is
+      incompatible with {@link #isConstructorsRequiredPropertiesOnly()}, and will have no effect if
+      {@link #isIncludeConstructors()} is not set to true. If {@link #isIncludeConstructors()} is
+      set to true then this configuration determines whether the resulting object should include the
+      no-args constructor. This option is compatible with any of the other constructor related options,
+      but will be ignored if no other constructor is to be generated - this is because java will
+      always infer the no-args constructor if no other constructors are present.
+    </td>
+    <td align="center" valign="top">No (default <code>true</code>)</td>
+  </tr>
+  <tr>
     <td valign="top">includeHashcodeAndEquals</td>
     <td valign="top">Whether to use include <code>hashCode</code> and <code>equals</code> methods in
       generated Java

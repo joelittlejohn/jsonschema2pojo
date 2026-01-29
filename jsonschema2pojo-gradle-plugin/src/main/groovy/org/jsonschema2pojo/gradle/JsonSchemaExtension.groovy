@@ -60,6 +60,7 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean includeRequiredPropertiesConstructor;
   boolean includeAllPropertiesConstructor;
   boolean includeCopyConstructor;
+  boolean includeNoArgsConstructor;
   boolean includeHashcodeAndEquals
   boolean includeJsr303Annotations
   boolean includeJsr305Annotations
@@ -116,6 +117,7 @@ public class JsonSchemaExtension implements GenerationConfig {
     constructorsRequiredPropertiesOnly = false
     includeRequiredPropertiesConstructor = false
     includeAllPropertiesConstructor = true
+    includeNoArgsConstructor = true
     includeToString = true
     toStringExcludes = [] as String[]
     annotationStyle = AnnotationStyle.JACKSON
@@ -245,6 +247,7 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeRequiredPropertiesConstructor = ${includeRequiredPropertiesConstructor}
        |includeAllPropertiesConstructor = ${includeAllPropertiesConstructor}
        |includeCopyConstructor = ${includeCopyConstructor}
+       |includeNoArgsConstructor = ${includeNoArgsConstructor}
        |includeToString = ${includeToString}
        |toStringExcludes = ${Arrays.toString(toStringExcludes)}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}

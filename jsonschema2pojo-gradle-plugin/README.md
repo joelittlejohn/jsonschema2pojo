@@ -229,6 +229,9 @@ jsonSchema2Pojo {
   // This property is irrelevant if constructorsRequiredPropertiesOnly = true
   includeCopyConstructor = false
 
+  // Whether to *add* the no-args constructor, alongside other constructors.
+  includeNoArgsConstructor = false
+
   // Whether to make the generated types Parcelable for Android
   parcelable = false
 

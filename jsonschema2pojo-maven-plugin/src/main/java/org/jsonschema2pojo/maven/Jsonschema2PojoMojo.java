@@ -571,6 +571,19 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean includeCopyConstructor = false;
 
     /**
+     * The 'includeNoArgsConstructor' configuration option. This property works in collaboration with the {@link
+     * #isIncludeConstructors()} configuration option, and will have no effect if {@link #isIncludeConstructors()}
+     * is not set to true. If {@link #isIncludeConstructors()} is set to true then this configuration determines
+     * whether the resulting object should include the no-args constructor. This option is compatible with any
+     * of the other constructor related options, but will be ignored if no other constructor is to be generated -
+     * this is because java will always infer the no-args constructor if no other constructors are present.
+     *
+     * @since 1.0.3
+     */
+    @Parameter(property = "jsonschema2pojo.includeNoArgsConstructor", defaultValue = "true")
+    private boolean includeNoArgsConstructor = true;
+
+    /**
      * Whether to allow 'additional properties' support in objects. Setting this
      * to false will disable additional properties support, regardless of the
      * input schema(s).
@@ -1096,6 +1109,11 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeCopyConstructor() {
         return includeCopyConstructor;
+    }
+
+    @Override
+    public boolean isIncludeNoArgsConstructor() {
+        return includeNoArgsConstructor;
     }
 
     @Override
