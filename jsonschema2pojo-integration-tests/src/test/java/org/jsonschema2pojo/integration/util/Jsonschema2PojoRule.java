@@ -19,7 +19,6 @@ package org.jsonschema2pojo.integration.util;
 import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.Compiler.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,6 @@ import java.util.regex.Pattern;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
-import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
 import org.apache.commons.lang3.Strings;
@@ -174,12 +172,12 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     }
 
     public ClassLoader compile(List<File> classpath, Map<String, Object> config) {
-        return compile(systemJavaCompiler(), new PrintWriter(System.out), classpath, config);
+        return compile(new PrintWriter(System.out), classpath, config);
     }
 
-    public ClassLoader compile(JavaCompiler compiler, Writer out, List<File> classpath, Map<String, Object> config) {
+    public ClassLoader compile(Writer out, List<File> classpath, Map<String, Object> config) {
         DiagnosticListener<JavaFileObject> diagnosticListener = captureDiagnostics ? new CapturingDiagnosticListener() : null;
-        return CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
+        return CodeGenerationHelper.compile(out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
     }
 
     public ClassLoader generateAndCompile(String schema, String targetPackage, Map<String, Object> configValues) {

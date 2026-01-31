@@ -45,6 +45,12 @@ import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
  */
 public class Compiler {
 
+    private static final ThreadLocal<JavaCompiler> compiler =
+            ThreadLocal.withInitial(ToolProvider::getSystemJavaCompiler);
+
+    private static final ThreadLocal<StandardJavaFileManager> fileManager =
+            ThreadLocal.withInitial(() -> compiler.get().getStandardFileManager(null, null, null));
+
     private static String defaultCompilerTarget() {
         return System.getProperty(
             "maven.compiler.release", 
@@ -54,25 +60,24 @@ public class Compiler {
     }
 
     public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
-      compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
+      compile(null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
     }
 
-    public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
+    public void compile(Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
         targetVersion = targetVersion == null ? defaultCompilerTarget() : targetVersion;
 
-        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 
         if (outputDirectory != null) {
             try {
-                fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
+                fileManager.get().setLocation(StandardLocation.CLASS_OUTPUT,
                         Collections.singletonList(outputDirectory));
-                fileManager.setLocation(StandardLocation.CLASS_PATH, classpath);
+                fileManager.get().setLocation(StandardLocation.CLASS_PATH, classpath);
             } catch (IOException e) {
                 throw new RuntimeException("could not set output directory", e);
             }
         }
 
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(sourceDirectory));
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.get().getJavaFileObjectsFromFiles(findAllSourceFiles(sourceDirectory));
 
         ArrayList<String> options = new ArrayList<>();
         options.add("-source");
@@ -84,7 +89,7 @@ public class Compiler {
         options.add("-Xlint:-options");
         options.add("-Xlint:unchecked");
         if (compilationUnits.iterator().hasNext()) {
-            Boolean success = javaCompiler.getTask(out, fileManager, diagnosticListener, options, null, compilationUnits).call();
+            Boolean success = compiler.get().getTask(out, fileManager.get(), diagnosticListener, options, null, compilationUnits).call();
             assertThat("Compilation was not successful, check stdout for errors", success, is(true));
         }
 
