@@ -39,6 +39,16 @@ public enum AnnotationStyle {
      */
     JACKSON2,
 
+    /**
+     * Jackson 3.x
+     *
+     * @see <a
+     *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+     *      Jackson 3 continues to use Jackson 2 annotations, but data-binding annotations change to the
+     *      new tools.jackson.databind.annotations package
+     */
+    JACKSON3,
+
     JSONB1,
 
     JSONB2,
