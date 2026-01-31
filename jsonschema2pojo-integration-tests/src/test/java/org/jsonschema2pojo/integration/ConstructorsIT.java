@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.parallel.ExecutionMode.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -28,9 +29,11 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.parallel.Execution;
 
 import com.sun.codemodel.JMod;
 
+@Execution(SAME_THREAD)
 public class ConstructorsIT {
 
   public static void assertHasModifier(int modifier, int modifiers, String modifierName) {
