@@ -213,10 +213,7 @@ public class ConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     NameHelper nameHelper = ruleFactory.getNameHelper();
-    for (Iterator<Entry<String, JsonNode>> properties = node.get("properties")
-        .fields(); properties.hasNext(); ) {
-      Map.Entry<String, JsonNode> property = properties.next();
-
+    for (Map.Entry<String, JsonNode> property : node.get("properties").properties()) {
       JsonNode propertyObj = property.getValue();
       final String javadoc = getJavadocForProperty(propertyObj);
       if (onlyRequired) {

@@ -124,7 +124,7 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>5.0.3-01</version>
+                        <version>5.0.4-01</version>
                     </dependency>
                 </dependencies>
             </plugin>

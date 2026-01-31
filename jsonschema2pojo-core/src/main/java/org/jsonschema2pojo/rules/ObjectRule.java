@@ -442,8 +442,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 }
             }
 
-            for (Iterator<Map.Entry<String, JsonNode>> iterator = properties.fields(); iterator.hasNext(); ) {
-                Map.Entry<String, JsonNode> entry = iterator.next();
+            for (Map.Entry<String, JsonNode> entry : properties.properties()) {
                 String propertyName = entry.getKey();
                 JsonNode propertyNode = entry.getValue();
 
