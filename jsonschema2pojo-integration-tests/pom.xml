@@ -50,41 +50,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <!-- copy dependencies so that tests for Ant task can build a taskdef classpath -->
-                    <execution>
-                        <id>ant-libs</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/ant-libs</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <!-- copy dependencies from some random artifact so that tests for Ant task can create a custom classpath -->
-                    <execution>
-                        <id>custom-libs</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>de.flapdoodle.embedmongo</groupId>
-                                    <artifactId>de.flapdoodle.embedmongo</artifactId>
-                                    <version>1.18</version>
-                                    <type>jar</type>
-                                    <outputDirectory>${project.build.directory}/custom-libs</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -108,11 +73,6 @@
             <artifactId>jsonschema2pojo-maven-plugin</artifactId>
             <version>${project.version}</version>
             <type>maven-plugin</type>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jsonschema2pojo-ant</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
