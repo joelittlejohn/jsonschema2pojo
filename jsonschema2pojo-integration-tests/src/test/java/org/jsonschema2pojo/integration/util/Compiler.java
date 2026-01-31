@@ -100,7 +100,7 @@ public class Compiler {
         return files;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_ALWAYS_NULL",
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "NP_ALWAYS_NULL",
             justification = "Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
     private void debugOutput(File file) {
 

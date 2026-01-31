@@ -39,15 +39,15 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.robolectric.android.AndroidInterceptors;
+import org.robolectric.interceptors.AndroidInterceptors;
 import org.robolectric.internal.ShadowProvider;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 import org.robolectric.internal.bytecode.Interceptors;
 import org.robolectric.internal.bytecode.MutableClass;
-import org.robolectric.internal.bytecode.OldClassInstrumentor;
+import org.robolectric.internal.bytecode.ClassDetails;
+import org.robolectric.internal.bytecode.ClassInstrumentor;
 import org.robolectric.internal.bytecode.Sandbox;
 import org.robolectric.internal.bytecode.SandboxClassLoader;
-import org.robolectric.internal.bytecode.ShadowDecorator;
 import org.robolectric.internal.bytecode.ShadowMap;
 import org.robolectric.internal.bytecode.ShadowWrangler;
 import org.robolectric.internal.bytecode.UrlResourceProvider;
@@ -71,8 +71,8 @@ public class ParcelableIT {
 
         InstrumentationConfiguration config = mock(InstrumentationConfiguration.class);
         when(config.shouldAcquire(anyString())).thenReturn(false);
-        when(config.shouldInstrument(any(MutableClass.class))).thenReturn(false);
-        SandboxClassLoader classLoader = new SandboxClassLoader(config, new UrlResourceProvider(), new OldClassInstrumentor(new ShadowDecorator()));
+        when(config.shouldInstrument(any(ClassDetails.class))).thenReturn(false);
+        SandboxClassLoader classLoader = new SandboxClassLoader(config, new UrlResourceProvider(), new ClassInstrumentor());
         new Sandbox(classLoader).configure(new ShadowWrangler(shadowMap, ShadowMatcher.MATCH_ALL, interceptors), interceptors);
     }
 
