@@ -4,15 +4,11 @@
 #
 # To create a new release:
 #
-# 1. Maven release command:
+# 1. Maven release command (publishes directly to Maven Central Portal):
 #     export GPG_TTY=$(tty)
 #     ./mvnw clean release:clean release:prepare release:perform -DautoVersionSubmodules
 #
-# 2. Close and Release snapshots repo at oss.sonatype.org
-#
-# 3. Wait at least 2hrs for synchronization to central
-#
-# 4. Run this script to publish new release to github
+# 2. Run this script to publish new release to github
 #
 set -e
 
