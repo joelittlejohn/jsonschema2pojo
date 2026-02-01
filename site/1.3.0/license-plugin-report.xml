@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="FORMAT" timestamp="1769959873348">
+    <module artifactId="jsonschema2pojo-maven-plugin" groupId="org.jsonschema2pojo" version="1.3.0"/>
+    <files>
+        <file path="src/main/java/org/jsonschema2pojo/maven/Jsonschema2PojoMojo.java" result="NOOP"/>
+        <file path="src/main/java/org/jsonschema2pojo/maven/MatchPatternsFileFilter.java" result="NOOP"/>
+        <file path="src/main/java/org/jsonschema2pojo/maven/MojoRuleLogger.java" result="NOOP"/>
+        <file path="src/main/java/org/jsonschema2pojo/maven/ProjectClasspath.java" result="NOOP"/>
+        <file path="src/main/java/org/jsonschema2pojo/maven/package-info.java" result="NOOP"/>
+        <file path="src/test/java/org/jsonschema2pojo/maven/MatchPatternsFileFilterTest.java" result="NOOP"/>
+    </files>
+</licensePluginReport>
