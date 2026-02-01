@@ -237,19 +237,23 @@
                 <configuration>
                     <aggregate>true</aggregate>
                     <encoding>UTF-8</encoding>
-                    <excludes>
-                        <exclude>**/jsonschema2pojo-jdk-annotation/**</exclude>
-                        <exclude>**/src/main/java/org/jsonschema2pojo/util/Inflector.java</exclude>
-                    </excludes>
                     <failIfMissing>true</failIfMissing>
-                    <header>NOTICE</header>
                     <headerDefinitions>
                         <headerDefinition>${maven.multiModuleProjectDirectory}/license-plugin-definition.xml</headerDefinition>
                     </headerDefinitions>
-                    <includes>
-                        <include>**/src/main/java/**</include>
-                        <include>**/src/test/java/**</include>
-                    </includes>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>NOTICE</header>
+                            <excludes>
+                                <exclude>**/jsonschema2pojo-jdk-annotation/**</exclude>
+                                <exclude>**/src/main/java/org/jsonschema2pojo/util/Inflector.java</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/src/main/java/**</include>
+                                <include>**/src/test/java/**</include>
+                            </includes>
+                        </licenseSet>
+                    </licenseSets>
                     <mapping>
                         <java>JAVA_STYLE</java>
                     </mapping>
