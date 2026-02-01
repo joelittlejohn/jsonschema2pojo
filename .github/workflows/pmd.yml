@@ -1,0 +1,24 @@
+---
+name: PMD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pmd:
+    runs-on: ubuntu-latest
+    name: PMD Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run PMD
+        run: ./mvnw compile pmd:check -B -Ppmd
