@@ -119,3 +119,6 @@
 * Michael Edgar
 * Julien Herr
 * Daniel Hammer
+* jiri-meluzin
+* Oliver Granseier
+* Diego Granados
