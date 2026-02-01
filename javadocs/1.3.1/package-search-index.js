@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.jsonschema2pojo"},{"l":"org.jsonschema2pojo.cli"},{"l":"org.jsonschema2pojo.exception"},{"l":"org.jsonschema2pojo.maven"},{"l":"org.jsonschema2pojo.model"},{"l":"org.jsonschema2pojo.rules"},{"l":"org.jsonschema2pojo.util"}];updateSearchResults();
