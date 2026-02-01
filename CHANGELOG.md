@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.1
+* Add plexus-utils dependency, as this is no longer provided in Maven 3.9 ([#1751](https://github.com/joelittlejohn/jsonschema2pojo/pull/1751))
+
 ## 1.3.0
 * Migrate publishing from legacy OSSRH to Maven Central Portal ([#1747](https://github.com/joelittlejohn/jsonschema2pojo/pull/1747))
 * **Remove Ant task (no longer supported) ([#1743](https://github.com/joelittlejohn/jsonschema2pojo/pull/1743))**
