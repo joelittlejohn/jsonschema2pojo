@@ -15,7 +15,7 @@ With Groovy:
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.3.0"
+  id "org.jsonschema2pojo" version "1.3.1"
 }
 
 jsonSchema2Pojo {
@@ -28,7 +28,7 @@ With Kotlin:
 ```kotlin
 plugins {
   id("java")
-  id("org.jsonschema2pojo") version "1.3.0"
+  id("org.jsonschema2pojo") version "1.3.1"
 }
 
 jsonSchema2Pojo {
@@ -44,7 +44,7 @@ Below we have a full build.gradle example, showing all available configuration o
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.3.0"
+  id "org.jsonschema2pojo" version "1.3.1"
 }
 
 repositories {
