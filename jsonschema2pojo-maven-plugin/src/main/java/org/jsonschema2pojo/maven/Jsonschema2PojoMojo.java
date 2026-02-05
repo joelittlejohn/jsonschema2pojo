@@ -774,6 +774,20 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     private boolean useJakartaValidation = false;
 
     /**
+     * Whether to generate POJO's from subschemas path defined by {@link #getDefinitionsPath} configuration option
+     */
+    @Parameter(property = "jsonschema2pojo.generateDefinitions", defaultValue = "false")
+    private boolean generateDefinitions;
+
+    /**
+     * Defines path to subschemas that should be processed by jsonschema2pojo.
+     * This property works in collaboration with the {@link #isGenerateDefinitions()} configuration option.
+     * If the {@link #isGenerateDefinitions()} returns {@code false}, then this configuration option will not affect anything.
+     */
+    @Parameter(property = "jsonschema2pojo.definitionsPath", defaultValue = "/$defs")
+    private String definitionsPath = "/$defs";
+
+    /**
      * Executes the plugin, to read the given source and behavioural properties
      * and generate POJOs. The current implementation acts as a wrapper around
      * the command line interface.
@@ -1113,7 +1127,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeSetters() { return includeSetters; }
 
-    @SuppressWarnings("unchecked")
     private void setTargetVersion() {
         if (isNotBlank(this.targetVersion)) {
             return;
@@ -1131,7 +1144,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             return;
         }
 
-        for (Plugin p : (List<Plugin>) project.getBuildPlugins()) {
+        for (Plugin p : project.getBuildPlugins()) {
             if (p.getKey().equals("org.apache.maven.plugins:maven-compiler-plugin") && p.getConfiguration() instanceof Xpp3Dom) {
                 final Xpp3Dom compilerSourceConfig = ((Xpp3Dom) p.getConfiguration()).getChild("source");
                 if (compilerSourceConfig != null) {
@@ -1262,4 +1275,15 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     public boolean isUseJakartaValidation() {
         return useJakartaValidation;
     }
+
+    @Override
+    public boolean isGenerateDefinitions() {
+        return generateDefinitions;
+    }
+
+    @Override
+    public String getDefinitionsPath() {
+        return definitionsPath;
+    }
+
 }
