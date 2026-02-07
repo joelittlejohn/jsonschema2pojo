@@ -6,11 +6,11 @@ android {
 
     namespace "jsonschema2pojo.joelittlejohn.github.com.androidlibexample"
 
-    compileSdkVersion 30
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }

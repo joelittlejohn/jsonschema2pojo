@@ -16,20 +16,22 @@ jobs:
     strategy:
       matrix:
         version:
-          - { java: 17,  gradle: '8.13' }  # AGP Java 8 => Gradle 7.6.4 (MavenPlugin legacy)
+          - { java: 17,  gradle: '8.14.4' }
     steps:
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.18.0
+        uses: s4u/setup-maven-action@v1.19.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.version.java }}
           java-distribution: temurin
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.1
+        uses: malinskiy/action-android/install-sdk@release/0.1.7
+      - name: Install Android SDK platform 34
+        run: sdkmanager "platforms;android-34"
       - name: Install latest jsonschema2pojo SNAPSHOT
         run: ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: ${{ matrix.version.gradle }}
       - name: Build Gradle example (Android)
