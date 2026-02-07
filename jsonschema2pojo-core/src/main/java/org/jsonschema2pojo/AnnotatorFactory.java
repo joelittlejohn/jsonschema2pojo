@@ -17,7 +17,6 @@
 package org.jsonschema2pojo;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Factory object for creating {@link Annotator}s for all the supported
@@ -46,6 +45,8 @@ public class AnnotatorFactory {
             case JACKSON:
             case JACKSON2:
                 return new Jackson2Annotator(generationConfig);
+            case JACKSON3:
+                return new Jackson3Annotator(generationConfig);
             case JSONB1:
                 return new Jsonb1Annotator(generationConfig);
             case JSONB2:
@@ -80,12 +81,12 @@ public class AnnotatorFactory {
                 Constructor<? extends Annotator> constructor = clazz.getConstructor(GenerationConfig.class);
                 return constructor.newInstance(generationConfig);
             } catch (NoSuchMethodException e) {
-                return clazz.newInstance();
+                return clazz.getDeclaredConstructor().newInstance();
             }
-        } catch (InvocationTargetException | InstantiationException e) {
-            throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Failed to create a custom annotator from the given class. It appears that we do not have access to this class - is both the class and its no-arg constructor marked public?", e);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException("Failed to create a custom annotator from the given class. An exception was thrown on trying to create a new instance.", e.getCause());
         }
 
     }

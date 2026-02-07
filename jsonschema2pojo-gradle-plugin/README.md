@@ -15,7 +15,7 @@ With Groovy:
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.2.2"
+  id "org.jsonschema2pojo" version "1.3.2"
 }
 
 jsonSchema2Pojo {
@@ -28,7 +28,7 @@ With Kotlin:
 ```kotlin
 plugins {
   id("java")
-  id("org.jsonschema2pojo") version "1.2.2"
+  id("org.jsonschema2pojo") version "1.3.2"
 }
 
 jsonSchema2Pojo {
@@ -44,7 +44,7 @@ Below we have a full build.gradle example, showing all available configuration o
 ```groovy
 plugins {
   id "java"
-  id "org.jsonschema2pojo" version "1.2.2"
+  id "org.jsonschema2pojo" version "1.3.2"
 }
 
 repositories {
@@ -57,6 +57,8 @@ dependencies {
   implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
   // Required if generating Jackson 2 annotations
   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+  // Required if generating Jackson 3 annotations
+  implementation 'tools.jackson.core:jackson-databind:3.0.2'
   // Required if generating JodaTime data types
   implementation 'joda-time:joda-time:2.2'
 }
@@ -127,6 +129,7 @@ jsonSchema2Pojo {
   // The style of annotations to use in the generated Java types. Supported values:
   //  - jackson (alias of jackson2)
   //  - jackson2 (apply annotations from the Jackson 2.x library)
+  //  - jackson3 (apply annotations from the Jackson 3.x library)
   //  - jsonb (apply annotations from the JSON-B 1 library)
   //  - jsonb2 (apply annotations from the JSON-B 2 library)
   //  - gson (apply annotations from the Gson library)
@@ -301,9 +304,6 @@ jsonSchema2Pojo {
     // By default, the version will be taken from the Gradle Java plugin's 'sourceCompatibility',
     // which (if unset) itself defaults to the current JVM version
   targetVersion = "1.8"
-
-  // deprecated, since we no longer use commons-lang for equals, hashCode, toString
-  useCommonsLang3 = false
 
   // A customer file filter to allow input files to be filtered/ignored
   fileFilter = new AllFileFilter()

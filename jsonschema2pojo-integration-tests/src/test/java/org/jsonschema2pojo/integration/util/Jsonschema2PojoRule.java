@@ -19,7 +19,6 @@ package org.jsonschema2pojo.integration.util;
 import static org.apache.commons.io.FileUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.jsonschema2pojo.integration.util.Compiler.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,10 +34,9 @@ import java.util.regex.Pattern;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
-import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -125,11 +123,11 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
         }
 
         final String contextDisplayName = context.getParent().map(ExtensionContext::getDisplayName).orElse(context.getDisplayName());
-        final String displayName = StringUtils.removeEnd(contextDisplayName, "()");
+        final String displayName = Strings.CS.removeEnd(contextDisplayName, "()");
         String methodName = context.getRequiredTestMethod().getName();
-        if (!StringUtils.equals(displayName, methodName)
+        if (!Strings.CS.equals(displayName, methodName)
                // displayName may differ from methodName in case of nested test classes, e.g. when using @Nested
-               && !StringUtils.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
+               && !Strings.CS.equals(displayName, context.getRequiredTestClass().getSimpleName())) {
             methodName = methodName + "[" + displayName + "]";
         }
         setUp(context.getRequiredTestClass().getName(), methodName);
@@ -174,12 +172,12 @@ public class Jsonschema2PojoRule implements BeforeAllCallback, BeforeEachCallbac
     }
 
     public ClassLoader compile(List<File> classpath, Map<String, Object> config) {
-        return compile(systemJavaCompiler(), new PrintWriter(System.out), classpath, config);
+        return compile(new PrintWriter(System.out), classpath, config);
     }
 
-    public ClassLoader compile(JavaCompiler compiler, Writer out, List<File> classpath, Map<String, Object> config) {
+    public ClassLoader compile(Writer out, List<File> classpath, Map<String, Object> config) {
         DiagnosticListener<JavaFileObject> diagnosticListener = captureDiagnostics ? new CapturingDiagnosticListener() : null;
-        return CodeGenerationHelper.compile(compiler, out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
+        return CodeGenerationHelper.compile(out, getGenerateDir(), getCompileDir(), classpath, config, diagnosticListener);
     }
 
     public ClassLoader generateAndCompile(String schema, String targetPackage, Map<String, Object> configValues) {

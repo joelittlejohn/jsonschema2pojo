@@ -243,6 +243,10 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * <li><code>jackson2</code> (apply annotations from the
      * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
      * 2.x</a> library)</li>
+     * <li><code>jackson3</code> (apply annotations from the
+     * <a href="https://github.com/FasterXML/jackson-annotations">Jackson
+     * 2.x</a> library, and from <a href="https://github.com/FasterXML/jackson-databind">Jackson 3.x databind</a>
+     * for data-binding annotations)</li>
      * <li><code>jackson</code> (alias for jackson2)</li>
      * <li><code>jsonb</code> (apply annotations from the
      * JSON-B 1.x library)</li>
@@ -448,15 +452,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     @Parameter(property = "jsonschema2pojo.dateType")
     private String dateType = null;
-
-    /**
-     * Whether to use commons-lang 3.x imports instead of commons-lang 2.x
-     * imports when adding equals, hashCode and toString methods.
-     *
-     * @since 0.4.1
-     */
-    @Parameter(property = "jsonschema2pojo.useCommonsLang3", defaultValue = "false")
-    private boolean useCommonsLang3 = false;
 
     /**
      * Whether to make the generated types 'parcelable' (for Android development).
@@ -784,7 +779,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      * the command line interface.
      */
     @Override
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = { "NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD" }, justification = "Private fields set by Maven.")
     @SuppressWarnings("PMD.UselessParentheses")
     public void execute() throws MojoExecutionException {
 
@@ -846,10 +841,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 
         if (addCompileSourceRoot) {
             project.addCompileSourceRoot(outputDirectory.getPath());
-        }
-
-        if (useCommonsLang3) {
-            getLog().warn("useCommonsLang3 is deprecated. Please remove it from your config.");
         }
 
         RuleLogger logger = new MojoRuleLogger(getLog());
@@ -1036,11 +1027,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isUseJodaLocalTimes() {
         return useJodaLocalTimes;
-    }
-
-    @Deprecated
-    public boolean isUseCommonsLang3() {
-        return useCommonsLang3;
     }
 
     @Override

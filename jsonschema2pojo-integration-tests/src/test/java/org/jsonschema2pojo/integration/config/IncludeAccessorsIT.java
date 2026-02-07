@@ -69,13 +69,13 @@ public class IncludeAccessorsIT {
     }
 
     @Test
-    public void beansWithoutAccessorsRoundTripJsonCorrectly() throws ClassNotFoundException, SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, IOException {
+    public void beansWithoutAccessorsRoundTripJsonCorrectly() throws IOException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/primitiveProperties.json", "com.example", config("includeGetters", false, "includeSetters", false));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
         generatedType.getDeclaredField("a").set(instance, 12);
         generatedType.getDeclaredField("b").set(instance, 1.12);
         generatedType.getDeclaredField("c").set(instance, true);

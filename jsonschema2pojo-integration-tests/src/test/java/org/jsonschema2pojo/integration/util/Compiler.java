@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,14 +36,17 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
-
-
 /**
  * Compiles all the Java source files found in a given directory using the
  * JSR-199 API in Java 6.
  */
 public class Compiler {
+
+    private static final ThreadLocal<JavaCompiler> compiler =
+            ThreadLocal.withInitial(ToolProvider::getSystemJavaCompiler);
+
+    private static final ThreadLocal<StandardJavaFileManager> fileManager =
+            ThreadLocal.withInitial(() -> compiler.get().getStandardFileManager(null, null, null));
 
     private static String defaultCompilerTarget() {
         return System.getProperty(
@@ -53,25 +57,24 @@ public class Compiler {
     }
 
     public void compile(File sourceDirectory, File outputDirectory, List<File> classpath, String targetVersion ) {
-      compile(null, null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
+      compile(null, sourceDirectory, outputDirectory, classpath, null, targetVersion);
     }
 
-    public void compile(JavaCompiler javaCompiler, Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
+    public void compile(Writer out, File sourceDirectory, File outputDirectory, List<File> classpath, DiagnosticListener<? super JavaFileObject> diagnosticListener, String targetVersion ) {
         targetVersion = targetVersion == null ? defaultCompilerTarget() : targetVersion;
 
-        StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(null, null, null);
 
         if (outputDirectory != null) {
             try {
-                fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
+                fileManager.get().setLocation(StandardLocation.CLASS_OUTPUT,
                         Collections.singletonList(outputDirectory));
-                fileManager.setLocation(StandardLocation.CLASS_PATH, classpath);
+                fileManager.get().setLocation(StandardLocation.CLASS_PATH, classpath);
             } catch (IOException e) {
                 throw new RuntimeException("could not set output directory", e);
             }
         }
 
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(findAllSourceFiles(sourceDirectory));
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.get().getJavaFileObjectsFromFiles(findAllSourceFiles(sourceDirectory));
 
         ArrayList<String> options = new ArrayList<>();
         options.add("-source");
@@ -83,7 +86,7 @@ public class Compiler {
         options.add("-Xlint:-options");
         options.add("-Xlint:unchecked");
         if (compilationUnits.iterator().hasNext()) {
-            Boolean success = javaCompiler.getTask(out, fileManager, diagnosticListener, options, null, compilationUnits).call();
+            Boolean success = compiler.get().getTask(out, fileManager.get(), diagnosticListener, options, null, compilationUnits).call();
             assertThat("Compilation was not successful, check stdout for errors", success, is(true));
         }
 
@@ -99,24 +102,16 @@ public class Compiler {
         return files;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_ALWAYS_NULL",
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "NP_ALWAYS_NULL",
             justification = "Findbugs bug: false positive when using System.out, http://old.nabble.com/-FB-Discuss--Problems-with-false(-)positive-on-System.out.println-td30586499.html")
     private void debugOutput(File file) {
 
         if (System.getProperty("debug") != null) {
             try {
-                System.out.println(readFileToString(file));
+                System.out.println(readFileToString(file, StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public static JavaCompiler systemJavaCompiler() {
-      return ToolProvider.getSystemJavaCompiler();
-    }
-
-    public static JavaCompiler eclipseCompiler() {
-      return new EclipseCompiler();
     }
 }

@@ -2,15 +2,27 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
-
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo-jdk-annotation</artifactId>
     <version>0.0.2-SNAPSHOT</version>
+
+    <name>jsonschema2pojo-jdk-annotation</name>
+    <description>Library to easily acquire the JDK 8-compatible javax.annotation.Generated annotation, for cases when javax.annotation-api cannot be used</description>
+    <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
+
+    <developers>
+        <developer>
+            <name>Joe Littlejohn</name>
+            <email>joe.littlejohn@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 
     <scm>
         <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
@@ -18,7 +30,28 @@
         <developerConnection>scm:git:git@github.com:joelittlejohn/jsonschema2pojo.git</developerConnection>
     </scm>
 
-    <name>jsonschema2pojo-jdk-annotation</name>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
@@ -27,7 +60,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>3.2.8</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -40,7 +73,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>3.12.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -52,7 +85,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.4.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>

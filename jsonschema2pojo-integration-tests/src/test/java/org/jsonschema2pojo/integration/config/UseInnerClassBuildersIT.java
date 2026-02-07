@@ -27,7 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -65,7 +65,7 @@ public class UseInnerClassBuildersIT {
     Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
     boolean containsWithMethod = Stream.of(childClass.getMethods())
         .map(Method::getName)
-        .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
+        .anyMatch(methodName -> Strings.CS.contains(methodName, "with"));
 
     assertThat("Generated class missing any builders at all", containsWithMethod, is(true));
 
@@ -83,7 +83,7 @@ public class UseInnerClassBuildersIT {
     Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
     boolean containsWithMethod = Stream.of(childClass.getMethods())
         .map(Method::getName)
-        .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
+        .anyMatch(methodName -> Strings.CS.contains(methodName, "with"));
 
     assertThat("Generated contains unexpected builders", containsWithMethod, is(false));
 
@@ -95,15 +95,14 @@ public class UseInnerClassBuildersIT {
    * object
    */
   @Test
-  public void innerBuildersInvokeBuild()
-      throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+  public void innerBuildersInvokeBuild() throws ReflectiveOperationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
     Class<?> builderClass = resultsClassLoader.loadClass("com.example.Child$ChildBuilder");
     Method buildMethod = builderClass.getMethod("build");
 
-    Object builder = builderClass.newInstance();
+    Object builder = builderClass.getDeclaredConstructor().newInstance();
     assertThat(builder, is(notNullValue()));
 
     assertThat(buildMethod.invoke(builder), is(notNullValue()));
@@ -114,8 +113,7 @@ public class UseInnerClassBuildersIT {
    * object and confirms all values on the object match those provided to the with methods
    */
   @Test
-  public void innerBuildersBuildObjectIncrementally()
-      throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+  public void innerBuildersBuildObjectIncrementally() throws ReflectiveOperationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
@@ -129,7 +127,7 @@ public class UseInnerClassBuildersIT {
     String parentProperty = "parentProperty";
     String sharedProperty = "sharedProperty";
 
-    Object builder = builderClass.newInstance();
+    Object builder = builderClass.getDeclaredConstructor().newInstance();
     withChildProperty.invoke(builder, childProperty);
     withParentProperty.invoke(builder, parentProperty);
     withSharedProperty.invoke(builder, sharedProperty);

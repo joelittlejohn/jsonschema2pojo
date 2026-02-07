@@ -28,7 +28,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -370,16 +369,51 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(validArrayInstance, is(1));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    public void jsr303AnnotationsValidatedForAdditionalProperties() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void jsr303ValidAnnotationIsOnItemTypeNotField() throws ClassNotFoundException, NoSuchFieldException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
+
+        final String validationPackage = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        Class<?> validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
+        java.lang.reflect.Field objectArrayField = validArrayType.getDeclaredField("objectarray");
+
+        // The @Valid annotation should be on the item type (e.g., List<@Valid Item>), not on the field
+        if (useJakartaValidation) {
+            assertThat("@Valid should not be on the field, but on the item type",
+                    objectArrayField.getAnnotation(jakarta.validation.Valid.class), is(nullValue()));
+        } else {
+            assertThat("@Valid should not be on the field, but on the item type",
+                    objectArrayField.getAnnotation(javax.validation.Valid.class), is(nullValue()));
+        }
+
+        // Verify the @Valid annotation IS present on the type parameter (item type)
+        java.lang.reflect.AnnotatedType annotatedType = objectArrayField.getAnnotatedType();
+        assertThat("Field type should be an AnnotatedParameterizedType",
+                annotatedType, is(instanceOf(java.lang.reflect.AnnotatedParameterizedType.class)));
+
+        java.lang.reflect.AnnotatedParameterizedType parameterizedType =
+                (java.lang.reflect.AnnotatedParameterizedType) annotatedType;
+        java.lang.reflect.AnnotatedType[] typeArguments = parameterizedType.getAnnotatedActualTypeArguments();
+
+        assertThat("Should have one type argument", typeArguments.length, is(1));
+
+        // Check that the type argument (item type) has exactly one annotation: @Valid
+        java.lang.annotation.Annotation[] itemTypeAnnotations = typeArguments[0].getAnnotations();
+        assertThat("Item type should have exactly one annotation", itemTypeAnnotations.length, is(1));
+        assertThat("@Valid annotation should be on the item type parameter",
+                itemTypeAnnotations[0].annotationType().getName(), is(validationPackage + ".Valid"));
+    }
+
+    @Test
+    public void jsr303AnnotationsValidatedForAdditionalProperties() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validAdditionalProperties.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
-        Class parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
-        Object parent = parentType.newInstance();
+        Class<?> parentType = resultsClassLoader.loadClass("com.example.ValidAdditionalProperties");
+        Object parent = parentType.getDeclaredConstructor().newInstance();
 
-        Class subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
+        Class<?> subPropertyType = resultsClassLoader.loadClass("com.example.ValidAdditionalPropertiesProperty");
         Object validSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 9);
         Object invalidSubPropertyInstance = createInstanceWithPropertyValue(subPropertyType, "maximum", 11);
 
@@ -398,9 +432,9 @@ public class IncludeJsr303AnnotationsIT {
         assertThat("Violations (" + validatorName + "): " + violationsForValidInstance.toString(), violationsForValidInstance.size(), matcher);
     }
 
-    private static Object createInstanceWithPropertyValue(Class type, String propertyName, Object propertyValue) {
+    private static Object createInstanceWithPropertyValue(Class<?> type, String propertyName, Object propertyValue) {
         try {
-            Object instance = type.newInstance();
+            Object instance = type.getDeclaredConstructor().newInstance();
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, type);
             propertyDescriptor.getWriteMethod().invoke(instance, propertyValue);
 

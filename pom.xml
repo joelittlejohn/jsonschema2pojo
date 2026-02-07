@@ -2,23 +2,23 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
-
     <groupId>org.jsonschema2pojo</groupId>
     <artifactId>jsonschema2pojo</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.3.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>jsonschema2pojo</name>
     <description>Generate DTO style Java classes from JSON Schema documents</description>
     <url>https://github.com/joelittlejohn/jsonschema2pojo</url>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <modules>
-        <module>jsonschema2pojo-ant</module>
         <module>jsonschema2pojo-cli</module>
         <module>jsonschema2pojo-core</module>
         <module>jsonschema2pojo-gradle-plugin</module>
@@ -50,17 +50,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <gradle.version>5.6</gradle.version>
+        <java.version>17</java.version>
+        <gradle-api.version>8.11.1</gradle-api.version>
         <gson.version>2.11.0</gson.version>
-        <moshi.version>1.12.0</moshi.version>
-        <jackson.version>2.17.2</jackson.version>
-        <!--
-            Version 3.25.0 is the last version supporting Java 8.
-            Starting at 3.26.0, the Eclipse Compiler is looking for MODULE_SOURCE_PATH (Part of Jigsaw).
-        -->
-        <ecj.version>3.25.0</ecj.version>
-        <mockito.version>4.11.0</mockito.version>
+        <moshi.version>1.15.2</moshi.version>
+        <jackson.version>2.21.0</jackson.version>
+        <mockito.version>5.21.0</mockito.version>
+        <jackson3.version>3.0.2</jackson3.version>
         <maven.plugin.plugin.version>3.8.1</maven.plugin.plugin.version>
     </properties>
 
@@ -77,27 +73,27 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.11.0</version>
+                    <version>3.14.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.9.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.3</version>
+                    <version>3.5.4</version>
                     <configuration>
                         <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
                             <disable>false</disable>
-                            <version>3.5.3</version>
+                            <version>3.5.4</version>
                             <usePhrasedFileName>false</usePhrasedFileName>
                             <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
                             <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
@@ -118,19 +114,19 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>3.2.8</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.12.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-plugin-plugin</artifactId>
@@ -142,15 +138,20 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.9.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.9.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.0</version>
                     <configuration>
                         <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
                     </configuration>
@@ -161,15 +162,15 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.3</version>
+                    <version>3.5.4</version>
                     <configuration>
                         <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
                             <disable>false</disable>
-                            <version>3.5.3</version>
+                            <version>3.5.4</version>
                             <usePhrasedFileName>false</usePhrasedFileName>
                             <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
                             <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
@@ -196,7 +197,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -206,18 +207,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>define-root</id>
-                        <goals>
-                            <goal>rootlocation</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -234,7 +223,7 @@
                                 <requireMavenVersion>
                                     <version>[3.9.9,)</version>
                                 </requireMavenVersion>
-                                <requireUpperBoundDeps/>
+                                <requireUpperBoundDeps />
                             </rules>
                         </configuration>
                     </execution>
@@ -243,23 +232,27 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
+                <version>5.0.0</version>
                 <configuration>
                     <aggregate>true</aggregate>
                     <encoding>UTF-8</encoding>
-                    <excludes>
-                        <exclude>**/jsonschema2pojo-jdk-annotation/**</exclude>
-                        <exclude>**/src/main/java/org/jsonschema2pojo/util/Inflector.java</exclude>
-                    </excludes>
                     <failIfMissing>true</failIfMissing>
-                    <header>NOTICE</header>
                     <headerDefinitions>
-                        <headerDefinition>${rootlocation}/license-plugin-definition.xml</headerDefinition>
+                        <headerDefinition>${maven.multiModuleProjectDirectory}/license-plugin-definition.xml</headerDefinition>
                     </headerDefinitions>
-                    <includes>
-                        <include>**/src/main/java/**</include>
-                        <include>**/src/test/java/**</include>
-                    </includes>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>NOTICE</header>
+                            <excludes>
+                                <exclude>**/jsonschema2pojo-jdk-annotation/**</exclude>
+                                <exclude>**/src/main/java/org/jsonschema2pojo/util/Inflector.java</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/src/main/java/**</include>
+                                <include>**/src/test/java/**</include>
+                            </includes>
+                        </licenseSet>
+                    </licenseSets>
                     <mapping>
                         <java>JAVA_STYLE</java>
                     </mapping>
@@ -291,12 +284,13 @@
                 <configuration>
                     <!-- http://jira.codehaus.org/browse/MGPG-9 -->
                     <mavenExecutorId>forked-path</mavenExecutorId>
+                    <releaseProfiles>release</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <doclint>none</doclint>
                 </configuration>
                 <executions>
                     <execution>
@@ -307,12 +301,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>false</autoPublish>
+                    <waitUntil>validated</waitUntil>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>release-sign-artifacts</id>
+            <id>release</id>
             <activation>
                 <property>
                     <name>performRelease</name>
@@ -333,13 +337,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
                     <plugin>
                         <artifactId>maven-source-plugin</artifactId>
                         <executions>
@@ -354,47 +351,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>java-8-profile</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.eclipse.jdt</groupId>
-                        <artifactId>ecj</artifactId>
-                        <!--
-                          Version 3.25.0 is the last version supporting Java 8.
-                          Starting at 3.26.0, the Eclipse Compiler is looking for MODULE_SOURCE_PATH (Part of Jigsaw).
-                          -->
-                        <version>3.25.0</version>
-                        <scope>test</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
-
-        <profile>
-            <id>java-11-profile</id>
-            <activation>
-                <jdk>11</jdk>
-            </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.eclipse.jdt</groupId>
-                        <artifactId>ecj</artifactId>
-                        <!--
-                          Version 3.33.0 is the last version supporting Java 11.
-                          Starting at 3.34.0, the Eclipse Compiler ships with class version 61.0 (Java 17)
-                          -->
-                        <version>3.33.0</version>
-                        <scope>test</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        </profile>
     </profiles>
 
     <dependencies>
@@ -402,7 +358,7 @@
             <!-- Allows Findbugs annotations in submodules to suppress inaccurate warnings.-->
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
-            <version>1.3.9</version>
+            <version>3.0.1u2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -417,16 +373,23 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.13.2</version>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.13.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-bom</artifactId>
-                <version>3.0.22</version>
+                <version>5.0.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -463,6 +426,16 @@
                 <groupId>com.squareup.moshi</groupId>
                 <artifactId>moshi</artifactId>
                 <version>${moshi.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-reflect</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-stdlib-jdk8</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.google.code.javaparser</groupId>
@@ -477,23 +450,23 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.17.1</version>
+                <version>1.20.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.17.0</version>
+                <version>2.21.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.12.0</version>
+                <version>1.15.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
+                <version>3.20.0</version>
             </dependency>
             <dependency>
                 <groupId>javax.annotation</groupId>
@@ -513,7 +486,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.13.0</version>
+                <version>2.14.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -542,11 +515,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant</artifactId>
-                <version>1.10.15</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.bval</groupId>
                 <artifactId>bval-jsr</artifactId>
                 <version>2.0.6</version>
@@ -555,7 +523,7 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
-                <version>2.2.1</version>
+                <version>3.9.11</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -566,26 +534,24 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
-                <artifactId>maven-project</artifactId>
-                <version>2.2.1</version>
+                <artifactId>maven-core</artifactId>
+                <version>3.9.11</version>
                 <scope>provided</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>maven-shared-utils</artifactId>
-                <version>3.3.4</version>
+                <version>3.4.2</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jdt</groupId>
-                <artifactId>ecj</artifactId>
-                <version>${ecj.version}</version>
-                <scope>test</scope>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>4.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-xml</artifactId>
+                <version>4.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -608,13 +574,13 @@
             <dependency>
                 <groupId>com.thoughtworks.qdox</groupId>
                 <artifactId>qdox</artifactId>
-                <version>2.0.3</version>
+                <version>2.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                <groupId>org.robolectric</groupId>
                <artifactId>robolectric</artifactId>
-               <version>4.4</version>
+               <version>4.16.1</version>
                <exclusions>
                    <exclusion>
                        <groupId>junit</groupId>
@@ -634,7 +600,7 @@
             <dependency>
                 <groupId>org.robolectric</groupId>
                 <artifactId>android-all-instrumented</artifactId>
-                <version>9-robolectric-4913185-2-i1</version>
+                <version>9-robolectric-4913185-2-i7</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -650,6 +616,10 @@
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>google</id>
+            <url>https://maven.google.com/</url>
         </repository>
     </repositories>
 
