@@ -178,6 +178,9 @@ public interface GenerationConfig {
    *         <li><code>jackson2</code> (apply annotations from the
    *         <a href="https://github.com/FasterXML/jackson-annotations">
    *         Jackson 2.x</a> library)</li>
+   *         <li><code>jackson3</code> (apply annotations from the
+   *         <a href="https://github.com/FasterXML/jackson-annotations">
+   *         Jackson 3.x</a> library)</li>
    *         <li><code>gson</code> (apply annotations from the
    *         <a href="https://code.google.com/p/google-gson/">gson</a>
    *         library)</li>

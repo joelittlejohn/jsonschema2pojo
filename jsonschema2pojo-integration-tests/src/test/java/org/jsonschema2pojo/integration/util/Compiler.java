@@ -36,9 +36,6 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
-
-
 /**
  * Compiles all the Java source files found in a given directory using the
  * JSR-199 API in Java 6.
@@ -116,13 +113,5 @@ public class Compiler {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public static JavaCompiler systemJavaCompiler() {
-      return ToolProvider.getSystemJavaCompiler();
-    }
-
-    public static JavaCompiler eclipseCompiler() {
-      return new EclipseCompiler();
     }
 }

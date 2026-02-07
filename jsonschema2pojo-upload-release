@@ -45,7 +45,7 @@ pushd $WORKING_DIR
 
     # download dependencies for cli
     wget -U NoSuchBrowser/1.0 https://repo1.maven.org/maven2/org/jsonschema2pojo/jsonschema2pojo-cli/$VERSION/jsonschema2pojo-cli-$VERSION.pom -O pom.xml
-    ./mvnw dependency:copy-dependencies -DincludeScope=runtime
+    mvn dependency:copy-dependencies -DincludeScope=runtime
     mv target/dependency ./lib
     mv jsonschema2pojo-cli-$VERSION.jar lib
     rm -r target pom.xml
