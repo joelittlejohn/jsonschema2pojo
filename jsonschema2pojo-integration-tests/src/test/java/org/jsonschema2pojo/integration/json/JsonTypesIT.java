@@ -232,6 +232,26 @@ public class JsonTypesIT {
     }
 
     @Test
+    public void arrayWithNullFieldValuesPreservesNestedTypes() throws Exception {
+        // https://github.com/joelittlejohn/jsonschema2pojo/pull/1746
+        // null field values in array must not erase previous inner type lookup
+
+        final String filePath = filePath("arrayNullField");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(filePath, "com.example", config("sourceType", format));
+
+        Class<?> arrayItemType = resultsClassLoader.loadClass("com.example.ArrayNullField");
+        Class<?> myfieldType = resultsClassLoader.loadClass("com.example.Myfield");
+
+        // Verify the Myfield class has both subfield1 and subfield2 properties
+        assertThat(myfieldType.getMethod("getSubfield1").getReturnType(), is(equalTo(String.class)));
+        assertThat(myfieldType.getMethod("getSubfield2").getReturnType(), is(equalTo(String.class)));
+
+        // Verify we can deserialize the array
+        Object[] items = (Object[]) objectMapper.readValue(this.getClass().getResourceAsStream(filePath), Array.newInstance(arrayItemType, 0).getClass());
+        assertThat(items.length, is(5));
+    }
+
+    @Test
     public void propertiesWithSameNameOnDifferentObjects() throws Exception {
 
         final String filePath = "/" + format + "/propertiesSameName";
