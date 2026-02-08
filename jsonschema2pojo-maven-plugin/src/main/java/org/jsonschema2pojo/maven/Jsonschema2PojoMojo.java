@@ -1131,7 +1131,7 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
             return;
         }
 
-        for (Plugin p : (List<Plugin>) project.getBuildPlugins()) {
+        for (Plugin p : project.getBuildPlugins()) {
             if (p.getKey().equals("org.apache.maven.plugins:maven-compiler-plugin") && p.getConfiguration() instanceof Xpp3Dom) {
                 final Xpp3Dom compilerSourceConfig = ((Xpp3Dom) p.getConfiguration()).getChild("source");
                 if (compilerSourceConfig != null) {
