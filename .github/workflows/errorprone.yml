@@ -1,0 +1,24 @@
+---
+name: Error Prone
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  errorprone:
+    runs-on: ubuntu-latest
+    name: Error Prone Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run Error Prone
+        run: ./mvnw compile test-compile -B -Perrorprone
