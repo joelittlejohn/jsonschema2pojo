@@ -424,6 +424,35 @@ public class IncludeJsr303AnnotationsIT {
 
         setter.invoke(parent, "maximum", invalidSubPropertyInstance);
         assertNumberOfConstraintViolationsOn(parent, is(1));
+
+        // Verify that @Valid is on the map value type parameter, not on the field itself
+        final String validationPackage = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        java.lang.reflect.Field additionalPropertiesField = parentType.getDeclaredField("additionalProperties");
+
+        if (useJakartaValidation) {
+            assertThat("@Valid should not be on the field, but on the value type parameter",
+                    additionalPropertiesField.getAnnotation(jakarta.validation.Valid.class), is(nullValue()));
+        } else {
+            assertThat("@Valid should not be on the field, but on the value type parameter",
+                    additionalPropertiesField.getAnnotation(javax.validation.Valid.class), is(nullValue()));
+        }
+
+        java.lang.reflect.AnnotatedType annotatedType = additionalPropertiesField.getAnnotatedType();
+        assertThat("Field type should be an AnnotatedParameterizedType",
+                annotatedType, is(instanceOf(java.lang.reflect.AnnotatedParameterizedType.class)));
+
+        java.lang.reflect.AnnotatedParameterizedType parameterizedType =
+                (java.lang.reflect.AnnotatedParameterizedType) annotatedType;
+        java.lang.reflect.AnnotatedType[] typeArguments = parameterizedType.getAnnotatedActualTypeArguments();
+
+        assertThat("Should have two type arguments (Map<String, ValueType>)", typeArguments.length, is(2));
+
+        assertThat("Key type (String) should have no annotations", typeArguments[0].getAnnotations().length, is(0));
+
+        java.lang.annotation.Annotation[] valueTypeAnnotations = typeArguments[1].getAnnotations();
+        assertThat("Value type should have exactly one annotation", valueTypeAnnotations.length, is(1));
+        assertThat("@Valid annotation should be on the value type parameter",
+                valueTypeAnnotations[0].annotationType().getName(), is(validationPackage + ".Valid"));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
