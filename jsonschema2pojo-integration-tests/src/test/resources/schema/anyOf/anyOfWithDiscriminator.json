@@ -1,0 +1,36 @@
+{
+    "type": "object",
+    "properties": {
+        "pet": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "title": "Cat",
+                    "properties": {
+                        "petType": {
+                            "type": "string"
+                        },
+                        "huntingSkill": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "title": "Dog",
+                    "properties": {
+                        "petType": {
+                            "type": "string"
+                        },
+                        "breed": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "discriminator": {
+                "propertyName": "petType"
+            }
+        }
+    }
+}

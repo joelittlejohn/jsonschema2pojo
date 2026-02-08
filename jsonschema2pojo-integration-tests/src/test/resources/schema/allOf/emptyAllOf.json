@@ -1,0 +1,9 @@
+{
+    "type": "object",
+    "properties": {
+        "directProperty": {
+            "type": "string"
+        }
+    },
+    "allOf": []
+}

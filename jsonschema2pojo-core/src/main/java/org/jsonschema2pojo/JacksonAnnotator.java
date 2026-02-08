@@ -34,7 +34,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -211,6 +213,29 @@ public abstract class JacksonAnnotator extends AbstractTypeInfoAwareAnnotator {
 
         if (pattern != null && !field.type().fullName().equals("java.lang.String")) {
             field.annotate(JsonFormat.class).param("shape", JsonFormat.Shape.STRING).param("pattern", pattern).param("timezone", timezone);
+        }
+    }
+
+    @Override
+    public void subTypeInfo(JDefinedClass markerInterface, String discriminatorProperty, JDefinedClass[] childTypes) {
+        // @JsonTypeInfo on the interface
+        JAnnotationUse typeInfo = markerInterface.annotate(JsonTypeInfo.class);
+        typeInfo.param("use", JsonTypeInfo.Id.NAME);
+        typeInfo.param("include", JsonTypeInfo.As.EXISTING_PROPERTY);
+        typeInfo.param("property", discriminatorProperty);
+        typeInfo.param("visible", true);
+
+        // @JsonSubTypes on the interface
+        JAnnotationArrayMember subtypeArray = markerInterface.annotate(JsonSubTypes.class).paramArray("value");
+        for (JDefinedClass childType : childTypes) {
+            subtypeArray.annotate(JsonSubTypes.Type.class)
+                    .param("value", childType)
+                    .param("name", childType.name());
+        }
+
+        // @JsonTypeName on each child class
+        for (JDefinedClass childType : childTypes) {
+            childType.annotate(JsonTypeName.class).param("value", childType.name());
         }
     }
 

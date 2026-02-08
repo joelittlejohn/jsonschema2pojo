@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "properties": {
+        "item": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "title": "OnlyOption",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

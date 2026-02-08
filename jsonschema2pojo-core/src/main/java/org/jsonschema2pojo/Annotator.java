@@ -255,4 +255,19 @@ public interface Annotator {
      *         deserializationClassProperty is present in this schema
      */
     boolean isPolymorphicDeserializationSupported(JsonNode node);
+
+    /**
+     * Add the necessary annotations to a marker interface and its child types
+     * to support polymorphic deserialization of anyOf/oneOf schemas with a
+     * discriminator property.
+     *
+     * @param markerInterface
+     *            the generated marker interface for the anyOf/oneOf
+     * @param discriminatorProperty
+     *            the JSON property name used to distinguish subtypes
+     * @param childTypes
+     *            the generated classes that implement the marker interface
+     */
+    default void subTypeInfo(JDefinedClass markerInterface, String discriminatorProperty, JDefinedClass[] childTypes) {
+    }
 }

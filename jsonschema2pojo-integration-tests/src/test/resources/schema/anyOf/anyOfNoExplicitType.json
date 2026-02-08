@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "data": {
+            "anyOf": [
+                {
+                    "title": "Alpha",
+                    "properties": {
+                        "alphaField": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "title": "Beta",
+                    "properties": {
+                        "betaField": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

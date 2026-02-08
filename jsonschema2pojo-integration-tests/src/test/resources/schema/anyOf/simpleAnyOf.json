@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "shape": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "title": "Circle",
+                    "properties": {
+                        "radius": {
+                            "type": "number"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "title": "Rectangle",
+                    "properties": {
+                        "width": {
+                            "type": "number"
+                        },
+                        "height": {
+                            "type": "number"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

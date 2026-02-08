@@ -1,0 +1,26 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "properties": {
+                "shared": {
+                    "type": "string"
+                },
+                "firstOnly": {
+                    "type": "string"
+                }
+            }
+        },
+        {
+            "properties": {
+                "shared": {
+                    "type": "string",
+                    "description": "overridden"
+                },
+                "secondOnly": {
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}

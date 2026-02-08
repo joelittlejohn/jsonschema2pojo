@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "choice": {
+            "anyOf": [
+                {
+                    "$ref": "anyOfRefTarget1.json"
+                },
+                {
+                    "$ref": "anyOfRefTarget2.json"
+                }
+            ]
+        }
+    }
+}

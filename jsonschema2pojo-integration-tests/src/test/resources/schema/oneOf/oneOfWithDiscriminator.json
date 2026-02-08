@@ -1,0 +1,36 @@
+{
+    "type": "object",
+    "properties": {
+        "vehicle": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Car",
+                    "properties": {
+                        "vehicleType": {
+                            "type": "string"
+                        },
+                        "doors": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "title": "Bicycle",
+                    "properties": {
+                        "vehicleType": {
+                            "type": "string"
+                        },
+                        "gears": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "discriminator": {
+                "propertyName": "vehicleType"
+            }
+        }
+    }
+}

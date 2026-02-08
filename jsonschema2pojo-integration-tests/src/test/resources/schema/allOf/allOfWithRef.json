@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "base.json"
+        },
+        {
+            "properties": {
+                "extraProperty": {
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}

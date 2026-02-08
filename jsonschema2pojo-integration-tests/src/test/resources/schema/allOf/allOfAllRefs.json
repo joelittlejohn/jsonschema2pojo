@@ -1,0 +1,11 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "allOfRefA.json"
+        },
+        {
+            "$ref": "allOfRefB.json"
+        }
+    ]
+}
