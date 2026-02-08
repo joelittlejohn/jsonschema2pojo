@@ -72,8 +72,17 @@
             <plugin>
                 <groupId>io.github.mavenplugins</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>injected-central-publishing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
                 <configuration>
-                    <skipBundling>true</skipBundling>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>
