@@ -39,6 +39,15 @@
       "media" : {
         "binaryEncoding": "base64"
       }
+    },
+    "base64WithMinAndMaxLength" : {
+      "type" : "string",
+      "default": "//APAA==",
+      "media" : {
+        "binaryEncoding": "base64"
+      },
+      "minLength": 1,
+      "maxLength": 100
     }
   }
 }
