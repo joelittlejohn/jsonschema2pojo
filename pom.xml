@@ -147,9 +147,9 @@
                     <version>3.3.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.central</groupId>
+                    <groupId>io.github.mavenplugins</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.9.0</version>
+                    <version>1.1.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -291,7 +291,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.central</groupId>
+                <groupId>io.github.mavenplugins</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
