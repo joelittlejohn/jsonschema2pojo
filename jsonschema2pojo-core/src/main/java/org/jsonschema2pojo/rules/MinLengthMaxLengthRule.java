@@ -63,21 +63,21 @@ public class MinLengthMaxLengthRule implements Rule<JFieldVar, JFieldVar> {
     }
 
     private boolean isApplicableType(JFieldVar field) {
+        // Per https://github.com/joelittlejohn/jsonschema2pojo/issues/1669
+        // Need to check arrays first, because JType.fullName() returns names like byte[] or java.lang.String[]
+        // but Class.forName needs names like "[B" or "[Ljava.lang.String;" and will throw ClassNotFoundException.
+        if (field.type().isArray()) {
+            return true;
+        }
+
         try {
-            String typeName = field.type().boxify().fullName();
-            // For collections, the full name will be something like 'java.util.List<String>' and we
-            // need just 'java.util.List'.
-            int genericsPos = typeName.indexOf('<');
-            if (genericsPos > -1) {
-                typeName = typeName.substring(0, genericsPos);
-            }
+            String typeName = field.type().boxify().erasure().fullName();
 
             Class<?> fieldClass = Class.forName(typeName);
             return String.class.isAssignableFrom(fieldClass)
                     || Collection.class.isAssignableFrom(fieldClass)
                     || Map.class.isAssignableFrom(fieldClass)
-                    || Array.class.isAssignableFrom(fieldClass)
-                    || field.type().isArray();
+                    || fieldClass.isArray();
         } catch (ClassNotFoundException ignore) {
             return false;
         }

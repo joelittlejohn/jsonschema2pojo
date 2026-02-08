@@ -181,6 +181,28 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
+    public void jsr303SizeValidationIsAddedForSchemaRuleMinItemsAndMaxItemsOnExistingType() throws ClassNotFoundException {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/minAndMaxItemsExistingType.json", "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
+
+        Class generatedType = resultsClassLoader.loadClass("com.example.MinAndMaxItemsExistingType");
+
+        Object validInstance = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", new java.util.LinkedList<>(asList("a", "b", "c")));
+
+        assertNumberOfConstraintViolationsOn(validInstance, is(0));
+
+        Object invalidInstance1 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", new java.util.LinkedList<>(Collections.singletonList("a")));
+
+        assertNumberOfConstraintViolationsOn(invalidInstance1, is(1));
+
+        Object invalidInstance2 = createInstanceWithPropertyValue(generatedType, "minAndMaxItems", new java.util.LinkedList<>(asList("a", "b", "c", "d", "e")));
+
+        assertNumberOfConstraintViolationsOn(invalidInstance2, is(1));
+
+    }
+
+    @Test
     public void jsr303EmailValidationIsAddedForFormatEmailSchemaRule() throws ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/email.json", "com.example",
