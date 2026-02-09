@@ -307,13 +307,13 @@ public class RuleFactory {
     }
 
     /**
-     * Provides a rule instance that should be applied when a property
-     * declaration is found in the schema which itself contains properties, to
-     * assign validation of the properties within that property
+     * Provides a rule instance that should be applied when a new type is
+     * created, to add the {@code @Valid} annotation for cascading validation
+     * of non-container types.
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @return a schema rule that applies the {@code @Valid} annotation to types requiring cascading validation.
      */
-    public Rule<JFieldVar, JFieldVar> getValidRule() {
+    public Rule<JType, JType> getValidRule() {
         return new ValidRule(this);
     }
 

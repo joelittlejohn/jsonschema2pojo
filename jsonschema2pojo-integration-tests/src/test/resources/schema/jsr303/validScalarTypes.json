@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "stringProp": { "type": "string" },
+        "integerProp": { "type": "integer" },
+        "numberProp": { "type": "number" },
+        "booleanProp": { "type": "boolean" }
+    },
+    "additionalProperties": false
+}

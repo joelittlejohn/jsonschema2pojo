@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "additionalProperties": {
+    "type": "array",
+    "items": {
+      "type": "array",
+      "items" : {
+        "type": "array",
+        "items" : {
+          "type": "array",
+          "items" : {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 5
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

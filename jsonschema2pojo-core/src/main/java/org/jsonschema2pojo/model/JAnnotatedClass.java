@@ -18,13 +18,13 @@ package org.jsonschema2pojo.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
@@ -50,11 +50,27 @@ import com.sun.codemodel.JTypeVar;
  * <li>{@link JAnnotatedClass#annotated(Class)} creates a new <em>type</em> with embedded annotations.
  * Example: {@code private List<@NotNull String> items;}</li>
  * </ul>
- * The implementation of this feature relies on reflection and hooking into the JAnnotationUse to access a
- * package-private constructor. This helps us to avoid a breaking change and forking codemodel, but may be a fragile
- * approach.
+ * This implementation uses reflection to access {@code JFormatter}'s private {@code importedClasses} field,
+ * which is needed to determine correct annotation placement per JLS §9.7.4. This is unavoidable since
+ * codemodel 2.6 provides no public API for querying import state.
  */
 public class JAnnotatedClass extends JClass {
+
+    /** Matches codemodel's package-private JFormatter.CLOSE_TYPE_ARGS */
+    private static final char CLOSE_TYPE_ARGS = '\uFFFF';
+
+    private static final Field IMPORTED_CLASSES_FIELD;
+    private static final Constructor<JAnnotationUse> ANNOTATION_USE_CONSTRUCTOR;
+    static {
+        try {
+            IMPORTED_CLASSES_FIELD = JFormatter.class.getDeclaredField("importedClasses");
+            IMPORTED_CLASSES_FIELD.setAccessible(true);
+            ANNOTATION_USE_CONSTRUCTOR = JAnnotationUse.class.getDeclaredConstructor(JClass.class);
+            ANNOTATION_USE_CONSTRUCTOR.setAccessible(true);
+        } catch (NoSuchFieldException | NoSuchMethodException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final JClass basis;
     private final List<JAnnotationUse> annotations;
@@ -82,10 +98,8 @@ public class JAnnotatedClass extends JClass {
      */
     private static JAnnotationUse createAnnotationUse(JClass annotationClass) {
         try {
-            Constructor<JAnnotationUse> c = JAnnotationUse.class.getDeclaredConstructor(JClass.class);
-            c.setAccessible(true);
-            return c.newInstance(annotationClass);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
+            return ANNOTATION_USE_CONSTRUCTOR.newInstance(annotationClass);
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new RuntimeException("Failed to create JAnnotationUse", e);
         }
     }
@@ -198,27 +212,62 @@ public class JAnnotatedClass extends JClass {
 
     @Override
     protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
-        JClass newBasis;
-        try {
-            Method m = JClass.class.getDeclaredMethod("substituteParams", JTypeVar[].class, List.class);
-            m.setAccessible(true);
-            newBasis = (JClass) m.invoke(basis, variables, bindings);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (newBasis == basis) {
-            return this;
-        }
-        return new JAnnotatedClass(newBasis, annotations);
+        // JAnnotatedClass only wraps concrete (non-generic) types for type-use annotations,
+        // so type variable substitution is always a no-op.
+        return this;
     }
 
     @Override
     public void generate(JFormatter f) {
+        if (annotations.isEmpty()) {
+            f.t(basis);
+            return;
+        }
+
+        if (!f.isPrinting()) {
+            // Collecting mode: use g() not t() so that narrowed type arguments are visited
+            f.g(basis);
+            for (JAnnotationUse annotation : annotations) {
+                f.g(annotation);
+            }
+            return;
+        }
+
+        // Printing mode: place annotations per JLS §9.7.4.
+        // When imported:     @Annotation SimpleName
+        // When not imported: pkg.@Annotation SimpleName
+        // Use erasure (raw type) for prefix — narrowed types like List<String> have
+        // different name/fullName lengths due to type arguments.
+        JClass rawType = basis.erasure();
+        String rawFullName = rawType.fullName();
+        String rawSimpleName = rawType.name();
+        String prefix = rawFullName.substring(0, rawFullName.length() - rawSimpleName.length());
+
+        if (!isImported(f, rawType) && !prefix.isEmpty()) {
+            f.p(prefix);
+        }
+        printAnnotations(f);
+        f.p(rawSimpleName);
+
+        // For narrowed types (e.g., List<String>), print type arguments
+        List<JClass> typeArgs = basis.getTypeParameters();
+        if (!typeArgs.isEmpty()) {
+            f.p('<').g(typeArgs).p(CLOSE_TYPE_ARGS);
+        }
+    }
+
+    private void printAnnotations(JFormatter f) {
         for (JAnnotationUse annotation : annotations) {
             f.g(annotation).p(' ');
         }
-        f.t(basis);
+    }
+
+    private static boolean isImported(JFormatter f, JClass type) {
+        try {
+            return ((Collection<?>) IMPORTED_CLASSES_FIELD.get(f)).contains(type);
+        } catch (IllegalAccessException e) {
+            return false;
+        }
     }
 
     @Override
@@ -230,11 +279,28 @@ public class JAnnotatedClass extends JClass {
             return false;
         }
         JAnnotatedClass that = (JAnnotatedClass) obj;
-        return basis.equals(that.basis) && annotations.equals(that.annotations);
+        return basis.equals(that.basis) && annotationsEqual(this.annotations, that.annotations);
+    }
+
+    // Compares annotations by class name only, not parameter values.
+    // JAnnotationUse does not implement equals(), so we use the annotation class
+    // full name as a proxy. JAnnotationUse param values are unfortunately not accessible.
+    private static boolean annotationsEqual(List<JAnnotationUse> a, List<JAnnotationUse> b) {
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++) {
+            if (!a.get(i).getAnnotationClass().fullName().equals(b.get(i).getAnnotationClass().fullName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return basis.hashCode() * 37 + annotations.hashCode();
+        int h = basis.hashCode();
+        for (JAnnotationUse annotation : annotations) {
+            h = h * 37 + annotation.getAnnotationClass().fullName().hashCode();
+        }
+        return h;
     }
 }

@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import org.jsonschema2pojo.GenerationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +40,7 @@ import com.sun.codemodel.JType;
 
 public class TypeRuleTest {
 
+    private final ValidRule validRule = mock(ValidRule.class);
     private final GenerationConfig config = mock(GenerationConfig.class);
     private final RuleFactory ruleFactory = mock(RuleFactory.class);
 
@@ -47,6 +49,8 @@ public class TypeRuleTest {
     @BeforeEach
     public void wireUpConfig() {
         when(ruleFactory.getGenerationConfig()).thenReturn(config);
+        when(ruleFactory.getValidRule()).thenReturn(validRule);
+        when(validRule.apply(any(),any(),any(),any(),any())).then(AdditionalAnswers.returnsArgAt(3));
     }
 
     @Test
