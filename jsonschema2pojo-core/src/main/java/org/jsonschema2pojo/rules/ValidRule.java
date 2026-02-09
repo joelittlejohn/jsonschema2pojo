@@ -94,7 +94,7 @@ public class ValidRule implements Rule<JFieldVar, JFieldVar> {
     }
 
     private boolean isMap(JType jtype) {
-        return (jtype instanceof JClass) && ((JClass) jtype).erasure().isAssignableFrom(jtype.owner().ref(java.util.Map.class));
+        return jtype instanceof JClass jClass && jClass.owner().ref(java.util.Map.class).isAssignableFrom(jClass.erasure());
     }
 
 }

@@ -12,6 +12,10 @@
                     "maxLength" : 5
                 }
             }
+        },
+        "objectTypeField" : {
+            "type": "object",
+            "existingJavaType": "java.lang.Object"
         }
     }
 }
