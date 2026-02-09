@@ -135,7 +135,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             AnnotationHelper.addGeneratedAnnotation(ruleFactory.getGenerationConfig(), jclass);
         }
         if (ruleFactory.getGenerationConfig().isIncludeToString()) {
-            addToString(jclass);
+            addToString(jclass, node);
         }
 
         if (ruleFactory.getGenerationConfig().isIncludeHashcodeAndEquals()) {
@@ -262,8 +262,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
     }
 
-    private void addToString(JDefinedClass jclass) {
-        Map<String, JFieldVar> fields = jclass.fields();
+    private void addToString(JDefinedClass jclass, JsonNode node) {
+        Map<String, JFieldVar> fields = removeFieldsExcludedFromToString(jclass.fields(), node);
         JMethod toString = jclass.method(JMod.PUBLIC, String.class, "toString");
         Set<String> excludes = new HashSet<>(Arrays.asList(ruleFactory.getGenerationConfig().getToStringExcludes()));
 
@@ -371,6 +371,10 @@ public class ObjectRule implements Rule<JPackage, JType> {
         toString.annotate(Override.class);
     }
 
+    private Map<String, JFieldVar> removeFieldsExcludedFromToString(Map<String, JFieldVar> fields, JsonNode node) {
+        return removeFieldsExcludedByNodeConfig(fields, node, "excludedFromToString");
+    }
+
     private void addHashCode(JDefinedClass jclass, JsonNode node) {
         Map<String, JFieldVar> fields = removeFieldsExcludedFromEqualsAndHashCode(jclass.fields(), node);
 
@@ -427,13 +431,17 @@ public class ObjectRule implements Rule<JPackage, JType> {
     }
 
     private Map<String, JFieldVar> removeFieldsExcludedFromEqualsAndHashCode(Map<String, JFieldVar> fields, JsonNode node) {
+        return removeFieldsExcludedByNodeConfig(fields, node, "excludedFromEqualsAndHashCode");
+    }
+
+    private Map<String, JFieldVar> removeFieldsExcludedByNodeConfig(Map<String, JFieldVar> fields, JsonNode node, String nodeConfigProperty) {
         Map<String, JFieldVar> filteredFields = new HashMap<>(fields);
 
         JsonNode properties = node.get("properties");
 
         if (properties != null) {
-            if (node.has("excludedFromEqualsAndHashCode")) {
-                JsonNode excludedArray = node.get("excludedFromEqualsAndHashCode");
+            if (node.has(nodeConfigProperty)) {
+                JsonNode excludedArray = node.get(nodeConfigProperty);
 
                 for (Iterator<JsonNode> iterator = excludedArray.elements(); iterator.hasNext(); ) {
                     String excludedPropertyName = iterator.next().asText();
@@ -446,8 +454,8 @@ public class ObjectRule implements Rule<JPackage, JType> {
                 String propertyName = entry.getKey();
                 JsonNode propertyNode = entry.getValue();
 
-                if (propertyNode.has("excludedFromEqualsAndHashCode") &&
-                        propertyNode.get("excludedFromEqualsAndHashCode").asBoolean()) {
+                if (propertyNode.has(nodeConfigProperty) &&
+                        propertyNode.get(nodeConfigProperty).asBoolean()) {
                     filteredFields.remove(ruleFactory.getNameHelper().getPropertyName(propertyName, propertyNode));
                 }
             }
