@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "reference": {
+      "$ref": "referencedDefsStorage.json"
+    },
+    "self-reference": {
+      "properties": {
+        "selfRefProperty": {
+          "$ref": "#/$defs/inline"
+        }
+      }
+    },
+    "inline": {
+      "type": "object",
+      "properties": {
+        "inlineProperty": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
