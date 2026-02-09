@@ -28,6 +28,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -305,12 +306,12 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationIsAddedForObject() throws ClassNotFoundException {
+    public void jsr303ValidAnnotationIsAddedForObject() throws ReflectiveOperationException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validObject.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
-        Class validObjectType = resultsClassLoader.loadClass("com.example.ValidObject");
-        Class objectFieldType = resultsClassLoader.loadClass("com.example.Objectfield");
+        Class<?> validObjectType = resultsClassLoader.loadClass("com.example.ValidObject");
+        Class<?> objectFieldType = resultsClassLoader.loadClass("com.example.Objectfield");
 
         Object invalidObjectFieldInstance = createInstanceWithPropertyValue(objectFieldType, "childprimitivefield", "Too long");
         Object validObjectInstance = createInstanceWithPropertyValue(validObjectType, "objectfield", invalidObjectFieldInstance);
@@ -321,6 +322,12 @@ public class IncludeJsr303AnnotationsIT {
         validObjectInstance = createInstanceWithPropertyValue(validObjectType, "objectfield", validObjectFieldInstance);
 
         assertNumberOfConstraintViolationsOn(validObjectInstance, is(0));
+
+        final var expectedAnnotationClass = getValidAnnotationClass();
+        assertThat(
+                "@Valid should not be on the field, but on the item type",
+                validObjectType.getDeclaredField("objectTypeField").isAnnotationPresent(expectedAnnotationClass),
+                is(true));
     }
 
     @Test
@@ -374,18 +381,13 @@ public class IncludeJsr303AnnotationsIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/jsr303/validArray.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
 
-        final String validationPackage = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        final Class<? extends Annotation> expectedValidAnnotation = getValidAnnotationClass();
         Class<?> validArrayType = resultsClassLoader.loadClass("com.example.ValidArray");
         java.lang.reflect.Field objectArrayField = validArrayType.getDeclaredField("objectarray");
 
         // The @Valid annotation should be on the item type (e.g., List<@Valid Item>), not on the field
-        if (useJakartaValidation) {
-            assertThat("@Valid should not be on the field, but on the item type",
-                    objectArrayField.getAnnotation(jakarta.validation.Valid.class), is(nullValue()));
-        } else {
-            assertThat("@Valid should not be on the field, but on the item type",
-                    objectArrayField.getAnnotation(javax.validation.Valid.class), is(nullValue()));
-        }
+        assertThat("@Valid should not be on the field, but on the item type",
+                objectArrayField.getAnnotation(expectedValidAnnotation), is(nullValue()));
 
         // Verify the @Valid annotation IS present on the type parameter (item type)
         java.lang.reflect.AnnotatedType annotatedType = objectArrayField.getAnnotatedType();
@@ -402,7 +404,7 @@ public class IncludeJsr303AnnotationsIT {
         java.lang.annotation.Annotation[] itemTypeAnnotations = typeArguments[0].getAnnotations();
         assertThat("Item type should have exactly one annotation", itemTypeAnnotations.length, is(1));
         assertThat("@Valid annotation should be on the item type parameter",
-                itemTypeAnnotations[0].annotationType().getName(), is(validationPackage + ".Valid"));
+                itemTypeAnnotations[0].annotationType(), is(expectedValidAnnotation));
     }
 
     @Test
@@ -426,16 +428,11 @@ public class IncludeJsr303AnnotationsIT {
         assertNumberOfConstraintViolationsOn(parent, is(1));
 
         // Verify that @Valid is on the map value type parameter, not on the field itself
-        final String validationPackage = useJakartaValidation ? "jakarta.validation" : "javax.validation";
+        final Class<? extends Annotation> expectedValidAnnotation = getValidAnnotationClass();
         java.lang.reflect.Field additionalPropertiesField = parentType.getDeclaredField("additionalProperties");
 
-        if (useJakartaValidation) {
-            assertThat("@Valid should not be on the field, but on the value type parameter",
-                    additionalPropertiesField.getAnnotation(jakarta.validation.Valid.class), is(nullValue()));
-        } else {
-            assertThat("@Valid should not be on the field, but on the value type parameter",
-                    additionalPropertiesField.getAnnotation(javax.validation.Valid.class), is(nullValue()));
-        }
+        assertThat("@Valid should not be on the field, but on the value type parameter",
+               additionalPropertiesField.getAnnotation(expectedValidAnnotation), is(nullValue()));
 
         java.lang.reflect.AnnotatedType annotatedType = additionalPropertiesField.getAnnotatedType();
         assertThat("Field type should be an AnnotatedParameterizedType",
@@ -452,7 +449,7 @@ public class IncludeJsr303AnnotationsIT {
         java.lang.annotation.Annotation[] valueTypeAnnotations = typeArguments[1].getAnnotations();
         assertThat("Value type should have exactly one annotation", valueTypeAnnotations.length, is(1));
         assertThat("@Valid annotation should be on the value type parameter",
-                valueTypeAnnotations[0].annotationType().getName(), is(validationPackage + ".Valid"));
+                valueTypeAnnotations[0].annotationType(), is(expectedValidAnnotation));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
@@ -486,4 +483,9 @@ public class IncludeJsr303AnnotationsIT {
     private static Matcher<File> containsText(String searchText) {
         return new FileSearchMatcher(searchText);
     }
+
+    private Class<? extends Annotation> getValidAnnotationClass() {
+        return useJakartaValidation ? jakarta.validation.Valid.class : javax.validation.Valid.class;
+    }
+
 }
