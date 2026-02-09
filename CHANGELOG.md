@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.3
+* Support type-use annotations for map value validation (Map<String, @Valid T>) ([#1774](https://github.com/joelittlejohn/jsonschema2pojo/pull/1774))
+* Ignore null values when generating item type from array examples ([#1772](https://github.com/joelittlejohn/jsonschema2pojo/pull/1772))
+* Support type-use annotations for array item validation (List<@Valid T>) ([#1771](https://github.com/joelittlejohn/jsonschema2pojo/pull/1771))
+
 ## 1.3.2
 * Could not apply requested plugin error when using version 1.3.1 of Gradle plugin 'org.jsonschema2pojo' ([#1769](https://github.com/joelittlejohn/jsonschema2pojo/issues/1769))
 

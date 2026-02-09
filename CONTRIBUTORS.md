@@ -122,3 +122,4 @@
 * jiri-meluzin
 * Oliver Granseier
 * Diego Granados
+* Laurent Almeras
