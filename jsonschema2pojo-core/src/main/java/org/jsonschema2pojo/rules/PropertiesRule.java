@@ -17,15 +17,19 @@
 package org.jsonschema2pojo.rules;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
@@ -70,8 +74,12 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getPropertyRule().apply(property, node.get(property), node, jclass, schema);
         }
 
-        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !jclass._extends().name().equals("Object")) {
-            addOverrideBuilders(jclass, jclass.owner()._getClass(jclass._extends().fullName()));
+        JClass parentClass = jclass._extends();
+        if (ruleFactory.getGenerationConfig().isGenerateBuilders() && !(parentClass.isPrimitive() || ruleFactory.getReflectionHelper().isFinal(parentClass) || Objects.equals(parentClass.fullName(), "java.lang.Object"))) {
+            addOverrideBuilders(jclass, jclass.owner()._getClass(parentClass.fullName()));
+            if (ruleFactory.getGenerationConfig().isUseInnerClassBuilders()) {
+                addOverrideInnerClassBuilders(jclass, jclass.owner()._getClass(parentClass.fullName()));
+            }
         }
 
         ruleFactory.getAnnotator().propertyOrder(jclass, node);
@@ -104,6 +112,39 @@ public class PropertiesRule implements Rule<JDefinedClass, JDefinedClass> {
             body.invoke(JExpr._super(), parentBuilder).arg(param);
             body._return(JExpr._this());
 
+        }
+    }
+
+    private void addOverrideInnerClassBuilders(JDefinedClass jclass, JDefinedClass parentJclass) {
+        if (parentJclass == null) {
+            return;
+        }
+
+        JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(jclass);
+        JDefinedClass parentBuilderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(parentJclass);
+
+        for (JMethod parentJMethod : parentBuilderClass.methods()) {
+            if (parentJMethod.name().startsWith("with") && parentJMethod.params().size() == 1) {
+                addOverrideInnerClassBuilder(builderClass, parentJMethod, parentJMethod.params().get(0));
+            }
+        }
+    }
+
+    private void addOverrideInnerClassBuilder(JDefinedClass builderClass, JMethod parentBuilder, JVar parentParam) {
+
+        // Confirm that this class doesn't already have a builder method matching the same name as the parentBuilder
+        if (builderClass.getMethod(parentBuilder.name(), new JType[] {parentParam.type()}) == null) {
+            JMethod withMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), parentBuilder.name());
+            withMethod.annotate(Override.class);
+  
+            JInvocation withInvocation = JExpr._super().invoke(parentBuilder.name());
+  
+            for (JVar param : parentBuilder.params()) {
+              withInvocation.arg(withMethod.param(param.type(), param.name()));
+            }
+  
+            JBlock withBody = withMethod.body();
+            withBody._return(JExpr.cast(builderClass.narrow(builderClass.typeParams()), withInvocation));
         }
     }
 }
