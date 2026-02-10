@@ -73,8 +73,8 @@ public class ContentResolver {
             return resolveFromClasspath(uri);
         }
 
-        try {
-            return objectMapper.readTree(uri.toURL());
+        try (InputStream in = uri.toURL().openStream()){
+            return objectMapper.readTree(in);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
         } catch (IOException e) {

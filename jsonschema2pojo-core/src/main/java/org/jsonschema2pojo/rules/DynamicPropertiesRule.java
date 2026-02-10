@@ -36,7 +36,6 @@ import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -169,8 +168,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JConditional propertyConditional = null;
 
         if (propertiesNode != null) {
-            for (Iterator<Map.Entry<String, JsonNode>> properties = propertiesNode.fields(); properties.hasNext();) {
-                Map.Entry<String, JsonNode> property = properties.next();
+            for (Map.Entry<String, JsonNode> property : propertiesNode.properties()) {
                 String propertyName = property.getKey();
                 JsonNode node = property.getValue();
                 String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);
@@ -269,8 +267,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JBlock body = method.body();
         JConditional propertyConditional = null;
         if (propertiesNode != null) {
-            for (Iterator<Map.Entry<String, JsonNode>> properties = propertiesNode.fields(); properties.hasNext();) {
-                Map.Entry<String, JsonNode> property = properties.next();
+            for (Map.Entry<String, JsonNode> property : propertiesNode.properties()) {
                 String propertyName = property.getKey();
                 JsonNode node = property.getValue();
                 String fieldName = ruleFactory.getNameHelper().getPropertyName(propertyName, node);

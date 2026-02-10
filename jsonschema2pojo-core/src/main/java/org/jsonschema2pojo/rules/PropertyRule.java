@@ -216,14 +216,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         }
     }
 
-    private boolean isObject(JsonNode node) {
-        return node.path("type").asText().equals("object");
-    }
-
-    private boolean isArray(JsonNode node) {
-        return node.path("type").asText().equals("array");
-    }
-
     private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
         JType returnType = field.type();
         if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) {
