@@ -18,6 +18,7 @@ package org.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -157,6 +158,10 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
             return getDefaultEnum(fieldType, value);
 
+        } else if (fieldType instanceof JClass && isClasspathEnum(fieldType)) {
+
+            return getDefaultEnumFromClasspath((JClass) fieldType, value);
+
         } else {
             return JExpr._null();
 
@@ -253,6 +258,50 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
         invokeFromValue.arg(getDefaultValue(backingType, value));
 
         return invokeFromValue;
+    }
+
+    /**
+     * Checks whether the given type is an enum that already exists on the
+     * classpath (i.e. it is not a {@link JDefinedClass} generated during this
+     * run, but a reference to a pre-compiled class).
+     *
+     * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues/926">issue #926</a>
+     */
+    private static boolean isClasspathEnum(JType fieldType) {
+        if (fieldType instanceof JDefinedClass) {
+            return false;
+        }
+        try {
+            return Thread.currentThread().getContextClassLoader()
+                    .loadClass(fieldType.fullName()).isEnum();
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a default enum expression for an enum type that already exists on
+     * the classpath. Uses reflection to discover the {@code fromValue} method's
+     * parameter type so the correct literal can be generated.
+     *
+     * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues/926">issue #926</a>
+     */
+    private static JExpression getDefaultEnumFromClasspath(JClass fieldType, String value) {
+        try {
+            Class<?> enumClass = Thread.currentThread().getContextClassLoader()
+                    .loadClass(fieldType.fullName());
+            for (Method m : enumClass.getMethods()) {
+                if ("fromValue".equals(m.getName()) && m.getParameterCount() == 1) {
+                    JType backingType = fieldType.owner().ref(m.getParameterTypes()[0]).unboxify();
+                    JInvocation invoke = fieldType.staticInvoke("fromValue");
+                    invoke.arg(getDefaultValue(backingType, value));
+                    return invoke;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            // enum not found on classpath — fall through to null
+        }
+        return JExpr._null();
     }
 
     private static long parseDateToMillisecs(String valueAsText) {
