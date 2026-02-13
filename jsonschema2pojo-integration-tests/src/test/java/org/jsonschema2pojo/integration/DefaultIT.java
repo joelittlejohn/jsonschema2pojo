@@ -425,4 +425,28 @@ public class DefaultIT {
 
     }
 
+    /**
+     * Verifies that enum default values are correctly applied when using
+     * {@code existingJavaType} to reference an enum on the classpath (issue #926).
+     *
+     * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues/926">issue #926</a>
+     */
+    @Test
+    public void existingJavaTypeEnumPropertyHasCorrectDefaultValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+                "/schema/default/defaultWithExistingClasspathEnum.json", "com.example");
+
+        Class<?> generatedClass = resultsClassLoader.loadClass("com.example.DefaultWithExistingClasspathEnum");
+        Object instance = generatedClass.getDeclaredConstructor().newInstance();
+
+        Method getter = generatedClass.getMethod("getExistingEnumWithDefault");
+        Object defaultValue = getter.invoke(instance);
+
+        assertThat(defaultValue, is(notNullValue()));
+        assertThat(defaultValue, is(instanceOf(ExistingClasspathEnum.class)));
+        assertThat(defaultValue, is(equalTo(ExistingClasspathEnum.BETA)));
+
+    }
+
 }
