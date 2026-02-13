@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "existingEnumWithDefault" : {
+            "existingJavaType" : "org.jsonschema2pojo.integration.classpath.ExistingClasspathEnum",
+            "type" : "string",
+            "enum" : ["alpha", "beta", "gamma"],
+            "default" : "beta"
+        }
+    }
+}

@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jsonschema2pojo.integration.classpath.ExistingClasspathEnum;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -397,6 +398,54 @@ public class DefaultIT {
 
         // set should be mutable
         assertThat(defaultSet.add(true), is(true));
+
+    }
+
+    /**
+     * Verifies that enum default values are correctly applied when the enum
+     * type already exists on the classpath (issue #926).
+     *
+     * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues/926">issue #926</a>
+     */
+    @Test
+    public void classpathEnumPropertyHasCorrectDefaultValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+                "/schema/default/defaultWithClasspathEnum.json", "com.example");
+
+        Class<?> generatedClass = resultsClassLoader.loadClass("com.example.DefaultWithClasspathEnum");
+        Object instance = generatedClass.getDeclaredConstructor().newInstance();
+
+        Method getter = generatedClass.getMethod("getClasspathEnumWithDefault");
+        Object defaultValue = getter.invoke(instance);
+
+        assertThat(defaultValue, is(notNullValue()));
+        assertThat(defaultValue, is(instanceOf(ExistingClasspathEnum.class)));
+        assertThat(defaultValue, is(equalTo(ExistingClasspathEnum.BETA)));
+
+    }
+
+    /**
+     * Verifies that enum default values are correctly applied when using
+     * {@code existingJavaType} to reference an enum on the classpath (issue #926).
+     *
+     * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo/issues/926">issue #926</a>
+     */
+    @Test
+    public void existingJavaTypeEnumPropertyHasCorrectDefaultValue() throws Exception {
+
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+                "/schema/default/defaultWithExistingClasspathEnum.json", "com.example");
+
+        Class<?> generatedClass = resultsClassLoader.loadClass("com.example.DefaultWithExistingClasspathEnum");
+        Object instance = generatedClass.getDeclaredConstructor().newInstance();
+
+        Method getter = generatedClass.getMethod("getExistingEnumWithDefault");
+        Object defaultValue = getter.invoke(instance);
+
+        assertThat(defaultValue, is(notNullValue()));
+        assertThat(defaultValue, is(instanceOf(ExistingClasspathEnum.class)));
+        assertThat(defaultValue, is(equalTo(ExistingClasspathEnum.BETA)));
 
     }
 
