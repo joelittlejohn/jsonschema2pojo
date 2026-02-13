@@ -31,6 +31,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JPrimitiveType;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JTypeVar;
 
 /**
@@ -126,6 +127,11 @@ public class JAnnotatedClass extends JClass {
      */
     public JAnnotatedClass annotated(Class<? extends Annotation> clazz) {
         return annotated(owner().ref(clazz));
+    }
+
+    @Override
+    public JType elementType() {
+        return basis.elementType();
     }
 
     /**
