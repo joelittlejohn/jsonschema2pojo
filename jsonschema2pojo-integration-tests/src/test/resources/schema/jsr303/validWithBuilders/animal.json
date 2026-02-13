@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "javaType": "com.example.Animal",
+  "properties": {
+    "tag": {
+      "$ref": "tag.json"
+    }
+  }
+}

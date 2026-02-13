@@ -19,7 +19,8 @@ package org.jsonschema2pojo.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,83 +28,78 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
-import com.sun.codemodel.JFormatter;
-import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.writer.SingleStreamCodeWriter;
 
 /**
  * Unit tests for {@link JAnnotatedClass} - type-use annotation support.
  */
 public final class JAnnotatedClassTest {
 
-    /**
-     * Helper method to generate code from a JClass using JFormatter.
-     */
-    private String generate(JClass type) {
-        StringWriter sw = new StringWriter();
-        JFormatter f = new JFormatter(sw);
-        type.generate(f);
-        return sw.toString();
+    private String buildClassWithField(JCodeModel cm, JClass fieldType) throws Exception {
+        cm._class("com.example.Test").field(JMod.PRIVATE, fieldType, "value");
+        return buildModel(cm);
+    }
+
+    private String buildModel(JCodeModel cm) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        cm.build(new SingleStreamCodeWriter(baos));
+        return baos.toString();
     }
 
     /**
-     * Test basic type-use annotation: {@code @Deprecated String}
+     * Test that a single type-use annotation is placed before the simple name.
      */
     @Test
-    public void testSimpleTypeAnnotation() {
+    public void testSimpleTypeAnnotation() throws Exception {
         JCodeModel cm = new JCodeModel();
-        JClass stringClass = cm.ref(String.class);
-        JAnnotatedClass annotatedString = JAnnotatedClass.of(stringClass).annotated(Deprecated.class);
+        JAnnotatedClass annotatedString = JAnnotatedClass.of(cm.ref(String.class)).annotated(Deprecated.class);
 
         assertThat(annotatedString.name(), is("String"));
         assertThat(annotatedString.fullName(), is("java.lang.String"));
         assertThat(annotatedString.annotations().size(), is(1));
 
-        String generated = generate(annotatedString);
-        assertThat(generated, is("@java.lang.Deprecated java.lang.String"));
+        String output = buildClassWithField(cm, annotatedString);
+        assertThat(output, containsString("@Deprecated String value"));
     }
 
     /**
-     * Test type-use annotation on generic type parameter:
-     * {@code java.util.List<@java.lang.Deprecated java.lang.String>}
+     * Test that a type-use annotation is placed correctly inside a generic type parameter.
      */
     @Test
-    public void testAnnotatedTypeParameter() {
+    public void testAnnotatedTypeParameter() throws Exception {
         JCodeModel cm = new JCodeModel();
-        JClass stringClass = cm.ref(String.class);
-        JAnnotatedClass annotatedString = JAnnotatedClass.of(stringClass).annotated(Deprecated.class);
+        JAnnotatedClass annotatedString = JAnnotatedClass.of(cm.ref(String.class)).annotated(Deprecated.class);
         JClass listOfAnnotatedString = cm.ref(List.class).narrow(annotatedString);
 
-        String generated = generate(listOfAnnotatedString);
-        assertThat(generated, is("java.util.List<@java.lang.Deprecated java.lang.String>"));
+        String output = buildClassWithField(cm, listOfAnnotatedString);
+        assertThat(output, containsString("List<@Deprecated String>"));
     }
 
     /**
-     * Test multiple type-use annotations: {@code @Deprecated @Override String}
+     * Test that multiple type-use annotations are placed correctly.
      */
     @Test
-    public void testMultipleTypeAnnotations() {
+    public void testMultipleTypeAnnotations() throws Exception {
         JCodeModel cm = new JCodeModel();
-        JClass stringClass = cm.ref(String.class);
-        JAnnotatedClass annotatedString = JAnnotatedClass.of(stringClass)
+        JAnnotatedClass annotatedString = JAnnotatedClass.of(cm.ref(String.class))
                 .annotated(Deprecated.class)
                 .annotated(Override.class);
 
         assertThat(annotatedString.annotations().size(), is(2));
 
-        String generated = generate(annotatedString);
-        assertThat(generated, is("@java.lang.Deprecated @java.lang.Override java.lang.String"));
+        String output = buildClassWithField(cm, annotatedString);
+        assertThat(output, containsString("@Deprecated @Override String value"));
     }
 
     /**
-     * Test annotated type with initializer.
+     * Test that imported types use simple names for both the type and annotation.
      */
     @Test
-    public void testAnnotatedFieldWithInitializer() throws JClassAlreadyExistsException {
+    public void testImportedTypesUseSimpleNames() throws Exception {
         JCodeModel cm = new JCodeModel();
         JDefinedClass testClass = cm._class("com.example.Test");
 
@@ -114,11 +110,11 @@ public final class JAnnotatedClassTest {
 
         testClass.field(JMod.PRIVATE, listType, "items", JExpr._new(arrayListType));
 
-        StringWriter sw = new StringWriter();
-        testClass.declare(new JFormatter(sw));
-        String classOutput = sw.toString();
+        String classOutput = buildModel(cm);
 
-        assertThat(classOutput, containsString("java.util.List<@java.lang.Deprecated java.lang.String>"));
+        assertThat(classOutput, containsString("List<@Deprecated String>"));
+        assertThat("should not contain FQCN for java.lang types",
+                classOutput, not(containsString("java.lang.")));
     }
 
     /**
@@ -146,87 +142,57 @@ public final class JAnnotatedClassTest {
     }
 
     /**
-     * Test annotating an already narrowed class.
+     * Test that annotating a narrowed class places the annotation before the raw type name.
      */
     @Test
-    public void testAnnotateNarrowedClass() {
+    public void testAnnotateNarrowedClass() throws Exception {
         JCodeModel cm = new JCodeModel();
-
-        // Create List<String>
         JClass listOfString = cm.ref(List.class).narrow(String.class);
-
-        // Annotate the whole List<String> type
         JAnnotatedClass annotatedListOfString = JAnnotatedClass.of(listOfString).annotated(Deprecated.class);
 
-        String generated = generate(annotatedListOfString);
-        assertThat(generated, is("@java.lang.Deprecated java.util.List<java.lang.String>"));
+        String output = buildClassWithField(cm, annotatedListOfString);
+        assertThat(output, containsString("@Deprecated List<String>"));
     }
 
     /**
-     * Test complex nested annotations: {@code Map<@A String, List<@B Integer>>}
+     * Test that annotations are placed correctly in nested generic types.
      */
     @Test
-    public void testNestedAnnotatedTypes() {
+    public void testNestedAnnotatedTypes() throws Exception {
         JCodeModel cm = new JCodeModel();
-
-        // @Deprecated String
         JAnnotatedClass annotatedString = JAnnotatedClass.of(cm.ref(String.class)).annotated(Deprecated.class);
-
-        // @Override Integer
         JAnnotatedClass annotatedInteger = JAnnotatedClass.of(cm.ref(Integer.class)).annotated(Override.class);
-
-        // List<@Override Integer>
         JClass listOfAnnotatedInteger = cm.ref(List.class).narrow(annotatedInteger);
-
-        // Map<@Deprecated String, List<@Override Integer>>
         JClass mapType = cm.ref(Map.class).narrow(annotatedString, listOfAnnotatedInteger);
 
-        String generated = generate(mapType);
-        assertThat(generated, is("java.util.Map<@java.lang.Deprecated java.lang.String, java.util.List<@java.lang.Override java.lang.Integer>>"));
+        String output = buildClassWithField(cm, mapType);
+        assertThat(output, containsString("Map<@Deprecated String, List<@Override Integer>>"));
     }
 
     /**
-     * Test that the annotated class works correctly in method parameters.
+     * Test that a name collision forces FQCN with correct JLS §9.7.4 annotation placement.
+     * A class named "String" in the same package prevents java.lang.String from being imported.
      */
     @Test
-    public void testAnnotatedMethodParameter() throws JClassAlreadyExistsException {
+    public void testAnnotationPlacementWithNameCollision() throws Exception {
         JCodeModel cm = new JCodeModel();
         JDefinedClass testClass = cm._class("com.example.Test");
+
+        // Create a class named "String" in the same package — collides with java.lang.String
+        cm._class("com.example.String");
 
         JClass stringClass = cm.ref(String.class);
         JAnnotatedClass annotatedString = JAnnotatedClass.of(stringClass).annotated(Deprecated.class);
         JClass listType = cm.ref(List.class).narrow(annotatedString);
 
-        JMethod method = testClass.method(JMod.PUBLIC, cm.VOID, "process");
-        method.param(listType, "items");
+        testClass.field(JMod.PRIVATE, listType, "items");
 
-        StringWriter sw = new StringWriter();
-        testClass.declare(new JFormatter(sw));
-        String classOutput = sw.toString();
+        String classOutput = buildModel(cm);
 
-        assertThat(classOutput, containsString("java.util.List<@java.lang.Deprecated java.lang.String> items"));
-    }
-
-    /**
-     * Test that the annotated class works correctly as method return type.
-     */
-    @Test
-    public void testAnnotatedReturnType() throws JClassAlreadyExistsException {
-        JCodeModel cm = new JCodeModel();
-        JDefinedClass testClass = cm._class("com.example.Test");
-
-        JClass stringClass = cm.ref(String.class);
-        JAnnotatedClass annotatedString = JAnnotatedClass.of(stringClass).annotated(Deprecated.class);
-        JClass listType = cm.ref(List.class).narrow(annotatedString);
-
-        JMethod method = testClass.method(JMod.PUBLIC, listType, "getItems");
-        method.body()._return(JExpr._null());
-
-        StringWriter sw = new StringWriter();
-        testClass.declare(new JFormatter(sw));
-        String classOutput = sw.toString();
-
-        assertThat(classOutput, containsString("java.util.List<@java.lang.Deprecated java.lang.String> getItems()"));
+        assertThat("annotation should be placed after package qualifier",
+                classOutput, containsString("java.lang.@Deprecated String"));
+        assertThat("annotation should not be before the FQCN",
+                classOutput, not(containsString("@Deprecated java.lang.String")));
     }
 
     /**
@@ -251,32 +217,41 @@ public final class JAnnotatedClassTest {
     }
 
     /**
-     * Test annotated array type: {@code @Deprecated String[]}
+     * Test that annotating an array type places the annotation before the component type name.
      */
     @Test
-    public void testAnnotatedArrayType() {
+    public void testAnnotatedArrayType() throws Exception {
         JCodeModel cm = new JCodeModel();
-
-        // @Deprecated String[]
         JClass stringArray = cm.ref(String.class).array();
         JAnnotatedClass annotatedArray = JAnnotatedClass.of(stringArray).annotated(Deprecated.class);
 
-        String generated = generate(annotatedArray);
-        assertThat(generated, is("@java.lang.Deprecated java.lang.String[]"));
+        String output = buildClassWithField(cm, annotatedArray);
+        assertThat(output, containsString("@Deprecated String[] value"));
     }
 
     /**
-     * Test annotated primitive array type: {@code @Deprecated int[]}
+     * Test that annotating a primitive array type places the annotation before the component type.
      */
     @Test
-    public void testAnnotatedPrimitiveArrayType() {
+    public void testAnnotatedPrimitiveArrayType() throws Exception {
         JCodeModel cm = new JCodeModel();
-
-        // @Deprecated int[]
         JClass intArray = cm.INT.array();
         JAnnotatedClass annotatedIntArray = JAnnotatedClass.of(intArray).annotated(Deprecated.class);
 
-        String generated = generate(annotatedIntArray);
-        assertThat(generated, is("@java.lang.Deprecated int[]"));
+        String output = buildClassWithField(cm, annotatedIntArray);
+        assertThat(output, containsString("@Deprecated int[] value"));
+    }
+
+    /**
+     * Test that annotation parameters are rendered in type-use position.
+     */
+    @Test
+    public void testAnnotationWithParameters() throws Exception {
+        JCodeModel cm = new JCodeModel();
+        JAnnotatedClass annotatedString = JAnnotatedClass.of(cm.ref(String.class)).annotated(SuppressWarnings.class);
+        annotatedString.annotations().get(0).param("value", "unchecked");
+
+        String output = buildClassWithField(cm, annotatedString);
+        assertThat(output, containsString("@SuppressWarnings(\"unchecked\") String value"));
     }
 }

@@ -129,10 +129,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
 
         ruleFactory.getDigitsRule().apply(nodeName, node, parent, field, schema);
 
-        if (isObject(node) || isArray(node)) {
-            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
-        }
-
         return jclass;
     }
 
