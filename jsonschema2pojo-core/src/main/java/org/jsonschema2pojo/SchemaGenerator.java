@@ -17,6 +17,7 @@
 package org.jsonschema2pojo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -46,8 +47,8 @@ public class SchemaGenerator {
 
     public ObjectNode schemaFromExample(URL example) {
 
-        try {
-            JsonNode content = this.objectMapper.readTree(example);
+        try (InputStream in = example.openStream()) {
+            JsonNode content = this.objectMapper.readTree(in);
             return schemaFromExample(content);
         } catch (IOException e) {
             throw new GenerationException("Could not process JSON in source file", e);

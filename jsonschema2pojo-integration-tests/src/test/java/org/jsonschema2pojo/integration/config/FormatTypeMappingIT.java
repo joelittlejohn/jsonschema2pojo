@@ -72,7 +72,7 @@ public class FormatTypeMappingIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/nonStandard.json", "com.example",
                 config("formatTypeMapping", mapping("non-standard", URL.class)));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.NonStandard");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.NonStandard");
 
         Method getter = generatedType.getMethod("getStringAsNonStandard");
         assertThat(getter.getReturnType(), typeCompatibleWith(URL.class));
@@ -83,7 +83,7 @@ public class FormatTypeMappingIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/format/arrayFormat.json", "com.example",
                 config("formatTypeMapping", mapping("base64", byte[].class)));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.ArrayFormat");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.ArrayFormat");
 
         Method getter = generatedType.getMethod("getArrayFormat");
         assertThat(getter.getReturnType(), typeCompatibleWith(byte[].class));

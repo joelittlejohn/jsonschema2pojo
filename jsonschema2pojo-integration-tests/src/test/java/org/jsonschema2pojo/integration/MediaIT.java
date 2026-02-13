@@ -293,6 +293,7 @@ public class MediaIT {
     public static class QuotedPrintableSerializer
     extends StdSerializer<byte[]>
     {
+        private static final long serialVersionUID = 1L;
         private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableSerializer() {
@@ -309,6 +310,7 @@ public class MediaIT {
     public static class QuotedPrintableDeserializer
     extends StdDeserializer<byte[]>
     {
+        private static final long serialVersionUID = 1L;
         private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableDeserializer() {
