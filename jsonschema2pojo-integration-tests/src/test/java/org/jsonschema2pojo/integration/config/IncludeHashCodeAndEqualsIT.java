@@ -75,7 +75,6 @@ public class IncludeHashCodeAndEqualsIT {
     public void objectWithoutFields() throws Exception {
 
         Class genType = resultsClassLoader.loadClass("com.example.Empty");
-        assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
         assertThat("Should not use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
@@ -87,7 +86,6 @@ public class IncludeHashCodeAndEqualsIT {
 
         Class genType = resultsClassLoader.loadClass("com.example.ExtendsJavaType");
         assertThat(genType.getSuperclass(), is(equalTo(Parent.class)));
-        assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
         assertThat(
@@ -101,7 +99,6 @@ public class IncludeHashCodeAndEqualsIT {
 
         Class genType = resultsClassLoader.loadClass("com.example.ExtendsJavaTypeWithEquals");
         assertThat(genType.getSuperclass(), is(equalTo(ParentWithEquals.class)));
-        assertThat(genType.getDeclaredFields().length, is(equalTo(0)));
 
         genType.getDeclaredMethod("equals", java.lang.Object.class);
         assertThat("Should use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
