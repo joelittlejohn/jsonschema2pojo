@@ -1,0 +1,71 @@
+---
+name: PMD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pmd:
+    runs-on: ubuntu-latest
+    name: PMD Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run PMD
+        id: pmd
+        run: |
+          if ! ./mvnw compile pmd:pmd pmd:check -B -Ppmd; then
+            echo "violations=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+      - name: PMD Summary
+        if: steps.pmd.outputs.violations == 'true'
+        run: |
+          python3 -c "
+          import xml.etree.ElementTree as ET, glob, os
+
+          ns = {'pmd': 'http://pmd.sourceforge.net/report/2.0.0'}
+          files = sorted(glob.glob('**/target/pmd.xml', recursive=True))
+          lines = ['## PMD Violations', '']
+          count = 0
+
+          for f in files:
+              tree = ET.parse(f)
+              root = tree.getroot()
+              for file_el in root.findall('pmd:file', ns):
+                  fname = os.path.relpath(file_el.get('name', ''))
+                  for v in file_el.findall('pmd:violation', ns):
+                      count += 1
+                      rule = v.get('rule', '')
+                      ruleset = v.get('ruleset', '')
+                      line = v.get('beginline', '')
+                      desc = v.text.strip() if v.text else ''
+                      lines.append(f'### \`{fname}\` (line {line})')
+                      lines.append(f'**{ruleset} / {rule}**')
+                      lines.append(f'> {desc}')
+                      lines.append('')
+
+          if count == 0:
+              lines.append('No violations found.')
+          else:
+              lines.insert(1, f'Found **{count}** violation(s).')
+              lines.insert(2, '')
+
+          summary = '\n'.join(lines)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(summary)
+          "
+      - name: Fail if violations found
+        if: steps.pmd.outputs.violations == 'true'
+        run: |
+          echo "PMD violations found — see the job summary for details"
+          exit 1

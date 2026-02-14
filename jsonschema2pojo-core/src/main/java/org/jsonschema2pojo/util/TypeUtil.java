@@ -62,8 +62,7 @@ public class TypeUtil {
                 final Type type = typeArgs.get(i);
 
                 final JClass resolvedClass;
-                if (type instanceof WildcardType) {
-                    final WildcardType wildcardType = (WildcardType) type;
+                if (type instanceof WildcardType wildcardType) {
                     if (wildcardType.getSuper() != null) {
                         throw new IllegalArgumentException("\"? super \" declaration is not yet supported");
                     } else if (wildcardType.getExtends() != null) {

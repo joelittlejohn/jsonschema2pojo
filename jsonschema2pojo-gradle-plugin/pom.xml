@@ -179,6 +179,38 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <!-- Override errorprone profile to keep using groovy-eclipse-compiler -->
+            <id>errorprone</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <compilerId>groovy-eclipse-compiler</compilerId>
+                            <failOnWarning>false</failOnWarning>
+                            <fork>false</fork>
+                            <compilerArgs combine.self="override">
+                                <arg>-Xlint</arg>
+                            </compilerArgs>
+                            <annotationProcessorPaths combine.self="override" />
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-eclipse-compiler</artifactId>
+                                <version>3.9.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-eclipse-batch</artifactId>
+                                <version>5.0.4-01</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <pluginRepositories>
         <pluginRepository>

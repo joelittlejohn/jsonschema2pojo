@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
@@ -42,9 +43,8 @@ public class IncludeAccessorsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        // throws NoSuchMethodException if method is not found
-        generatedType.getDeclaredMethod("getA");
-        generatedType.getDeclaredMethod("setA", Integer.class);
+        assertDoesNotThrow(() -> generatedType.getDeclaredMethod("getA"));
+        assertDoesNotThrow(() -> generatedType.getDeclaredMethod("setA", Integer.class));
         assertThat(generatedType.getDeclaredField("a").getModifiers(), is(Modifier.PRIVATE));
     }
 
