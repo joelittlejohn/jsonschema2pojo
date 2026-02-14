@@ -5,7 +5,7 @@
             "type" : "array",
             "minItems" : 2,
             "maxItems" : 4,
-            "existingJavaType" : "java.util.LinkedList<String>"
+            "existingJavaType" : "java.util.LinkedList<java.lang.String>"
         }
     }
 }

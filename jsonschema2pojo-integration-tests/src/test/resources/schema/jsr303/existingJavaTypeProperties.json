@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "mapOfStringOptionalListOfExistingClasses": {
+      "type": "object",
+      "existingJavaType": "java.util.Map<java.lang.String, java.util.Optional<java.util.List<com.example.ClassWithSizeAnnotation>>>"
+    },
+    "listOfOptionalStringExistingClassMaps": {
+      "type": "object",
+      "existingJavaType": "java.util.List<java.util.Optional<java.util.Map<java.lang.String, ClassWithSizeAnnotation>>>"
+    },
+    "listOfOptionalStringObjectMaps": {
+      "type": "object",
+      "existingJavaType": "java.util.List<java.util.Optional<java.util.Map<java.lang.String, java.lang.Object>>>"
+    },
+    "listOfOptionalStringStringMaps": {
+      "type": "object",
+      "existingJavaType": "java.util.List<java.util.Optional<java.util.Map<java.lang.String, java.lang.String>>>"
+    },
+    "optionalOfExistingClass": {
+      "type": "object",
+      "existingJavaType": "java.util.Optional<com.example.ClassWithSizeAnnotation>"
+    },
+    "mapOfStringExistingJavaClasses": {
+      "type": "object",
+      "existingJavaType": "java.util.Map<java.lang.String, com.example.ClassWithSizeAnnotation>"
+    },
+    "listOfObjects": {
+      "type": "object",
+      "existingJavaType": "java.util.List<java.lang.Object>"
+    },
+    "mapOfStringObject": {
+      "type": "object",
+      "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+    },
+    "rawOptional": {
+      "type": "object",
+      "existingJavaType": "java.util.Optional"
+    },
+    "rawMap": {
+      "type": "object",
+      "existingJavaType": "java.util.Map"
+    }
+  }
+}

@@ -38,6 +38,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.bval.jsr.ApacheValidationProvider;
@@ -46,6 +48,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import com.example.ClassWithSizeAnnotation;
 
 @SuppressWarnings("rawtypes")
 @ParameterizedClass
@@ -631,7 +635,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationsOnExistingJavaType() throws Exception {
+    public void jsr303ValidAnnotationsOnExistingJavaTypeWithScalar() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
                 "/schema/jsr303/validExistingJavaType.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
@@ -698,6 +702,37 @@ public class IncludeJsr303AnnotationsIT {
 
         assertThat("@Valid should not appear anywhere for scalar-only types",
                 source, not(containsString("@Valid")));
+    }
+
+    @Test
+    void jsr303AnnotationsValidatedForExistingJavaType() throws ReflectiveOperationException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(
+                "/schema/jsr303/existingJavaTypeProperties.json",
+                "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
+
+        Class<?> clazz = classLoader.loadClass("com.example.ExistingJavaTypeProperties");
+        Object instance = clazz.getDeclaredConstructor().newInstance();
+
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        clazz.getDeclaredMethod("setMapOfStringOptionalListOfExistingClasses", Map.class)
+                .invoke(instance, Map.of("a", Optional.of(List.of(new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        clazz.getDeclaredMethod("setListOfOptionalStringExistingClassMaps", List.class)
+                .invoke(instance, List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(2));
+
+        clazz.getDeclaredMethod("setListOfOptionalStringObjectMaps", List.class)
+                .invoke(instance, List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(3));
+
+        clazz.getDeclaredMethod("setOptionalOfExistingClass", Optional.class).invoke(instance, Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(4));
+
+        clazz.getDeclaredMethod("setMapOfStringExistingJavaClasses", Map.class).invoke(instance, Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(5));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
