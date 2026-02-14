@@ -25,7 +25,7 @@ public enum URLProtocol {
     HTTPS("https"),
     NO_PROTOCOL("");
 
-    private String protocol;
+    private final String protocol;
 
     URLProtocol(final String protocol) {
         this.protocol = protocol;

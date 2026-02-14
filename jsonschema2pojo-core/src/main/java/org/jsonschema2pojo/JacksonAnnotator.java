@@ -53,29 +53,15 @@ public abstract class JacksonAnnotator extends AbstractTypeInfoAwareAnnotator {
 
     public JacksonAnnotator(GenerationConfig generationConfig) {
         super(generationConfig);
-        switch (generationConfig.getInclusionLevel()) {
-            case ALWAYS:
-                inclusionLevel = JsonInclude.Include.ALWAYS;
-                break;
-            case NON_ABSENT:
-                inclusionLevel = JsonInclude.Include.NON_ABSENT;
-                break;
-            case NON_DEFAULT:
-                inclusionLevel = JsonInclude.Include.NON_DEFAULT;
-                break;
-            case NON_EMPTY:
-                inclusionLevel = JsonInclude.Include.NON_EMPTY;
-                break;
-            case NON_NULL:
-                inclusionLevel = JsonInclude.Include.NON_NULL;
-                break;
-            case USE_DEFAULTS:
-                inclusionLevel = JsonInclude.Include.USE_DEFAULTS;
-                break;
-            default:
-                inclusionLevel = JsonInclude.Include.NON_NULL;
-                break;
-        }
+        inclusionLevel = switch (generationConfig.getInclusionLevel()) {
+            case ALWAYS -> JsonInclude.Include.ALWAYS;
+            case NON_ABSENT -> JsonInclude.Include.NON_ABSENT;
+            case NON_DEFAULT -> JsonInclude.Include.NON_DEFAULT;
+            case NON_EMPTY -> JsonInclude.Include.NON_EMPTY;
+            case NON_NULL -> JsonInclude.Include.NON_NULL;
+            case USE_DEFAULTS -> JsonInclude.Include.USE_DEFAULTS;
+            default -> JsonInclude.Include.NON_NULL;
+        };
     }
 
     @Override
@@ -213,6 +199,7 @@ public abstract class JacksonAnnotator extends AbstractTypeInfoAwareAnnotator {
         }
     }
 
+    @Override
     protected void addJsonTypeInfoAnnotation(JDefinedClass jclass, String propertyName) {
         JAnnotationUse jsonTypeInfo = jclass.annotate(JsonTypeInfo.class);
         jsonTypeInfo.param("use", JsonTypeInfo.Id.CLASS);

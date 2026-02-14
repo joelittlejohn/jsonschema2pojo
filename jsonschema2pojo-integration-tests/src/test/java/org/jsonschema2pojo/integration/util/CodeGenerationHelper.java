@@ -87,21 +87,19 @@ public class CodeGenerationHelper {
     public static void generate(final URL schema, final String targetPackage, final Map<String, Object> configValues, final File outputDirectory) {
 
         try {
-            @SuppressWarnings("serial")
+            final Map<String, Object> mojoConfig = new HashMap<>();
+            if (!schema.toExternalForm().startsWith("http://")) {
+                mojoConfig.put("sourceDirectory", URLUtil.getFileFromURL(schema).getPath());
+            } else {
+                mojoConfig.put("sourcePaths", new String[] {schema.toExternalForm()});
+            }
+            mojoConfig.put("outputDirectory", outputDirectory);
+            mojoConfig.put("project", getMockProject());
+            mojoConfig.put("targetPackage", targetPackage);
+            mojoConfig.putAll(configValues);
+
             Jsonschema2PojoMojo pluginMojo = new TestableJsonschema2PojoMojo()
-                .configure(new HashMap<String, Object>() {
-                    {
-                        if( !schema.toExternalForm().startsWith("http://") ) {
-                            put("sourceDirectory", URLUtil.getFileFromURL(schema).getPath());
-                        } else {
-                            put("sourcePaths", new String[] {schema.toExternalForm()});
-                        }
-                        put("outputDirectory", outputDirectory);
-                        put("project", getMockProject());
-                        put("targetPackage", targetPackage);
-                        putAll(configValues);
-                    }
-                });
+                .configure(mojoConfig);
  
             pluginMojo.execute();
         } catch (MojoExecutionException | DependencyResolutionRequiredException e) {

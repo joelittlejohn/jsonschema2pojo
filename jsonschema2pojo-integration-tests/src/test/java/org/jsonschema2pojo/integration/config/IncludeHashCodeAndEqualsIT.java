@@ -19,6 +19,7 @@ package org.jsonschema2pojo.integration.config;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -49,9 +50,8 @@ public class IncludeHashCodeAndEqualsIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        // throws NoSuchMethodException if method is not found
-        generatedType.getDeclaredMethod("equals", java.lang.Object.class);
-        generatedType.getDeclaredMethod("hashCode");
+        assertDoesNotThrow(() -> generatedType.getDeclaredMethod("equals", java.lang.Object.class));
+        assertDoesNotThrow(() -> generatedType.getDeclaredMethod("hashCode"));
 
     }
 
@@ -76,7 +76,7 @@ public class IncludeHashCodeAndEqualsIT {
 
         Class genType = resultsClassLoader.loadClass("com.example.Empty");
 
-        genType.getDeclaredMethod("equals", java.lang.Object.class);
+        assertDoesNotThrow(() -> genType.getDeclaredMethod("equals", java.lang.Object.class));
         assertThat("Should not use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
         assertThat(genType.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(genType.getDeclaredConstructor().newInstance().hashCode())));
     }
@@ -87,7 +87,7 @@ public class IncludeHashCodeAndEqualsIT {
         Class genType = resultsClassLoader.loadClass("com.example.ExtendsJavaType");
         assertThat(genType.getSuperclass(), is(equalTo(Parent.class)));
 
-        genType.getDeclaredMethod("equals", java.lang.Object.class);
+        assertDoesNotThrow(() -> genType.getDeclaredMethod("equals", java.lang.Object.class));
         assertThat(
                 "Should use super.equals() because parent is not Object; parent uses Object.equals()",
                 genType.getDeclaredConstructor().newInstance(),
@@ -100,7 +100,7 @@ public class IncludeHashCodeAndEqualsIT {
         Class genType = resultsClassLoader.loadClass("com.example.ExtendsJavaTypeWithEquals");
         assertThat(genType.getSuperclass(), is(equalTo(ParentWithEquals.class)));
 
-        genType.getDeclaredMethod("equals", java.lang.Object.class);
+        assertDoesNotThrow(() -> genType.getDeclaredMethod("equals", java.lang.Object.class));
         assertThat("Should use super.equals()", genType.getDeclaredConstructor().newInstance(), is(equalTo(genType.getDeclaredConstructor().newInstance())));
         assertThat(genType.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(genType.getDeclaredConstructor().newInstance().hashCode())));
     }
@@ -111,7 +111,7 @@ public class IncludeHashCodeAndEqualsIT {
         Class genType = resultsClassLoader.loadClass("com.example.ExtendsFalseObject");
         assertThat(genType.getSuperclass(), is(equalTo(Object.class)));
 
-        genType.getDeclaredMethod("equals", java.lang.Object.class);
+        assertDoesNotThrow(() -> genType.getDeclaredMethod("equals", java.lang.Object.class));
         assertThat(
                 "Should use super.equals() because parent is not java.lang.Object; parent uses Object.equals()",
                 genType.getDeclaredConstructor().newInstance(),
@@ -125,13 +125,13 @@ public class IncludeHashCodeAndEqualsIT {
         Class gen1Type = resultsClassLoader.loadClass("com.example.ExtendsEmptyParent");
         Class gen2Type = resultsClassLoader.loadClass("com.example.ExtendsEmpty");
 
-        gen2Type.getDeclaredMethod("equals", java.lang.Object.class);
-        gen2Type.getDeclaredMethod("hashCode");
+        assertDoesNotThrow(() -> gen2Type.getDeclaredMethod("equals", java.lang.Object.class));
+        assertDoesNotThrow(() -> gen2Type.getDeclaredMethod("hashCode"));
         assertThat(gen2Type.getDeclaredConstructor().newInstance(), is(equalTo(gen2Type.getDeclaredConstructor().newInstance())));
         assertThat(gen2Type.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(gen2Type.getDeclaredConstructor().newInstance().hashCode())));
 
-        gen1Type.getDeclaredMethod("equals", java.lang.Object.class);
-        gen1Type.getDeclaredMethod("hashCode");
+        assertDoesNotThrow(() -> gen1Type.getDeclaredMethod("equals", java.lang.Object.class));
+        assertDoesNotThrow(() -> gen1Type.getDeclaredMethod("hashCode"));
         assertThat(gen1Type.getDeclaredConstructor().newInstance(), is(equalTo(gen1Type.getDeclaredConstructor().newInstance())));
         assertThat(gen1Type.getDeclaredConstructor().newInstance().hashCode(), is(equalTo(gen1Type.getDeclaredConstructor().newInstance().hashCode())));
     }
