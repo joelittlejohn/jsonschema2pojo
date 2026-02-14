@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.rules.FormatRule;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -110,7 +109,7 @@ public abstract class JacksonAnnotator extends AbstractTypeInfoAwareAnnotator {
         }
     }
 
-    protected abstract java.lang.Class<? extends java.lang.annotation.Annotation> getJsonDeserializeAnnotation();
+    protected abstract Class<? extends java.lang.annotation.Annotation> getJsonDeserializeAnnotation();
 
     @Override
     public void propertyGetter(JMethod getter, JDefinedClass clazz, String propertyName) {
@@ -220,7 +219,7 @@ public abstract class JacksonAnnotator extends AbstractTypeInfoAwareAnnotator {
         jsonTypeInfo.param("include", JsonTypeInfo.As.PROPERTY);
 
         // When not provided it will use default provided by "use" attribute
-        if (StringUtils.isNotBlank(propertyName)) {
+        if (isNotBlank(propertyName)) {
             jsonTypeInfo.param("property", propertyName);
         }
     }

@@ -36,7 +36,7 @@ public enum URLProtocol {
     }
 
     public static URLProtocol fromString(final String input) {
-        for (URLProtocol protocol : URLProtocol.values()) {
+        for (URLProtocol protocol : values()) {
             if (protocol.getProtocol().equalsIgnoreCase(input)) {
                 return protocol;
             }
