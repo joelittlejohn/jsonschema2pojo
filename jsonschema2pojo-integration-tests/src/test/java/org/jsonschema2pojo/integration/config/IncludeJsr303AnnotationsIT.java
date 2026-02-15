@@ -38,6 +38,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.bval.jsr.ApacheValidationProvider;
@@ -46,6 +48,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import com.example.ClassWithSizeAnnotation;
 
 @SuppressWarnings("rawtypes")
 @ParameterizedClass
@@ -631,7 +635,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationsOnExistingJavaType() throws Exception {
+    public void jsr303ValidAnnotationsOnExistingJavaTypeWithScalar() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
                 "/schema/jsr303/validExistingJavaType.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
@@ -698,6 +702,64 @@ public class IncludeJsr303AnnotationsIT {
 
         assertThat("@Valid should not appear anywhere for scalar-only types",
                 source, not(containsString("@Valid")));
+    }
+
+    @Test
+    public void jsr303AnnotationsValidatedForExistingJavaType() throws ReflectiveOperationException {
+        ClassLoader classLoader = schemaRule.generateAndCompile(
+                "/schema/jsr303/existingJavaTypeProperties.json",
+                "com.example",
+                config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
+
+        Class<?> clazz = classLoader.loadClass("com.example.ExistingJavaTypeProperties");
+        Object instance = clazz.getDeclaredConstructor().newInstance();
+
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "mapOfStringOptionalListOfExistingClasses",
+                Map.of("a", Optional.of(List.of(new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "listOfOptionalStringExistingClassMaps",
+                List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "listOfOptionalStringObjectMaps",
+                List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "optionalOfExistingClass", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "mapOfStringExistingJavaClasses", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "listOfObjects", List.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "mapOfStringObject", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "primitiveLong", 1L);
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "rawOptional", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        instance = createInstanceWithPropertyValue(clazz, "rawMap", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "existingTypeAsArrayItem",
+                List.of(Map.of("a", new ClassWithSizeAnnotation())));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {

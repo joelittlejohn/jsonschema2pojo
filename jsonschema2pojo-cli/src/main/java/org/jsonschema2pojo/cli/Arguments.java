@@ -195,7 +195,7 @@ public class Arguments implements GenerationConfig {
     private boolean disableSetters = false;
 
     @Parameter(names = { "-tv", "--target-version" }, description = "The target version for generated source files.")
-    private String targetVersion = "1.6";
+    private String targetVersion = "8";
 
     @Parameter(names = { "-ida", "--include-dynamic-accessors" }, description = "Include dynamic getter, setter, and builder support on generated types.")
     private boolean includeDynamicAccessors = false;

@@ -46,15 +46,34 @@ public class ValidRule implements Rule<JType, JType> {
 
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JType type, Schema currentSchema) {
-
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-            && type instanceof JClass jclass
-            && !isContainer(jclass)
-            && !isScalar(jclass)) {
-            return JAnnotatedClass.of(jclass).annotated(getValidClass());
-        } else {
-            return type;
+        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && type instanceof JClass jclass) {
+            if (!isContainer(jclass) && !isScalar(jclass)) {
+                return JAnnotatedClass.of(jclass).annotated(getValidClass());
+            }
+            if (null != node && node.has("existingJavaType")) {
+                return applyToExistingJavaType(jclass);
+            }
         }
+        return type;
+    }
+
+    private JClass applyToExistingJavaType(JClass jClass) {
+        if (jClass.isReference() && isContainer(jClass.erasure())) {
+            final var typeParameters = jClass.getTypeParameters();
+            if ((jClass.owner().ref(Iterable.class).isAssignableFrom(jClass.erasure())
+                    || jClass.owner().ref(Optional.class).isAssignableFrom(jClass.erasure()))
+                    && typeParameters.size() == 1
+                    && !isScalar(typeParameters.get(0))) {
+                return jClass.erasure().narrow(applyToExistingJavaType(typeParameters.get(0)));
+            } else if (jClass.owner().ref(Map.class).isAssignableFrom(jClass.erasure())
+                    && typeParameters.size() == 2 && !isScalar(typeParameters.get(1))) {
+                return jClass.erasure().narrow(typeParameters.get(0), applyToExistingJavaType(typeParameters.get(1)));
+            }
+        }
+        if (!isContainer(jClass) && !isScalar(jClass)) {
+            return JAnnotatedClass.of(jClass).annotated(getValidClass());
+        }
+        return jClass;
     }
 
     private boolean isContainer(JClass jclass) {
