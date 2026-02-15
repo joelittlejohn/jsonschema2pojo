@@ -446,4 +446,24 @@ public class RuleFactory {
         return new JavaNameRule();
     }
 
+    /**
+     * Provides a rule instance that should be applied when an "allOf"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "allOf" declaration.
+     */
+    public Rule<JClassContainer, JType> getAllOfRule() {
+        return new AllOfRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when an "anyOf" or
+     * "oneOf" declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "anyOf"/"oneOf" declaration.
+     */
+    public Rule<JClassContainer, JType> getAnyOfRule() {
+        return new AnyOfRule(this);
+    }
+
 }

@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "allOf": [
+                {
+                    "properties": {
+                        "innerProperty": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "properties": {
+                "outerProperty": {
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}

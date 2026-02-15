@@ -101,6 +101,7 @@ public abstract class AbstractAnnotator implements Annotator {
         return false;
     }
 
+
     public GenerationConfig getGenerationConfig() {
         return generationConfig;
     }

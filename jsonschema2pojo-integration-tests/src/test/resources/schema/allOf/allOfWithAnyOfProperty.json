@@ -1,0 +1,38 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        {
+            "properties": {
+                "variant": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "title": "VariantA",
+                            "properties": {
+                                "aField": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "title": "VariantB",
+                            "properties": {
+                                "bField": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

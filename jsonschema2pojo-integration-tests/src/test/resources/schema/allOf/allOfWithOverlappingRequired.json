@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "age"
+            ]
+        },
+        {
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "age",
+                "email"
+            ]
+        }
+    ]
+}

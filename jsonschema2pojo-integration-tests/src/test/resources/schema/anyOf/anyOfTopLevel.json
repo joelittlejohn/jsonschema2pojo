@@ -1,0 +1,22 @@
+{
+    "anyOf": [
+        {
+            "type": "object",
+            "title": "Foo",
+            "properties": {
+                "fooField": {
+                    "type": "string"
+                }
+            }
+        },
+        {
+            "type": "object",
+            "title": "Bar",
+            "properties": {
+                "barField": {
+                    "type": "integer"
+                }
+            }
+        }
+    ]
+}

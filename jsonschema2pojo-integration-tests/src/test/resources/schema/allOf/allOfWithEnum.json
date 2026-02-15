@@ -1,0 +1,14 @@
+{
+    "allOf": [
+        {
+            "type": "string"
+        },
+        {
+            "enum": [
+                "RED",
+                "GREEN",
+                "BLUE"
+            ]
+        }
+    ]
+}

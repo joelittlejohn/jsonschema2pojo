@@ -1,0 +1,8 @@
+{
+    "type": "object",
+    "properties": {
+        "refField2": {
+            "type": "integer"
+        }
+    }
+}

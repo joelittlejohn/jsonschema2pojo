@@ -1,0 +1,27 @@
+{
+    "type": "object",
+    "properties": {
+        "payment": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "CreditCard",
+                    "properties": {
+                        "cardNumber": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "title": "BankAccount",
+                    "properties": {
+                        "accountNumber": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

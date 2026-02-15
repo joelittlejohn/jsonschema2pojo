@@ -1,0 +1,26 @@
+{
+    "type": "object",
+    "allOf": [
+        {
+            "properties": {
+                "first": {
+                    "type": "string"
+                }
+            }
+        },
+        {
+            "properties": {
+                "second": {
+                    "type": "integer"
+                }
+            }
+        },
+        {
+            "properties": {
+                "third": {
+                    "type": "boolean"
+                }
+            }
+        }
+    ]
+}

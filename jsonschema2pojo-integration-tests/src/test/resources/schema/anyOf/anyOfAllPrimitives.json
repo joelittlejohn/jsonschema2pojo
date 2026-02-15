@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "value": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "boolean"
+                }
+            ]
+        }
+    }
+}
