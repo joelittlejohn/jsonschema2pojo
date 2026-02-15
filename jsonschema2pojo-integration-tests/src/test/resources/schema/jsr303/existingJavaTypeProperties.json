@@ -34,6 +34,10 @@
       "type": "object",
       "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
     },
+    "primitiveLong": {
+      "maximum": 0,
+      "existingJavaType": "long"
+    },
     "rawOptional": {
       "type": "object",
       "existingJavaType": "java.util.Optional"
@@ -41,6 +45,12 @@
     "rawMap": {
       "type": "object",
       "existingJavaType": "java.util.Map"
+    },
+    "existingTypeAsArrayItem": {
+      "type": "array",
+      "items": {
+        "existingJavaType": "java.util.Map<java.lang.String, com.example.ClassWithSizeAnnotation>"
+      }
     }
   }
 }

@@ -705,7 +705,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    void jsr303AnnotationsValidatedForExistingJavaType() throws ReflectiveOperationException {
+    public void jsr303AnnotationsValidatedForExistingJavaType() throws ReflectiveOperationException {
         ClassLoader classLoader = schemaRule.generateAndCompile(
                 "/schema/jsr303/existingJavaTypeProperties.json",
                 "com.example",
@@ -716,23 +716,50 @@ public class IncludeJsr303AnnotationsIT {
 
         assertNumberOfConstraintViolationsOn(instance, is(0));
 
-        clazz.getDeclaredMethod("setMapOfStringOptionalListOfExistingClasses", Map.class)
-                .invoke(instance, Map.of("a", Optional.of(List.of(new ClassWithSizeAnnotation()))));
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "mapOfStringOptionalListOfExistingClasses",
+                Map.of("a", Optional.of(List.of(new ClassWithSizeAnnotation()))));
         assertNumberOfConstraintViolationsOn(instance, is(1));
 
-        clazz.getDeclaredMethod("setListOfOptionalStringExistingClassMaps", List.class)
-                .invoke(instance, List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
-        assertNumberOfConstraintViolationsOn(instance, is(2));
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "listOfOptionalStringExistingClassMaps",
+                List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
 
-        clazz.getDeclaredMethod("setListOfOptionalStringObjectMaps", List.class)
-                .invoke(instance, List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
-        assertNumberOfConstraintViolationsOn(instance, is(3));
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "listOfOptionalStringObjectMaps",
+                List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
 
-        clazz.getDeclaredMethod("setOptionalOfExistingClass", Optional.class).invoke(instance, Optional.of(new ClassWithSizeAnnotation()));
-        assertNumberOfConstraintViolationsOn(instance, is(4));
+        instance = createInstanceWithPropertyValue(clazz, "optionalOfExistingClass", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
 
-        clazz.getDeclaredMethod("setMapOfStringExistingJavaClasses", Map.class).invoke(instance, Map.of("a", new ClassWithSizeAnnotation()));
-        assertNumberOfConstraintViolationsOn(instance, is(5));
+        instance = createInstanceWithPropertyValue(clazz, "mapOfStringExistingJavaClasses", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "listOfObjects", List.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "mapOfStringObject", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "primitiveLong", 1L);
+        assertNumberOfConstraintViolationsOn(instance, is(1));
+
+        instance = createInstanceWithPropertyValue(clazz, "rawOptional", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        instance = createInstanceWithPropertyValue(clazz, "rawMap", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instance, is(0));
+
+        instance = createInstanceWithPropertyValue(
+                clazz,
+                "existingTypeAsArrayItem",
+                List.of(Map.of("a", new ClassWithSizeAnnotation())));
+        assertNumberOfConstraintViolationsOn(instance, is(1));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {
