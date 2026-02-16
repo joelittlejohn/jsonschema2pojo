@@ -43,7 +43,6 @@ import org.robolectric.interceptors.AndroidInterceptors;
 import org.robolectric.internal.ShadowProvider;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 import org.robolectric.internal.bytecode.Interceptors;
-import org.robolectric.internal.bytecode.MutableClass;
 import org.robolectric.internal.bytecode.ClassDetails;
 import org.robolectric.internal.bytecode.ClassInstrumentor;
 import org.robolectric.internal.bytecode.Sandbox;
