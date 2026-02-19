@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "excludedFromToString" : [ "excludedByArray" ],
+  "properties": {
+    "notExcluded" : {
+      "type" : "string"
+    },
+    "excludedByProperty" : {
+      "type" : "string",
+      "excludedFromToString" : true
+    },
+    "notExcludedByProperty" : {
+      "type" : "string",
+      "excludedFromToString" : false
+    },
+    "excludedByArray" : {
+      "type" : "string"
+    }
+  }
+}
