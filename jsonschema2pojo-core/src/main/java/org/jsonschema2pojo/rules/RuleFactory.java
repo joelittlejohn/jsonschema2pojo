@@ -100,6 +100,16 @@ public class RuleFactory {
     }
 
     /**
+     * Provides a rule instance that should be applied when a "$id"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "$id" declaration.
+     */
+    public Rule<JDefinedClass, JFieldVar> getIdRule() {
+        return new IdRule();
+    }
+
+    /**
      * Provides a rule instance that should be applied when a "$comment"
      * declaration is found in the schema.
      *
