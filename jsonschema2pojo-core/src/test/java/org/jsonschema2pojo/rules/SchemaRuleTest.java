@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaStore;
 import org.junit.jupiter.api.Test;
@@ -55,13 +55,10 @@ public class SchemaRuleTest {
 
         JDefinedClass jclass = new JCodeModel()._class(TARGET_CLASS_NAME);
 
-        final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
-        when(mockGenerationConfig.getRefFragmentPathDelimiters()).thenReturn("#/.");
-
         TypeRule mockTypeRule = mock(TypeRule.class);
         when(mockRuleFactory.getTypeRule()).thenReturn(mockTypeRule);
         when(mockRuleFactory.getSchemaStore()).thenReturn(new SchemaStore());
-        when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(new DefaultGenerationConfig());
 
         ArgumentCaptor<JsonNode> captureJsonNode = ArgumentCaptor.forClass(JsonNode.class);
         ArgumentCaptor<Schema> captureSchema = ArgumentCaptor.forClass(Schema.class);
@@ -92,6 +89,7 @@ public class SchemaRuleTest {
 
         EnumRule enumRule = mock(EnumRule.class);
         when(mockRuleFactory.getEnumRule()).thenReturn(enumRule);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(new DefaultGenerationConfig());
 
         when(enumRule.apply(NODE_NAME, enumNode, null, jclass, schema)).thenReturn(jclass);
 
@@ -113,11 +111,8 @@ public class SchemaRuleTest {
         Schema schema = schemaStore.create(schemaUri, "#/.");
         schema.setJavaType(previouslyGeneratedType);
 
-        final GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
-        when(mockGenerationConfig.getRefFragmentPathDelimiters()).thenReturn("#/.");
-
         when(mockRuleFactory.getSchemaStore()).thenReturn(schemaStore);
-        when(mockRuleFactory.getGenerationConfig()).thenReturn(mockGenerationConfig);
+        when(mockRuleFactory.getGenerationConfig()).thenReturn(new DefaultGenerationConfig());
 
         ObjectNode schemaNode = new ObjectMapper().createObjectNode();
         schemaNode.put("$ref", schemaUri.toString());

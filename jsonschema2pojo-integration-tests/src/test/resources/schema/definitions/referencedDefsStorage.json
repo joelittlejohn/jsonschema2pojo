@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "inline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inlineProperty": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
