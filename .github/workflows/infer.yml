@@ -1,0 +1,73 @@
+name: Infer
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  infer:
+    runs-on: ubuntu-latest
+    name: Facebook Infer Static Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.19.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Install Infer
+        run: |
+          VERSION=v1.2.0
+          curl -sSL "https://github.com/facebook/infer/releases/download/${VERSION}/infer-linux-x86_64-${VERSION}.tar.xz" | sudo tar -xJ -C /opt
+          echo "/opt/infer-linux-x86_64-${VERSION}/bin" >> "$GITHUB_PATH"
+      - name: Build project
+        run: ./mvnw compile -B -DskipTests -pl jsonschema2pojo-core,jsonschema2pojo-cli,jsonschema2pojo-maven-plugin -am
+      - name: Resolve classpaths
+        run: |
+          ./mvnw dependency:build-classpath -B -pl jsonschema2pojo-core -Dmdep.outputFile=target/cp.txt
+          ./mvnw dependency:build-classpath -B -pl jsonschema2pojo-cli -Dmdep.outputFile=target/cp.txt
+          ./mvnw dependency:build-classpath -B -pl jsonschema2pojo-maven-plugin -Dmdep.outputFile=target/cp.txt
+      - name: Infer capture
+        run: |
+          infer capture -- javac -source 17 -target 17 \
+            -cp "$(cat jsonschema2pojo-core/target/cp.txt)" \
+            -d jsonschema2pojo-core/target/classes \
+            $(find jsonschema2pojo-core/src/main/java -name '*.java')
+
+          infer capture --continue -- javac -source 17 -target 17 \
+            -cp "$(cat jsonschema2pojo-cli/target/cp.txt):jsonschema2pojo-core/target/classes" \
+            -d jsonschema2pojo-cli/target/classes \
+            $(find jsonschema2pojo-cli/src/main/java -name '*.java')
+
+          infer capture --continue -- javac -source 17 -target 17 \
+            -cp "$(cat jsonschema2pojo-maven-plugin/target/cp.txt):jsonschema2pojo-core/target/classes" \
+            -d jsonschema2pojo-maven-plugin/target/classes \
+            $(find jsonschema2pojo-maven-plugin/src/main/java -name '*.java')
+      - name: Infer analyze
+        run: infer analyze
+      - name: Post results to job summary
+        if: always()
+        run: |
+          if [ -f infer-out/report.json ]; then
+            ISSUE_COUNT=$(jq length infer-out/report.json)
+            if [ "$ISSUE_COUNT" -gt 0 ]; then
+              echo "## Infer found $ISSUE_COUNT issue(s)" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              jq -r '.[] | "### \(.severity): \(.bug_type)\n**\(.file):\(.line)** — `\(.procedure)`\n\n\(.qualifier)\n"' infer-out/report.json >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "## Infer: no issues found" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "## Infer: no report generated" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload Infer report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: infer-report
+          path: infer-out/
