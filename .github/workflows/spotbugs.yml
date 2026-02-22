@@ -1,0 +1,76 @@
+---
+name: SpotBugs
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  spotbugs:
+    runs-on: ubuntu-latest
+    name: SpotBugs Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run SpotBugs
+        id: spotbugs
+        run: |
+          if ! ./mvnw compile spotbugs:check -B -Pspotbugs; then
+            echo "violations=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+      - name: SpotBugs Summary
+        if: steps.spotbugs.outputs.violations == 'true'
+        run: |
+          python3 -c "
+          import xml.etree.ElementTree as ET, glob, os
+
+          files = sorted(glob.glob('**/target/spotbugsXml.xml', recursive=True))
+          lines = ['## SpotBugs Violations', '']
+          count = 0
+
+          for f in files:
+              tree = ET.parse(f)
+              root = tree.getroot()
+              for bug in root.findall('BugInstance'):
+                  count += 1
+                  bug_type = bug.get('type', '')
+                  category = bug.get('category', '')
+                  msg_el = bug.find('LongMessage')
+                  msg = msg_el.text.strip() if msg_el is not None and msg_el.text else ''
+                  sl = bug.find('SourceLine[@primary=\"true\"]')
+                  if sl is None:
+                      sl = bug.find('SourceLine')
+                  if sl is not None:
+                      sourcepath = sl.get('sourcepath', sl.get('sourcefile', ''))
+                      line = sl.get('start', '')
+                      lines.append(f'### \`{sourcepath}\` (line {line})')
+                  else:
+                      lines.append(f'### (unknown location)')
+                  lines.append(f'**{category} / {bug_type}**')
+                  lines.append(f'> {msg}')
+                  lines.append('')
+
+          if count == 0:
+              lines.append('No violations found.')
+          else:
+              lines.insert(1, f'Found **{count}** violation(s).')
+              lines.insert(2, '')
+
+          summary = '\n'.join(lines)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(summary)
+          "
+      - name: Fail if violations found
+        if: steps.spotbugs.outputs.violations == 'true'
+        run: |
+          echo "SpotBugs violations found — see the job summary for details"
+          exit 1

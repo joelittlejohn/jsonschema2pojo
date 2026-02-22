@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JType;
@@ -33,7 +33,7 @@ import com.sun.codemodel.JType;
  */
 public class EnumDefinition {
   private final JType backingType;
-  private final ArrayList<EnumValueDefinition> enumValues;
+  private final List<EnumValueDefinition> enumValues;
   private final String nodeName;
   private final JsonNode enumNode;
   private final EnumDefinitionExtensionType type;
@@ -41,7 +41,7 @@ public class EnumDefinition {
   public EnumDefinition(String nodeName,
                         JsonNode enumNode,
                         JType backingType,
-                        ArrayList<EnumValueDefinition> enumValues,
+                        List<EnumValueDefinition> enumValues,
                         EnumDefinitionExtensionType type) {
     this.nodeName = nodeName;
     this.enumNode = enumNode;
@@ -54,7 +54,7 @@ public class EnumDefinition {
     this(enumDefinition, enumDefinition.enumValues);
   }
 
-  public EnumDefinition(EnumDefinition enumDefinition, ArrayList<EnumValueDefinition> enumValueDefinitions) {
+  public EnumDefinition(EnumDefinition enumDefinition, List<EnumValueDefinition> enumValueDefinitions) {
     this(enumDefinition.nodeName,
          enumDefinition.enumNode,
          enumDefinition.backingType,

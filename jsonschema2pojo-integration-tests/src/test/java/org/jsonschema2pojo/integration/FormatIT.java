@@ -28,7 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -89,9 +88,7 @@ public class FormatIT {
 
     @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-        Map<String,String> formatMapping = new HashMap<String,String>() {{
-            put("int32", "int");
-        }};
+        Map<String,String> formatMapping = Map.of("int32", "int");
 
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/format/formattedProperties.json", "com.example", config("formatTypeMapping", formatMapping));
 

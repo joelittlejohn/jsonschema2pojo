@@ -1,0 +1,64 @@
+---
+name: Error Prone
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  errorprone:
+    runs-on: ubuntu-latest
+    name: Error Prone Analysis
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run Error Prone
+        id: errorprone
+        run: |
+          ./mvnw compile test-compile -B -Perrorprone 2>&1 | tee errorprone-output.log
+          exit ${PIPESTATUS[0]}
+      - name: Error Prone Summary
+        if: always() && steps.errorprone.outcome == 'failure'
+        run: |
+          python3 -c "
+          import re, os
+
+          pattern = re.compile(r'\[WARNING\] (.+\.java):\[(\d+),\d+\] \[(\w+)\] (.+)')
+          lines = ['## Error Prone Warnings', '']
+          count = 0
+          seen = set()
+
+          with open('errorprone-output.log') as f:
+              for line in f:
+                  m = pattern.match(line.strip())
+                  if m:
+                      path, lineno, check, desc = m.groups()
+                      fname = os.path.relpath(path)
+                      key = (fname, lineno, check)
+                      if key in seen:
+                          continue
+                      seen.add(key)
+                      count += 1
+                      lines.append(f'### \`{fname}\` (line {lineno})')
+                      lines.append(f'**{check}**')
+                      lines.append(f'> {desc}')
+                      lines.append('')
+
+          if count == 0:
+              lines.append('No warnings found.')
+          else:
+              lines.insert(1, f'Found **{count}** warning(s).')
+              lines.insert(2, '')
+
+          summary = '\n'.join(lines)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(summary)
+          "

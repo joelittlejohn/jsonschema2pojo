@@ -32,7 +32,6 @@ import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JOp;
-import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
@@ -199,12 +198,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         return method;
     }
 
-    private void addGetPropertyCase(JDefinedClass jclass, JSwitch propertySwitch, String propertyName, JType propertyType, JsonNode node) {
-        JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new JType[] {});
-        propertySwitch._case(lit(propertyName)).body()
-        ._return(invoke(propertyGetter));
-    }
-
     private void addSetMethods(JDefinedClass jclass) {
         JMethod internalSetMethod = getInternalSetMethod(jclass);
         addPublicSetMethod(jclass, internalSetMethod);
@@ -218,9 +211,9 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
         // if we have additional properties, then put value.
-        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[] {});
+        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[0]);
         if (getAdditionalProperties != null) {
-            JType additionalPropertiesType = ((JClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
+            JType additionalPropertiesType = ((JClass) getAdditionalProperties.type()).getTypeParameters().get(1);
             notFound.add(invoke(getAdditionalProperties).invoke("put").arg(nameParam)
                     .arg(cast(additionalPropertiesType, valueParam)));
         }
@@ -245,9 +238,9 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         JBlock notFound = body._if(JOp.not(invoke(internalSetMethod).arg(nameParam).arg(valueParam)))._then();
 
         // if we have additional properties, then put value.
-        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[] {});
+        JMethod getAdditionalProperties = jclass.getMethod("getAdditionalProperties", new JType[0]);
         if (getAdditionalProperties != null) {
-            JType additionalPropertiesType = ((JClass) (getAdditionalProperties.type())).getTypeParameters().get(1);
+            JType additionalPropertiesType = ((JClass) getAdditionalProperties.type()).getTypeParameters().get(1);
             notFound.add(invoke(getAdditionalProperties).invoke("put").arg(nameParam)
                     .arg(cast(additionalPropertiesType, valueParam)));
         }
@@ -303,12 +296,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
     private JMethod getInternalGetMethod(JDefinedClass jclass) {
         return jclass.getMethod(DEFINED_GETTER_NAME,
                 new JType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
-    }
-
-    private void addSetPropertyCase(JDefinedClass jclass, JSwitch setterSwitch, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {
-        JBlock setterBody = setterSwitch._case(lit(propertyName)).body();
-        addSetProperty(jclass, setterBody, propertyName, propertyType, valueVar, node);
-        setterBody._return(TRUE);
     }
 
     private void addSetProperty(JDefinedClass jclass, JBlock callSite, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {

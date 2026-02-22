@@ -20,7 +20,7 @@ import static org.jsonschema2pojo.util.TypeUtil.*;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -168,14 +168,14 @@ public class ReflectionHelper {
   }
 
   private Collection<JDefinedClass> getAllPackageClasses(JPackage _package) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
+    ArrayList<JDefinedClass> result = new ArrayList<>();
     StreamSupport.stream(Spliterators.spliteratorUnknownSize(_package.classes(), Spliterator.ORDERED), false)
         .forEach(_class -> result.addAll(getAllClassClasses(_class)));
     return result;
   }
 
   private Collection<JDefinedClass> getAllClassClasses(JDefinedClass _class) {
-    LinkedList<JDefinedClass> result = new LinkedList<>();
+    ArrayList<JDefinedClass> result = new ArrayList<>();
     result.add(_class);
 
     _class.classes().forEachRemaining(result::add);

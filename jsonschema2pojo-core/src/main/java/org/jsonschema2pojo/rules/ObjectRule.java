@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
@@ -524,19 +523,6 @@ public class ObjectRule implements Rule<JPackage, JType> {
         for (JsonNode i : javaInterfaces) {
             jclass._implements(resolveType(jclass._package(), i.asText()));
         }
-    }
-
-    private boolean usesPolymorphicDeserialization(JsonNode node) {
-
-        AnnotationStyle annotationStyle = ruleFactory.getGenerationConfig().getAnnotationStyle();
-
-        if (annotationStyle == AnnotationStyle.JACKSON
-                || annotationStyle == AnnotationStyle.JACKSON2
-                || annotationStyle == AnnotationStyle.JACKSON3) {
-            return ruleFactory.getGenerationConfig().isIncludeTypeInfo() || node.has("deserializationClassProperty");
-        }
-
-        return false;
     }
 
 }

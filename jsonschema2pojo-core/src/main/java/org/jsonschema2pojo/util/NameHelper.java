@@ -88,7 +88,7 @@ public class NameHelper {
     private boolean areAllWordsUpperCaseBesideDelimiters(String words, char... delimiters) {
         char[] wordChars = words.toCharArray();
         for (char c : wordChars) {
-            if (!containsAny("" + c, delimiters) && Character.isLowerCase(c)) {
+            if (!containsAny("" + c, delimiters) && isLowerCase(c)) {
                 return false;
             }
         }
@@ -141,7 +141,7 @@ public class NameHelper {
         String prefix = "set";
 
         String setterName;
-        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+        if (propertyName.length() > 1 && isUpperCase(propertyName.charAt(1))) {
             setterName = prefix + propertyName;
         } else {
             setterName = prefix + capitalize(propertyName);
@@ -168,7 +168,7 @@ public class NameHelper {
 
         String prefix = "with";
 
-        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+        if (propertyName.length() > 1 && isUpperCase(propertyName.charAt(1))) {
             return prefix + propertyName;
         } else {
             return prefix + capitalize(propertyName);
@@ -222,7 +222,7 @@ public class NameHelper {
         String prefix = type.equals(type.owner()._ref(boolean.class)) ? "is" : "get";
 
         String getterName;
-        if (propertyName.length() > 1 && Character.isUpperCase(propertyName.charAt(1))) {
+        if (propertyName.length() > 1 && isUpperCase(propertyName.charAt(1))) {
             getterName = prefix + propertyName;
         } else {
             getterName = prefix + capitalize(propertyName);

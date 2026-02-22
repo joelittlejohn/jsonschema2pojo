@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
@@ -35,8 +36,7 @@ public class IncludeToStringIT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.PrimitiveProperties");
 
-        // throws NoSuchMethodException if method is not found
-        generatedType.getDeclaredMethod("toString");
+        assertDoesNotThrow(() -> generatedType.getDeclaredMethod("toString"));
 
     }
 

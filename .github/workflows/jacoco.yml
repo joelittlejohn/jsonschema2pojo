@@ -1,0 +1,38 @@
+---
+name: JaCoCo
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    name: Code Coverage
+    steps:
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.18.0
+        with:
+          checkout-fetch-depth: 0
+          java-version: 17
+          java-distribution: temurin
+      - name: Run Tests with Coverage
+        run: ./mvnw verify -B -Pjacoco
+      - name: Upload Unit Test Coverage Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-unit-reports
+          path: |
+            **/target/site/jacoco/
+            !**/target/site/jacoco-aggregate/
+          retention-days: 30
+      - name: Upload Aggregate Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-aggregate-report
+          path: 'jsonschema2pojo-integration-tests/target/site/jacoco-aggregate/'
+          retention-days: 30

@@ -217,14 +217,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     }
 
     private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
-        JType returnType = field.type();
-        if (ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional) {
-            if (!required && field.type().isReference()) {
-                returnType = c.owner().ref("java.util.Optional").narrow(field.type());
-            }
+        if ((ruleFactory.getGenerationConfig().isUseOptionalForGetters() || usesOptional)
+                && !required && field.type().isReference()) {
+            return c.owner().ref("java.util.Optional").narrow(field.type());
+        } else {
+            return field.type();
         }
-
-        return returnType;
     }
 
     private JMethod addGetter(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node, boolean isRequired, boolean usesOptional) {

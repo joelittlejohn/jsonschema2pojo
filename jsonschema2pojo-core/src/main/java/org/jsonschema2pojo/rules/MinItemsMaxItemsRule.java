@@ -17,7 +17,6 @@
 package org.jsonschema2pojo.rules;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 

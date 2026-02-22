@@ -38,8 +38,8 @@ import com.sun.codemodel.JVar;
 
 public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
 
-  private RuleFactory ruleFactory;
-  private ReflectionHelper reflectionHelper;
+  private final RuleFactory ruleFactory;
+  private final ReflectionHelper reflectionHelper;
 
   BuilderRule(RuleFactory ruleFactory, ReflectionHelper reflectionHelper) {
     this.ruleFactory = ruleFactory;
@@ -120,10 +120,10 @@ public class BuilderRule implements Rule<JDefinedClass, JDefinedClass> {
   private void generateNoArgsBuilderConstructors(JDefinedClass instanceClass, JDefinedClass baseBuilderClass, JDefinedClass builderClass) {
 
     generateNoArgsBaseBuilderConstructor(instanceClass, baseBuilderClass, builderClass);
-    generateNoArgsBuilderConstructor(instanceClass, baseBuilderClass, builderClass);
+    generateNoArgsBuilderConstructor(baseBuilderClass, builderClass);
   }
 
-  private void generateNoArgsBuilderConstructor(JDefinedClass instanceClass, JDefinedClass baseBuilderClass, JDefinedClass builderClass) {
+  private void generateNoArgsBuilderConstructor(JDefinedClass baseBuilderClass, JDefinedClass builderClass) {
 
     // Add the constructor to builder.
     JMethod noArgsConstructor = builderClass.constructor(JMod.PUBLIC);
