@@ -10,9 +10,12 @@
 
 (defn- content-resolver
   [config]
-  (if (= (.getSourceType config) SourceType/YAMLSCHEMA)
-    (ContentResolver. (YAMLFactory.))
-    (ContentResolver.)))
+  (proxy [ContentResolver] [(if (= (.getSourceType config) SourceType/YAMLSCHEMA)
+                               (YAMLFactory.)
+                               nil)]
+    (resolve [uri]
+      (throw (IllegalArgumentException.
+               "External schema references ($ref to URLs or files) are not supported")))))
 
 (defn- output-to-zip
   [config code-model]
