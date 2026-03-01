@@ -36,7 +36,7 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
     // Required if generating Jackson 2 annotations
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.1'
 }
 
 // Each configuration is set to the default value
