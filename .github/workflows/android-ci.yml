@@ -19,7 +19,7 @@ jobs:
           - { java: 17,  gradle: '8.14.4' }
     steps:
       - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.19.0
+        uses: s4u/setup-maven-action@v1.20.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.version.java }}
