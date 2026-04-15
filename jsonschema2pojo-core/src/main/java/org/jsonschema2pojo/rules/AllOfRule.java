@@ -45,16 +45,19 @@ public class AllOfRule implements Rule<JDefinedClass, JDefinedClass> {
             return jclass;
         }
 
+        int index = 0;
         for (JsonNode subSchema : allOfNode) {
             if (subSchema.has("if") && subSchema.has("then")) {
+                index++;
                 continue;
             }
 
-            ResolvedEntry resolved = resolveIfRef(subSchema, schema);
+            ResolvedEntry resolved = resolveEntry(subSchema, schema, index);
 
             if (resolved.content.has("properties")) {
                 mergeProperties(nodeName, resolved.content, parent, jclass, resolved.schema);
             }
+            index++;
         }
 
         return jclass;
@@ -74,14 +77,25 @@ public class AllOfRule implements Rule<JDefinedClass, JDefinedClass> {
         }
     }
 
-    private ResolvedEntry resolveIfRef(JsonNode node, Schema schema) {
+    private ResolvedEntry resolveEntry(JsonNode node, Schema schema, int index) {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(
                     schema, node.get("$ref").asText(),
                     ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
             return new ResolvedEntry(refSchema.getContent(), refSchema);
         }
-        return new ResolvedEntry(node, schema);
+
+        // Inline sub-schema: create a Schema context pointing at the actual path
+        // so that PropertyRule can build correct sub-paths for property resolution.
+        String fragment = schema.getId() != null ? schema.getId().getFragment() : null;
+        String entryPath = fragment != null
+                ? "#" + fragment + "/allOf/" + index
+                : "#/allOf/" + index;
+
+        Schema entrySchema = ruleFactory.getSchemaStore().create(
+                schema, entryPath,
+                ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
+        return new ResolvedEntry(entrySchema.getContent(), entrySchema);
     }
 
     private static class ResolvedEntry {

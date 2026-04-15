@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "Event",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "kind": { "type": "string", "enum": ["click", "view", "scroll"] }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "click" }
+        }
+      },
+      "then": {
+        "title": "ClickEvent",
+        "properties": {
+          "x": { "type": "integer", "description": "X coordinate of the click." },
+          "y": { "type": "integer", "description": "Y coordinate of the click." },
+          "button": { "type": "string", "description": "Mouse button pressed." }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "view" }
+        }
+      },
+      "then": {
+        "title": "ViewEvent",
+        "properties": {
+          "url": { "type": "string", "description": "URL that was viewed." },
+          "duration": { "type": "integer", "description": "Duration in milliseconds." }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": { "const": "scroll" }
+        }
+      },
+      "then": {
+        "title": "ScrollEvent",
+        "properties": {
+          "deltaY": { "type": "number", "description": "Vertical scroll delta." }
+        }
+      }
+    }
+  ]
+}
