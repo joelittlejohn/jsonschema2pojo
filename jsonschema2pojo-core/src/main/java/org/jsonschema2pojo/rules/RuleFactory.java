@@ -446,4 +446,34 @@ public class RuleFactory {
         return new JavaNameRule();
     }
 
+    /**
+     * Provides a rule instance that should be applied when an "allOf"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "allOf" declaration.
+     */
+    public Rule<JDefinedClass, JDefinedClass> getAllOfRule() {
+        return new AllOfRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when "if/then/else"
+     * conditional schemas are found.
+     *
+     * @return a schema rule that can handle if/then/else declarations.
+     */
+    public IfThenElseRule getIfThenElseRule() {
+        return new IfThenElseRule(this);
+    }
+
+    /**
+     * Provides a rule instance that should be applied when a "oneOf"
+     * declaration is found in the schema.
+     *
+     * @return a schema rule that can handle the "oneOf" declaration.
+     */
+    public Rule<JClassContainer, JType> getOneOfRule() {
+        return new OneOfRule(this);
+    }
+
 }
