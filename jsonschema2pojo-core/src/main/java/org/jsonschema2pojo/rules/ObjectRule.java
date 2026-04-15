@@ -120,6 +120,22 @@ public class ObjectRule implements Rule<JPackage, JType> {
 
         ruleFactory.getPropertiesRule().apply(nodeName, node.get("properties"), node, jclass, schema);
 
+        if (node.has("allOf")) {
+            JsonNode allOfNode = node.get("allOf");
+            boolean hasIfThen = false;
+            for (JsonNode entry : allOfNode) {
+                if (entry.has("if") && entry.has("then")) {
+                    hasIfThen = true;
+                    break;
+                }
+            }
+
+            if (hasIfThen) {
+                ruleFactory.getIfThenElseRule().applyAll(nodeName, allOfNode, node, jclass, schema);
+            }
+            ruleFactory.getAllOfRule().apply(nodeName, allOfNode, node, jclass, schema);
+        }
+
         if (node.has("javaInterfaces")) {
             addInterfaces(jclass, node.get("javaInterfaces"));
         }

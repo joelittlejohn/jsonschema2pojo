@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "EnrichedPerson",
+  "type": "object",
+  "properties": {
+    "firstName": { "type": "string" },
+    "lastName":  { "type": "string" }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Email address merged from allOf."
+        },
+        "age": {
+          "type": "integer",
+          "description": "Age merged from allOf."
+        }
+      }
+    }
+  ]
+}
