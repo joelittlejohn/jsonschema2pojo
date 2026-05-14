@@ -214,8 +214,8 @@ public class JsonSchemaExtension implements GenerationConfig {
     sourceSortOrder = SourceSortOrder.valueOf(sortOrder.toUpperCase())
   }
 
-  public void setTargetLangauge(String language) {
-    targetLangauge = Langauge.valueOf(language.toUpperCase())
+  public void setTargetLanguage(String language) {
+    targetLanguage = Language.valueOf(language.toUpperCase())
   }
 
   public void setTargetVersion(String targetVersion) {
