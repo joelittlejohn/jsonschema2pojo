@@ -1,4 +1,4 @@
-rootProject.name = 'JsonSchema2pojo sample'
+rootProject.name = 'gradle-jsonschema2pojo-android-example'
 
 include ':app'
 include ':lib'

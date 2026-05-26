@@ -17,36 +17,36 @@
 package org.jsonschema2pojo.integration;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ExcludedFromEqualsAndHashCodeIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> clazz;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
-
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/excludedFromEqualsAndHashCode/excludedFromEqualsAndHashCode.json", "com.example");
 
         clazz = resultsClassLoader.loadClass("com.example.ExcludedFromEqualsAndHashCode");
     }
 
     @Test
-    public void hashCodeTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
+    public void hashCodeTest() throws IntrospectionException, ReflectiveOperationException {
 
-        Object instance = clazz.newInstance();
+        Object instance = clazz.getDeclaredConstructor().newInstance();
 
         setProperty(instance, "excludedByProperty", "one");
         setProperty(instance, "excludedByArray", "two");
@@ -82,16 +82,16 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void equalsSelf() throws IllegalAccessException, InstantiationException {
-        Object instance = clazz.newInstance();
+    public void equalsSelf() throws ReflectiveOperationException {
+        Object instance = clazz.getDeclaredConstructor().newInstance();
 
         assertThat(instance.equals(instance), is(true));
     }
 
     @Test
-    public void exludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
-        Object instanceOne = clazz.newInstance();
-        Object instanceTwo = clazz.newInstance();
+    public void exludedByPropertyTest() throws IntrospectionException, ReflectiveOperationException {
+        Object instanceOne = clazz.getDeclaredConstructor().newInstance();
+        Object instanceTwo = clazz.getDeclaredConstructor().newInstance();
 
         setProperty(instanceOne, "excludedByProperty", "one");
         setProperty(instanceOne, "excludedByArray", "two");
@@ -107,9 +107,9 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void exludedByArrayTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
-        Object instanceOne = clazz.newInstance();
-        Object instanceTwo = clazz.newInstance();
+    public void exludedByArrayTest() throws IntrospectionException, ReflectiveOperationException {
+        Object instanceOne = clazz.getDeclaredConstructor().newInstance();
+        Object instanceTwo = clazz.getDeclaredConstructor().newInstance();
 
         setProperty(instanceOne, "excludedByProperty", "one");
         setProperty(instanceOne, "excludedByArray", "two");
@@ -125,9 +125,9 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void notExcludedTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
-        Object instanceOne = clazz.newInstance();
-        Object instanceTwo = clazz.newInstance();
+    public void notExcludedTest() throws IntrospectionException, ReflectiveOperationException {
+        Object instanceOne = clazz.getDeclaredConstructor().newInstance();
+        Object instanceTwo = clazz.getDeclaredConstructor().newInstance();
 
         setProperty(instanceOne, "excludedByProperty", "one");
         setProperty(instanceOne, "excludedByArray", "two");
@@ -143,9 +143,9 @@ public class ExcludedFromEqualsAndHashCodeIT {
     }
 
     @Test
-    public void notExludedByPropertyTest() throws IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException {
-        Object instanceOne = clazz.newInstance();
-        Object instanceTwo = clazz.newInstance();
+    public void notExludedByPropertyTest() throws IntrospectionException, ReflectiveOperationException {
+        Object instanceOne = clazz.getDeclaredConstructor().newInstance();
+        Object instanceTwo = clazz.getDeclaredConstructor().newInstance();
 
         setProperty(instanceOne, "excludedByProperty", "one");
         setProperty(instanceOne, "excludedByArray", "two");

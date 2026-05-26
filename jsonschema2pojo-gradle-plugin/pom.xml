@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jsonschema2pojo</artifactId>
         <groupId>org.jsonschema2pojo</groupId>
-        <version>1.1.2-SNAPSHOT</version>
+        <version>1.3.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>jsonschema2pojo-gradle-plugin</artifactId>
@@ -24,16 +24,32 @@
         <dependency>
             <groupId>dev.gradleplugins</groupId>
             <artifactId>gradle-api</artifactId>
-            <version>${gradle.version}</version>
+            <version>${gradle-api.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- 8.11.1 depends on old versions that do not match the groovy compiler version, causing build to fail -->
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
+            <artifactId>hamcrest</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -43,6 +59,10 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <integrationTestSourceDirectory>src/integrationTest/groovy</integrationTestSourceDirectory>
+    </properties>
+
     <build>
         <sourceDirectory>${project.basedir}/src/main/groovy</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/groovy</testSourceDirectory>
@@ -50,7 +70,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.12</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -76,11 +95,22 @@
                             </sources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>add-integration-test-sources</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${integrationTestSourceDirectory}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version><!-- 3.6.2 is the minimum -->
                 <configuration>
                     <compilerId>groovy-eclipse-compiler</compilerId>
                     <failOnWarning>false</failOnWarning>
@@ -89,43 +119,71 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.8.0-01</version>
+                        <version>3.9.1</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.5.14-01</version>
+                        <version>5.0.4-01</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>com.bluetrainsoftware.maven</groupId>
-                <artifactId>groovydoc-maven-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-docs</id>
-                        <goals>
-                            <goal>attach-docs</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
                 <configuration>
                     <useFile>false</useFile>
                     <includes>
                         <include>**/*Spec.*</include>
                     </includes>
                 </configuration>
-              </plugin>
-              <plugin>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useFile>false</useFile>
+                    <testSourceDirectory>${integrationTestSourceDirectory}</testSourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
                   <groupId>org.codehaus.mojo</groupId>
                   <artifactId>codenarc-maven-plugin</artifactId>
-                  <version>0.22-1</version>
-              </plugin>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.bluetrainsoftware.maven</groupId>
+                        <artifactId>groovydoc-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-docs</id>
+                                <goals>
+                                    <goal>attach-docs</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>groovy-plugins-release</id>
+            <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

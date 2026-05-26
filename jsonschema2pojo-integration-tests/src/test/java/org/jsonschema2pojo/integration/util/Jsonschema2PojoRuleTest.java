@@ -19,18 +19,16 @@ package org.jsonschema2pojo.integration.util;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
@@ -38,16 +36,12 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
-@RunWith(Enclosed.class)
 public class Jsonschema2PojoRuleTest {
 
-    public static class MethodTests {
-        @Rule
-        public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().mute();
+    @Nested
+    class MethodTests {
 
-        @Rule
+        @RegisterExtension
         public Jsonschema2PojoRule rule = new Jsonschema2PojoRule();
 
         @Test
@@ -58,42 +52,23 @@ public class Jsonschema2PojoRuleTest {
 
         @Test
         public void compilationProblemsStdErr() {
-            try {
-                rule.generateAndCompile("/schema/default/default.json", "com.example", config("customRuleFactory", BrokenRuleFactory.class.getName()));
-            } catch( Throwable t ) {}
-            assertThat(systemErrRule.getLog(), containsString("return"));
+            rule.captureDiagnostics();
+            assertThrows(
+                    AssertionError.class,
+                    () -> rule.generateAndCompile("/schema/default/default.json", "com.example", config("customRuleFactory", BrokenRuleFactory.class.getName())));
+            assertThat(rule.getDiagnostics(), hasSize(1));
+            assertThat(rule.getDiagnostics().get(0).toString(), containsString("error: missing return statement"));
         }
 
-        public static class BrokenRuleFactory extends RuleFactory {
-            @Override
-            public org.jsonschema2pojo.rules.Rule<JPackage, JType> getObjectRule() {
-                final org.jsonschema2pojo.rules.Rule<JPackage, JType> workingRule = super.getObjectRule();
-
-                return new org.jsonschema2pojo.rules.Rule<JPackage, JType>() {
-                    @Override
-                    public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
-                        JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
-                        if( objectType instanceof JDefinedClass ) {
-                            JDefinedClass jclass = (JDefinedClass)objectType;
-                            jclass.method(JMod.PUBLIC, jclass.owner().BOOLEAN, "brokenMethod").body();
-                        }
-                        return objectType;
-                    }
-                };
-            }
-        }
     }
 
-    @RunWith(Parameterized.class)
-    public static class ParameterizedTest {
-        @Rule
-        public Jsonschema2PojoRule rule = new Jsonschema2PojoRule();
+    @Nested
+    @ParameterizedClass(name = "{0}")
+    @ValueSource(strings = { "label1", "label2", "../../../" })
+    class ParameterizedTest {
 
-        @SuppressWarnings("unchecked")
-        @Parameters(name = "{0}")
-        public static Collection<Object[]> parameters() {
-            return Arrays.asList(new Object[][] { { "label1" }, { "label2" }, { "../../../" } });
-        }
+        @RegisterExtension
+        public Jsonschema2PojoRule rule = new Jsonschema2PojoRule();
 
         public ParameterizedTest(String label) {
         }
@@ -104,4 +79,24 @@ public class Jsonschema2PojoRuleTest {
             resultsClassLoader.loadClass("com.example.Default");
         }
     }
+
+    public static class BrokenRuleFactory extends RuleFactory {
+        @Override
+        public Rule<JPackage, JType> getObjectRule() {
+            final Rule<JPackage, JType> workingRule = super.getObjectRule();
+
+            return new Rule<JPackage, JType>() {
+                @Override
+                public JType apply(String nodeName, JsonNode node, JsonNode parent, JPackage generatableType, Schema currentSchema) {
+                    JType objectType = workingRule.apply(nodeName, node, null, generatableType, currentSchema);
+                    if( objectType instanceof JDefinedClass ) {
+                        JDefinedClass jclass = (JDefinedClass)objectType;
+                        jclass.method(JMod.PUBLIC, jclass.owner().BOOLEAN, "brokenMethod").body();
+                    }
+                    return objectType;
+                }
+            };
+        }
+    }
+
 }

@@ -1,0 +1,11 @@
+{
+    "type" : "object",
+    "properties" : {
+        "minAndMaxItems" : {
+            "type" : "array",
+            "minItems" : 2,
+            "maxItems" : 4,
+            "existingJavaType" : "java.util.LinkedList<String>"
+        }
+    }
+}

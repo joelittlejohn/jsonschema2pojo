@@ -39,6 +39,7 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
+import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -49,11 +50,9 @@ import org.jsonschema2pojo.rules.FormatRule;
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
  *
  * @see <a
- *      href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
+ * href="https://github.com/FasterXML/jackson-annotations">https://github.com/FasterXML/jackson-annotations</a>
  */
-public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
-
-    private final JsonInclude.Include inclusionLevel;
+public class Jackson2Annotator extends JacksonAnnotator {
 
     public Jackson2Annotator(GenerationConfig generationConfig) {
         super(generationConfig);
@@ -233,5 +232,10 @@ public class Jackson2Annotator extends AbstractTypeInfoAwareAnnotator {
         if(StringUtils.isNotBlank(propertyName)) {
             jsonTypeInfo.param("property", propertyName);
         }
+    }
+
+    @Override
+    protected Class<? extends Annotation> getJsonDeserializeAnnotation() {
+        return com.fasterxml.jackson.databind.annotation.JsonDeserialize.class;
     }
 }

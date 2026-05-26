@@ -110,3 +110,16 @@
 * Roberto Moreschini
 * Hannes Achleitner
 * Markus Jevring
+* unkish
+* Martin Gjaldbaek
+* John Dimeo
+* TheTrueDentist
+* Josejulio Martínez
+* Nils Andresen
+* Michael Edgar
+* Julien Herr
+* Daniel Hammer
+* jiri-meluzin
+* Oliver Granseier
+* Diego Granados
+* Laurent Almeras

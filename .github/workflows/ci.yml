@@ -12,28 +12,22 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-18.04]
-        java: [8]
-      fail-fast: false
+        java_version: [17]
       max-parallel: 4
-    name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
-
+    name: Test JDK ${{ matrix.java_version }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.19.0
         with:
-          java-version: ${{ matrix.java }}
-          distribution: temurin
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          checkout-fetch-depth: 0
+          java-version: ${{ matrix.java_version }}
+          java-distribution: temurin
       - name: Verify with Maven
-        run: mvn verify -B --file pom.xml
+        run: ./mvnw verify -B
+      - name: Verify jsonschema2pojo-gradle-plugin integration tests
+        run: |
+          ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip -pl jsonschema2pojo-gradle-plugin -am
+          ./mvnw -U -B install -pl jsonschema2pojo-gradle-plugin

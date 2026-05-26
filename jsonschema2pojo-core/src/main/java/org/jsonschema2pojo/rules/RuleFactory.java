@@ -20,6 +20,7 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.NoopRuleLogger;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.util.NameHelper;
@@ -66,6 +67,7 @@ public class RuleFactory {
         this.schemaStore = schemaStore;
         this.nameHelper = new NameHelper(generationConfig);
         this.reflectionHelper = new ReflectionHelper(this);
+        this.logger = new NoopRuleLogger();
     }
 
     /**
@@ -305,13 +307,13 @@ public class RuleFactory {
     }
 
     /**
-     * Provides a rule instance that should be applied when a property
-     * declaration is found in the schema which itself contains properties, to
-     * assign validation of the properties within that property
+     * Provides a rule instance that should be applied when a new type is
+     * created, to add the {@code @Valid} annotation for cascading validation
+     * of non-container types.
      *
-     * @return a schema rule that can handle the "default" declaration.
+     * @return a schema rule that applies the {@code @Valid} annotation to types requiring cascading validation.
      */
-    public Rule<JFieldVar, JFieldVar> getValidRule() {
+    public Rule<JType, JType> getValidRule() {
         return new ValidRule(this);
     }
 
@@ -429,6 +431,8 @@ public class RuleFactory {
     /**
      * Provides a rule instance that adds methods for dynamically getting, setting, and
      * building properties.
+     *
+     * @return a schema rule that adds 'dynamic' get and set methods to classes, to get and set by string property names.
      */
     public Rule<JDefinedClass, JDefinedClass> getDynamicPropertiesRule() {
         return new DynamicPropertiesRule(this);

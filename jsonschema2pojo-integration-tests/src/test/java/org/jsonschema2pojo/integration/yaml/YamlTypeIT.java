@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration.yaml;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -27,18 +27,18 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class YamlTypeIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithManyTypes;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
         classWithManyTypes = classSchemaRule.generateAndCompile("/schema/yaml/type/types.yaml", "com.example", config("sourceType", "yamlschema"))
                 .loadClass("com.example.Types");
@@ -271,13 +271,13 @@ public class YamlTypeIT {
     }
 
     @Test
-    public void unionTypesChooseFirstTypePresent() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    public void unionTypesChooseFirstTypePresent() throws ReflectiveOperationException {
 
         Class<?> classWithUnionProperties = schemaRule.generateAndCompile("/schema/yaml/type/unionTypes.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.UnionTypes");
 
-        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        Method nullTypeGetter = classWithUnionProperties.getMethod("getNullProperty");
 
-        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+        assertThat(nullTypeGetter.getReturnType().getName(), is("java.lang.Object"));
 
         Method stringGetter = classWithUnionProperties.getMethod("getStringProperty");
 
@@ -286,6 +286,20 @@ public class YamlTypeIT {
         Method integerGetter = classWithUnionProperties.getMethod("getIntegerProperty");
 
         assertThat(integerGetter.getReturnType().getName(), is("java.lang.Integer"));
+
+        Method booleanGetter = classWithUnionProperties.getMethod("getBooleanProperty");
+        assertThat(booleanGetter.getReturnType().getName(), is("java.lang.Boolean"));
+    }
+
+    @Test
+    public void mixedUnionTypesReturnObject() throws ReflectiveOperationException {
+        Class<?> classWithMixedUnionProperties = schemaRule.generateAndCompile("/schema/yaml/type/mixedUnionTypes.yaml", "com.example", config("sourceType", "yamlschema")).loadClass("com.example.MixedUnionTypes");
+
+        Method mixedTypesGetter = classWithMixedUnionProperties.getMethod("getMixedTypesProperty");
+        assertThat(mixedTypesGetter.getReturnType().getName(), is("java.lang.Object"));
+
+        Method mixedTypesWithNullGetter = classWithMixedUnionProperties.getMethod("getMixedTypesWithNullProperty");
+        assertThat(mixedTypesWithNullGetter.getReturnType().getName(), is("java.lang.Object"));
     }
 
     @SuppressWarnings("rawtypes")

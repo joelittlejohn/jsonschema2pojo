@@ -48,10 +48,11 @@ public class FragmentResolver {
                 }
             }
 
-            if (tree.has(part)) {
-                return resolve(tree.get(part), path);
+            String decodedPart = JsonPointerUtils.decodeReferenceToken(part);
+            if (tree.has(decodedPart)) {
+                return resolve(tree.get(decodedPart), path);
             } else {
-                throw new IllegalArgumentException("Path not present: " + part);
+                throw new IllegalArgumentException("Path not present: " + decodedPart);
             }
         }
 

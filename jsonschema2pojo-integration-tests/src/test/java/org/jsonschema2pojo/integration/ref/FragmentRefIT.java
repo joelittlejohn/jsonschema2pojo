@@ -26,9 +26,9 @@ import java.lang.reflect.Type;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +37,11 @@ import com.sun.codemodel.JPackage;
 
 public class FragmentRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> fragmentRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompile() throws ClassNotFoundException {
 
         ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/fragmentRefs.json", "com.example");

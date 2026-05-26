@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "extends": {
+    "$ref": "parent_all_required.json"
+  },
+  "properties": {
+    "childProperty": {
+      "type": "integer"
+    },
+    "sharedProperty": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

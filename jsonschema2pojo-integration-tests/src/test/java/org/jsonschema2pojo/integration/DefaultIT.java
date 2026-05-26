@@ -16,9 +16,9 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,31 +31,28 @@ import java.util.List;
 import java.util.Set;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class DefaultIT {
     
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWithDefaults;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
-
         ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/default/default.json", "com.example");
 
         classWithDefaults = resultsClassLoader.loadClass("com.example.Default");
-
     }
 
     @Test
     public void emptyStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getEmptyStringWithDefault");
 
@@ -66,7 +63,7 @@ public class DefaultIT {
     @Test
     public void stringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getStringWithDefault");
 
@@ -77,7 +74,7 @@ public class DefaultIT {
     @Test
     public void integerPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getIntegerWithDefault");
 
@@ -91,7 +88,7 @@ public class DefaultIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
-        Object instance = c.newInstance();
+        Object instance = c.getDeclaredConstructor().newInstance();
         Method getter = c.getMethod("getIntegerWithDefault");
         assertThat((BigInteger) getter.invoke(instance), is(equalTo(new BigInteger("1337"))));
 
@@ -104,7 +101,7 @@ public class DefaultIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigIntegers", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
-        Object instance = c.newInstance();
+        Object instance = c.getDeclaredConstructor().newInstance();
         Class<Enum> enumClass = (Class<Enum>) c.getClassLoader().loadClass("com.example.Default$IntegerEnumWithDefault");
         Method getter = c.getMethod("getIntegerEnumWithDefault");
 
@@ -117,7 +114,7 @@ public class DefaultIT {
     @Test
     public void numberPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getNumberWithDefault");
 
@@ -131,7 +128,7 @@ public class DefaultIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
-        Object instance = c.newInstance();
+        Object instance = c.getDeclaredConstructor().newInstance();
         Method getter = c.getMethod("getNumberWithDefault");
         assertThat((BigDecimal) getter.invoke(instance), is(equalTo(new BigDecimal("1.337"))));
 
@@ -144,7 +141,7 @@ public class DefaultIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/default/default.json", "com.example", config("useBigDecimals", true));
         Class<?> c = resultsClassLoader.loadClass("com.example.Default");
 
-        Object instance = c.newInstance();
+        Object instance = c.getDeclaredConstructor().newInstance();
         Class<Enum> enumClass = (Class<Enum>) c.getClassLoader().loadClass("com.example.Default$NumberEnumWithDefault");
         Method getter = c.getMethod("getNumberEnumWithDefault");
 
@@ -157,7 +154,7 @@ public class DefaultIT {
     @Test
     public void booleanPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getBooleanWithDefault");
 
@@ -168,7 +165,7 @@ public class DefaultIT {
     @Test
     public void dateTimeAsMillisecPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getDateTimeWithDefault");
 
@@ -179,7 +176,7 @@ public class DefaultIT {
     @Test
     public void dateTimeAsStringPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getDateTimeAsStringWithDefault");
 
@@ -190,7 +187,7 @@ public class DefaultIT {
     @Test
     public void utcmillisecPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getUtcmillisecWithDefault");
 
@@ -201,7 +198,7 @@ public class DefaultIT {
     @Test
     public void uriPropertyHasCorrectDefaultValue() throws Exception {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
         Method getter = classWithDefaults.getMethod("getUriWithDefault");
         assertThat((URI) getter.invoke(instance), is(URI.create("http://example.com")));
 
@@ -211,7 +208,7 @@ public class DefaultIT {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void enumPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Class<Enum> enumClass = (Class<Enum>) classWithDefaults.getClassLoader().loadClass("com.example.Default$EnumWithDefault");
 
@@ -225,7 +222,7 @@ public class DefaultIT {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void integerEnumPropertyHasCorrectDefaultValue() throws Exception {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
         Class<Enum> enumClass = (Class<Enum>) classWithDefaults.getClassLoader().loadClass("com.example.Default$IntegerEnumWithDefault");
         Method getter = classWithDefaults.getMethod("getIntegerEnumWithDefault");
 
@@ -239,7 +236,7 @@ public class DefaultIT {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void numberEnumPropertyHasCorrectDefaultValue() throws Exception {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
         Class<Enum> enumClass = (Class<Enum>) classWithDefaults.getClassLoader().loadClass("com.example.Default$NumberEnumWithDefault");
         Method getter = classWithDefaults.getMethod("getNumberEnumWithDefault");
 
@@ -252,7 +249,7 @@ public class DefaultIT {
     @Test
     public void complexPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getComplexPropertyWithDefault");
 
@@ -263,7 +260,7 @@ public class DefaultIT {
     @Test
     public void simplePropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getSimplePropertyWithNullDefault");
 
@@ -274,7 +271,7 @@ public class DefaultIT {
     @Test
     public void arrayPropertyCanHaveNullDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getArrayPropertyWithNullDefault");
 
@@ -286,7 +283,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void arrayPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getArrayWithDefault");
 
@@ -308,7 +305,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void arrayPropertyHasCorrectDefaultUriValues() throws Exception {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
         Method getter = classWithDefaults.getMethod("getArrayWithUriDefault");
         assertThat(getter.invoke(instance), is(instanceOf(List.class)));
 
@@ -327,7 +324,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void arrayPropertyCanHaveEmptyDefaultArray() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getArrayWithEmptyDefault");
 
@@ -346,7 +343,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void uniqueArrayPropertyHasCorrectDefaultValue() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getUniqueArrayWithDefault");
 
@@ -369,7 +366,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void arrayPropertyWithoutDefaultIsEmptyList() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getArrayWithoutDefault");
 
@@ -388,7 +385,7 @@ public class DefaultIT {
     @SuppressWarnings("unchecked")
     public void uniqueArrayPropertyWithoutDefaultIsEmptySet() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-        Object instance = classWithDefaults.newInstance();
+        Object instance = classWithDefaults.getDeclaredConstructor().newInstance();
 
         Method getter = classWithDefaults.getMethod("getUniqueArrayWithoutDefault");
 

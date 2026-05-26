@@ -16,36 +16,36 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PropertiesIT {
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+
+    @RegisterExtension
+    public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/nullProperties.json", "com.example");
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
-        Object instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = new PropertyDescriptor("property", generatedType).getWriteMethod();
         setter.invoke(instance, "value");
@@ -59,13 +59,12 @@ public class PropertiesIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void propertiesAreSerializedInCorrectOrder() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void propertiesAreSerializedInCorrectOrder() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/orderedProperties.json", "com.example");
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
-        Object instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.OrderedProperties");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("type", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("id", generatedType).getWriteMethod().invoke(instance, "2");
@@ -97,15 +96,14 @@ public class PropertiesIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void wordDelimitersCausesCamelCase() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithWordDelimiters.json", "com.example",
                 config("usePrimitives", true, "propertyWordDelimiters", "_ -"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("propertyWithUnderscores", generatedType).getWriteMethod().invoke(instance, "a_b_c");
         new PropertyDescriptor("propertyWithHyphens", generatedType).getWriteMethod().invoke(instance, "a-b-c");
@@ -121,7 +119,8 @@ public class PropertiesIT {
     @Test
     public void propertyNamesThatAreJavaKeywordsCanBeSerialized() throws ClassNotFoundException, IOException {
 
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example");
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesThatAreJavaKeywords.json", "com.example",
+                config("propertyWordDelimiters", " -"));
 
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesThatAreJavaKeywords");
 
@@ -156,7 +155,7 @@ public class PropertiesIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesAreUpperCamelCase.json", "com.example");
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.UpperCase");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("property1", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("propertyTwo", generatedType).getWriteMethod().invoke(instance, 2);
@@ -165,10 +164,10 @@ public class PropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("property1"));
-        assertNotNull(generatedType.getDeclaredField("propertyTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyThreeWithSpace"));
-        assertNotNull(generatedType.getDeclaredField("propertyFour"));
+        assertThat(generatedType.getDeclaredField("property1"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyThreeWithSpace"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyFour"), is(notNullValue()));
 
         assertThat(jsonified.has("Property1"), is(true));
         assertThat(jsonified.has("PropertyTwo"), is(true));
@@ -181,7 +180,7 @@ public class PropertiesIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesAreWithAllWordsUpperCases.json", "com.example");
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.AllWordsUpperCase");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("propertyOne", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("propertyOneTwo", generatedType).getWriteMethod().invoke(instance, 2);
@@ -190,14 +189,26 @@ public class PropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("propertyOne"));
-        assertNotNull(generatedType.getDeclaredField("propertyOneTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyOneTwoThree"));
-        assertNotNull(generatedType.getDeclaredField("pROPERTYONETWOTHREEFour"));
+        assertThat(generatedType.getDeclaredField("propertyOne"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyOneTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyOneTwoThree"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("pROPERTYONETWOTHREEFour"), is(notNullValue()));
 
         assertThat(jsonified.has("PROPERTY_ONE"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE"), is(true));
         assertThat(jsonified.has("PROPERTY_ONE_TWO_THREE_four"), is(true));
+    }
+
+    @Test
+    public void propertyNamesWithSpecialCharacters() throws NoSuchMethodException, ClassNotFoundException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/propertiesWithSpecialCharacters.json", "com.example");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.PropertiesWithSpecialCharacters");
+
+        assertThat(generatedType.getDeclaredMethod("getVersv"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getFooBar"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("get$RfcNumber"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getOrgHispDhisCommonFileTypeValueOptions"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredMethod("getGood"), is(notNullValue()));
     }
 }

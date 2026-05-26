@@ -17,13 +17,14 @@
 package org.jsonschema2pojo;
 
 import static java.util.Arrays.*;
-import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.lang3.Strings;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -72,8 +73,8 @@ public class ContentResolver {
             return resolveFromClasspath(uri);
         }
 
-        try {
-            return objectMapper.readTree(uri.toURL());
+        try (InputStream in = uri.toURL().openStream()){
+            return objectMapper.readTree(in);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Error parsing document: " + uri, e);
         } catch (IOException e) {
@@ -84,7 +85,7 @@ public class ContentResolver {
 
     private JsonNode resolveFromClasspath(URI uri) {
 
-        String path = removeStart(removeStart(uri.toString(), uri.getScheme() + ":"), "/");
+        String path = Strings.CS.removeStart(Strings.CS.removeStart(uri.toString(), uri.getScheme() + ":"), "/");
         InputStream contentAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 
         if (contentAsStream == null) {

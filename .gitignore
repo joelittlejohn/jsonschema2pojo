@@ -7,6 +7,10 @@
 .project
 .metadata
 
+#VSCode files
+.vscode
+jsonschema2pojo-gradle-plugin/bin
+
 # Maven derived files #
 target/
 apidocs

@@ -17,44 +17,50 @@
 package org.jsonschema2pojo.integration.config;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 
 import java.io.File;
 
-import org.hamcrest.Matchers;
-import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeGeneratedAnnotationIT {
 
-    private static final String PROP_KEY = "includeGeneratedAnnotation";
-    private static final String SCHEMA_PATH = "/schema/" + PROP_KEY + "/" + PROP_KEY + ".json";
-    private static final String TEST_PACKAGE = "com.example";
+    private static final String SCHEMA_PATH = "/schema/includeGeneratedAnnotation/includeGeneratedAnnotation.json";
 
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void defaultConfig() throws ClassNotFoundException {
-        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE);
+    public void defaultConfigHasGeneratedAnnotationsOn() throws ClassNotFoundException {
+        File source = schemaRule.generate(SCHEMA_PATH, "com.example");
+        assertThat(source, containsText("@Generated"));
 
-        assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
+        File sourceJava8 = schemaRule.generate(SCHEMA_PATH, "com.example", config("targetVersion", "8"));
+        assertThat(sourceJava8, containsText("javax.annotation.Generated"));
+
+        File sourceJava9 = schemaRule.generate(SCHEMA_PATH, "com.example", config("targetVersion", "9"));
+        assertThat(sourceJava9, containsText("javax.annotation.processing.Generated"));
+
+        File sourceJava11 = schemaRule.generate(SCHEMA_PATH, "com.example", config("targetVersion", "11"));
+        assertThat(sourceJava11, containsText("javax.annotation.processing.Generated"));
     }
 
     @Test
-    public void disabled() throws ClassNotFoundException {
-        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, false));
+    public void disabled() {
+        File source = schemaRule.generate(SCHEMA_PATH, "com.example", config("includeGeneratedAnnotation", false));
 
-        assertThat(source, Matchers.not(FileSearchMatcher.containsText("javax.annotation.Generated")));
+        assertThat(source, not(containsText("@Generated")));
     }
 
     @Test
-    public void enabled() throws ClassNotFoundException {
-        File source = schemaRule.generate(SCHEMA_PATH, TEST_PACKAGE, config(PROP_KEY, true));
+    public void enabled() {
+        File source = schemaRule.generate(SCHEMA_PATH, "com.example", config("includeGeneratedAnnotation", true));
 
-        assertThat(source, FileSearchMatcher.containsText("javax.annotation.Generated"));
+        assertThat(source, containsText("@Generated"));
     }
 
 }

@@ -16,18 +16,19 @@
 
 package org.jsonschema2pojo.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URL;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.beust.jcommander.ParameterException;
 
 public class UrlConverterTest {
 
-    private UrlConverter converter = new UrlConverter("--source");
+    private final UrlConverter converter = new UrlConverter("--source");
 
     @Test
     public void urlIsCreatedFromFilePath() {
@@ -45,14 +46,14 @@ public class UrlConverterTest {
         assertThat(url.toString(), is("file:/path/to/something"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void invalidUrlThrowsParameterException() {
-        converter.convert("http:total nonsense");
+        assertThrows(ParameterException.class, () -> converter.convert("http:total nonsense"));
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void nullValueThrowsParameterException() {
-        converter.convert(null);
+        assertThrows(ParameterException.class, () -> converter.convert(null));
     }
 
 }

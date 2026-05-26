@@ -1,0 +1,7 @@
+[
+    {"myfield": {"subfield1": "test"}},
+    {},
+    {"myfield": null},
+    {"myfield": {"subfield2": "test"}},
+    {"myfield": null}
+]

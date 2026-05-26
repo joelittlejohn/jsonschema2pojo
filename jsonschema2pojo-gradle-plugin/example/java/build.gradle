@@ -4,14 +4,14 @@ apply plugin: 'jsonschema2pojo'
 buildscript {
   repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
   }
 
   dependencies {
     classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:latest.integration'
 
     // see src/main/resources/json/external_dependencies.json
-    classpath 'joda-time:joda-time:2.2'
+    classpath 'joda-time:joda-time:2.14.0'
   }
 }
 
@@ -20,15 +20,20 @@ repositories {
 }
 
 dependencies {
-  implementation 'javax.validation:validation-api:1.1.0.CR2'
-  implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+  implementation 'javax.validation:validation-api:2.0.1.Final'
+  implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
 
   // see src/main/resources/json/external_dependencies.json
-  implementation 'joda-time:joda-time:2.2'
+  implementation 'joda-time:joda-time:2.14.0'
 }
 
 jsonSchema2Pojo {
+  // omitting 'source' will force plugin to look for sources under ${project.sourceSets.main.output.resourcesDir}/json
+  source = [
+          'https://raw.githubusercontent.com/joelittlejohn/jsonschema2pojo/master/jsonschema2pojo-integration-tests/src/test/resources/schema/ref/recursiveTreeNode.json',
+          file("src/main/resources/json")
+  ]
   targetPackage = 'example'
   includeJsr303Annotations = true
   propertyWordDelimiters = ['_'] as char[]

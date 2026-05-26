@@ -16,32 +16,32 @@
 
 package org.jsonschema2pojo.integration.ref;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.integration.util.CodeGenerationHelper;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.sun.codemodel.JCodeModel;
 
 public class SelfRefIT {
 
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> selfRefsClass;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateAndCompileEnum() throws ClassNotFoundException {
 
         ClassLoader selfRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/selfRefs.json", "com.example");
@@ -92,11 +92,11 @@ public class SelfRefIT {
         assertThat(mapEntryClass.getName(), is("com.example.SelfRefs"));
 
     }
-    
+
     @Test
     public void nestedSelfRefsInStringContentWithoutParentFile() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
-        String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"));
+        String schemaContents = IOUtils.toString(CodeGenerationHelper.class.getResource("/schema/ref/nestedSelfRefsReadAsString.json"), StandardCharsets.UTF_8);
         JCodeModel codeModel = new JCodeModel();
         new SchemaMapper().generate(codeModel, "NestedSelfRefsInString", "com.example", schemaContents);
 
@@ -114,7 +114,26 @@ public class SelfRefIT {
         assertThat(thingClass.getMethod("getNamespace").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getName").getReturnType().getSimpleName(), equalTo("String"));
         assertThat(thingClass.getMethod("getVersion").getReturnType().getSimpleName(), equalTo("String"));
-        
-    }    
+
+    }
+
+    @Test
+    public void selfRefUsedInArrayItemIsReadSuccessfully() throws ReflectiveOperationException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/selfReferencingArrayItem.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SelfReferencingArrayItem");
+        Type listOfAType = generatedType.getMethod("getSelfReferencingArrayItems").getGenericReturnType();
+        Class<?> listEntryClass = (Class<?>) ((ParameterizedType) listOfAType).getActualTypeArguments()[0];
+
+        assertThat(listEntryClass.getName(), is("com.example.SelfReferencingArrayItem"));
+    }
+
+    @Test
+    public void selfRefRootReadSuccessfully() throws ReflectiveOperationException {
+        ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/ref/selfRefRoot.json", "com.example");
+
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.SelfRefRoot");
+        assertThat(generatedType.getMethod("getUser").getReturnType().getSimpleName(), equalTo("String"));
+    }
 
 }

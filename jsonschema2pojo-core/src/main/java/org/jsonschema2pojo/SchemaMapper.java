@@ -80,8 +80,6 @@ public class SchemaMapper {
      * @param schemaUrl
      *            location of the schema to be used as input
      * @return The top-most type generated from the given file
-     * @throws IOException
-     *             if the schema content cannot be read
      */
     public JType generate(JCodeModel codeModel, String className, String packageName, URL schemaUrl) {
 
@@ -126,7 +124,8 @@ public class SchemaMapper {
         JPackage jpackage = codeModel._package(packageName);
 
         JsonNode schemaNode = null;
-        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON) {
+        if (ruleFactory.getGenerationConfig().getSourceType() == SourceType.JSON
+                || ruleFactory.getGenerationConfig().getSourceType() == SourceType.YAML) {
             JsonNode jsonNode = objectMapper().readTree(json);
             schemaNode = schemaGenerator.schemaFromExample(jsonNode);
         } else {
@@ -140,6 +139,10 @@ public class SchemaMapper {
         return new ObjectMapper()
                 .enable(JsonParser.Feature.ALLOW_COMMENTS)
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+    }
+
+    public RuleFactory getRuleFactory() {
+        return ruleFactory;
     }
 
 }

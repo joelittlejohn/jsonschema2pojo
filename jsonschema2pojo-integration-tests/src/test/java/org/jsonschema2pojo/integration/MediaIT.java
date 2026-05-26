@@ -17,9 +17,9 @@
 package org.jsonschema2pojo.integration;
 
 import static java.lang.String.format;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
@@ -33,9 +33,9 @@ import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.AbstractAnnotator;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,15 +53,21 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 
-public class MediaIT {
-    @ClassRule public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
-    private static Class<?> classWithMediaProperties;
-    private static Class<byte[]> BYTE_ARRAY = byte[].class;
+import jakarta.validation.constraints.Size;
 
-    @BeforeClass
+public class MediaIT {
+
+    @RegisterExtension public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
+    private static Class<?> classWithMediaProperties;
+    private static final Class<byte[]> BYTE_ARRAY = byte[].class;
+
+    @BeforeAll
     public static void generateAndCompileClass() throws ClassNotFoundException {
 
-        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example", config("customAnnotator", QuotedPrintableAnnotator.class.getName()));
+        ClassLoader resultsClassLoader = classSchemaRule.generateAndCompile("/schema/media/mediaProperties.json", "com.example",
+                config("customAnnotator", QuotedPrintableAnnotator.class.getName(),
+                        "includeJsr303Annotations", true,
+                        "useJakartaValidation", true));
 
         classWithMediaProperties = resultsClassLoader.loadClass("com.example.MediaProperties");
     }
@@ -152,7 +158,6 @@ public class MediaIT {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void shouldReasonablyHandleBase64Default() throws Exception {
         Method getter = classWithMediaProperties.getDeclaredMethod("getBase64WithDefault");
 
@@ -176,6 +181,20 @@ public class MediaIT {
                 "minimalBinary",
                 "//APAA==",
                 new byte[] { (byte)0xFF, (byte)0xF0, (byte)0x0F, (byte)0x00});
+    }
+
+    @Test
+    public void shouldCreateCorrectValidationAnnotations() throws SecurityException, NoSuchFieldException {
+        Field minimalField = classWithMediaProperties.getDeclaredField("minimalBinary");
+        Field annotatedField = classWithMediaProperties.getDeclaredField("base64WithMinAndMaxLength");
+
+        assertThat("any minimal binary field has return type byte[]", minimalField.getType(), equalToType(BYTE_ARRAY));
+        assertThat("any minimal binary field has no @Size annotation", minimalField.getAnnotation(Size.class), nullValue());
+
+        assertThat("the annotated binary field has type byte[]", annotatedField.getType(), equalToType(BYTE_ARRAY));
+        assertThat("the annotated binary field has annotation @Size", annotatedField.getAnnotation(Size.class), notNullValue());
+        assertThat("the annotated binary field @Size annotation has min=1", annotatedField.getAnnotation(Size.class).min(), equalTo(1));
+        assertThat("the annotated binary field @Size annotation has max=100", annotatedField.getAnnotation(Size.class).max(), equalTo(100));
     }
 
     @Test
@@ -213,9 +232,8 @@ public class MediaIT {
      * @param type the type to check.
      * @return a matcher that tests for equality to the specified type.
      */
-    @SuppressWarnings("rawtypes")
-    public static Matcher<Class> equalToType( Class<?> type ) {
-        return equalTo((Class)type);
+    public static Matcher<Class<?>> equalToType( Class<?> type ) {
+        return equalTo(type);
     }
 
     public static void roundTripAssertions( ObjectMapper objectMapper, String propertyName, String jsonValue, Object javaValue) throws Exception {
@@ -275,7 +293,8 @@ public class MediaIT {
     public static class QuotedPrintableSerializer
     extends StdSerializer<byte[]>
     {
-        private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
+        private static final long serialVersionUID = 1L;
+        private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableSerializer() {
             super(byte[].class);
@@ -288,11 +307,11 @@ public class MediaIT {
 
     }
 
-    @SuppressWarnings("serial")
     public static class QuotedPrintableDeserializer
     extends StdDeserializer<byte[]>
     {
-        private static QuotedPrintableCodec codec = new QuotedPrintableCodec();
+        private static final long serialVersionUID = 1L;
+        private static final QuotedPrintableCodec codec = new QuotedPrintableCodec();
 
         public QuotedPrintableDeserializer() {
             super(byte[].class);
@@ -303,7 +322,7 @@ public class MediaIT {
             try {
                 return codec.decode(jp.getText().getBytes(StandardCharsets.UTF_8));
             } catch (DecoderException e) {
-                throw new IOException(format("could not decode quoted string in %s", jp.getCurrentName()), e);
+                throw new IOException(format("could not decode quoted string in %s", jp.currentName()), e);
             }
         }
 

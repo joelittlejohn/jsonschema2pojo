@@ -17,8 +17,8 @@
 package org.jsonschema2pojo.rules;
 
 import static java.util.Arrays.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Collection;
@@ -27,25 +27,23 @@ import java.util.Collections;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SchemaStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("data")
 public class FormatRuleArraysTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
     private final FormatRule rule;
 
-    private final String formatValue;
     private final Class<?> expectedType;
 
-    @Parameters
     public static Collection<Object[]> data() {
         return asList(new Object[][] {
                 { "byte[]", byte[].class },
@@ -53,7 +51,6 @@ public class FormatRuleArraysTest {
     }
 
     public FormatRuleArraysTest(String formatValue, Class<?> expectedType) {
-        this.formatValue = formatValue;
         this.expectedType = expectedType;
 
         when(config.getFormatTypeMapping()).thenReturn(Collections.singletonMap("test", formatValue));
@@ -64,7 +61,7 @@ public class FormatRuleArraysTest {
     public void useArraysWithCustomTypeMapping() {
         JType result = rule.apply("fooBar", TextNode.valueOf("test"), null, new JCodeModel().ref(Object.class), null);
 
-        assertTrue(result.isArray());
+        assertThat(result.isArray(), is(true));
 
         JType expectedJType = new JCodeModel().ref(expectedType);
 

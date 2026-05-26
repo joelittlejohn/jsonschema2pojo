@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "extends": {
+    "$ref": "#/$defs/super_type"
+  },
+  "properties": {
+    "non_documented": {
+      "type": "string",
+      "description": null,
+      "title": null,
+      "required": true
+    },
+    "tile_only": {
+      "type": "string",
+      "title": "A title_only title",
+      "required": true
+    },
+    "description_only": {
+      "type": "string",
+      "description": "A description_only description.",
+      "required": true
+    },
+    "title_and_description": {
+      "type": "string",
+      "title": "A title_and_description title.",
+      "description": "A title_and_description description",
+      "required": true
+    },
+    "non_required_non_documented": {
+      "type": "string"
+    },
+    "non_required_tile_only": {
+      "type": "string",
+      "title": "A non_required_tile_only title."
+    },
+    "non_required_description_only": {
+      "type": "string",
+      "description": "A non_required_description_only description"
+    },
+    "non_required_title_and_description": {
+      "type": "string",
+      "title": "A non_required_title_and_description title",
+      "description": "A non_required_title_and_description description."
+    }
+  },
+  "$defs": {
+    "super_type": {
+      "type": "object",
+      "properties": {
+        "undocumented_sc_property": {
+          "type": "number"
+        },
+        "sc_property_w_title": {
+          "type": "number",
+          "title": "A sc_property_w_title title",
+          "required": true
+        },
+        "sc_property_w_description": {
+          "type": "number",
+          "description": "A sc_property_w_description description",
+          "required": true
+        }
+      }
+    }
+  }
+}

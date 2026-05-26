@@ -16,37 +16,35 @@
 
 package org.jsonschema2pojo.integration.yaml;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class YamlPropertiesIT {
  
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void propertiesWithNullValuesAreOmittedWhenSerialized() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/nullProperties.yaml", "com.example", config("sourceType", "yamlschema"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
-        Object instance = generatedType.newInstance();
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.NullProperties");
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = new PropertyDescriptor("property", generatedType).getWriteMethod();
         setter.invoke(instance, "value");
@@ -74,15 +72,14 @@ public class YamlPropertiesIT {
     }
 
     @Test
-    @SuppressWarnings("rawtypes")
-    public void wordDelimitersCausesCamelCase() throws ClassNotFoundException, IntrospectionException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public void wordDelimitersCausesCamelCase() throws IntrospectionException, ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesWithWordDelimiters.yaml", "com.example",
                 config("usePrimitives", true, "propertyWordDelimiters", "_ -", "sourceType", "yamlschema"));
 
-        Class generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
+        Class<?> generatedType = resultsClassLoader.loadClass("com.example.WordDelimit");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("propertyWithUnderscores", generatedType).getWriteMethod().invoke(instance, "a_b_c");
         new PropertyDescriptor("propertyWithHyphens", generatedType).getWriteMethod().invoke(instance, "a-b-c");
@@ -133,7 +130,7 @@ public class YamlPropertiesIT {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/yaml/properties/propertiesAreUpperCamelCase.yaml", "com.example", config("sourceType", "yamlschema"));
         Class<?> generatedType = resultsClassLoader.loadClass("com.example.UpperCase");
 
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         new PropertyDescriptor("property1", generatedType).getWriteMethod().invoke(instance, "1");
         new PropertyDescriptor("propertyTwo", generatedType).getWriteMethod().invoke(instance, 2);
@@ -142,10 +139,10 @@ public class YamlPropertiesIT {
 
         JsonNode jsonified = mapper.valueToTree(instance);
 
-        assertNotNull(generatedType.getDeclaredField("property1"));
-        assertNotNull(generatedType.getDeclaredField("propertyTwo"));
-        assertNotNull(generatedType.getDeclaredField("propertyThreeWithSpace"));
-        assertNotNull(generatedType.getDeclaredField("propertyFour"));
+        assertThat(generatedType.getDeclaredField("property1"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyTwo"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyThreeWithSpace"), is(notNullValue()));
+        assertThat(generatedType.getDeclaredField("propertyFour"), is(notNullValue()));
 
         assertThat(jsonified.has("Property1"), is(true));
         assertThat(jsonified.has("PropertyTwo"), is(true));

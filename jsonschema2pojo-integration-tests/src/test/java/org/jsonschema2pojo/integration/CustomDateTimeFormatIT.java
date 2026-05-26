@@ -16,32 +16,32 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.Locale;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CustomDateTimeFormatIT {
-    @ClassRule
+
+    @RegisterExtension
     public static Jsonschema2PojoRule classSchemaRule = new Jsonschema2PojoRule();
 
     private static Class<?> classWhenFormatDatesTrue;
     private static Class<?> classWhenFormatDatesFalse;
     private static Class<?> classWithCustomPatterns;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws ClassNotFoundException {
-
         classSchemaRule.generate("/schema/format/customDateTimeFormat.json", "com.example.config_true", config(
                 "dateType", "java.util.Date",
                 "timeType", "java.util.Date",
@@ -76,7 +76,7 @@ public class CustomDateTimeFormatIT {
     @Test
     public void testDefaultFormattedDateWithCustomPattern() throws Exception {
 
-        final Object instance = classWithCustomPatterns.newInstance();
+        final Object instance = classWithCustomPatterns.getDeclaredConstructor().newInstance();
         classWithCustomPatterns.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -87,7 +87,7 @@ public class CustomDateTimeFormatIT {
     @Test
     public void testDefaultFormattedDateTimeWithCustomPattern() throws Exception {
 
-        final Object instance = classWithCustomPatterns.newInstance();
+        final Object instance = classWithCustomPatterns.getDeclaredConstructor().newInstance();
         classWithCustomPatterns.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -98,7 +98,7 @@ public class CustomDateTimeFormatIT {
     @Test
     public void testDefaultWhenFormatDateTimesConfigIsTrue() throws Exception {
 
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -109,7 +109,7 @@ public class CustomDateTimeFormatIT {
     @Test
     public void testDefaultWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
 
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setDefaultFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -119,7 +119,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception {
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatDefaultTZ", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -129,7 +129,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsTrue() throws Exception{
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -139,7 +139,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatDateTimesConfigIsFalse() throws Exception{
-        final Object instance = classWhenFormatDatesFalse.newInstance();
+        final Object instance = classWhenFormatDatesFalse.getDeclaredConstructor().newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormat", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -149,7 +149,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDateTimePatternWithDefaultTimezoneWhenFormatDateTimesConfigIsFalse() throws Exception {
-        final Object instance = classWhenFormatDatesFalse.newInstance();
+        final Object instance = classWhenFormatDatesFalse.getDeclaredConstructor().newInstance();
         classWhenFormatDatesFalse.getMethod("setCustomFormatDefaultTZ", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -159,7 +159,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDateTimePatternWithCustomTimezoneWhenFormatDateTimesConfigIsFalse() throws Exception {
-        final Object instance = classWhenFormatDatesFalse.newInstance();
+        final Object instance = classWhenFormatDatesFalse.getDeclaredConstructor().newInstance();
         classWhenFormatDatesFalse.getMethod("setCustomFormatCustomTZ", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -169,7 +169,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatDatesConfigIsTrue() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -179,7 +179,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatTimesConfigIsTrue() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setDefaultFormatTime", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -189,7 +189,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatDatesConfigIsFalse() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesFalse.newInstance();
+        final Object instance = classWhenFormatDatesFalse.getDeclaredConstructor().newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormatDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -199,7 +199,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testDefaultWhenFormatTimesConfigIsFalse() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesFalse.newInstance();
+        final Object instance = classWhenFormatDatesFalse.getDeclaredConstructor().newInstance();
         classWhenFormatDatesFalse.getMethod("setDefaultFormatTime", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -209,7 +209,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomDatePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomDate", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().writeValueAsString(instance);
@@ -219,7 +219,7 @@ public class CustomDateTimeFormatIT {
 
     @Test
     public void testCustomTimePattern() throws ReflectiveOperationException, SecurityException, JsonProcessingException {
-        final Object instance = classWhenFormatDatesTrue.newInstance();
+        final Object instance = classWhenFormatDatesTrue.getDeclaredConstructor().newInstance();
         classWhenFormatDatesTrue.getMethod("setCustomFormatCustomTime", Date.class).invoke(instance, new Date(999999999999L));
 
         final String json = new ObjectMapper().setLocale(Locale.ENGLISH).writeValueAsString(instance);

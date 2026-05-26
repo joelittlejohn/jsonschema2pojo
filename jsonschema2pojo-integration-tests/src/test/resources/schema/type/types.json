@@ -16,6 +16,10 @@
         "arrayProperty" : {
             "type" : "array"
         },
+        "uniqueArrayProperty" : {
+            "type" : "array",
+            "uniqueItems" : true
+        },
         "nullProperty" : {
             "type" : "null"
         },

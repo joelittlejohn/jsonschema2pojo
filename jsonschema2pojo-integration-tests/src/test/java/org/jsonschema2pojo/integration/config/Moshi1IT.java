@@ -16,22 +16,22 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
 import static org.jsonschema2pojo.integration.util.FileSearchMatcher.*;
 import static org.jsonschema2pojo.integration.util.JsonAssert.*;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,12 +42,12 @@ import com.squareup.moshi.Moshi;
 
 public class Moshi1IT {
 
-    @Rule
+    @RegisterExtension
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private Moshi moshi;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         moshi = new Moshi.Builder().build();
     }
@@ -62,6 +62,8 @@ public class Moshi1IT {
                         "sourceType", "json"))
                 .loadClass("com.example.Torrent");
 
+        assertThat(schemaRule.getGenerateDir(), not(containsText("jakarta.json.bind.annotation")));
+        assertThat(schemaRule.getGenerateDir(), not(containsText("javax.json.bind.annotation")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("org.codehaus.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.fasterxml.jackson")));
         assertThat(schemaRule.getGenerateDir(), not(containsText("com.google.gson")));
@@ -91,7 +93,7 @@ public class Moshi1IT {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Test
-    public void enumValuesAreSerializedCorrectly() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void enumValuesAreSerializedCorrectly() throws ReflectiveOperationException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/typeWithEnumProperty.json", "com.example",
                 config("annotationStyle", "moshi1",
@@ -99,7 +101,7 @@ public class Moshi1IT {
 
         Class generatedType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty");
         Class enumType = resultsClassLoader.loadClass("com.example.TypeWithEnumProperty$EnumProperty");
-        Object instance = generatedType.newInstance();
+        Object instance = generatedType.getDeclaredConstructor().newInstance();
 
         Method setter = generatedType.getMethod("setEnumProperty", enumType);
         setter.invoke(instance, enumType.getEnumConstants()[3]);
@@ -115,7 +117,7 @@ public class Moshi1IT {
     private void assertJsonRoundTrip(ClassLoader resultsClassLoader, String className, String jsonResource) throws ClassNotFoundException, IOException {
         Class generatedType = resultsClassLoader.loadClass(className);
 
-        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource));
+        String expectedJson = IOUtils.toString(getClass().getResource(jsonResource), StandardCharsets.UTF_8);
         JsonAdapter<Object> jsonAdapter = moshi.adapter(generatedType);
         Object javaInstance = jsonAdapter.fromJson(expectedJson);
         String actualJson = jsonAdapter.toJson(javaInstance);

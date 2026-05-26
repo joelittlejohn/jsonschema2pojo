@@ -16,7 +16,7 @@
 
 package org.jsonschema2pojo.rules;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -105,7 +105,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JType propertyType;
         if (node != null && node.size() != 0) {
             String pathToAdditionalProperties;
-            if (schema.getId().getFragment() == null) {
+            if (schema.getId() == null || schema.getId().getFragment() == null) {
                 pathToAdditionalProperties = "#/additionalProperties";
             } else {
                 pathToAdditionalProperties = "#" + schema.getId().getFragment() + "/additionalProperties";
@@ -115,6 +115,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
             additionalPropertiesSchema.setJavaTypeIfEmpty(propertyType);
         } else {
             propertyType = jclass.owner().ref(Object.class);
+            propertyType = ruleFactory.getValidRule().apply(nodeName, node, parent, propertyType, schema);
         }
 
         JFieldVar field = addAdditionalPropertiesField(jclass, propertyType);
@@ -122,10 +123,6 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         addGetter(jclass, field);
 
         addSetter(jclass, propertyType, field);
-
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
-            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
-        }
 
         if (ruleFactory.getGenerationConfig().isGenerateBuilders()) {
             addBuilder(jclass, propertyType, field);
@@ -138,7 +135,7 @@ public class AdditionalPropertiesRule implements Rule<JDefinedClass, JDefinedCla
         JClass propertiesMapType = jclass.owner().ref(Map.class);
         propertiesMapType = propertiesMapType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
-        JClass propertiesMapImplType = jclass.owner().ref(HashMap.class);
+        JClass propertiesMapImplType = jclass.owner().ref(LinkedHashMap.class);
         propertiesMapImplType = propertiesMapImplType.narrow(jclass.owner().ref(String.class), propertyType.boxify());
 
         JFieldVar field = jclass.field(JMod.PRIVATE, propertiesMapType, "additionalProperties");

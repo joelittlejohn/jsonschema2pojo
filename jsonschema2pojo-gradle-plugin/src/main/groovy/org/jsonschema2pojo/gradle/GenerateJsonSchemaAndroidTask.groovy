@@ -15,13 +15,13 @@
  */
 package org.jsonschema2pojo.gradle
 
-import org.gradle.api.tasks.Input
+import org.jsonschema2pojo.GenerationConfig
+import org.jsonschema2pojo.Jsonschema2Pojo
+
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
-import org.jsonschema2pojo.GenerationConfig
-import org.jsonschema2pojo.Jsonschema2Pojo
+import org.gradle.work.InputChanges
 
 /**
  * Task that generates java source files for an Android project
@@ -35,7 +35,7 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
   File outputDir
 
   @TaskAction
-  def generate(IncrementalTaskInputs inputs) {
+  def generate(InputChanges inputs) {
 
     // If the whole thing isn't incremental, delete the build folder (if it exists)
     if (!inputs.isIncremental() && outputDir.exists()) {
@@ -49,13 +49,18 @@ class GenerateJsonSchemaAndroidTask extends SourceTask {
 
     GenerationConfig configuration = project.jsonSchema2Pojo
     configuration.targetDirectory = outputDir
-
-    if (Boolean.TRUE == configuration.properties.get("useCommonsLang3")) {
-      logger.warn 'useCommonsLang3 is deprecated. Please remove it from your config.'
-    }
+    setTargetVersion configuration
 
     logger.info 'Using this configuration:\n{}', configuration
 
     Jsonschema2Pojo.generate(configuration, new GradleRuleLogger(logger))
   }
+
+  void setTargetVersion(JsonSchemaExtension configuration) {
+    if (!configuration.targetVersion && (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library"))) {
+        configuration.targetVersion = project.android.compileOptions.sourceCompatibility
+        logger.info 'Using android.compileOptions.sourceCompatibility as targetVersion for jsonschema2pojo: ' + configuration.targetVersion
+    }
+  }
+
 }

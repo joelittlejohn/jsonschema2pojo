@@ -22,13 +22,14 @@ import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,7 @@ import com.sun.codemodel.JPackage;
 
 public class CyclicalRefIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -73,10 +74,10 @@ public class CyclicalRefIT {
     }
 
     @Test
-    public void recursiveTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
+    public void recursiveTreeNodeWithNoParentFileIsReadCorrectly() throws IOException {
 
         JCodeModel codeModel = new JCodeModel();
-        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveTreeNode.json"));
+        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveTreeNode.json"), StandardCharsets.UTF_8);
         JsonNode schema = new ObjectMapper().readTree(content);
 
         JPackage p = codeModel._package("com.example");
@@ -104,10 +105,10 @@ public class CyclicalRefIT {
     }
 
     @Test
-    public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws ClassNotFoundException, NoSuchMethodException, IOException {
+    public void recursiveEtcdTreeNodeWithNoParentFileIsReadCorrectly() throws IOException {
 
         JCodeModel codeModel = new JCodeModel();
-        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json"));
+        String content = IOUtils.toString(getClass().getResourceAsStream("/schema/ref/recursiveEtcdTreeNode.json"), StandardCharsets.UTF_8);
         JsonNode schema = new ObjectMapper().readTree(content);
 
         JPackage p = codeModel._package("com.example");

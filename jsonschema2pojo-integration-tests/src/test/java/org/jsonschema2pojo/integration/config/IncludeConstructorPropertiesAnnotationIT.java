@@ -16,11 +16,10 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static junit.framework.TestCase.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.beans.ConstructorProperties;
 import java.lang.annotation.Annotation;
@@ -28,11 +27,12 @@ import java.lang.reflect.Constructor;
 import java.util.StringJoiner;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class IncludeConstructorPropertiesAnnotationIT {
-  @Rule
+
+  @RegisterExtension
   public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
   private String[] expectedValueForAllValuesConstructor = { "x", "y", "z" };
@@ -127,10 +127,10 @@ public class IncludeConstructorPropertiesAnnotationIT {
     return joiner.toString();
   }
 
-  private String paramTypesJoin(Class[] parameterTypes) {
+  private String paramTypesJoin(Class<?>[] parameterTypes) {
     StringJoiner joiner = new StringJoiner(",");
 
-    for (Class clazz : parameterTypes)
+    for (Class<?> clazz : parameterTypes)
     {
       joiner.add(clazz.getCanonicalName());
     }
@@ -146,7 +146,7 @@ public class IncludeConstructorPropertiesAnnotationIT {
       if (constructor.getParameterCount() == paramCount)
       {
         ConstructorProperties constructorPropertiesAnnotation = constructor.getAnnotation(ConstructorProperties.class);
-        assertNotNull(constructorPropertiesAnnotation);
+        assertThat(constructorPropertiesAnnotation, is(notNullValue()));
         assertThat(constructorPropertiesAnnotation.value(), is(expectedValue));
         return;
       }
@@ -158,7 +158,7 @@ public class IncludeConstructorPropertiesAnnotationIT {
   private void validateNoAnnotationPresentOnAnyConstructors(Class<?> testObjectClass) {
     Constructor<?>[] constructors = testObjectClass.getConstructors();
 
-    for (Constructor constructor : constructors)
+    for (Constructor<?> constructor : constructors)
     {
       Annotation annotation = constructor.getAnnotation(ConstructorProperties.class);
 

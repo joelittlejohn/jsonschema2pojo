@@ -24,10 +24,9 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.RuleLogger;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.util.NameHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,7 +48,7 @@ public class EnumRuleTest {
 
     private final EnumRule rule = new EnumRule(ruleFactory);
 
-    @Before
+    @BeforeEach
     public void wireUpConfig() {
         when(ruleFactory.getNameHelper()).thenReturn(nameHelper);
         when(ruleFactory.getLogger()).thenReturn(logger);
@@ -59,8 +58,7 @@ public class EnumRuleTest {
 
     @Test
     public void applyGeneratesUniqueEnumNamesForMultipleEnumNodesWithSameName() {
-
-        Answer<String> firstArgAnswer = new FirstArgAnswer<>();
+        final Answer<?> firstArgAnswer = invocation -> invocation.getArgument(0);
         when(nameHelper.getClassName(anyString(), ArgumentMatchers.any(JsonNode.class))).thenAnswer(firstArgAnswer);
         when(nameHelper.replaceIllegalCharacters(anyString())).thenAnswer(firstArgAnswer);
         when(nameHelper.normalizeName(anyString())).thenAnswer(firstArgAnswer);
@@ -86,13 +84,4 @@ public class EnumRuleTest {
         assertThat(result2.fullName(), is("org.jsonschema2pojo.rules.Status_"));
     }
 
-    private static class FirstArgAnswer<T> implements Answer<T> {
-        @SuppressWarnings("unchecked")
-        @Override
-        public T answer(InvocationOnMock invocation) {
-            Object[] args = invocation.getArguments();
-            //noinspection unchecked
-            return (T) args[0];
-        }
-    }
 }

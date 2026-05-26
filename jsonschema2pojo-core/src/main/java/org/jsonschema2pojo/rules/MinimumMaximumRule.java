@@ -65,7 +65,7 @@ public class MinimumMaximumRule implements Rule<JFieldVar, JFieldVar> {
 
     private boolean isApplicableType(JFieldVar field) {
         try {
-            Class<?> fieldClass = Class.forName(field.type().boxify().fullName());
+            Class<?> fieldClass = Class.forName(field.type().boxify().erasure().fullName());
             // Support Strings and most number types except Double and Float, per docs on DecimalMax/Min annotations
             return String.class.isAssignableFrom(fieldClass) ||
                     (Number.class.isAssignableFrom(fieldClass) &&

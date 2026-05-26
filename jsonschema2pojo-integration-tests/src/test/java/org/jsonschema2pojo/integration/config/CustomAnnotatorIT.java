@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class CustomAnnotatorIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -97,15 +97,13 @@ public class CustomAnnotatorIT {
 
     @Test
     public void invalidCustomAnnotatorClassCausesMojoException() {
+        final String schema = "/schema/properties/primitiveProperties.json";
 
-        try {
-            schemaRule.generate("/schema/properties/primitiveProperties.json", "com.example", config("customAnnotator", "java.lang.String"));
-            fail();
-        } catch (RuntimeException e) {
-            assertThat(e.getCause(), is(instanceOf(MojoExecutionException.class)));
-            assertThat(e.getCause().getMessage(), is(containsString("annotator")));
-        }
-
+        final RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> schemaRule.generate(schema, "com.example", config("customAnnotator", "java.lang.String")));
+        assertThat(exception.getCause(), is(instanceOf(MojoExecutionException.class)));
+        assertThat(exception.getCause().getMessage(), is(containsString("annotator")));
     }
 
     /**

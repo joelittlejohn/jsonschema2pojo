@@ -15,9 +15,10 @@
  */
 package org.jsonschema2pojo.gradle
 
+
+import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.Annotator
-import org.jsonschema2pojo.AllFileFilter
 import org.jsonschema2pojo.GenerationConfig
 import org.jsonschema2pojo.InclusionLevel
 import org.jsonschema2pojo.NoopAnnotator
@@ -29,7 +30,7 @@ import org.jsonschema2pojo.rules.RuleFactory
  * The configuration properties.
  *
  * @author Ben Manes (ben.manes@gmail.com)
- * @see https://github.com/joelittlejohn/jsonschema2pojo
+ * @see <a href="https://github.com/joelittlejohn/jsonschema2pojo">https://github.com/joelittlejohn/jsonschema2pojo</a>
  */
 public class JsonSchemaExtension implements GenerationConfig {
   Iterable<File> sourceFiles
@@ -73,7 +74,6 @@ public class JsonSchemaExtension implements GenerationConfig {
   boolean removeOldOutput
   SourceType sourceType
   String targetVersion
-  boolean useCommonsLang3
   boolean useDoubleNumbers
   boolean useBigDecimals
   boolean useJodaDates
@@ -134,7 +134,6 @@ public class JsonSchemaExtension implements GenerationConfig {
     dateTimeType = null
     dateType = null
     timeType = null
-    useCommonsLang3 = false
     parcelable = false
     serializable = false
     fileFilter = new AllFileFilter()
@@ -145,7 +144,6 @@ public class JsonSchemaExtension implements GenerationConfig {
     includeAdditionalProperties = true
     includeGetters = true
     includeSetters = true
-    targetVersion = '1.6'
     includeDynamicAccessors = false
     includeDynamicGetters = false
     includeDynamicSetters = false
@@ -218,6 +216,10 @@ public class JsonSchemaExtension implements GenerationConfig {
 
   public void setTargetLangauge(String language) {
     targetLangauge = Langauge.valueOf(language.toUpperCase())
+  }
+
+  public void setTargetVersion(String targetVersion) {
+    this.targetVersion = targetVersion
   }
 
   public void setIncludeConstructorPropertiesAnnotation(boolean enabled) {

@@ -23,20 +23,19 @@ import static org.hamcrest.MatcherAssert.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MatchPatternsFileFilterTest {
 
     File basedir;
     MatchPatternsFileFilter fileFilter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         basedir = new File("./src/test/resources/filtered/schema");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldIncludeAllIfEmpty() throws IOException {
         fileFilter = new MatchPatternsFileFilter.Builder()
@@ -53,7 +52,6 @@ public class MatchPatternsFileFilterTest {
                         equalTo(file("README.md"))));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldIncludeMatchesAndDirectoriesWhenIncluding() throws IOException {
         fileFilter = new MatchPatternsFileFilter.Builder()
@@ -70,7 +68,6 @@ public class MatchPatternsFileFilterTest {
                         equalTo(file("example.json"))));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldIncludeMatchesAndDirectoriesWhenIncludingAndDefaultExcludes() throws IOException {
         fileFilter = new MatchPatternsFileFilter.Builder()

@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -30,20 +31,20 @@ import java.util.Map;
 
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 public class AdditionalPropertiesIT {
 
-    @Rule public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @SuppressWarnings("unchecked")
@@ -116,26 +117,22 @@ public class AdditionalPropertiesIT {
         assertThat(jsonNode.path("b").asInt(), is(2));
     }
 
-    @Test(expected = UnrecognizedPropertyException.class)
+    @Test
     public void additionalPropertiesAreNotDeserializableWhenDisallowed() throws ClassNotFoundException, SecurityException, IOException {
-
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/noAdditionalProperties.json", "com.example");
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.NoAdditionalProperties");
 
-        mapper.readValue("{\"a\":\"1\", \"b\":2}", classWithNoAdditionalProperties);
-
+        assertThrows(UnrecognizedPropertyException.class, () -> mapper.readValue("{\"a\":\"1\", \"b\":2}", classWithNoAdditionalProperties));
     }
 
-    @Test(expected = UnrecognizedPropertyException.class)
+    @Test
     public void additionalPropertiesAreNotDeserializableWhenDisabledGlobally() throws ClassNotFoundException, SecurityException, IOException {
-
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAdditionalProperties", false));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
 
-        mapper.readValue("{\"a\":\"1\", \"b\":2}", classWithNoAdditionalProperties);
-
+        assertThrows(UnrecognizedPropertyException.class, () -> mapper.readValue("{\"a\":\"1\", \"b\":2}", classWithNoAdditionalProperties));
     }
 
     @Test
@@ -178,7 +175,7 @@ public class AdditionalPropertiesIT {
 
     }
 
-    @Test(expected = NoSuchMethodException.class)
+    @Test
     public void additionalPropertiesBuilderAbsentIfNotConfigured() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/additionalPropertiesObject.json", "com.example");
@@ -187,10 +184,10 @@ public class AdditionalPropertiesIT {
         Class<?> propertyValueType = resultsClassLoader.loadClass("com.example.AdditionalPropertiesObjectProperty");
 
         // builder with these types should not exist:
-        Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType);
-        assertThat("the builder method returns this type", builderMethod.getReturnType(), typeEqualTo(classWithNoAdditionalProperties));
-
-        fail("additional properties builder found when not requested");
+        assertThrows(
+                NoSuchMethodException.class,
+                () -> classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, propertyValueType),
+                "additional properties builder found when not requested");
     }
 
     @Test
@@ -240,8 +237,8 @@ public class AdditionalPropertiesIT {
         Method getter = classWithNoAdditionalProperties.getMethod("getAdditionalProperties");
         Method builderMethod = classWithNoAdditionalProperties.getMethod("withAdditionalProperty", String.class, String.class);
 
-        Object value = "value";
-        Object instance = classWithNoAdditionalProperties.newInstance();
+        String value = "value";
+        Object instance = classWithNoAdditionalProperties.getDeclaredConstructor().newInstance();
         Object result = builderMethod.invoke(instance, "prop", value);
         Object stored = ((Map<?, ?>) getter.invoke(instance)).get("prop");
 
@@ -252,9 +249,9 @@ public class AdditionalPropertiesIT {
 
     @Test
     public void additionalPropertiesWorkWithAllVisibility() throws ClassNotFoundException, SecurityException, IOException {
-        mapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false);
-        mapper.configure(MapperFeature.AUTO_DETECT_SETTERS, false);
-        mapper.setVisibility(mapper.getVisibilityChecker().with(Visibility.ANY));
+        mapper.setVisibility(PropertyAccessor.ALL, Visibility.ANY);
+        mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.SETTER, Visibility.NONE);
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example");
 
@@ -269,9 +266,8 @@ public class AdditionalPropertiesIT {
         assertThat(jsonNode.has("additionalProperties"), is(false));
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Matcher<Class> typeEqualTo(Class<?> type) {
-        return equalTo((Class) type);
+    public static Matcher<Class<?>> typeEqualTo(Class<?> type) {
+        return equalTo(type);
     }
 
 }

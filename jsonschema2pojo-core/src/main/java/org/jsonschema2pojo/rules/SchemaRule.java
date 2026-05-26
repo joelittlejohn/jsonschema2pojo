@@ -18,12 +18,13 @@ package org.jsonschema2pojo.rules;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
+import org.apache.commons.lang3.Strings;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.GenerationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JClassContainer;
@@ -64,6 +65,7 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
     public JType apply(String nodeName, JsonNode schemaNode, JsonNode parent, JClassContainer generatableType, Schema schema) {
 
         if (schemaNode.has("$ref")) {
+            final Schema parentSchema = null != schema ? schema.getParent() : null;
             final String nameFromRef = nameFromRef(schemaNode.get("$ref").asText());
 
             schema = ruleFactory.getSchemaStore().create(schema, schemaNode.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
@@ -73,7 +75,9 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
                 return schema.getJavaType();
             }
 
-            return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
+            if (!Objects.equals(schema, parentSchema)) {
+                return apply(nameFromRef != null ? nameFromRef : nodeName, schemaNode, parent, generatableType, schema);
+            }
         }
 
         JType javaType;
@@ -94,17 +98,13 @@ public class SchemaRule implements Rule<JClassContainer, JType> {
         }
 
         String nameFromRef;
-        if (!contains(ref, "#")) {
+        if (!Strings.CS.contains(ref, "#")) {
             nameFromRef = Jsonschema2Pojo.getNodeName(ref, ruleFactory.getGenerationConfig());
         } else {
             String[] nameParts = split(ref, "/\\#");
             nameFromRef = nameParts[nameParts.length - 1];
         }
 
-        try {
-            return URLDecoder.decode(nameFromRef, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new GenerationException("Failed to decode ref: " + ref, e);
-        }
+        return URLDecoder.decode(nameFromRef, StandardCharsets.UTF_8);
     }
 }

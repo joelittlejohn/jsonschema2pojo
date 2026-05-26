@@ -1,0 +1,11 @@
+{
+  "$ref": "#",
+  "properties": {
+    "user": {
+      "$ref": "#/definitions/user"
+    }
+  },
+  "definitions": {
+    "user": { "type": "string" }
+  }
+}

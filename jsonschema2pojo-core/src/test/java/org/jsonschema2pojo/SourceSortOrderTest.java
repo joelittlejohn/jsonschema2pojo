@@ -24,9 +24,10 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.util.Comparator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SourceSortOrderTest {
+
     @Test
     public void testTwoFilesAreCompared_FILES_FIRST() {
         testTwoFilesAreCompared(SourceSortOrder.FILES_FIRST.getComparator());

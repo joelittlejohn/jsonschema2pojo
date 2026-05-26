@@ -20,8 +20,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +53,6 @@ public class ProjectClasspath {
      */
     public ClassLoader getClassLoader(MavenProject project, final ClassLoader parent, Log log) throws DependencyResolutionRequiredException {
 
-        @SuppressWarnings("unchecked")
         List<String> classpathElements = project.getCompileClasspathElements();
 
         final List<URL> classpathUrls = new ArrayList<>(classpathElements.size());
@@ -71,12 +68,7 @@ public class ProjectClasspath {
 
         }
 
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]), parent);
-            }
-        });
+        return new URLClassLoader(classpathUrls.toArray(new URL[0]), parent);
 
     }
 

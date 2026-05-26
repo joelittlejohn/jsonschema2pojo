@@ -17,6 +17,7 @@
 package org.jsonschema2pojo.rules;
 
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -66,13 +67,18 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
      */
     @Override
     public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
-        String propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        String propertyName;
+        if (StringUtils.isEmpty(nodeName)) {
+            propertyName = "__EMPTY__";
+        } else {
+            propertyName = ruleFactory.getNameHelper().getPropertyName(nodeName, node);
+        }
 
         String pathToProperty;
         if (schema.getId() == null || schema.getId().getFragment() == null) {
-            pathToProperty = "#/properties/" + nodeName;
+            pathToProperty = "#/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         } else {
-            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + nodeName;
+            pathToProperty = "#" + schema.getId().getFragment() + "/properties/" + JsonPointerUtils.encodeReferenceToken(nodeName);
         }
 
         Schema propertySchema = ruleFactory.getSchemaStore().create(schema, pathToProperty, ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
@@ -122,10 +128,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         ruleFactory.getMinLengthMaxLengthRule().apply(nodeName, node, parent, field, schema);
 
         ruleFactory.getDigitsRule().apply(nodeName, node, parent, field, schema);
-
-        if (isObject(node) || isArray(node)) {
-            ruleFactory.getValidRule().apply(nodeName, node, parent, field, schema);
-        }
 
         return jclass;
     }
@@ -195,6 +197,12 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
             ruleFactory.getAnnotator().dateField(field, clazz, node);
         } else if ("time".equalsIgnoreCase(format)) {
             ruleFactory.getAnnotator().timeField(field, clazz, node);
+        } else if ("email".equalsIgnoreCase(format) && ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()) {
+            if (ruleFactory.getGenerationConfig().isUseJakartaValidation()) {
+                field.annotate(jakarta.validation.constraints.Email.class);
+            } else {
+                field.annotate(javax.validation.constraints.Email.class);
+            }
         }
     }
 
@@ -206,14 +214,6 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         } else {
             return node;
         }
-    }
-
-    private boolean isObject(JsonNode node) {
-        return node.path("type").asText().equals("object");
-    }
-
-    private boolean isArray(JsonNode node) {
-        return node.path("type").asText().equals("array");
     }
 
     private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
@@ -278,7 +278,7 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private JMethod addInnerBuilderMethod(JDefinedClass c, JFieldVar field, String jsonPropertyName, JsonNode node)    {
         JDefinedClass builderClass = ruleFactory.getReflectionHelper().getBaseBuilderClass(c);
 
-        JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass, getBuilderName(jsonPropertyName, node));
+        JMethod builderMethod = builderClass.method(JMod.PUBLIC, builderClass.narrow(builderClass.typeParams()), getBuilderName(jsonPropertyName, node));
 
         JVar param = builderMethod.param(field.type(), field.name());
         JBlock body = builderMethod.body();

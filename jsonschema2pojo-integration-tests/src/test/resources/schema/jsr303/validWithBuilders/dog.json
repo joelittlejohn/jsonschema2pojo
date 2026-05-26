@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "javaType": "com.example.Dog",
+  "extendsJavaClass": "com.example.Animal",
+  "properties": {
+    "tag": {
+      "$ref": "tag.json"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "id": "http://some.site.somewhere/entry-schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "javaType" : "com.example.parcelable.Book",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "author": {
+            "type": "string"
+        }
+    },
+    "required": ["title", "author"]
+}

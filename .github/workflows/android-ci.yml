@@ -1,28 +1,39 @@
 name: Android Sample
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   buildTest:
-    name: Build JDK ${{ matrix.java_version }}
+    name: JDK ${{ matrix.version.java }} | Example Gradle (Android)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: jsonschema2pojo-gradle-plugin/example/android
     strategy:
       matrix:
-        java_version: [8]
+        version:
+          - { java: 17,  gradle: '8.14.4' }
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.19.0
         with:
-          fetch-depth: 0
-      - name: Install JDK ${{ matrix.java_version }}
-        uses: actions/setup-java@v2
-        with:
-          java-version: ${{ matrix.java_version }}
-          distribution: temurin
+          checkout-fetch-depth: 0
+          java-version: ${{ matrix.version.java }}
+          java-distribution: temurin
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.1
-      - name: Build project
-        run: ./gradlew assembleDebug
+        uses: malinskiy/action-android/install-sdk@release/0.1.7
+      - name: Install Android SDK platform 34
+        run: sdkmanager "platforms;android-34"
+      - name: Install latest jsonschema2pojo SNAPSHOT
+        run: ./mvnw -U -B install -DskipTests -Dmaven.javadoc.skip -Dmaven.site.skip
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ matrix.version.gradle }}
+      - name: Build Gradle example (Android)
+        working-directory: jsonschema2pojo-gradle-plugin/example/android
+        run: gradle --warning-mode all --info assembleDebug

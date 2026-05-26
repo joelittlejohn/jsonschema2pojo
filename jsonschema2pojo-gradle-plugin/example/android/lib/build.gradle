@@ -3,11 +3,14 @@ apply plugin: 'jsonschema2pojo'
 
 
 android {
-    compileSdkVersion 30
+
+    namespace "jsonschema2pojo.joelittlejohn.github.com.androidlibexample"
+
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -26,14 +29,14 @@ android {
 
 dependencies {
     // Required if generating Gson annotations
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.13.2'
     // Required if generating Moshi 1.x annotations
-    implementation 'com.squareup.moshi:moshi:1.12.0'
+    implementation 'com.squareup.moshi:moshi:1.15.2'
     // Required if generating JSR-303 annotations
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
     // Required if generating Jackson 2 annotations
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
 }
 
 // Each configuration is set to the default value
@@ -83,6 +86,7 @@ jsonSchema2Pojo {
     // The style of annotations to use in the generated Java types. Supported values:
     //  - jackson (alias of jackson2)
     //  - jackson2 (apply annotations from the Jackson 2.x library)
+    //  - jackson3 (apply annotations from the Jackson 3.x library)
     //  - gson (apply annotations from the Gson library)
     //  - moshi1 (apply annotations from the Moshi 1.x library)
     //  - none (apply no annotations at all)
@@ -115,15 +119,16 @@ jsonSchema2Pojo {
     // that have been generated previously. <strong>Be warned</strong>, when activated this option
     // will cause jsonschema2pojo to <strong>indiscriminately delete the entire contents of the target
     // directory (all files and folders)</strong> before it begins generating sources.
-    boolean removeOldOutput = true
+    removeOldOutput = true
 
     // The character encoding that should be used when writing the generated Java source files
-    String outputEncoding = 'UTF-8'
+    outputEncoding = 'UTF-8'
 
     // Whether to use {@link org.joda.time.DateTime} instead of {@link java.util.Date} when adding
     // date type fields to generated Java types.
-    boolean useJodaDates = false
+    useJodaDates = false
 
     // Whether to initialize Set and List fields as empty collections, or leave them as null.
-    boolean initializeCollections = true
+    initializeCollections = true
+
 }

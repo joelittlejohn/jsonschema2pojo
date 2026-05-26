@@ -16,15 +16,17 @@
 
 package org.jsonschema2pojo.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
 
 public class TypeUtilTest {
 
@@ -52,8 +54,9 @@ public class TypeUtilTest {
         assertThat(_class.getTypeParameters().get(0)._extends(), is(equalTo(codeModel.ref(Number.class))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testResolveTypeForSuperWildcardThrowsException() {
-        TypeUtil.resolveType(new JCodeModel().rootPackage(), "java.util.List<? super java.lang.String>");
+        final JPackage rootPackage = new JCodeModel().rootPackage();
+        assertThrows(IllegalArgumentException.class, () -> TypeUtil.resolveType(rootPackage, "java.util.List<? super java.lang.String>"));
     }
 }

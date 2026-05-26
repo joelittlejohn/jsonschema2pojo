@@ -16,36 +16,38 @@
 
 package org.jsonschema2pojo.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
-import com.thoughtworks.qdox.model.Type;
+import com.thoughtworks.qdox.model.JavaType;
+import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 
 public class DescriptionIT {
 
-    @ClassRule public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
+    @RegisterExtension public static Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     private static JavaClass classWithDescription;
 
-    @BeforeClass
+    @BeforeAll
     public static void generateClasses() throws IOException {
-
         schemaRule.generateAndCompile("/schema/description/description.json", "com.example");
         File generatedJavaFile = schemaRule.generated("com/example/Description.java");
 
-        JavaDocBuilder javaDocBuilder = new JavaDocBuilder();
+        JavaProjectBuilder javaDocBuilder = new JavaProjectBuilder();
         javaDocBuilder.addSource(generatedJavaFile);
 
         classWithDescription = javaDocBuilder.getClassByName("com.example.Description");
@@ -73,7 +75,7 @@ public class DescriptionIT {
     @Test
     public void descriptionAppearsInGetterJavadoc() {
 
-        JavaMethod javaMethod = classWithDescription.getMethodBySignature("getDescription", new Type[] {});
+        JavaMethod javaMethod = classWithDescription.getMethodBySignature("getDescription", Collections.emptyList());
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A description for this property"));
@@ -83,7 +85,8 @@ public class DescriptionIT {
     @Test
     public void descriptionAppearsInSetterJavadoc() {
 
-        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setDescription", new Type[] { new Type("java.lang.String") });
+        final List<JavaType> parameterTypes = Collections.singletonList(new DefaultJavaClass("java.lang.String"));
+        JavaMethod javaMethod = classWithDescription.getMethodBySignature("setDescription", parameterTypes);
         String javaDocComment = javaMethod.getComment();
 
         assertThat(javaDocComment, containsString("A description for this property"));

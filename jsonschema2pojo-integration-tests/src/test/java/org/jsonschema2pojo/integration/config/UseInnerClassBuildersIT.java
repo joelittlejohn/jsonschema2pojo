@@ -16,9 +16,10 @@
 
 package org.jsonschema2pojo.integration.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -26,17 +27,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hamcrest.Matcher;
 import org.jsonschema2pojo.integration.util.FileSearchMatcher;
 import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-@SuppressWarnings("rawtypes")
 public class UseInnerClassBuildersIT {
 
-  @Rule
+  @RegisterExtension
   public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
   private static Matcher<File> containsText(String searchText) {
@@ -57,7 +57,7 @@ public class UseInnerClassBuildersIT {
    * This method confirms that if you choose to generate builders, but don't indicate that useInnerBuilders is true, they will be generated using the
    * chaining setters instead of the inner classes
    */
-  @Test(expected = ClassNotFoundException.class)
+  @Test
   public void defaultBuilderIsChainedSetters() throws ClassNotFoundException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true));
@@ -65,11 +65,11 @@ public class UseInnerClassBuildersIT {
     Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
     boolean containsWithMethod = Stream.of(childClass.getMethods())
         .map(Method::getName)
-        .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
+        .anyMatch(methodName -> Strings.CS.contains(methodName, "with"));
 
-    assertTrue("Generated class missing any builders at all", containsWithMethod);
+    assertThat("Generated class missing any builders at all", containsWithMethod, is(true));
 
-    resultsClassLoader.loadClass("com.example.Child.ChildBuilder");
+    assertThrows(ClassNotFoundException.class, () -> resultsClassLoader.loadClass("com.example.Child.ChildBuilder"));
   }
 
   /**
@@ -83,11 +83,11 @@ public class UseInnerClassBuildersIT {
     Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
     boolean containsWithMethod = Stream.of(childClass.getMethods())
         .map(Method::getName)
-        .anyMatch(methodName -> StringUtils.contains(methodName, "with"));
+        .anyMatch(methodName -> Strings.CS.contains(methodName, "with"));
 
-    assertFalse("Generated contains unexpected builders", containsWithMethod);
+    assertThat("Generated contains unexpected builders", containsWithMethod, is(false));
 
-    assertNotNull(resultsClassLoader.loadClass("com.example.Child$ChildBuilder"));
+    assertThat(resultsClassLoader.loadClass("com.example.Child$ChildBuilder"), is(notNullValue()));
   }
 
   /**
@@ -95,18 +95,17 @@ public class UseInnerClassBuildersIT {
    * object
    */
   @Test
-  public void innerBuildersInvokeBuild()
-      throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+  public void innerBuildersInvokeBuild() throws ReflectiveOperationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
     Class<?> builderClass = resultsClassLoader.loadClass("com.example.Child$ChildBuilder");
     Method buildMethod = builderClass.getMethod("build");
 
-    Object builder = builderClass.newInstance();
-    assertNotNull(builder);
+    Object builder = builderClass.getDeclaredConstructor().newInstance();
+    assertThat(builder, is(notNullValue()));
 
-    assertNotNull(buildMethod.invoke(builder));
+    assertThat(buildMethod.invoke(builder), is(notNullValue()));
   }
 
   /**
@@ -114,8 +113,7 @@ public class UseInnerClassBuildersIT {
    * object and confirms all values on the object match those provided to the with methods
    */
   @Test
-  public void innerBuildersBuildObjectIncrementally()
-      throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+  public void innerBuildersBuildObjectIncrementally() throws ReflectiveOperationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
@@ -129,7 +127,7 @@ public class UseInnerClassBuildersIT {
     String parentProperty = "parentProperty";
     String sharedProperty = "sharedProperty";
 
-    Object builder = builderClass.newInstance();
+    Object builder = builderClass.getDeclaredConstructor().newInstance();
     withChildProperty.invoke(builder, childProperty);
     withParentProperty.invoke(builder, parentProperty);
     withSharedProperty.invoke(builder, sharedProperty);
@@ -140,9 +138,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(childProperty, is(equalTo(getChildProperty.invoke(childObject))));
+    assertThat(parentProperty, is(equalTo(getParentProperty.invoke(childObject))));
+    assertThat(sharedProperty, is(equalTo(getSharedProperty.invoke(childObject))));
   }
 
   /**
@@ -154,10 +152,10 @@ public class UseInnerClassBuildersIT {
         config("generateBuilders", true, "useInnerClassBuilders", true));
 
     Class<?> builderClass = resultsClassLoader.loadClass("com.example.Child$ChildBuilder");
-    assertEquals(1, builderClass.getConstructors().length);
+    assertThat(builderClass.getConstructors().length, is(equalTo(1)));
 
     Constructor<?> constructor = builderClass.getConstructors()[0];
-    assertEquals(0, constructor.getParameterCount());
+    assertThat(constructor.getParameterCount(), is(equalTo(0)));
   }
 
   /**
@@ -185,9 +183,9 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 
   /**
@@ -195,7 +193,7 @@ public class UseInnerClassBuildersIT {
    * with the required properties will be created
    */
   @Test
-  public void innerBuilderWithRequiredPropertyConstructor()
+  public void innerBuilderWithRequiredPropertyOnlyConstructor()
       throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
         config("generateBuilders", true, "useInnerClassBuilders", true, "includeConstructors", true, "constructorsRequiredPropertiesOnly", true));
@@ -220,8 +218,87 @@ public class UseInnerClassBuildersIT {
     Method getParentProperty = childClass.getMethod("getParentProperty");
     Method getSharedProperty = childClass.getMethod("getSharedProperty");
 
-    assertEquals(childProperty, getChildProperty.invoke(childObject));
-    assertEquals(parentProperty, getParentProperty.invoke(childObject));
-    assertEquals(sharedProperty, getSharedProperty.invoke(childObject));
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
+  }
+
+  /**
+   * This method confirms that duplicate constructors are not generated (compile time error is not thrown) when:
+   * <ul>
+   *     <li>all properties are required</li>
+   *     <li>{@code includeAllPropertiesConstructor} configuration property is {@code true}</li>
+   *     <li>{@code includeRequiredPropertiesConstructor} configuration property is {@code true}</li>
+   */
+  @Test
+  public void innerBuilderWithRequiredPropertyConstructor() throws ReflectiveOperationException {
+    ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
+            "/schema.useInnerClassBuilders/child_parent_all_required.json",
+            "com.example",
+            config("generateBuilders", true,
+                    "useInnerClassBuilders", true,
+                    "includeConstructors", true,
+                    "includeAllPropertiesConstructor", true,
+                    "includeRequiredPropertiesConstructor", true));
+
+    Class<?> builderClass = resultsClassLoader.loadClass("com.example.ChildParentAllRequired$ChildParentAllRequiredBuilder");
+    Constructor<?> constructor = builderClass.getConstructor(String.class, String.class);
+    Method buildMethod = builderClass.getMethod("build");
+    Method withChildProperty = builderClass.getMethod("withChildProperty", Integer.class);
+
+    int childProperty = 1;
+    String parentProperty = "parentProperty";
+    String sharedProperty = "sharedProperty";
+
+    Object builder = constructor.newInstance(sharedProperty, parentProperty);
+    withChildProperty.invoke(builder, childProperty);
+    Object childObject = buildMethod.invoke(builder);
+
+    Class<?> childClass = resultsClassLoader.loadClass("com.example.ChildParentAllRequired");
+    Method getChildProperty = childClass.getMethod("getChildProperty");
+    Method getParentProperty = childClass.getMethod("getParentProperty");
+    Method getSharedProperty = childClass.getMethod("getSharedProperty");
+
+    assertThat(getChildProperty.invoke(childObject), is(equalTo(childProperty)));
+    assertThat(getParentProperty.invoke(childObject), is(equalTo(parentProperty)));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
+  }
+
+  /**
+   * This method confirms that if innerBuilders are used, a "builder" method is created on the class that returns an instance of the builder
+   */
+  @Test
+  public void innerBuilderCreatesBuilderMethod()
+          throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
+            config("generateBuilders", true, "useInnerClassBuilders", true));
+
+    Class<?> childClass = resultsClassLoader.loadClass("com.example.Child");
+    Method builderMethod = childClass.getMethod("builder");
+
+    Class<?> builderClass = builderMethod.getReturnType();
+
+    Method buildMethod = builderClass.getMethod("build");
+    Method withChildProperty = builderClass.getMethod("withChildProperty", Integer.class);
+    Method withParentProperty = builderClass.getMethod("withParentProperty", String.class);
+    Method withSharedProperty = builderClass.getMethod("withSharedProperty", String.class);
+
+    int childProperty = 1;
+    String parentProperty = "parentProperty";
+    String sharedProperty = "sharedProperty";
+
+    Object builder = builderMethod.invoke(childClass);
+    withChildProperty.invoke(builder, childProperty);
+    withParentProperty.invoke(builder, parentProperty);
+    withSharedProperty.invoke(builder, sharedProperty);
+    Object childObject = buildMethod.invoke(builder);
+
+    Method getChildProperty = childClass.getMethod("getChildProperty");
+    Method getParentProperty = childClass.getMethod("getParentProperty");
+    Method getSharedProperty = childClass.getMethod("getSharedProperty");
+
+    assertThat(childProperty, is(equalTo(getChildProperty.invoke(childObject))));
+    assertThat(parentProperty, is(equalTo(getParentProperty.invoke(childObject))));
+    assertThat(getSharedProperty.invoke(childObject), is(equalTo(sharedProperty)));
   }
 }

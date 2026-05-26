@@ -1,14 +1,17 @@
 {
     "type" : "object",
     "properties" : {
-        "booleanProperty" : {
-            "type" : ["boolean", "string"]
+        "nullProperty" : {
+            "type" : ["null"]
         },
         "stringProperty" : {
             "type" : ["string"]
         },
         "integerProperty" : {
             "type" : ["integer", "null"]
+        },
+        "booleanProperty": {
+            "type" : ["null", "boolean"]
         }
     }
 }
