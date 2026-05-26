@@ -16,13 +16,18 @@
 
 package org.jsonschema2pojo.integration.config;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.config;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jsonschema2pojo.integration.util.CodeGenerationHelper.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.lang.reflect.Method;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,12 +37,6 @@ import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
-import java.lang.reflect.Method;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
-import org.junit.Rule;
-import org.junit.Test;
 
 public class CustomAnnotatorIT {
 

@@ -16,11 +16,26 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.isPrimitive;
-import static org.jsonschema2pojo.rules.PrimitiveTypes.primitiveType;
-import static org.jsonschema2pojo.util.TypeUtil.resolveType;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.jsonschema2pojo.rules.PrimitiveTypes.*;
+import static org.jsonschema2pojo.util.TypeUtil.*;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
+import org.jsonschema2pojo.exception.GenerationException;
+import org.jsonschema2pojo.util.AnnotationHelper;
+import org.jsonschema2pojo.util.ParcelableHelper;
+import org.jsonschema2pojo.util.ReflectionHelper;
+import org.jsonschema2pojo.util.SerializableHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.ClassType;
@@ -39,21 +54,6 @@ import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
-import org.jsonschema2pojo.exception.GenerationException;
-import org.jsonschema2pojo.util.AnnotationHelper;
-import org.jsonschema2pojo.util.ParcelableHelper;
-import org.jsonschema2pojo.util.ReflectionHelper;
-import org.jsonschema2pojo.util.SerializableHelper;
 
 /**
  * Applies the generation steps required for schemas of type "object".
