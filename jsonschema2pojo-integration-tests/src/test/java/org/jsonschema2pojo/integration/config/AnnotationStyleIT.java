@@ -30,6 +30,7 @@ import org.jsonschema2pojo.integration.util.Jsonschema2PojoRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -123,6 +124,7 @@ public class AnnotationStyleIT {
     @Test
     public void annotationStyleJackson2ProducesJsonPropertyDescription() throws ReflectiveOperationException {
         Class<?> generatedType = schemaRule.generateAndCompile("/schema/description/description.json", "com.example", config("annotationStyle", "jackson2")).loadClass("com.example.Description");
+        assertThat(generatedType.getAnnotation(JsonClassDescription.class).value(), is("A description for this type"));
 
         Field field = generatedType.getDeclaredField("description");
         assertThat(field.getAnnotation(JsonPropertyDescription.class).value(), is("A description for this property"));

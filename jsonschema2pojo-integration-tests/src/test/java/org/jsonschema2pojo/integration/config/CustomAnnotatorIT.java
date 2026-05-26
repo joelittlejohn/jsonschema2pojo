@@ -109,7 +109,11 @@ public class CustomAnnotatorIT {
      * Example custom annotator that deprecates <em>everything</em>.
      */
     public static class DeprecatingAnnotator implements Annotator {
+        @Override
+        public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
 
+        }
+        
         @Override
         public void typeInfo(JDefinedClass clazz, JsonNode schema) {
 

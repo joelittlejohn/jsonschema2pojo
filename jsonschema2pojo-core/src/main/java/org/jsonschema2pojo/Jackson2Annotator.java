@@ -16,8 +16,11 @@
 
 package org.jsonschema2pojo;
 
-
 import java.lang.annotation.Annotation;
+
+import com.fasterxml.jackson.annotation.JsonClassDescription;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JDefinedClass;
 
 /**
  * Annotates generated Java types using the Jackson 2.x mapping annotations.
@@ -34,5 +37,12 @@ public class Jackson2Annotator extends JacksonAnnotator {
     @Override
     protected Class<? extends Annotation> getJsonDeserializeAnnotation() {
         return com.fasterxml.jackson.databind.annotation.JsonDeserialize.class;
+    }
+    
+    @Override
+    public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
+        if (schema.has("description")) {
+            clazz.annotate(JsonClassDescription.class).param("value", schema.get("description").asText());
+        }
     }
 }

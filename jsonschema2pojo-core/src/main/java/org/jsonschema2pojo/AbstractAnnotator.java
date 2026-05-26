@@ -40,6 +40,11 @@ public abstract class AbstractAnnotator implements Annotator {
     public AbstractAnnotator(GenerationConfig generationConfig) {
         this.generationConfig = generationConfig;
     }
+    
+    @Override
+    public void typeDocumentation(JDefinedClass clazz, JsonNode schema) {
+
+    }
 
     @Override
     public void typeInfo(JDefinedClass clazz, JsonNode schema) {

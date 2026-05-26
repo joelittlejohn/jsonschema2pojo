@@ -256,6 +256,7 @@ public class ObjectRule implements Rule<JPackage, JType> {
             throw new ClassAlreadyExistsException(e.getExistingClass());
         }
 
+        annotator.typeDocumentation(newType, node);
         annotator.typeInfo(newType, node);
         annotator.propertyInclusion(newType, node);
 

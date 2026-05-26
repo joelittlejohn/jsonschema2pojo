@@ -33,6 +33,16 @@ import com.sun.codemodel.JMethod;
 public interface Annotator {
 
     /**
+     * Add the necessary annotation to define a type documentation.
+     *
+     * @param clazz
+     *            a generated pojo class, that is serialized to JSON
+     * @param schema
+     *            the object schema associated with this clazz
+     */
+    void typeDocumentation(JDefinedClass clazz, JsonNode schema);
+    
+    /**
      * Add the necessary annotation to dictate correct type information during
      * serialization and deserialization; often required with polymorphic types.
      *
