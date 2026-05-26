@@ -16,11 +16,16 @@
 
 package org.jsonschema2pojo.rules;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocCommentable;
@@ -30,7 +35,6 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -209,11 +213,29 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
     private JsonNode resolveRefs(JsonNode node, Schema parent) {
         if (node.has("$ref")) {
             Schema refSchema = ruleFactory.getSchemaStore().create(parent, node.get("$ref").asText(), ruleFactory.getGenerationConfig().getRefFragmentPathDelimiters());
-            JsonNode refNode = refSchema.getContent();
-            return resolveRefs(refNode, refSchema);
+            JsonNode refNode = resolveRefs(refSchema.getContent(), refSchema);
+            return mergeRefSiblings(refNode, node);
         } else {
             return node;
         }
+    }
+
+    private JsonNode mergeRefSiblings(JsonNode refNode, JsonNode node) {
+        if (!node.isObject() || !refNode.isObject()) {
+            return refNode;
+        }
+
+        ObjectNode mergedNode = ((ObjectNode) refNode).deepCopy();
+        Iterator<Entry<String, JsonNode>> fields = node.properties().iterator();
+
+        while (fields.hasNext()) {
+            Entry<String, JsonNode> field = fields.next();
+            if (!"$ref".equals(field.getKey())) {
+                mergedNode.set(field.getKey(), field.getValue());
+            }
+        }
+
+        return mergedNode;
     }
 
     private JType getReturnType(final JDefinedClass c, final JFieldVar field, final boolean required, final boolean usesOptional) {
