@@ -3,7 +3,7 @@
     "properties": {
         "typedMap": {
             "type": "object",
-            "existingJavaType": "java.util.Map<String,String>"
+            "existingJavaType": "java.util.Map<java.lang.String, java.lang.String>"
         },
         "rawMap": {
             "type": "object",
@@ -14,7 +14,7 @@
             "items": {
                 "type": "string"
             },
-            "existingJavaType": "java.util.LinkedList<String>"
+            "existingJavaType": "java.util.LinkedList<java.lang.String>"
         },
         "rawList": {
             "type": "array",
@@ -29,6 +29,19 @@
                 "type": "string"
             },
             "existingJavaType": "java.lang.Object"
+        },
+        "arrayItemWithTypeObject": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "existingJavaType": "java.time.LocalDateTime"
+            }
+        },
+        "arrayItemWithoutTypeObject": {
+            "type": "array",
+            "items": {
+                "existingJavaType": "java.time.LocalDateTime"
+            }
         }
     }
 }

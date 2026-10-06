@@ -33,11 +33,14 @@ import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.bval.jsr.ApacheValidationProvider;
@@ -46,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import com.example.ClassWithSizeAnnotation;
 
 @SuppressWarnings("rawtypes")
 @ParameterizedClass
@@ -631,7 +636,7 @@ public class IncludeJsr303AnnotationsIT {
     }
 
     @Test
-    public void jsr303ValidAnnotationsOnExistingJavaType() throws Exception {
+    public void jsr303ValidAnnotationsOnExistingJavaTypeWithScalar() throws Exception {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile(
                 "/schema/jsr303/validExistingJavaType.json", "com.example",
                 config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation));
@@ -642,22 +647,45 @@ public class IncludeJsr303AnnotationsIT {
         // typedMap: no @Valid (container types are not annotated, existingJavaType items don't go through the pipeline)
         Field typedMapField = generatedType.getDeclaredField("typedMap");
         assertThat(typedMapField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(typedMapField.getAnnotatedType(), is(instanceOf(AnnotatedParameterizedType.class)));
+        AnnotatedParameterizedType typedMapFieldAnnotatedType = (AnnotatedParameterizedType) typedMapField.getAnnotatedType();
+        assertThat(typedMapFieldAnnotatedType.getAnnotatedActualTypeArguments()[1].getAnnotation(expectedValidAnnotation), is(nullValue()));
 
         // rawMap: no @Valid (container types are not annotated)
         Field rawMapField = generatedType.getDeclaredField("rawMap");
         assertThat(rawMapField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(rawMapField.getGenericType(), is(not(instanceOf(ParameterizedType.class))));
 
         // typedList: no @Valid (container types are not annotated)
         Field typedListField = generatedType.getDeclaredField("typedList");
         assertThat(typedListField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(typedListField.getAnnotatedType(), is(instanceOf(AnnotatedParameterizedType.class)));
+        final var typedListFieldAnnotatedType = (AnnotatedParameterizedType) typedListField.getAnnotatedType();
+        assertThat(typedListFieldAnnotatedType.getAnnotatedActualTypeArguments()[0].getAnnotation(expectedValidAnnotation), is(nullValue()));
 
         // rawList: no @Valid (container types are not annotated)
         Field rawListField = generatedType.getDeclaredField("rawList");
         assertThat(rawListField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(rawListField.getGenericType(), is(not(instanceOf(ParameterizedType.class))));
 
         // standardType: @Valid on field (not a collection)
         Field standardTypeField = generatedType.getDeclaredField("standardType");
         assertThat(standardTypeField.getAnnotation(expectedValidAnnotation), is(not(nullValue())));
+        assertThat(standardTypeField.getGenericType(), is(not(instanceOf(ParameterizedType.class))));
+
+        // arrayItemWithTypeObjectField: @Valid on collection item when '"type": "object"' present
+        Field arrayItemWithTypeObjectField = generatedType.getDeclaredField("arrayItemWithTypeObject");
+        assertThat(arrayItemWithTypeObjectField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(arrayItemWithTypeObjectField.getAnnotatedType(), is(instanceOf(AnnotatedParameterizedType.class)));
+        final var arrayItemWithTypeObjectFieldAnnotatedType = (AnnotatedParameterizedType) arrayItemWithTypeObjectField.getAnnotatedType();
+        assertThat(arrayItemWithTypeObjectFieldAnnotatedType.getAnnotatedActualTypeArguments()[0].getAnnotation(expectedValidAnnotation), is(not(nullValue())));
+
+        // arrayItemWithoutTypeObjectField: no @Valid on collection item when '"type": "object"' absent
+        Field arrayItemWithoutTypeObjectField = generatedType.getDeclaredField("arrayItemWithoutTypeObject");
+        assertThat(arrayItemWithoutTypeObjectField.getAnnotation(expectedValidAnnotation), is(nullValue()));
+        assertThat(arrayItemWithoutTypeObjectField.getAnnotatedType(), is(instanceOf(AnnotatedParameterizedType.class)));
+        final var arrayItemWithoutTypeObjectFieldAnnotatedType = (AnnotatedParameterizedType) arrayItemWithoutTypeObjectField.getAnnotatedType();
+        assertThat(arrayItemWithoutTypeObjectFieldAnnotatedType.getAnnotatedActualTypeArguments()[0].getAnnotation(expectedValidAnnotation), is(nullValue()));
     }
 
     @Test
@@ -698,6 +726,71 @@ public class IncludeJsr303AnnotationsIT {
 
         assertThat("@Valid should not appear anywhere for scalar-only types",
                 source, not(containsString("@Valid")));
+    }
+
+    @Test
+    public void jsr303ExistingJavaType_containerTypes_validated() throws ReflectiveOperationException {
+        final Class<?> instanceType = schemaRule
+                .generateAndCompile(
+                        "/schema/jsr303/existingJavaTypeProperties.json",
+                        "com.example",
+                        config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation))
+                .loadClass("com.example.ExistingJavaTypeProperties");
+
+        final var instanceWithMapOfStringOptionalListOfExistingClasses = createInstanceWithPropertyValue(instanceType, "mapOfStringOptionalListOfExistingClasses", Map.of("a", Optional.of(List.of(new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instanceWithMapOfStringOptionalListOfExistingClasses, is(1));
+
+        final var instanceWithListOfOptionalStringExistingClassMaps = createInstanceWithPropertyValue(instanceType, "listOfOptionalStringExistingClassMaps", List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instanceWithListOfOptionalStringExistingClassMaps, is(1));
+
+        final var instanceWithListOfOptionalStringObjectMaps = createInstanceWithPropertyValue(instanceType, "listOfOptionalStringObjectMaps", List.of(Optional.of(Map.of("a", new ClassWithSizeAnnotation()))));
+        assertNumberOfConstraintViolationsOn(instanceWithListOfOptionalStringObjectMaps, is(1));
+
+        final var instanceWithOptionalOfExistingClass = createInstanceWithPropertyValue(instanceType, "optionalOfExistingClass", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithOptionalOfExistingClass, is(1));
+
+        final var instanceWithMapOfStringExistingJavaClasses = createInstanceWithPropertyValue(instanceType, "mapOfStringExistingJavaClasses", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithMapOfStringExistingJavaClasses, is(1));
+
+        final var instanceWithListOfObjects = createInstanceWithPropertyValue(instanceType, "listOfObjects", List.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithListOfObjects, is(1));
+
+        final var instanceWithMapOfStringObject = createInstanceWithPropertyValue(instanceType, "mapOfStringObject", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithMapOfStringObject, is(1));
+
+        final var instanceWithPrimitiveLong = createInstanceWithPropertyValue(instanceType, "primitiveLong", 1L);
+        assertNumberOfConstraintViolationsOn(instanceWithPrimitiveLong, is(1));
+
+        final var instanceWithExistingTypeAsArrayItem = createInstanceWithPropertyValue(instanceType, "existingTypeAsArrayItem", List.of(Map.of("a", new ClassWithSizeAnnotation())));
+        assertNumberOfConstraintViolationsOn(instanceWithExistingTypeAsArrayItem, is(1));
+
+        final var instanceWithExistingTypeAsArray = createInstanceWithPropertyValue(instanceType, "existingTypeAsArray", List.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithExistingTypeAsArray, is(1));
+
+        final var instanceWithItemOfExistingClass = createInstanceWithPropertyValue(instanceType, "itemOfExistingClass", new ClassWithSizeAnnotation());
+        assertNumberOfConstraintViolationsOn(instanceWithItemOfExistingClass, is(1));
+
+        final var instanceWithArrayOfExistingClasses = createInstanceWithPropertyValue(instanceType, "arrayOfExistingClasses", new ClassWithSizeAnnotation());
+        assertNumberOfConstraintViolationsOn(instanceWithArrayOfExistingClasses, is(1));
+
+        final var instanceWithMultiDimensionalArrayOfExistingClasses = createInstanceWithPropertyValue(instanceType, "multiDimensionalArrayOfExistingClasses", new ClassWithSizeAnnotation());
+        assertNumberOfConstraintViolationsOn(instanceWithMultiDimensionalArrayOfExistingClasses, is(1));
+    }
+
+    @Test
+    public void jsr303ExistingJavaType_rawContainerTypes_notValidated() throws ReflectiveOperationException {
+        final Class<?> instanceType = schemaRule
+                .generateAndCompile(
+                        "/schema/jsr303/existingJavaTypeProperties.json",
+                        "com.example",
+                        config("includeJsr303Annotations", true, "useJakartaValidation", useJakartaValidation))
+                .loadClass("com.example.ExistingJavaTypeProperties");
+
+        final var instanceWithRawOptional = createInstanceWithPropertyValue(instanceType, "rawOptional", Optional.of(new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithRawOptional, is(0));
+
+        final var instanceWithRawMap = createInstanceWithPropertyValue(instanceType, "rawMap", Map.of("a", new ClassWithSizeAnnotation()));
+        assertNumberOfConstraintViolationsOn(instanceWithRawMap, is(0));
     }
 
     private void assertNumberOfConstraintViolationsOn(Object instance, Matcher<Integer> matcher) {

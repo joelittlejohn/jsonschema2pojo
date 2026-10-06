@@ -4,6 +4,17 @@
         "primitivefield" : {
             "type": "string"
         },
+      "javaLocalDateTime": {
+        "existingJavaType": "java.time.LocalDateTime"
+      },
+      "javaLocalDate": {
+        "type": "object",
+        "existingJavaType": "java.time.LocalDateTime"
+      },
+      "bigDecimal": {
+        "type": "number",
+        "existingJavaType": "java.math.BigDecimal"
+      },
         "objectfield" : {
             "type": "object",
             "properties": {

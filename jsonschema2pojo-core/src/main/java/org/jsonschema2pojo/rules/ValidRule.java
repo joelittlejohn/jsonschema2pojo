@@ -46,15 +46,42 @@ public class ValidRule implements Rule<JType, JType> {
 
     @Override
     public JType apply(String nodeName, JsonNode node, JsonNode parent, JType type, Schema currentSchema) {
-
-        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations()
-            && type instanceof JClass jclass
-            && !isContainer(jclass)
-            && !isScalar(jclass)) {
-            return JAnnotatedClass.of(jclass).annotated(getValidClass());
-        } else {
-            return type;
+        if (ruleFactory.getGenerationConfig().isIncludeJsr303Annotations() && type instanceof JClass jclass) {
+            // existingJavaType takes precedence over definition
+            if (null != node && node.has("existingJavaType")) {
+                final var nodeType = node.at("/type").asText();
+                if ("object".equals(nodeType) || "array".equals(nodeType)) {
+                    return tryAnnotate(jclass);
+                }
+            } else {
+                return annotateIfApplicable(jclass);
+            }
         }
+        return type;
+    }
+
+    private JClass tryAnnotate(JClass jclass) {
+        final JClass erasure = jclass.erasure();
+        if (jclass.isReference() && isContainer(erasure)) {
+            final var typeParameters = jclass.getTypeParameters();
+            if ((jclass.owner().ref(Iterable.class).isAssignableFrom(erasure)
+                    || jclass.owner().ref(Optional.class).isAssignableFrom(erasure))
+                    && typeParameters.size() == 1
+                    && !isScalar(typeParameters.get(0))) {
+                return erasure.narrow(tryAnnotate(typeParameters.get(0)));
+            } else if (jclass.owner().ref(Map.class).isAssignableFrom(erasure)
+                    && typeParameters.size() == 2 && !isScalar(typeParameters.get(1))) {
+                return erasure.narrow(typeParameters.get(0), tryAnnotate(typeParameters.get(1)));
+            }
+        }
+        return annotateIfApplicable(jclass);
+    }
+
+    private JClass annotateIfApplicable(JClass jclass) {
+        if (!isContainer(jclass) && !isScalar(jclass)) {
+            return JAnnotatedClass.of(jclass).annotated(getValidClass());
+        }
+        return jclass;
     }
 
     private boolean isContainer(JClass jclass) {
