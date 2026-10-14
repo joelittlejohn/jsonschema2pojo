@@ -31,6 +31,18 @@ import com.sun.codemodel.JPackage;
 public class TypeUtilTest {
 
     @Test
+    public void testResolveTypeCanHandleParametrizedType() {
+        final JCodeModel codeModel = new JCodeModel();
+        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<java.lang.Integer>");
+
+        assertThat(_class.erasure(), equalTo(codeModel.ref(List.class)));
+        assertThat(_class.typeParams(), emptyArray());
+        assertThat(_class.isParameterized(), is(Boolean.TRUE));
+        assertThat(_class.getTypeParameters(), hasSize(1));
+        assertThat(_class.getTypeParameters().get(0), is(equalTo(codeModel.ref(Integer.class))));
+    }
+
+    @Test
     public void testResolveTypeCanHandleWildcard() {
         final JCodeModel codeModel = new JCodeModel();
         final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.util.List<?>");
@@ -59,4 +71,38 @@ public class TypeUtilTest {
         final JPackage rootPackage = new JCodeModel().rootPackage();
         assertThrows(IllegalArgumentException.class, () -> TypeUtil.resolveType(rootPackage, "java.util.List<? super java.lang.String>"));
     }
+
+    @Test
+    public void testResolvePrimitiveBooleanArray() {
+        final JCodeModel codeModel = new JCodeModel();
+        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "boolean[]");
+
+        assertThat(_class.isArray(), is(true));
+        assertThat(_class.erasure(), equalTo(codeModel.ref(boolean[].class)));
+        assertThat(_class.typeParams(), emptyArray());
+        assertThat(_class.isParameterized(), is(Boolean.FALSE));
+    }
+
+    @Test
+    public void testResolveStringArray() {
+        final JCodeModel codeModel = new JCodeModel();
+        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.lang.String[]");
+
+        assertThat(_class.isArray(), is(true));
+        assertThat(_class.erasure(), equalTo(codeModel.ref(String[].class)));
+        assertThat(_class.typeParams(), emptyArray());
+        assertThat(_class.isParameterized(), is(Boolean.FALSE));
+    }
+
+    @Test
+    public void testResolveIntegerArrayOfArrays() {
+        final JCodeModel codeModel = new JCodeModel();
+        final JClass _class = TypeUtil.resolveType(codeModel.rootPackage(), "java.lang.Integer[][]");
+
+        assertThat(_class.isArray(), is(true));
+        assertThat(_class.erasure(), equalTo(codeModel.ref(Integer[][].class)));
+        assertThat(_class.typeParams(), emptyArray());
+        assertThat(_class.isParameterized(), is(Boolean.FALSE));
+    }
+
 }

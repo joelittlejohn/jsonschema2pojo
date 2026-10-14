@@ -441,9 +441,9 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.google.code.javaparser</groupId>
-                <artifactId>javaparser</artifactId>
-                <version>1.0.11</version>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-core</artifactId>
+                <version>3.28.2</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.codemodel</groupId>

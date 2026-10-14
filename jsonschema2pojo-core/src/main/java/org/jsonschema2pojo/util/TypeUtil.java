@@ -16,37 +16,37 @@
 
 package org.jsonschema2pojo.util;
 
-import java.util.List;
-
 import org.jsonschema2pojo.exception.GenerationException;
 
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.WildcardType;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassContainer;
-
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.body.FieldDeclaration;
-import japa.parser.ast.type.ClassOrInterfaceType;
-import japa.parser.ast.type.ReferenceType;
-import japa.parser.ast.type.Type;
-import japa.parser.ast.type.WildcardType;
 
 public class TypeUtil {
 
     public static JClass resolveType(JClassContainer _package, String typeDefinition) {
 
         try {
-            FieldDeclaration fieldDeclaration = (FieldDeclaration) JavaParser.parseBodyDeclaration(typeDefinition + " foo;");
-            ClassOrInterfaceType c = (ClassOrInterfaceType) ((ReferenceType) fieldDeclaration.getType()).getType();
+            final Type parsedType = StaticJavaParser.parseType(typeDefinition);
 
-            return buildClass(_package, c, 0);
-        } catch (ParseException e) {
+            if (parsedType.getElementType().isPrimitiveType()) {
+                return (JClass) _package.owner().parseType(typeDefinition);
+            }
+
+            return buildClass(_package, parsedType.getElementType().asClassOrInterfaceType(), parsedType.getArrayLevel());
+        } catch (ParseProblemException | ClassNotFoundException e) {
             throw new GenerationException("Couldn't parse type: " + typeDefinition, e);
         }
     }
 
     private static JClass buildClass(JClassContainer _package, ClassOrInterfaceType c, int arrayCount) {
-        final String packagePrefix = (c.getScope() != null) ? c.getScope().toString() + "." : "";
+        final String packagePrefix = c.getScope().map(s -> s.asString().concat(".")).orElse("");
 
         JClass _class = _package.owner().ref(packagePrefix + c.getName());
 
@@ -54,26 +54,30 @@ public class TypeUtil {
             _class = _class.array();
         }
 
-        List<Type> typeArgs = c.getTypeArgs();
-        if (typeArgs != null && typeArgs.size() > 0) {
+        NodeList<Type> typeArgs = c.getTypeArguments().orElse(NodeList.nodeList());
+        if (!typeArgs.isEmpty()) {
             JClass[] genericArgumentClasses = new JClass[typeArgs.size()];
 
             for (int i = 0; i < typeArgs.size(); i++) {
                 final Type type = typeArgs.get(i);
 
                 final JClass resolvedClass;
-                if (type instanceof WildcardType) {
-                    final WildcardType wildcardType = (WildcardType) type;
-                    if (wildcardType.getSuper() != null) {
+                if (type.isWildcardType()) {
+                    final WildcardType wildcardType = type.asWildcardType();
+                    if (wildcardType.getSuperType().isPresent()) {
+                        // Neither JTypeWildcard nor JCodeModel.TypeNameParser::parseTypeName support '? super'
                         throw new IllegalArgumentException("\"? super \" declaration is not yet supported");
-                    } else if (wildcardType.getExtends() != null) {
-                        resolvedClass = buildClass(_package, (ClassOrInterfaceType) wildcardType.getExtends().getType(), 0).wildcard();
+                    } else if (wildcardType.getExtendedType().isPresent()) {
+                        resolvedClass = buildClass(_package, wildcardType.getExtendedType().get().asClassOrInterfaceType(), 0).wildcard();
                     } else {
                         resolvedClass = _package.owner().ref(Object.class).wildcard();
                     }
                 } else {
-                    final ReferenceType referenceType = (ReferenceType) type;
-                    resolvedClass = buildClass(_package, (ClassOrInterfaceType) referenceType.getType(), referenceType.getArrayCount());
+                    final ReferenceType referenceType = type.asReferenceType();
+                    resolvedClass = buildClass(
+                            _package,
+                            referenceType.getElementType().asClassOrInterfaceType(),
+                            referenceType.getArrayLevel());
                 }
 
                 genericArgumentClasses[i] = resolvedClass;
