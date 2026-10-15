@@ -269,7 +269,7 @@ public class UseInnerClassBuildersIT {
    */
   @Test
   public void innerBuilderCreatesBuilderMethod()
-          throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+          throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema.useInnerClassBuilders/child.json", "com.example",
             config("generateBuilders", true, "useInnerClassBuilders", true));
 

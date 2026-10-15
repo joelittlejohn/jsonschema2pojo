@@ -160,7 +160,7 @@ public class FragmentRefIT {
 
 
     @Test
-    public void refToInnerFragmentThatHasRefToAnotherFragment() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
+    public void refToInnerFragmentThatHasRefToAnotherFragment() throws ClassNotFoundException, NoSuchMethodException, SecurityException {
         final ClassLoader fragmentRefsClassLoader = classSchemaRule.generateAndCompile("/schema/ref/refToRefToDefinitions.json", "com.example");
 
         final Class<?> finalPropertyClass = fragmentRefsClassLoader.loadClass("com.example.RefToRefToDefinitions");

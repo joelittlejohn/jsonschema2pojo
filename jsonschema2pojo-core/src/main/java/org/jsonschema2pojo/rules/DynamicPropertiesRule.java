@@ -32,7 +32,6 @@ import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JOp;
-import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
@@ -103,10 +102,10 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
 
         if (isIncludeGetters || isIncludeSetters || isGenerateBuilders) {
             if (isIncludeSetters) {
-                addInternalSetMethodJava6(jclass, node);
+                addInternalSetMethodJava(jclass, node);
             }
             if (isIncludeGetters) {
-                addInternalGetMethodJava6(jclass, node);
+                addInternalGetMethodJava(jclass, node);
             }
         }
 
@@ -160,7 +159,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         return method;
     }
 
-    private JMethod addInternalGetMethodJava6(JDefinedClass jclass, JsonNode propertiesNode) {
+    private JMethod addInternalGetMethodJava(JDefinedClass jclass, JsonNode propertiesNode) {
         JMethod method = jclass.method(PROTECTED, jclass.owner()._ref(Object.class), DEFINED_GETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar notFoundParam = method.param(jclass.owner()._ref(Object.class), "notFoundValue");
@@ -197,12 +196,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         }
 
         return method;
-    }
-
-    private void addGetPropertyCase(JDefinedClass jclass, JSwitch propertySwitch, String propertyName, JType propertyType, JsonNode node) {
-        JMethod propertyGetter = jclass.getMethod(getGetterName(propertyName, propertyType, node), new JType[] {});
-        propertySwitch._case(lit(propertyName)).body()
-        ._return(invoke(propertyGetter));
     }
 
     private void addSetMethods(JDefinedClass jclass) {
@@ -260,7 +253,7 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
         return method;
     }
 
-    private JMethod addInternalSetMethodJava6(JDefinedClass jclass, JsonNode propertiesNode) {
+    private JMethod addInternalSetMethodJava(JDefinedClass jclass, JsonNode propertiesNode) {
         JMethod method = jclass.method(PROTECTED, jclass.owner().BOOLEAN, DEFINED_SETTER_NAME);
         JVar nameParam = method.param(String.class, "name");
         JVar valueParam = method.param(Object.class, "value");
@@ -303,12 +296,6 @@ public class DynamicPropertiesRule implements Rule<JDefinedClass, JDefinedClass>
     private JMethod getInternalGetMethod(JDefinedClass jclass) {
         return jclass.getMethod(DEFINED_GETTER_NAME,
                 new JType[] { jclass.owner().ref(String.class), jclass.owner().ref(Object.class) });
-    }
-
-    private void addSetPropertyCase(JDefinedClass jclass, JSwitch setterSwitch, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {
-        JBlock setterBody = setterSwitch._case(lit(propertyName)).body();
-        addSetProperty(jclass, setterBody, propertyName, propertyType, valueVar, node);
-        setterBody._return(TRUE);
     }
 
     private void addSetProperty(JDefinedClass jclass, JBlock callSite, String propertyName, JType propertyType, JVar valueVar, JsonNode node) {

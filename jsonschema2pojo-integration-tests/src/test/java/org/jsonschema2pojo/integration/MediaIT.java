@@ -265,7 +265,7 @@ public class MediaIT {
         public static final String BINARY_ENCODING = "binaryEncoding";
         public static final String QUOTED_PRINTABLE = "quoted-printable";
         public static final String USING = "using";
-        public static final String INCLUDE = "include";
+
         @Override
         public void propertyField(JFieldVar field, JDefinedClass clazz, String propertyName, JsonNode propertyNode) {
             if( isQuotedPrintableProperty(propertyNode) ) {

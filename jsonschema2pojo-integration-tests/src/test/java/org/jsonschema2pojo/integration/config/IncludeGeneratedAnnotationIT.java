@@ -35,7 +35,7 @@ public class IncludeGeneratedAnnotationIT {
     public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    public void defaultConfigHasGeneratedAnnotationsOn() throws ClassNotFoundException {
+    public void defaultConfigHasGeneratedAnnotationsOn() {
         File source = schemaRule.generate(SCHEMA_PATH, "com.example");
         assertThat(source, containsText("@Generated"));
 

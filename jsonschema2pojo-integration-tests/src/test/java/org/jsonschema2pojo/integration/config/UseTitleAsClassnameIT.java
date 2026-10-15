@@ -31,8 +31,8 @@ public class UseTitleAsClassnameIT {
     @RegisterExtension public Jsonschema2PojoRule schemaRule = new Jsonschema2PojoRule();
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void defaultUseTitleAsClassnameIsFalse() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    @SuppressWarnings({ "rawtypes" })
+    public void defaultUseTitleAsClassnameIsFalse() throws ClassNotFoundException, SecurityException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/properties/objectPropertiesTitle.json", "com.example");
 
@@ -56,8 +56,8 @@ public class UseTitleAsClassnameIT {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void useTitleAsClassnameWorksForEnums() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+    @SuppressWarnings({ "rawtypes" })
+    public void useTitleAsClassnameWorksForEnums() throws ClassNotFoundException, SecurityException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/enum/enumWithTitle.json", "com.example",
                 config("useTitleAsClassname", true));

@@ -106,7 +106,7 @@ public class DynamicPropertiesIT {
     }
 
     @Test
-    public void shouldThrowExceptionWhenGettingUnknownField() throws Throwable {
+    public void shouldThrowExceptionWhenGettingUnknownField() {
         final String schemaLocation = "/schema/dynamic/noAdditionalProperties.json";
         assertThrows(
                 IllegalArgumentException.class,
@@ -275,29 +275,6 @@ public class DynamicPropertiesIT {
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
-    }
-
-    public void setAdditionalPropertyTest(String schemaLocation, String typeName, Class<?> fieldType, String fieldName, Object value) throws Throwable {
-        ClassLoader resultsClassLoader = schemaRule.generateAndCompile(schemaLocation, "com.example", config("includeDynamicAccessors", true, "includeDynamicGetters", true, "includeDynamicSetters", true, "includeDynamicBuilders", true));
-
-        Class<?> parentType = resultsClassLoader.loadClass("com.example." + typeName);
-        Object instance = parentType.getDeclaredConstructor().newInstance();
-
-        try {
-            parentType.getMethod("set", String.class, Object.class)
-                    .invoke(instance, fieldName, value);
-        } catch (InvocationTargetException e) {
-            throw e.getCause();
-        }
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> additionalProperties =
-                (Map<String, Object>) parentType.getMethod("getAdditionalProperties")
-                        .invoke(instance);
-
-        assertThat("the value was set",
-                (String) additionalProperties.get("unknownValue"),
-                equalTo("value"));
     }
 
     public void setPropertyTest(String schemaLocation, String typeName, String fieldName, Object value) throws Throwable {

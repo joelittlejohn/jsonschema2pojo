@@ -90,7 +90,6 @@ public class RuleFactoryImplTest {
     @Test
     public void generationRuleLoggerIsReturned() {
 
-        GenerationConfig mockGenerationConfig = mock(GenerationConfig.class);
         RuleLogger mockRuleLogger = mock(RuleLogger.class);
 
         RuleFactory ruleFactory = new RuleFactory(new DefaultGenerationConfig(), new NoopAnnotator(), new SchemaStore());

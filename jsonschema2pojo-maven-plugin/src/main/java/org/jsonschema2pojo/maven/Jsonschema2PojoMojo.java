@@ -1113,7 +1113,6 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
     @Override
     public boolean isIncludeSetters() { return includeSetters; }
 
-    @SuppressWarnings("unchecked")
     private void setTargetVersion() {
         if (isNotBlank(this.targetVersion)) {
             return;

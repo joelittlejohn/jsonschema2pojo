@@ -118,7 +118,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void additionalPropertiesAreNotDeserializableWhenDisallowed() throws ClassNotFoundException, SecurityException, IOException {
+    public void additionalPropertiesAreNotDeserializableWhenDisallowed() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/noAdditionalProperties.json", "com.example");
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.NoAdditionalProperties");
@@ -127,7 +127,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void additionalPropertiesAreNotDeserializableWhenDisabledGlobally() throws ClassNotFoundException, SecurityException, IOException {
+    public void additionalPropertiesAreNotDeserializableWhenDisabledGlobally() throws ClassNotFoundException, SecurityException {
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/defaultAdditionalProperties.json", "com.example", config("includeAdditionalProperties", false));
 
         Class<?> classWithNoAdditionalProperties = resultsClassLoader.loadClass("com.example.DefaultAdditionalProperties");
@@ -176,7 +176,7 @@ public class AdditionalPropertiesIT {
     }
 
     @Test
-    public void additionalPropertiesBuilderAbsentIfNotConfigured() throws SecurityException, NoSuchMethodException, ClassNotFoundException {
+    public void additionalPropertiesBuilderAbsentIfNotConfigured() throws SecurityException, ClassNotFoundException {
 
         ClassLoader resultsClassLoader = schemaRule.generateAndCompile("/schema/additionalProperties/additionalPropertiesObject.json", "com.example");
 

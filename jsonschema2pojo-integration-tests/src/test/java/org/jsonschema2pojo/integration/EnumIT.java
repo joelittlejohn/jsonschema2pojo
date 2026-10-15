@@ -105,7 +105,7 @@ public class EnumIT {
     }
 
     @Test
-    public void enumDeserializationMethodRejectsInvalidValues() throws NoSuchMethodException, IllegalAccessException {
+    public void enumDeserializationMethodRejectsInvalidValues() throws NoSuchMethodException {
 
         Method fromValue = enumClass.getMethod("fromValue", String.class);
 
